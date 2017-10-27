@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1421" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <development version="7000" identifier="xcode"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UIApplication">
+            <connections>
+                <outlet property="delegate" destination="3" id="4"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <customObject id="3" userLabel="HFRplus App Delegate" customClass="HFRplusAppDelegate">
+            <connections>
+                <outlet property="favoritesNavController" destination="48" id="53"/>
+                <outlet property="forumsNavController" destination="36" id="41"/>
+                <outlet property="messagesNavController" destination="42" id="47"/>
+                <outlet property="rootController" destination="10" id="16"/>
+                <outlet property="window" destination="2" id="5"/>
+            </connections>
+        </customObject>
+        <customObject id="112" customClass="TabBarController"/>
+        <window opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="2">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+        </window>
+        <tabBarController id="10" customClass="TabBarController">
+            <extendedEdge key="edgesForExtendedLayout"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <tabBar key="tabBar" contentMode="scaleToFill" selectedItem="74A-e7-Gdm" id="11">
+                <rect key="frame" x="0.0" y="431" width="320" height="49"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
+            </tabBar>
+            <viewControllers>
+                <navigationController id="36" customClass="HFRNavigationController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Catégories" image="44-shoebox.png" id="37"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="40">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <viewControllers>
+                        <viewController id="38" customClass="ForumsTableViewController">
+                            <toolbarItems/>
+                            <navigationItem key="navigationItem" title="Item" id="39"/>
+                        </viewController>
+                    </viewControllers>
+                </navigationController>
+                <navigationController id="48" customClass="HFRNavigationController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Vos Sujets" image="28-star.png" id="49"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="52">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <viewControllers>
+                        <viewController id="50" customClass="FavoritesTableViewController">
+                            <toolbarItems/>
+                            <navigationItem key="navigationItem" title="Item" id="51"/>
+                        </viewController>
+                    </viewControllers>
+                </navigationController>
+                <navigationController id="42" customClass="HFRNavigationController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Messages" image="18-envelope.png" id="43"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="46">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <viewControllers>
+                        <viewController nibName="TopicsTableViewController" id="44" customClass="HFRMPViewController">
+                            <toolbarItems/>
+                            <navigationItem key="navigationItem" title="Item" id="45"/>
+                        </viewController>
+                    </viewControllers>
+                </navigationController>
+                <navigationController id="EgT-mU-RFn" customClass="HFRNavigationController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Réglages" image="20-gear2.png" id="74A-e7-Gdm"/>
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" id="yZU-Qs-sTq">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <viewControllers>
+                        <tableViewController title="Réglages" automaticallyAdjustsScrollViewInsets="NO" id="GVX-YK-j2V" customClass="SettingsViewController">
+                            <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="uDi-uo-5iE">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="431"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="GVX-YK-j2V" id="Ssx-lA-TfJ"/>
+                                    <outlet property="delegate" destination="GVX-YK-j2V" id="hjX-kw-Iyy"/>
+                                </connections>
+                            </tableView>
+                            <extendedEdge key="edgesForExtendedLayout"/>
+                            <navigationItem key="navigationItem" title="Réglages" id="WB3-fg-zCe"/>
+                        </tableViewController>
+                    </viewControllers>
+                </navigationController>
+            </viewControllers>
+            <connections>
+                <outlet property="delegate" destination="112" id="113"/>
+            </connections>
+        </tabBarController>
+    </objects>
+    <resources>
+        <image name="18-envelope.png" width="24" height="16"/>
+        <image name="20-gear2.png" width="26" height="28"/>
+        <image name="28-star.png" width="26" height="26"/>
+        <image name="44-shoebox.png" width="24" height="22"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>

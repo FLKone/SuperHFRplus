@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>IASKCellImage</key>
+			<string>CircledUserMaleFilled-25</string>
+			<key>IASKViewControllerClass</key>
+			<string>CompteViewController</string>
+			<key>Title</key>
+			<string>Mon Compte</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>IASKCellImage</key>
+			<string>AboutFilled-25</string>
+			<key>IASKViewControllerClass</key>
+			<string>CreditsViewController</string>
+			<key>Title</key>
+			<string>Crédits</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Général</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>all</string>
+			<key>Key</key>
+			<string>landscape_mode</string>
+			<key>Title</key>
+			<string>Mode Paysage</string>
+			<key>Titles</key>
+			<array>
+				<string>Désactivé</string>
+				<string>Editeur et Photos</string>
+				<string>Activé</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>none</string>
+				<string>galerie_message</string>
+				<string>all</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>0</string>
+			<key>Key</key>
+			<string>default_tab</string>
+			<key>Title</key>
+			<string>Onglet par défaut</string>
+			<key>Titles</key>
+			<array>
+				<string>Catégories</string>
+				<string>Vos Sujets</string>
+				<string>Messages</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>0</string>
+			<key>FooterText</key>
+			<string>&quot;Drapeaux &amp; Favoris&quot; affiche uniquement les sujets que vous suivez (⚑ + ★) qui disposent de nouvelles réponses. C&apos;est l&apos;affichage classique.
+
+&quot;Favoris&quot; affiche tous les sujets que vous avez placé en favoris (★), qu&apos;une nouvelle réponse soit disponible ou pas. Dans ce cas, les sujets avec de nouvelles réponses sont en gras dans la liste.</string>
+			<key>Key</key>
+			<string>vos_sujets</string>
+			<key>Title</key>
+			<string>Vos Sujets</string>
+			<key>Titles</key>
+			<array>
+				<string>Drapeaux &amp; Favoris</string>
+				<string>Favoris</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>0</string>
+			<key>Key</key>
+			<string>theme</string>
+			<key>Title</key>
+			<string>Thème</string>
+			<key>Titles</key>
+			<array>
+				<string>☀ Clair</string>
+				<string>☾ Sombre</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Sujets</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>IASKCellImage</key>
+			<string>ThorHammerFilled-25</string>
+			<key>IASKViewControllerClass</key>
+			<string>BlackListTableViewController</string>
+			<key>Title</key>
+			<string>Liste noire</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>ActionsMessages</string>
+			<key>Title</key>
+			<string>Actions</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>default</string>
+			<key>FooterText</key>
+			<string>Le réglage &quot;Système&quot;, disponible depuis iOS7, se trouve dans les options d&apos;accessibilité dans les réglages d&apos;iOS.</string>
+			<key>Key</key>
+			<string>size_text</string>
+			<key>Title</key>
+			<string>Taille du texte</string>
+			<key>Titles</key>
+			<array>
+				<string>Normale</string>
+				<string>Système</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>default</string>
+				<string>sys</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>no</string>
+			<key>Key</key>
+			<string>display_images</string>
+			<key>Title</key>
+			<string>Afficher les images</string>
+			<key>Titles</key>
+			<array>
+				<string>Jamais</string>
+				<string>Wifi</string>
+				<string>Toujours</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>no</string>
+				<string>wifi</string>
+				<string>yes</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>no</string>
+			<key>Key</key>
+			<string>display_sig</string>
+			<key>Title</key>
+			<string>Afficher les signatures</string>
+			<key>Titles</key>
+			<array>
+				<string>Oui</string>
+				<string>Non</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>yes</string>
+				<string>no</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>http</string>
+			<key>Key</key>
+			<string>default_web</string>
+			<key>Title</key>
+			<string>Ouvrir les liens</string>
+			<key>Titles</key>
+			<array>
+				<string>Safari</string>
+				<string>Google Chrome</string>
+				<string>Navigateur interne</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>http</string>
+				<string>googlechrome</string>
+				<string>internal</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Maintenance</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>IASKButtonSpecifier</string>
+			<key>Title</key>
+			<string>Vider le cache</string>
+			<key>Key</key>
+			<string>EmptyCacheButton</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Activation du Menu debug = 1 TT offert !</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Menu debug</string>
+			<key>Key</key>
+			<string>menu_debug</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>IASKCellImage</key>
+			<string>BugFilled-25</string>
+			<key>IASKViewControllerClass</key>
+			<string>HFRDebugViewController</string>
+			<key>Title</key>
+			<string>Debug</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Key</key>
+			<string>menu_debug_entry</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>1.0</string>
+			<key>Key</key>
+			<string>version</string>
+			<key>Title</key>
+			<string>Version</string>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+		</dict>
+	</array>
+</dict>
+</plist>
