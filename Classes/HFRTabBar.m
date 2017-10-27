@@ -14,11 +14,11 @@
 + (void)load
 {
     NSLog(@"load UITabBar");
-    Method original, swizzled;
+   // Method original, swizzled;
     
-    original = class_getInstanceMethod(self, @selector(sizeThatFits:));
-    swizzled = class_getInstanceMethod(self, @selector(swizzled_sizeThatFits:));
-    method_exchangeImplementations(original, swizzled);
+   // original = class_getInstanceMethod(self, @selector(sizeThatFits:));
+   // swizzled = class_getInstanceMethod(self, @selector(swizzled_sizeThatFits:));
+   // method_exchangeImplementations(original, swizzled);
 }
 
 // Only override drawRect: if you perform custom drawing.

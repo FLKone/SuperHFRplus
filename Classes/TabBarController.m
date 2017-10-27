@@ -82,9 +82,10 @@
 }
 
 -(void)setTheme:(Theme)theme{
-    if ([[UITabBar appearance] respondsToSelector:@selector(setTranslucent:)]) {
-        [[UITabBar appearance] setTranslucent:YES];
-    }
+  [self.tabBar setTranslucent:NO];
+    //if ([[UITabBar appearance] respondsToSelector:@selector(setTranslucent:)]) {
+      //  [[UITabBar appearance] setTranslucent:NO];
+    //}
 
     if(!self.bgView){
         self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor redColor]]];

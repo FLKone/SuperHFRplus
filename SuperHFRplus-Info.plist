@@ -7,7 +7,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>HFR+</string>
 	<key>CFBundleExecutable</key>
-	<string>HFRplus</string>
+	<string>SuperHFRplus</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>

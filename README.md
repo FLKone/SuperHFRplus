@@ -15,7 +15,7 @@
 </table>
 
 
-HFR+ v1 - Compatible iOS 5 - 10
+HFR+ v2 - Compatible iOS 11+
 =========================
 Application iOS (iPhone, iPod Touch et iPad) pour le forum hardware.fr :o
 

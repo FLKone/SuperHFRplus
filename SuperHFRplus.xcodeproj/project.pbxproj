@@ -1305,11 +1305,11 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HFRplusAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRplusAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* HFRplusAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HFRplusAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		1D6058910D05DD3D006BFB54 /* HFRplus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HFRplus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* SuperHFRplus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperHFRplus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		32CA4F630368D1EE00C91783 /* HFRplus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRplus_Prefix.pch; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* SuperHFRplus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuperHFRplus_Prefix.pch; sourceTree = "<group>"; };
 		4C0031211BD01CE700F87F13 /* HFRTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRTabBar.h; sourceTree = "<group>"; };
 		4C0031221BD01CE700F87F13 /* HFRTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFRTabBar.m; sourceTree = "<group>"; };
 		4C0031381BD0404500F87F13 /* FLWebViewProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLWebViewProvider.h; sourceTree = "<group>"; };
@@ -1605,7 +1605,7 @@
 		4CD6B8B61B97AEF5007FC29E /* 6-Folder-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6-Folder-32.png"; sourceTree = "<group>"; };
 		4CD6B8B71B97AEF5007FC29E /* 6-Camera-32@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6-Camera-32@2x.png"; sourceTree = "<group>"; };
 		4CD6B8B81B97AEF5007FC29E /* 6-Camera-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6-Camera-32.png"; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* HFRplus-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HFRplus-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* SuperHFRplus-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SuperHFRplus-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		CA00C3A217C2FD1F0067B457 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		CA00C3E417C2FE1B0067B457 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		CA00C3E517C2FE1B0067B457 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
@@ -1889,7 +1889,7 @@
 		CA79581812836B24007C4E02 /* HFRSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = HFRSearchViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		CA79581912836B24007C4E02 /* HFRSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HFRSearchViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CA79581A12836B24007C4E02 /* HFRSearchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HFRSearchViewController.xib; sourceTree = "<group>"; };
-		CA7C7132185EF50E00B348BA /* HFRplusRED.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HFRplusRED.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA7C7132185EF50E00B348BA /* SuperHFRplusRED.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperHFRplusRED.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA7E25E115A1D17500721F6D /* SplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitViewController.h; sourceTree = "<group>"; };
 		CA7E25E215A1D17500721F6D /* SplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitViewController.m; sourceTree = "<group>"; };
 		CA7E25EF15A1F4AA00721F6D /* DetailNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailNavigationViewController.h; sourceTree = "<group>"; };
@@ -1898,7 +1898,7 @@
 		CA7E260115A24A9A00721F6D /* SubCatTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubCatTableViewController.m; sourceTree = "<group>"; };
 		CA81D28B12281D5800AC6ADA /* EditMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditMessageViewController.h; sourceTree = "<group>"; };
 		CA81D28C12281D5800AC6ADA /* EditMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditMessageViewController.m; sourceTree = "<group>"; };
-		CA831E87185F01360026961A /* HFRplusRE-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HFRplusRE-Info.plist"; sourceTree = "<group>"; };
+		CA831E87185F01360026961A /* SuperHFRplusRE-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SuperHFRplusRE-Info.plist"; sourceTree = "<group>"; };
 		CA8A79B015BB404700D8E9E7 /* Favorite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Favorite.h; sourceTree = "<group>"; };
 		CA8A79B115BB404700D8E9E7 /* Favorite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Favorite.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CA9E86871243C11A000EE882 /* TabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
@@ -1930,7 +1930,7 @@
 		CABC727417E6077A003E722E /* upsmall7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "upsmall7@2x.png"; sourceTree = "<group>"; };
 		CAC4966715B77357009128BC /* HFRNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRNavigationController.h; sourceTree = "<group>"; };
 		CAC4966815B77357009128BC /* HFRNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HFRNavigationController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		CAC593C115A63F5100913CFB /* HFRplus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = HFRplus.entitlements; sourceTree = "<group>"; };
+		CAC593C115A63F5100913CFB /* SuperHFRplus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SuperHFRplus.entitlements; sourceTree = "<group>"; };
 		CAC7FCCD190DBD450083BB4E /* PollResultTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PollResultTableViewCell.h; sourceTree = "<group>"; };
 		CAC7FCCE190DBD450083BB4E /* PollResultTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PollResultTableViewCell.m; sourceTree = "<group>"; };
 		CAC7FCCF190DBD450083BB4E /* PollResultTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PollResultTableViewCell.xib; sourceTree = "<group>"; };
@@ -2292,8 +2292,8 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* HFRplus.app */,
-				CA7C7132185EF50E00B348BA /* HFRplusRED.app */,
+				1D6058910D05DD3D006BFB54 /* SuperHFRplus.app */,
+				CA7C7132185EF50E00B348BA /* SuperHFRplusRED.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2314,10 +2314,10 @@
 			isa = PBXGroup;
 			children = (
 				CA1070C115A4DA1E002E6C19 /* Localizable.strings */,
-				32CA4F630368D1EE00C91783 /* HFRplus_Prefix.pch */,
-				8D1107310486CEB800E47090 /* HFRplus-Info.plist */,
-				CA831E87185F01360026961A /* HFRplusRE-Info.plist */,
-				CAC593C115A63F5100913CFB /* HFRplus.entitlements */,
+				32CA4F630368D1EE00C91783 /* SuperHFRplus_Prefix.pch */,
+				8D1107310486CEB800E47090 /* SuperHFRplus-Info.plist */,
+				CA831E87185F01360026961A /* SuperHFRplusRE-Info.plist */,
+				CAC593C115A63F5100913CFB /* SuperHFRplus.entitlements */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				CA45B60815B89F4E00380CA0 /* README.md */,
 			);
@@ -3328,9 +3328,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* HFRplus */ = {
+		1D6058900D05DD3D006BFB54 /* SuperHFRplus */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "HFRplus" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "SuperHFRplus" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -3340,14 +3340,14 @@
 			);
 			dependencies = (
 			);
-			name = HFRplus;
+			name = SuperHFRplus;
 			productName = HFRplus;
-			productReference = 1D6058910D05DD3D006BFB54 /* HFRplus.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* SuperHFRplus.app */;
 			productType = "com.apple.product-type.application";
 		};
-		CA7C6FA3185EF50E00B348BA /* HFRplus RE */ = {
+		CA7C6FA3185EF50E00B348BA /* SuperHFRplus RE */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "HFRplus RE" */;
+			buildConfigurationList = CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "SuperHFRplus RE" */;
 			buildPhases = (
 				CA7C6FA4185EF50E00B348BA /* Resources */,
 				CA7C70B9185EF50E00B348BA /* Sources */,
@@ -3357,9 +3357,9 @@
 			);
 			dependencies = (
 			);
-			name = "HFRplus RE";
+			name = "SuperHFRplus RE";
 			productName = HFRplus;
-			productReference = CA7C7132185EF50E00B348BA /* HFRplusRED.app */;
+			productReference = CA7C7132185EF50E00B348BA /* SuperHFRplusRED.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -3373,6 +3373,7 @@
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 4Z4VCUMET3;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -3384,6 +3385,7 @@
 					};
 					CA7C6FA3185EF50E00B348BA = {
 						DevelopmentTeam = 4Z4VCUMET3;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -3392,7 +3394,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "HFRplus" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SuperHFRplus" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -3421,8 +3423,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* HFRplus */,
-				CA7C6FA3185EF50E00B348BA /* HFRplus RE */,
+				1D6058900D05DD3D006BFB54 /* SuperHFRplus */,
+				CA7C6FA3185EF50E00B348BA /* SuperHFRplus RE */,
 			);
 		};
 /* End PBXProject section */
@@ -4704,9 +4706,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CODE_SIGN_IDENTITY = "iPhone Developer: julien Alexandre (F5S3AE68QG)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = NCJNK4ZZ54;
+				DEVELOPMENT_TEAM = 4Z4VCUMET3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4714,11 +4718,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = HFRplus_Prefix.pch;
+				GCC_PREFIX_HEADER = SuperHFRplus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "CONFIGURATION_$(CONFIGURATION)";
 				HEADER_SEARCH_PATHS = "$SDKROOT/usr/include/libxml2/**";
-				INFOPLIST_FILE = "HFRplus-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				INFOPLIST_FILE = "SuperHFRplus-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/**",
@@ -4727,9 +4730,9 @@
 				);
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus;
-				PRODUCT_NAME = HFRplus;
-				PROVISIONING_PROFILE = "b5501fd0-496c-447a-9589-4dcf55d960f6";
-				PROVISIONING_PROFILE_SPECIFIER = "Aynolor HFRplus";
+				PRODUCT_NAME = SuperHFRplus;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -4742,19 +4745,20 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: julien Alexandre (4Z4VCUMET3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = NCJNK4ZZ54;
+				DEVELOPMENT_TEAM = 4Z4VCUMET3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = HFRplus_Prefix.pch;
+				GCC_PREFIX_HEADER = SuperHFRplus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "CONFIGURATION_$(CONFIGURATION)";
 				HEADER_SEARCH_PATHS = "$SDKROOT/usr/include/libxml2/**";
-				INFOPLIST_FILE = "HFRplus-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				INFOPLIST_FILE = "SuperHFRplus-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/**",
@@ -4763,9 +4767,9 @@
 				);
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus;
-				PRODUCT_NAME = HFRplus;
-				PROVISIONING_PROFILE = "cca932b4-f070-49d4-9ed7-f6f20408b73c";
-				PROVISIONING_PROFILE_SPECIFIER = "HFR+ App Store";
+				PRODUCT_NAME = SuperHFRplus;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -4787,7 +4791,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = HFRplus.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SuperHFRplus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4803,7 +4807,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -4829,7 +4833,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = HFRplus.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SuperHFRplus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4844,7 +4848,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MACH_O_TYPE = mh_execute;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "";
@@ -4862,9 +4866,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CODE_SIGN_IDENTITY = "iPhone Developer: julien Alexandre (F5S3AE68QG)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 4Z4VCUMET3;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4872,11 +4878,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = HFRplus_Prefix.pch;
+				GCC_PREFIX_HEADER = SuperHFRplus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "CONFIGURATION_$(CONFIGURATION)";
 				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
-				INFOPLIST_FILE = "HFRplusRE-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				INFOPLIST_FILE = "SuperHFRplusRE-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/**",
@@ -4884,10 +4889,10 @@
 					"$(PROJECT_DIR)/HFRplus/Vendor/CrittercismSDK",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red;
-				PRODUCT_NAME = HFRplusRED;
-				PROVISIONING_PROFILE = "19e30e75-242a-4857-99fe-359c7bb56a10";
-				PROVISIONING_PROFILE_SPECIFIER = "HFR+ RED 2017.2";
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
+				PRODUCT_NAME = SuperHFRplusRED;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -4900,18 +4905,20 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: julien Alexandre (4Z4VCUMET3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = HFRplus_Prefix.pch;
+				GCC_PREFIX_HEADER = SuperHFRplus_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "CONFIGURATION_$(CONFIGURATION)";
 				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
-				INFOPLIST_FILE = "HFRplusRE-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				INFOPLIST_FILE = "SuperHFRplusRE-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/**",
@@ -4919,9 +4926,10 @@
 					"$(PROJECT_DIR)/HFRplus/Vendor/CrittercismSDK",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red;
-				PRODUCT_NAME = HFRplusRED;
-				PROVISIONING_PROFILE = "b5cbdea8-68b3-4d14-90a3-e9fb92709dd1";
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
+				PRODUCT_NAME = SuperHFRplusRED;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -4929,7 +4937,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "HFRplus" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "SuperHFRplus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -4938,7 +4946,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "HFRplus" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SuperHFRplus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
@@ -4947,7 +4955,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "HFRplus RE" */ = {
+		CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "SuperHFRplus RE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA7C7130185EF50E00B348BA /* Debug */,

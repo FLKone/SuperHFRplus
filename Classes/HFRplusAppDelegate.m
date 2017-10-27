@@ -62,7 +62,7 @@
 	
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:YES];
 
-
+/*
 #ifdef CONFIGURATION_Release
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
     
@@ -82,7 +82,7 @@
 #else
     //NSLog(@"DEBUUUUUGGGGG");
 #endif
-    
+    */
     [self registerDefaultsFromSettingsBundle];
     
     
