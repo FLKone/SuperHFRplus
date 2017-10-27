@@ -2683,9 +2683,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CA7C6FA3185EF50E00B348BA /* SuperHFRplus RE */ = {
+		CA7C6FA3185EF50E00B348BA /* SuperHFRplus */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "SuperHFRplus RE" */;
+			buildConfigurationList = CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "SuperHFRplus" */;
 			buildPhases = (
 				CA7C6FA4185EF50E00B348BA /* Resources */,
 				CA7C70B9185EF50E00B348BA /* Sources */,
@@ -2695,7 +2695,7 @@
 			);
 			dependencies = (
 			);
-			name = "SuperHFRplus RE";
+			name = SuperHFRplus;
 			productName = HFRplus;
 			productReference = CA7C7132185EF50E00B348BA /* SuperHFRplusRED.app */;
 			productType = "com.apple.product-type.application";
@@ -2749,7 +2749,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CA7C6FA3185EF50E00B348BA /* SuperHFRplus RE */,
+				CA7C6FA3185EF50E00B348BA /* SuperHFRplus */,
 			);
 		};
 /* End PBXProject section */
@@ -3581,7 +3581,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "SuperHFRplus RE" */ = {
+		CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "SuperHFRplus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA7C7130185EF50E00B348BA /* Debug */,
