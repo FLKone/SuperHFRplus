@@ -1656,7 +1656,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				CA00C35417C2FC620067B457 /* HFRplus */,
+				CA00C35417C2FC620067B457 /* SuperHFRplus */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -2003,7 +2003,7 @@
 			path = iOS7;
 			sourceTree = "<group>";
 		};
-		CA00C35417C2FC620067B457 /* HFRplus */ = {
+		CA00C35417C2FC620067B457 /* SuperHFRplus */ = {
 			isa = PBXGroup;
 			children = (
 				CA00C53C17C30C360067B457 /* Assets */,
@@ -2015,7 +2015,7 @@
 				CA00C6E817C310B50067B457 /* InAppSettings.bundle */,
 				CA2E4C0917E21EC700E95622 /* Images.xcassets */,
 			);
-			path = HFRplus;
+			path = SuperHFRplus;
 			sourceTree = "<group>";
 		};
 		CA00C35717C2FC620067B457 /* Vendor */ = {
