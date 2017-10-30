@@ -1,10 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1421" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" colorMatched="NO">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <development version="7000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Helvetica.ttc">
+            <string>Helvetica</string>
+            <string>Helvetica-Bold</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AddMessageViewController">
             <connections>
@@ -24,72 +33,73 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="1">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view hidden="YES" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleToFill" id="65">
-                    <rect key="frame" x="80" y="230" width="160" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                <view hidden="YES" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="65">
+                    <rect key="frame" x="107" y="334" width="160" height="20"/>
                     <subviews>
-                        <activityIndicatorView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" animating="YES" style="gray" id="66">
-                            <rect key="frame" x="20" y="0.0" width="20" height="20"/>
+                        <activityIndicatorView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="66">
+                            <rect key="frame" x="19" y="0.0" width="20" height="19"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         </activityIndicatorView>
-                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Chargement..." lineBreakMode="clip" minimumFontSize="10" adjustsFontSizeToFit="NO" id="67">
-                            <rect key="frame" x="50" y="0.0" width="95" height="20"/>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="Chargement..." lineBreakMode="clip" minimumFontSize="10" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="67">
+                            <rect key="frame" x="50" y="0.0" width="94" height="19"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="12"/>
-                            <color key="textColor" red="0.2704081633" green="0.2704081633" blue="0.2704081633" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" red="0.2704081633" green="0.2704081633" blue="0.2704081633" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
-                            <color key="shadowColor" red="0.96428571429999999" green="0.96428571429999999" blue="0.96428571429999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="shadowColor" red="0.96428571429999999" green="0.96428571429999999" blue="0.96428571429999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <size key="shadowOffset" width="0.0" height="1"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="160" id="H1J-T3-sIX"/>
+                        <constraint firstAttribute="height" constant="20" id="ujp-Zd-Q1O"/>
+                    </constraints>
                 </view>
-                <view hidden="YES" contentMode="scaleToFill" id="49">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="49">
+                    <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                     <subviews>
-                        <textView multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" id="62" customClass="HFRTextView">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="440"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <textView multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="62" customClass="HFRTextView">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="15"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             <connections>
                                 <outlet property="delegate" destination="-1" id="63"/>
                             </connections>
                         </textView>
-                        <webView hidden="YES" alpha="0.0" contentMode="scaleToFill" id="44">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <webView hidden="YES" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="44">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <outlet property="delegate" destination="-1" id="45"/>
                             </connections>
                         </webView>
-                        <tableView clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" id="e0C-PW-RY7">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="440"/>
+                        <tableView clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="e0C-PW-RY7">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                            <color key="sectionIndexTrackingBackgroundColor" red="1" green="0.79365305659999996" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="sectionIndexTrackingBackgroundColor" red="1" green="0.79365305659999996" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="0u1-RW-ThO"/>
                                 <outlet property="delegate" destination="-1" id="qzh-RW-a0f"/>
                             </connections>
                         </tableView>
-                        <tableView clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="35" sectionHeaderHeight="22" sectionFooterHeight="22" id="75">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="440"/>
+                        <tableView clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="35" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="75">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="76"/>
                                 <outlet property="delegate" destination="-1" id="77"/>
                             </connections>
                         </tableView>
-                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" momentary="YES" id="59">
-                            <rect key="frame" x="165" y="446" width="150" height="29"/>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" momentary="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59">
+                            <rect key="frame" x="220" y="613" width="150" height="29"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             <segments>
                                 <segment title="Smilies"/>
@@ -99,8 +109,8 @@
                                 <action selector="segmentFilterAction:" destination="-1" eventType="valueChanged" id="60"/>
                             </connections>
                         </segmentedControl>
-                        <segmentedControl opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" momentary="YES" id="72">
-                            <rect key="frame" x="165" y="446" width="150" height="29"/>
+                        <segmentedControl opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" momentary="YES" translatesAutoresizingMaskIntoConstraints="NO" id="72">
+                            <rect key="frame" x="220" y="613" width="150" height="29"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             <segments>
                                 <segment title="⬅︎" enabled="NO"/>
@@ -111,8 +121,8 @@
                                 <action selector="segmentFilterAction:" destination="-1" eventType="valueChanged" id="73"/>
                             </connections>
                         </segmentedControl>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Chercher un smiley" adjustsFontSizeToFit="NO" minimumFontSize="17" clearButtonMode="always" id="69">
-                            <rect key="frame" x="5" y="445" width="155" height="31"/>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Chercher un smiley" adjustsFontSizeToFit="NO" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="69">
+                            <rect key="frame" x="5" y="612" width="155" height="31"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="13"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="search"/>
@@ -123,17 +133,26 @@
                             </connections>
                         </textField>
                     </subviews>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="62" firstAttribute="top" secondItem="49" secondAttribute="top" id="fco-PO-pbF"/>
+                        <constraint firstAttribute="bottom" secondItem="62" secondAttribute="bottom" constant="40" id="hDA-GO-pwC"/>
+                        <constraint firstAttribute="trailing" secondItem="62" secondAttribute="trailing" id="k9V-XB-riM"/>
+                        <constraint firstItem="62" firstAttribute="leading" secondItem="49" secondAttribute="leading" id="oJC-Ae-14P"/>
+                    </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="65" firstAttribute="centerX" secondItem="xUM-kc-ney" secondAttribute="centerX" id="7bn-LK-P87"/>
+                <constraint firstItem="49" firstAttribute="leading" secondItem="xUM-kc-ney" secondAttribute="leading" id="DKz-yx-dxg"/>
+                <constraint firstItem="xUM-kc-ney" firstAttribute="bottom" secondItem="49" secondAttribute="bottom" id="PaG-cD-caD"/>
+                <constraint firstItem="xUM-kc-ney" firstAttribute="trailing" secondItem="49" secondAttribute="trailing" id="k4H-ot-PFe"/>
+                <constraint firstItem="65" firstAttribute="centerY" secondItem="xUM-kc-ney" secondAttribute="centerY" id="pWg-zL-MAT"/>
+                <constraint firstItem="xUM-kc-ney" firstAttribute="top" secondItem="49" secondAttribute="top" id="w7N-lC-sYV"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <viewLayoutGuide key="safeArea" id="xUM-kc-ney"/>
         </view>
     </objects>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination"/>
-    </simulatedMetricsContainer>
 </document>

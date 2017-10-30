@@ -504,7 +504,7 @@
                 frame.origin.y = (44 - frame.size.height)/2;
             }
             
-            btn.frame = frame;
+            //btn.frame = frame;
             
         }
         
@@ -654,7 +654,98 @@
         [aButton addTarget:self action:@selector(showAll:) forControlEvents:UIControlEventTouchUpInside];
         [self.navigationController.navigationBar insertSubview:aButton atIndex:1];
         
-        
+        aButton.translatesAutoresizingMaskIntoConstraints = NO;
+        aButton2.translatesAutoresizingMaskIntoConstraints = NO;
+
+        UILayoutGuide *guide = self.navigationController.navigationBar.safeAreaLayoutGuide;
+        //Leading
+
+        NSLayoutConstraint *leading = [NSLayoutConstraint
+                                       constraintWithItem:aButton
+                                       attribute:NSLayoutAttributeLeading
+                                       relatedBy:NSLayoutRelationEqual
+                                       toItem:guide
+                                       attribute:NSLayoutAttributeLeading
+                                       multiplier:1.0f
+                                       constant:8.f];
+        NSLayoutConstraint *top = [NSLayoutConstraint
+                                       constraintWithItem:aButton
+                                       attribute:NSLayoutAttributeCenterY
+                                       relatedBy:NSLayoutRelationEqual
+                                       toItem:guide
+                                       attribute:NSLayoutAttributeCenterY
+                                       multiplier:1.0f
+                                       constant:0.f];
+        NSLayoutConstraint *top2 = [NSLayoutConstraint
+                                   constraintWithItem:aButton2
+                                   attribute:NSLayoutAttributeCenterY
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:guide
+                                   attribute:NSLayoutAttributeCenterY
+                                   multiplier:1.0f
+                                   constant:0.f];
+        //Bottom
+        NSLayoutConstraint *bheight =[NSLayoutConstraint
+                                     constraintWithItem:aButton
+                                     attribute:NSLayoutAttributeHeight
+                                     relatedBy:NSLayoutRelationEqual
+                                     toItem:nil
+                                     attribute:NSLayoutAttributeNotAnAttribute
+                                     multiplier:1.0f
+                                     constant:buttonImage.size.height];
+
+        NSLayoutConstraint *bsize =[NSLayoutConstraint
+                                  constraintWithItem:aButton
+                                  attribute:NSLayoutAttributeWidth
+                                  relatedBy:NSLayoutRelationEqual
+                                  toItem:nil
+                                  attribute:NSLayoutAttributeNotAnAttribute
+                                  multiplier:1.0f
+                                  constant:buttonImage.size.width];
+
+        NSLayoutConstraint *leading2 = [NSLayoutConstraint
+                                       constraintWithItem:aButton2
+                                       attribute:NSLayoutAttributeLeading
+                                       relatedBy:NSLayoutRelationEqual
+                                       toItem:guide
+                                       attribute:NSLayoutAttributeLeading
+                                       multiplier:1.0f
+                                       constant:8.f];
+
+        //Bottom
+        NSLayoutConstraint *bheight2 =[NSLayoutConstraint
+                                      constraintWithItem:aButton2
+                                      attribute:NSLayoutAttributeHeight
+                                      relatedBy:NSLayoutRelationEqual
+                                      toItem:nil
+                                      attribute:NSLayoutAttributeNotAnAttribute
+                                      multiplier:1.0f
+                                      constant:buttonImage.size.height];
+
+        NSLayoutConstraint *bsize2 =[NSLayoutConstraint
+                                    constraintWithItem:aButton2
+                                    attribute:NSLayoutAttributeWidth
+                                    relatedBy:NSLayoutRelationEqual
+                                    toItem:nil
+                                    attribute:NSLayoutAttributeNotAnAttribute
+                                    multiplier:1.0f
+                                    constant:buttonImage.size.width];
+
+
+        //[button.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor];
+        //[button.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor];
+        [self.navigationController.navigationBar addConstraint:leading];
+        [self.navigationController.navigationBar addConstraint:top];
+        [aButton addConstraint:bsize];
+        [aButton addConstraint:bheight];
+
+        [self.navigationController.navigationBar addConstraint:leading2];
+        [self.navigationController.navigationBar addConstraint:top2];
+        [aButton2 addConstraint:bsize2];
+        [aButton2 addConstraint:bheight2];
+        //[self.navigationController.navigationBar addConstraint:top];
+
+
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             UIInterfaceOrientation o = [[UIApplication sharedApplication] statusBarOrientation];
             if (UIDeviceOrientationIsLandscape(o)) {
@@ -696,7 +787,7 @@
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             segmentedControl.tintColor = [UIColor colorWithRed:156/255.f green:161/255.f blue:167/255.f alpha:1.00];
         }
-        
+
         UIBarButtonItem * segmentBarItem2 = [[UIBarButtonItem alloc] initWithCustomView: segmentedControl];
         self.navigationItem.leftBarButtonItem = segmentBarItem2;
         
@@ -987,9 +1078,59 @@
     }
     
     [button addTarget:self action:@selector(loadCatForType:) forControlEvents:UIControlEventTouchUpInside];
-    
+
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    UILayoutGuide *guide = customView.safeAreaLayoutGuide;
+    //Trailing
+    NSLayoutConstraint *trailing =[NSLayoutConstraint
+                                   constraintWithItem:button
+                                   attribute:NSLayoutAttributeTrailing
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:guide
+                                   attribute:NSLayoutAttributeTrailing
+                                   multiplier:1.0f
+                                   constant:0.f];
+
+    //Leading
+
+    NSLayoutConstraint *leading = [NSLayoutConstraint
+                                   constraintWithItem:button
+                                   attribute:NSLayoutAttributeLeading
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:guide
+                                   attribute:NSLayoutAttributeLeading
+                                   multiplier:1.0f
+                                   constant:0.f];
+
+    //Bottom
+    NSLayoutConstraint *bottom =[NSLayoutConstraint
+                                 constraintWithItem:button
+                                 attribute:NSLayoutAttributeBottom
+                                 relatedBy:NSLayoutRelationEqual
+                                 toItem:customView
+                                 attribute:NSLayoutAttributeBottom
+                                 multiplier:1.0f
+                                 constant:0.f];
+
+    NSLayoutConstraint *top =[NSLayoutConstraint
+                                 constraintWithItem:button
+                                 attribute:NSLayoutAttributeTop
+                                 relatedBy:NSLayoutRelationEqual
+                                 toItem:customView
+                                 attribute:NSLayoutAttributeTop
+                                 multiplier:1.0f
+                                 constant:0.f];
+
     [customView addSubview:button];
-	
+
+    //[button.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor];
+    //[button.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor];
+    [customView addConstraint:trailing];
+    [customView addConstraint:leading];
+    [customView addConstraint:bottom];
+    [customView addConstraint:top];
+
+
 	return customView;
 	
 }

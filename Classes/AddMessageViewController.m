@@ -381,6 +381,7 @@
     
     // Observe keyboard hide and show notifications to resize the text view appropriately.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     [segmentControler setEnabled:YES forSegmentAtIndex:0];
@@ -525,8 +526,6 @@
     self.textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     self.textFieldTo.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     self.textFieldCat.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-    
-
 }
 
 -(void)setupResponder {
@@ -1197,63 +1196,40 @@
 #pragma mark Responding to keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    //NSLog(@"keyboardWillShow ADD %@", notification);
-    
-    /*
-     Reduce the size of the text view so that it's not obscured by the keyboard.
-     Animate the resize so that it's in sync with the appearance of the keyboard.
-     */
-    
+    NSLog(@"keyboardWillShow ADD %@", notification);
+
     NSDictionary *userInfo = [notification userInfo];
-    
-    // Get the origin of the keyboard when it's displayed.
-    NSValue* aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-    
-    // Get the top of the keyboard as the y coordinate of its origin in self's view's coordinate system. The bottom of the text view's frame should align with the top of the keyboard's final position.
-    CGRect keyboardRect = [aValue CGRectValue];
-    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
-    
-    CGFloat keyboardTop = keyboardRect.origin.y;
-    CGRect newTextViewFrame = self.view.bounds;
-    newTextViewFrame.size.height = keyboardTop - self.view.bounds.origin.y;
-    
-    // Get the duration of the animation.
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect convertedKeyboardRect = [self.view convertRect:keyboardRect fromView:self.view.window];
+
+    CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
+    CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
+
+//    self.bottomGuide.constant = CGRectGetMaxY(self.view.bounds) - CGRectGetMinY(convertedKeyboardRect);
+  //  [self.accessoryView setNeedsUpdateConstraints];
+
+    NSLog(@"Bottom Constant %@", NSStringFromCGRect(intersection));
+
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];
-    
+
     // Animate the resize of the text view's frame in sync with the keyboard's appearance.
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:animationDuration];
-    
-    self.accessoryView.frame = newTextViewFrame;
-    
+    self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
+    [self.view layoutIfNeeded];
+    //[self.accessoryView updateConstraintsIfNeeded];
+
     [UIView commitAnimations];
-    //[self.scrollViewer setContentSize:CGSizeMake(self.textView.frame.size.width, MAX(self.textView.frame.size.height, newTextViewFrame.size.height - segmentControler.frame.size.height - 5))];
-    
+
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
     //NSLog(@"keyboardWillHide ADD");
     
-    NSDictionary* userInfo = [notification userInfo];
-    
-    /*
-     Restore the size of the text view (fill self's view).
-     Animate the resize so that it's in sync with the disappearance of the keyboard.
-     */
-    NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    NSTimeInterval animationDuration;
-    [animationDurationValue getValue:&animationDuration];
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:animationDuration];
-    
-    self.accessoryView.frame = self.view.bounds;
-    
-    [UIView commitAnimations];
-    //[self.scrollViewer setContentSize:CGSizeMake(self.textView.frame.size.width, MAX(self.textView.frame.size.height, self.view.bounds.size.height - segmentControler.frame.size.height - 5))];
-    
+    [self keyboardWillShow:notification];
+
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -1969,9 +1945,10 @@
     
     self.commonTableView = nil;
     self.rehostTableView = nil;
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+
 }
 
 - (void)dealloc {

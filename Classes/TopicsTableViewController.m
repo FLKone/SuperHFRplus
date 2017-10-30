@@ -1372,8 +1372,58 @@
         [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
         [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
     }
-    
+
+
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    UILayoutGuide *guide = customView.safeAreaLayoutGuide;
+    //Trailing
+    NSLayoutConstraint *trailing =[NSLayoutConstraint
+                                   constraintWithItem:button
+                                   attribute:NSLayoutAttributeTrailing
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:guide
+                                   attribute:NSLayoutAttributeTrailing
+                                   multiplier:1.0f
+                                   constant:0.f];
+
+    //Leading
+
+    NSLayoutConstraint *leading = [NSLayoutConstraint
+                                   constraintWithItem:button
+                                   attribute:NSLayoutAttributeLeading
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:guide
+                                   attribute:NSLayoutAttributeLeading
+                                   multiplier:1.0f
+                                   constant:0.f];
+
+    //Bottom
+    NSLayoutConstraint *bottom =[NSLayoutConstraint
+                                 constraintWithItem:button
+                                 attribute:NSLayoutAttributeBottom
+                                 relatedBy:NSLayoutRelationEqual
+                                 toItem:customView
+                                 attribute:NSLayoutAttributeBottom
+                                 multiplier:1.0f
+                                 constant:0.f];
+
+    NSLayoutConstraint *top =[NSLayoutConstraint
+                              constraintWithItem:button
+                              attribute:NSLayoutAttributeTop
+                              relatedBy:NSLayoutRelationEqual
+                              toItem:customView
+                              attribute:NSLayoutAttributeTop
+                              multiplier:1.0f
+                              constant:0.f];
+
     [customView addSubview:button];
+
+    //[button.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor];
+    //[button.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor];
+    [customView addConstraint:trailing];
+    [customView addConstraint:leading];
+    [customView addConstraint:bottom];
+    [customView addConstraint:top];
 	
 	return customView;
     

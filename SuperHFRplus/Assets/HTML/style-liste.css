@@ -724,6 +724,31 @@ background-size:100% 100%;
     
 }
 
+/* iPhone X landscape */
+@media only screen and (orientation:landscape) and (device-height: 812px) {
+
+    /* iPhone X */
+    .message .content {
+        border-radius: 10px;
+    }
+    #actualiserbtn {
+        border-radius: 10px;
+        margin-top: 10px !important;
+        border: none;
+    }
+
+    .ios7 .message .header {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+    }
+    /* -- iPhone X */
+
+    #actualiserbtn.loading {
+        background-position: 300px 14px;
+    }
+
+}
+
 /* iPad Portrait */
 @media only screen and (device-width: 768px) and (min-width: 767px) {
     #actualiserbtn.loading {
