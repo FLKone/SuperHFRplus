@@ -75,15 +75,15 @@
     
 	NSString *result = (NSString *) CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)fakeString, NULL, CFSTR(":/?#[]@!$&’()*+,;="), kCFStringEncodingUTF8));
 
-	
-    NSURL *xmlURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/cse?cx=%@&client=google-csbe&output=xml_no_dtd&num=20&q=%@", kGoogleCSEAPI, result]];
+
+    //NSURL *xmlURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/cse?cx=%@&client=google-csbe&output=xml_no_dtd&num=20&q=%@", kGoogleCSEAPI, result]];
 
 	//NSLog(@"xmlURL %@", xmlURL);
 
 	
     // here, for some reason you have to use NSClassFromString when trying to alloc NSXMLParser, otherwise you will get an object not found error
     // this may be necessary only for the toolchain
-    rssParser = [[NSXMLParser alloc] initWithContentsOfURL:xmlURL];
+    //rssParser = [[NSXMLParser alloc] initWithContentsOfURL:xmlURL];
 	
     // Set self as the delegate of the parser so that it will receive the parser delegate methods callbacks.
     [rssParser setDelegate:self];

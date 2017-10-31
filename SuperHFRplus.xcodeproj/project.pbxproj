@@ -80,6 +80,7 @@
 		4C0B8E051BA45B0100D329BA /* ForumCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B8E021BA45B0100D329BA /* ForumCellView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		4C0B8E071BA45B0100D329BA /* ForumCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C0B8E031BA45B0100D329BA /* ForumCellView.xib */; };
 		4C17938C1E93B78B007EA6CB /* UINavigationBar+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C17938A1E93B78B007EA6CB /* UINavigationBar+Helper.m */; };
+		4C193E741FA8820200434A37 /* Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C193E731FA8820200434A37 /* Icons.xcassets */; };
 		4C21E94E1BA5C70400691D65 /* BoldEFilled-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E9331BA5C70400691D65 /* BoldEFilled-20.png */; };
 		4C21E9501BA5C70400691D65 /* BoldEFilled-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E9341BA5C70400691D65 /* BoldEFilled-20@2x.png */; };
 		4C21E9521BA5C70400691D65 /* CopyFilled-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E9351BA5C70400691D65 /* CopyFilled-20.png */; };
@@ -134,7 +135,6 @@
 		4C3903951BCAD0C700FD6F1F /* MWZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C3903831BCAD0C700FD6F1F /* MWZoomingScrollView.m */; };
 		4C444AF31BB0DE0D000EF444 /* LaunchLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C444AF01BB0DE0D000EF444 /* LaunchLogo.png */; };
 		4C444AF51BB0DE0D000EF444 /* LaunchLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C444AF11BB0DE0D000EF444 /* LaunchLogo@2x.png */; };
-		4C5334B71CF1FDF000C353DC /* Crittercism.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C5334B51CF1FDF000C353DC /* Crittercism.framework */; };
 		4C80A4F91CF1B0E60093CF9B /* ResistorFilled-40@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C80A4F61CF1B0E60093CF9B /* ResistorFilled-40@x2.png */; };
 		4C80A4FB1CF1B0E60093CF9B /* ResistorFilled-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C80A4F71CF1B0E60093CF9B /* ResistorFilled-40.png */; };
 		4C80A4FF1CF1B2610093CF9B /* CircuitFilled-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C80A4FC1CF1B2610093CF9B /* CircuitFilled-40@2x.png */; };
@@ -771,6 +771,7 @@
 		4C0B8E031BA45B0100D329BA /* ForumCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForumCellView.xib; sourceTree = "<group>"; };
 		4C1793891E93B78B007EA6CB /* UINavigationBar+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+Helper.h"; sourceTree = "<group>"; };
 		4C17938A1E93B78B007EA6CB /* UINavigationBar+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+Helper.m"; sourceTree = "<group>"; };
+		4C193E731FA8820200434A37 /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
 		4C21E9331BA5C70400691D65 /* BoldEFilled-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "BoldEFilled-20.png"; path = "Editor/BoldEFilled-20.png"; sourceTree = "<group>"; };
 		4C21E9341BA5C70400691D65 /* BoldEFilled-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "BoldEFilled-20@2x.png"; path = "Editor/BoldEFilled-20@2x.png"; sourceTree = "<group>"; };
 		4C21E9351BA5C70400691D65 /* CopyFilled-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CopyFilled-20.png"; path = "Editor/CopyFilled-20.png"; sourceTree = "<group>"; };
@@ -855,7 +856,6 @@
 		4C3903831BCAD0C700FD6F1F /* MWZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWZoomingScrollView.m; sourceTree = "<group>"; };
 		4C444AF01BB0DE0D000EF444 /* LaunchLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchLogo.png; sourceTree = "<group>"; };
 		4C444AF11BB0DE0D000EF444 /* LaunchLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchLogo@2x.png"; sourceTree = "<group>"; };
-		4C5334B51CF1FDF000C353DC /* Crittercism.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crittercism.framework; sourceTree = "<group>"; };
 		4C80A4F61CF1B0E60093CF9B /* ResistorFilled-40@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ResistorFilled-40@x2.png"; sourceTree = "<group>"; };
 		4C80A4F71CF1B0E60093CF9B /* ResistorFilled-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ResistorFilled-40.png"; sourceTree = "<group>"; };
 		4C80A4FC1CF1B2610093CF9B /* CircuitFilled-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CircuitFilled-40@2x.png"; sourceTree = "<group>"; };
@@ -986,7 +986,6 @@
 		4CD6B8B61B97AEF5007FC29E /* 6-Folder-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6-Folder-32.png"; sourceTree = "<group>"; };
 		4CD6B8B71B97AEF5007FC29E /* 6-Camera-32@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6-Camera-32@2x.png"; sourceTree = "<group>"; };
 		4CD6B8B81B97AEF5007FC29E /* 6-Camera-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6-Camera-32.png"; sourceTree = "<group>"; };
-		CA00C3A217C2FD1F0067B457 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		CA00C3E417C2FE1B0067B457 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		CA00C3E517C2FE1B0067B457 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		CA00C43A17C2FF3F0067B457 /* HTMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLNode.h; sourceTree = "<group>"; };
@@ -1448,7 +1447,6 @@
 				CA7C712A185EF50E00B348BA /* AssetsLibrary.framework in Frameworks */,
 				CA7C712C185EF50E00B348BA /* libxml2.dylib in Frameworks */,
 				CA7C712D185EF50E00B348BA /* libsqlite3.dylib in Frameworks */,
-				4C5334B71CF1FDF000C353DC /* Crittercism.framework in Frameworks */,
 				CA7C712E185EF50E00B348BA /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1680,7 +1678,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4C5334B51CF1FDF000C353DC /* Crittercism.framework */,
 				4CD6B87F1B977E06007FC29E /* SafariServices.framework */,
 				CA2E6DE419DB08CC0089B5CF /* WebKit.framework */,
 				CA05A37615B48B750083EB64 /* libxml2.dylib */,
@@ -1807,6 +1804,14 @@
 				4C0B8E031BA45B0100D329BA /* ForumCellView.xib */,
 			);
 			name = ForumsCell;
+			sourceTree = "<group>";
+		};
+		4C193E751FA8823900434A37 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				4C193E731FA8820200434A37 /* Icons.xcassets */,
+			);
+			name = Icons;
 			sourceTree = "<group>";
 		};
 		4C21E9321BA5C5E200691D65 /* Editor */ = {
@@ -2009,7 +2014,6 @@
 				CA00C35717C2FC620067B457 /* Vendor */,
 				CA00C45A17C301650067B457 /* XIB */,
 				CA00C6EA17C310E90067B457 /* commonsmile.plist */,
-				CA00C3A217C2FD1F0067B457 /* config.h */,
 				CA00C6E817C310B50067B457 /* InAppSettings.bundle */,
 				CA2E4C0917E21EC700E95622 /* Images.xcassets */,
 			);
@@ -2148,6 +2152,7 @@
 		CA00C53C17C30C360067B457 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				4C193E751FA8823900434A37 /* Icons */,
 				CA00C53D17C30C360067B457 /* HFR */,
 				CA00C57F17C30C370067B457 /* HTML */,
 				CA00C59417C30C370067B457 /* iTunes */,
@@ -3011,6 +3016,7 @@
 				4C21E9781BA5C70400691D65 /* StrikethroughFilled-20@2x.png in Resources */,
 				CA7C7044185EF50E00B348BA /* TopicsTableViewController.xib in Resources */,
 				CA7C7045185EF50E00B348BA /* na.gif in Resources */,
+				4C193E741FA8820200434A37 /* Icons.xcassets in Resources */,
 				CA7C7046185EF50E00B348BA /* endhover.png in Resources */,
 				4C052E1B1BA86C9400B61952 /* Flat-RedFlag-25.png in Resources */,
 				CA7C7047185EF50E00B348BA /* upsmall@2x.png in Resources */,
@@ -3505,7 +3511,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = SuperAppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CODE_SIGN_IDENTITY = "iPhone Developer: julien Alexandre (F5S3AE68QG)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -3528,7 +3534,6 @@
 					"$(inherited)",
 					"$(SRCROOT)/**",
 					"$(PROJECT_DIR)/**",
-					"$(PROJECT_DIR)/HFRplus/Vendor/CrittercismSDK",
 				);
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
@@ -3543,7 +3548,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = SuperAppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: julien Alexandre (4Z4VCUMET3)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -3564,7 +3569,6 @@
 					"$(inherited)",
 					"$(SRCROOT)/**",
 					"$(PROJECT_DIR)/**",
-					"$(PROJECT_DIR)/HFRplus/Vendor/CrittercismSDK",
 				);
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
