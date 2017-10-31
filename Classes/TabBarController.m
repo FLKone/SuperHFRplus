@@ -76,6 +76,19 @@
     
 }
 
+-(UITraitCollection *)traitCollection
+{
+    NSLog(@"traitCollection");
+    UITraitCollection
+    *realTraits = [super traitCollection],
+    *lieTrait = [UITraitCollection traitCollectionWithHorizontalSizeClass:UIUserInterfaceSizeClassCompact];
+
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return [UITraitCollection traitCollectionWithTraitsFromCollections:@[realTraits, lieTrait]];
+    } else {
+        return [UITraitCollection traitCollectionWithTraitsFromCollections:@[realTraits]];
+    }
+}
 
 -(void)setThemeFromNotification:(NSNotification *)notification{
     [self setTheme:[[ThemeManager sharedManager] theme]];
