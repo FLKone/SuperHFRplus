@@ -48,12 +48,12 @@
         hiddenKeys = [NSSet setWithObjects:@"theme", nil];
     }
     
-    BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
+    //BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
     IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
     
-    if (!enabled) {
+    //if (!enabled) {
         hiddenKeys = [hiddenKeys setByAddingObject:@"menu_debug_entry"];
-    }
+    //}
     
     //NSLog(@"hiddenKeys %@", hiddenKeys);
     
