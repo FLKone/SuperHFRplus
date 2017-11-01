@@ -32,6 +32,30 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
+			<string>super</string>
+			<key>Key</key>
+			<string>icon</string>
+			<key>Title</key>
+			<string>Icône</string>
+			<key>Titles</key>
+			<array>
+				<string>Classique</string>
+				<string>Super</string>
+				<string>REDFACE</string>
+				<string>Beta</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>classic</string>
+				<string>super</string>
+				<string>redface</string>
+				<string>beta</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
 			<string>all</string>
 			<key>Key</key>
 			<string>landscape_mode</string>
@@ -241,12 +265,6 @@
 			<string>Vider le cache</string>
 			<key>Key</key>
 			<string>EmptyCacheButton</string>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Activation du Menu debug = 1 TT offert !</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>

@@ -81,6 +81,14 @@
 		4C0B8E071BA45B0100D329BA /* ForumCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C0B8E031BA45B0100D329BA /* ForumCellView.xib */; };
 		4C17938C1E93B78B007EA6CB /* UINavigationBar+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C17938A1E93B78B007EA6CB /* UINavigationBar+Helper.m */; };
 		4C193E741FA8820200434A37 /* Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C193E731FA8820200434A37 /* Icons.xcassets */; };
+		4C1991901FA9E91600A07A8A /* Icon-BETA@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C19918E1FA9E91500A07A8A /* Icon-BETA@3x.png */; };
+		4C1991911FA9E91600A07A8A /* Icon-BETA@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C19918F1FA9E91500A07A8A /* Icon-BETA@2x.png */; };
+		4C1991981FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1991921FA9EC8D00A07A8A /* Icon-REDFACE-IPAD@2x.png */; };
+		4C1991991FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1991931FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@1x.png */; };
+		4C19919A1FA9EC8E00A07A8A /* Icon-BETA-IPAD@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1991941FA9EC8E00A07A8A /* Icon-BETA-IPAD@1x.png */; };
+		4C19919B1FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1991951FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@2x.png */; };
+		4C19919C1FA9EC8E00A07A8A /* Icon-BETA-IPAD@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1991961FA9EC8E00A07A8A /* Icon-BETA-IPAD@2x.png */; };
+		4C19919D1FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1991971FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@1x.png */; };
 		4C21E94E1BA5C70400691D65 /* BoldEFilled-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E9331BA5C70400691D65 /* BoldEFilled-20.png */; };
 		4C21E9501BA5C70400691D65 /* BoldEFilled-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E9341BA5C70400691D65 /* BoldEFilled-20@2x.png */; };
 		4C21E9521BA5C70400691D65 /* CopyFilled-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E9351BA5C70400691D65 /* CopyFilled-20.png */; };
@@ -776,6 +784,14 @@
 		4C1793891E93B78B007EA6CB /* UINavigationBar+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+Helper.h"; sourceTree = "<group>"; };
 		4C17938A1E93B78B007EA6CB /* UINavigationBar+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+Helper.m"; sourceTree = "<group>"; };
 		4C193E731FA8820200434A37 /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
+		4C19918E1FA9E91500A07A8A /* Icon-BETA@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BETA@3x.png"; sourceTree = "<group>"; };
+		4C19918F1FA9E91500A07A8A /* Icon-BETA@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BETA@2x.png"; sourceTree = "<group>"; };
+		4C1991921FA9EC8D00A07A8A /* Icon-REDFACE-IPAD@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-REDFACE-IPAD@2x.png"; sourceTree = "<group>"; };
+		4C1991931FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-CLASSIC-IPAD@1x.png"; sourceTree = "<group>"; };
+		4C1991941FA9EC8E00A07A8A /* Icon-BETA-IPAD@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BETA-IPAD@1x.png"; sourceTree = "<group>"; };
+		4C1991951FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-CLASSIC-IPAD@2x.png"; sourceTree = "<group>"; };
+		4C1991961FA9EC8E00A07A8A /* Icon-BETA-IPAD@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BETA-IPAD@2x.png"; sourceTree = "<group>"; };
+		4C1991971FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-REDFACE-IPAD@1x.png"; sourceTree = "<group>"; };
 		4C21E9331BA5C70400691D65 /* BoldEFilled-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "BoldEFilled-20.png"; path = "Editor/BoldEFilled-20.png"; sourceTree = "<group>"; };
 		4C21E9341BA5C70400691D65 /* BoldEFilled-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "BoldEFilled-20@2x.png"; path = "Editor/BoldEFilled-20@2x.png"; sourceTree = "<group>"; };
 		4C21E9351BA5C70400691D65 /* CopyFilled-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CopyFilled-20.png"; path = "Editor/CopyFilled-20.png"; sourceTree = "<group>"; };
@@ -1896,10 +1912,18 @@
 		4C59E0811FA9D43F00C902F8 /* AlternativeIcons */ = {
 			isa = PBXGroup;
 			children = (
+				4C19918F1FA9E91500A07A8A /* Icon-BETA@2x.png */,
+				4C19918E1FA9E91500A07A8A /* Icon-BETA@3x.png */,
 				4C59E08E1FA9D9F300C902F8 /* Icon-CLASSIC@2x.png */,
 				4C59E08F1FA9D9F300C902F8 /* Icon-CLASSIC@3x.png */,
 				4C59E0821FA9D56C00C902F8 /* Icon-REDFACE@2x.png */,
 				4C59E0831FA9D56C00C902F8 /* Icon-REDFACE@3x.png */,
+				4C1991941FA9EC8E00A07A8A /* Icon-BETA-IPAD@1x.png */,
+				4C1991961FA9EC8E00A07A8A /* Icon-BETA-IPAD@2x.png */,
+				4C1991931FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@1x.png */,
+				4C1991951FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@2x.png */,
+				4C1991971FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@1x.png */,
+				4C1991921FA9EC8D00A07A8A /* Icon-REDFACE-IPAD@2x.png */,
 			);
 			path = AlternativeIcons;
 			sourceTree = "<group>";
@@ -2789,6 +2813,7 @@
 				D826904A1E5864C9006971C3 /* plus-tinted.png in Resources */,
 				CA7C6FAC185EF50E00B348BA /* all_categories@2x.png in Resources */,
 				CA7C6FAD185EF50E00B348BA /* buttonpreviouson@2x.png in Resources */,
+				4C1991991FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@1x.png in Resources */,
 				CA7C6FAE185EF50E00B348BA /* eek.gif in Resources */,
 				CA7C6FAF185EF50E00B348BA /* AideViewController.xib in Resources */,
 				CA7C6FB0185EF50E00B348BA /* ToolBarPrevious_off.png in Resources */,
@@ -2807,6 +2832,7 @@
 				4C0B8DB71BA4522900D329BA /* SourceCodeFilled-40.png in Resources */,
 				CA7C6FB9185EF50E00B348BA /* flagyellow.png in Resources */,
 				4CD6B8BA1B97AEF5007FC29E /* 6-Folder-32@2x.png in Resources */,
+				4C19919D1FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@1x.png in Resources */,
 				4CB132C11B9098520081B44D /* EditColumnFilled-20.png in Resources */,
 				4C21E9681BA5C70400691D65 /* LinkFilled-20@2x.png in Resources */,
 				4CB132C41B9098820081B44D /* ContactCardFilled-20.png in Resources */,
@@ -2851,6 +2877,7 @@
 				CA7C6FD2185EF50E00B348BA /* sol.gif in Resources */,
 				CA7C6FD3185EF50E00B348BA /* arrowR@2x.png in Resources */,
 				CA7C6FD5185EF50E00B348BA /* ToolBarPrevious_on@2x.png in Resources */,
+				4C19919A1FA9EC8E00A07A8A /* Icon-BETA-IPAD@1x.png in Resources */,
 				CA7C6FD6185EF50E00B348BA /* link.png in Resources */,
 				CA7C6FD7185EF50E00B348BA /* ouimaitre.gif in Resources */,
 				4CB132EE1B909D710081B44D /* ReplyAllArrow-20@2x.png in Resources */,
@@ -2903,6 +2930,7 @@
 				CA7C6FF3185EF50E00B348BA /* wink.gif in Resources */,
 				4C0B8DC91BA4522900D329BA /* Debian-40@2x.png in Resources */,
 				CA7C6FF5185EF50E00B348BA /* arrowback@2x.png in Resources */,
+				4C19919B1FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@2x.png in Resources */,
 				CA7C6FF6185EF50E00B348BA /* arrowbegin@2x.png in Resources */,
 				CA7C6FF7185EF50E00B348BA /* 18-envelope@2x.png in Resources */,
 				CA7C6FF8185EF50E00B348BA /* buttonnexthover@2x.png in Resources */,
@@ -2974,6 +3002,7 @@
 				4CB132CA1B9099220081B44D /* ReplyArrowFilled-20.png in Resources */,
 				CA7C7022185EF50E00B348BA /* InAppSettings.bundle in Resources */,
 				4CB1330E1B90B7940081B44D /* Thor Hammer Filled-23@2x.png in Resources */,
+				4C1991901FA9E91600A07A8A /* Icon-BETA@3x.png in Resources */,
 				4C0B8DD11BA4522900D329BA /* ControllerFilled-40@2x.png in Resources */,
 				4CB132951B9058530081B44D /* 146-gavel.png in Resources */,
 				CA7C7023185EF50E00B348BA /* miam.gif in Resources */,
@@ -2999,6 +3028,7 @@
 				CA7C702B185EF50E00B348BA /* ToolBarPlay_off@2x.png in Resources */,
 				CA7C702D185EF50E00B348BA /* all_categories_land@2x.png in Resources */,
 				CA7C702E185EF50E00B348BA /* beginhover.png in Resources */,
+				4C1991911FA9E91600A07A8A /* Icon-BETA@2x.png in Resources */,
 				CA7C702F185EF50E00B348BA /* MessageDetailViewControllerv2.xib in Resources */,
 				CA7C7030185EF50E00B348BA /* fou.gif in Resources */,
 				CA7C7031185EF50E00B348BA /* pt1cable.gif in Resources */,
@@ -3168,6 +3198,7 @@
 				CA7C7097185EF50E00B348BA /* bounce.gif in Resources */,
 				CA7C7098185EF50E00B348BA /* multipleflag0.gif in Resources */,
 				CA7C7099185EF50E00B348BA /* RehostCell.xib in Resources */,
+				4C1991981FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@2x.png in Resources */,
 				4C0B8DA51BA4522900D329BA /* ShieldFilled-40.png in Resources */,
 				4CD6B8B41B97ACA8007FC29E /* Camera-32@2x.png in Resources */,
 				CA7C709A185EF50E00B348BA /* README.md in Resources */,
@@ -3189,6 +3220,7 @@
 				CA7C70A3185EF50E00B348BA /* 24.gif in Resources */,
 				D8DDF2B71E58810A002F1484 /* ToolBarPrevious_on_tinted@2x.png in Resources */,
 				CA7C70A4185EF50E00B348BA /* arrowend.png in Resources */,
+				4C19919C1FA9EC8E00A07A8A /* Icon-BETA-IPAD@2x.png in Resources */,
 				4C0B8E071BA45B0100D329BA /* ForumCellView.xib in Resources */,
 				CAF5DB671932BA58000B5215 /* error@2x.png in Resources */,
 				D8DDF2AD1E58810A002F1484 /* ToolBarFastRewind_on_tinted.png in Resources */,

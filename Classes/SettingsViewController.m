@@ -65,7 +65,7 @@
 
 #pragma mark kIASKAppSettingChanged notification
 - (void)settingDidChange:(NSNotification*)notification {
-    //NSLog(@"settingDidChange %@", notification);
+    NSLog(@"settingDidChange %@", notification);
 
     if ([notification.object isEqual:@"menu_debug"]) {
         //IASKAppSettingsViewController *activeController = self;
@@ -92,13 +92,48 @@
         
         //[activeController setHiddenKeys:enabled ? nil : [NSSet setWithObjects:@"AutoConnectTest", nil] animated:YES];
         
-    }else if([notification.object isEqual:@"theme"]) {
-        
+    } else if([notification.object isEqual:@"theme"]) {
+
         Theme theme = (Theme)[[notification.userInfo objectForKey:@"theme"] intValue];
         [[ThemeManager sharedManager] setTheme:theme];
         [self setThemeColors:theme];
+    } else if([notification.object isEqual:@"icon"]) {
+        NSString *newIcon = [notification.userInfo objectForKey:@"icon"];
+
+        if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)
+            return;
+
+
+
+        NSLog(@"icon %@", newIcon);
+        if ([newIcon isEqualToString:@"super"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:nil completionHandler:nil];
+        } else if ([newIcon isEqualToString:@"classic"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:@"Icon-CLASSIC"
+                                                  completionHandler:^(NSError * _Nullable error) {
+                                                      NSLog(@"%@", [error description]);
+                                                  }];
+        } else if ([newIcon isEqualToString:@"beta"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:@"Icon-BETA"
+                                                  completionHandler:^(NSError * _Nullable error) {
+                                                      NSLog(@"%@", [error description]);
+                                                  }];
+        } else if ([newIcon isEqualToString:@"redface"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:@"Icon-REDFACE"
+                                                  completionHandler:^(NSError * _Nullable error) {
+                                                      NSLog(@"%@", [error description]);
+                                                  }];
+        }
     }
-    
+    /*
+    if UIApplication.shared.alternateIconName == nil {
+        UIApplication.shared.setAlternateIconName("Icon-RED")
+    } else if UIApplication.shared.alternateIconName == "Icon-RED" {
+        UIApplication.shared.setAlternateIconName("Icon-Original")
+    } else if UIApplication.shared.alternateIconName == "Icon-Original" {
+        UIApplication.shared.setAlternateIconName(nil)
+    }
+     */
     [self.tableView reloadData];
 }
 

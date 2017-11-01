@@ -78,7 +78,7 @@
 
 -(UITraitCollection *)traitCollection
 {
-    NSLog(@"traitCollection");
+    //NSLog(@"traitCollection");
     UITraitCollection
     *realTraits = [super traitCollection],
     *lieTrait = [UITraitCollection traitCollectionWithHorizontalSizeClass:UIUserInterfaceSizeClassCompact];
