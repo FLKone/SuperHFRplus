@@ -1438,7 +1438,13 @@
 
 -(void)searchNewMessages:(int)from {
     
-	if (![self.messagesWebView isLoading]) {	
+	if (![self.messagesWebView isLoading]) {
+        NSLog(@"SVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggered");
+        UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] init];
+        [myGen initWithStyle:(UIImpactFeedbackStyleLight)];
+        [myGen impactOccurred];
+        myGen = NULL;
+
 		[self.messagesWebView stringByEvaluatingJavaScriptFromString:@"$('#actualiserbtn').addClass('loading');"];
         [self fetchContentinBackground:[NSNumber numberWithInt:from]];
 		//[self performSelectorInBackground:@selector(fetchContentinBackground:) withObject:];

@@ -730,8 +730,15 @@ static char UIScrollViewPullToRefreshView;
             break;
             
         case SVPullToRefreshStateTriggered:
+        {
+            NSLog(@"SVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggered");
+            UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] init];
+            [myGen initWithStyle:(UIImpactFeedbackStyleLight)];
+            [myGen impactOccurred];
+            myGen = NULL;
+
             break;
-            
+        }
         case SVPullToRefreshStateLoading:
             [self setScrollViewContentInsetForLoading];
             
