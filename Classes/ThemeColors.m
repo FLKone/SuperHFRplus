@@ -204,10 +204,9 @@
         return [self tintColor:theme];
     }
     else {
-        return [UIColor colorWithRed:36/255.0 green:112/255.0 blue:216/255.0 alpha:1.0]; //OK
+        return [UIColor colorWithRed:42/255.0 green:116/255.0 blue:217/255.0 alpha:1.0]; //OK
     }
 }
-
 
 + (UIColor *)placeholderColor:(Theme)theme{
     switch (theme) {

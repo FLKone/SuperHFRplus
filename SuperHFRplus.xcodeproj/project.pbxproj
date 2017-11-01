@@ -135,6 +135,10 @@
 		4C3903951BCAD0C700FD6F1F /* MWZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C3903831BCAD0C700FD6F1F /* MWZoomingScrollView.m */; };
 		4C444AF31BB0DE0D000EF444 /* LaunchLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C444AF01BB0DE0D000EF444 /* LaunchLogo.png */; };
 		4C444AF51BB0DE0D000EF444 /* LaunchLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C444AF11BB0DE0D000EF444 /* LaunchLogo@2x.png */; };
+		4C59E0841FA9D56C00C902F8 /* Icon-REDFACE@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C59E0821FA9D56C00C902F8 /* Icon-REDFACE@2x.png */; };
+		4C59E0851FA9D56C00C902F8 /* Icon-REDFACE@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C59E0831FA9D56C00C902F8 /* Icon-REDFACE@3x.png */; };
+		4C59E0901FA9D9F300C902F8 /* Icon-CLASSIC@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C59E08E1FA9D9F300C902F8 /* Icon-CLASSIC@2x.png */; };
+		4C59E0911FA9D9F300C902F8 /* Icon-CLASSIC@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C59E08F1FA9D9F300C902F8 /* Icon-CLASSIC@3x.png */; };
 		4C80A4F91CF1B0E60093CF9B /* ResistorFilled-40@x2.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C80A4F61CF1B0E60093CF9B /* ResistorFilled-40@x2.png */; };
 		4C80A4FB1CF1B0E60093CF9B /* ResistorFilled-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C80A4F71CF1B0E60093CF9B /* ResistorFilled-40.png */; };
 		4C80A4FF1CF1B2610093CF9B /* CircuitFilled-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C80A4FC1CF1B2610093CF9B /* CircuitFilled-40@2x.png */; };
@@ -856,6 +860,10 @@
 		4C3903831BCAD0C700FD6F1F /* MWZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWZoomingScrollView.m; sourceTree = "<group>"; };
 		4C444AF01BB0DE0D000EF444 /* LaunchLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchLogo.png; sourceTree = "<group>"; };
 		4C444AF11BB0DE0D000EF444 /* LaunchLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchLogo@2x.png"; sourceTree = "<group>"; };
+		4C59E0821FA9D56C00C902F8 /* Icon-REDFACE@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-REDFACE@2x.png"; sourceTree = "<group>"; };
+		4C59E0831FA9D56C00C902F8 /* Icon-REDFACE@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-REDFACE@3x.png"; sourceTree = "<group>"; };
+		4C59E08E1FA9D9F300C902F8 /* Icon-CLASSIC@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-CLASSIC@2x.png"; sourceTree = "<group>"; };
+		4C59E08F1FA9D9F300C902F8 /* Icon-CLASSIC@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-CLASSIC@3x.png"; sourceTree = "<group>"; };
 		4C80A4F61CF1B0E60093CF9B /* ResistorFilled-40@x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ResistorFilled-40@x2.png"; sourceTree = "<group>"; };
 		4C80A4F71CF1B0E60093CF9B /* ResistorFilled-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ResistorFilled-40.png"; sourceTree = "<group>"; };
 		4C80A4FC1CF1B2610093CF9B /* CircuitFilled-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CircuitFilled-40@2x.png"; sourceTree = "<group>"; };
@@ -1806,14 +1814,6 @@
 			name = ForumsCell;
 			sourceTree = "<group>";
 		};
-		4C193E751FA8823900434A37 /* Icons */ = {
-			isa = PBXGroup;
-			children = (
-				4C193E731FA8820200434A37 /* Icons.xcassets */,
-			);
-			name = Icons;
-			sourceTree = "<group>";
-		};
 		4C21E9321BA5C5E200691D65 /* Editor */ = {
 			isa = PBXGroup;
 			children = (
@@ -1891,6 +1891,17 @@
 				4C3903551BCACEC200FD6F1F /* PSTGridLayoutSection.m */,
 			);
 			path = PSTCollectionView;
+			sourceTree = "<group>";
+		};
+		4C59E0811FA9D43F00C902F8 /* AlternativeIcons */ = {
+			isa = PBXGroup;
+			children = (
+				4C59E08E1FA9D9F300C902F8 /* Icon-CLASSIC@2x.png */,
+				4C59E08F1FA9D9F300C902F8 /* Icon-CLASSIC@3x.png */,
+				4C59E0821FA9D56C00C902F8 /* Icon-REDFACE@2x.png */,
+				4C59E0831FA9D56C00C902F8 /* Icon-REDFACE@3x.png */,
+			);
+			path = AlternativeIcons;
 			sourceTree = "<group>";
 		};
 		4C9C2B261BAE77EC00511853 /* InAppSettingsKit */ = {
@@ -2015,7 +2026,6 @@
 				CA00C45A17C301650067B457 /* XIB */,
 				CA00C6EA17C310E90067B457 /* commonsmile.plist */,
 				CA00C6E817C310B50067B457 /* InAppSettings.bundle */,
-				CA2E4C0917E21EC700E95622 /* Images.xcassets */,
 			);
 			path = SuperHFRplus;
 			sourceTree = "<group>";
@@ -2152,7 +2162,9 @@
 		CA00C53C17C30C360067B457 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				4C193E751FA8823900434A37 /* Icons */,
+				4C59E0811FA9D43F00C902F8 /* AlternativeIcons */,
+				4C193E731FA8820200434A37 /* Icons.xcassets */,
+				CA2E4C0917E21EC700E95622 /* Images.xcassets */,
 				CA00C53D17C30C360067B457 /* HFR */,
 				CA00C57F17C30C370067B457 /* HTML */,
 				CA00C59417C30C370067B457 /* iTunes */,
@@ -2895,6 +2907,7 @@
 				CA7C6FF7185EF50E00B348BA /* 18-envelope@2x.png in Resources */,
 				CA7C6FF8185EF50E00B348BA /* buttonnexthover@2x.png in Resources */,
 				4C0B8DC71BA4522900D329BA /* Debian-40.png in Resources */,
+				4C59E0841FA9D56C00C902F8 /* Icon-REDFACE@2x.png in Resources */,
 				CA7C6FFA185EF50E00B348BA /* whistle.gif in Resources */,
 				CA7C6FFB185EF50E00B348BA /* FavoritesTableViewController.xib in Resources */,
 				4C39038D1BCAD0C700FD6F1F /* MWPhotoBrowser.bundle in Resources */,
@@ -3134,6 +3147,7 @@
 				CA7C708C185EF50E00B348BA /* buttonprevioushover@2x.png in Resources */,
 				4C0B8DBD1BA4522900D329BA /* ChatFilled-40.png in Resources */,
 				CA7C708D185EF50E00B348BA /* 111-user.png in Resources */,
+				4C59E0911FA9D9F300C902F8 /* Icon-CLASSIC@3x.png in Resources */,
 				CA7C708E185EF50E00B348BA /* buttonpreviouson.png in Resources */,
 				CA7C7090185EF50E00B348BA /* redface.gif in Resources */,
 				4C052E1F1BA86C9400B61952 /* Flat-CyanFlag-25.png in Resources */,
@@ -3179,8 +3193,10 @@
 				CAF5DB671932BA58000B5215 /* error@2x.png in Resources */,
 				D8DDF2AD1E58810A002F1484 /* ToolBarFastRewind_on_tinted.png in Resources */,
 				CA7C70A5185EF50E00B348BA /* 06-magnifying-glass.png in Resources */,
+				4C59E0901FA9D9F300C902F8 /* Icon-CLASSIC@2x.png in Resources */,
 				D826905E1E58658D006971C3 /* avatar_male_gray_on_dark_48x48@2x.png in Resources */,
 				CA7C70A6185EF50E00B348BA /* 121-lanscape.png in Resources */,
+				4C59E0851FA9D56C00C902F8 /* Icon-REDFACE@3x.png in Resources */,
 				4C0B8D9F1BA4522900D329BA /* CircledUserMaleFilled-40.png in Resources */,
 				CA7C70A7185EF50E00B348BA /* arrowforward.png in Resources */,
 				CA7C70A8185EF50E00B348BA /* unselectedrow.png in Resources */,

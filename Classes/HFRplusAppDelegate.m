@@ -11,6 +11,7 @@
 
 #import "HFRMPViewController.h"
 #import "FavoritesTableViewController.h"
+#import "ForumsTableViewController.h"
 
 #import "MKStoreManager.h"
 #import "BrowserViewController.h"
@@ -53,7 +54,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 
-    //NSLog(@"didFinishLaunchingWithOptions");
+    NSLog(@"didFinishLaunchingWithOptions");
 
         
 	//self.hash_check = [[NSString alloc] init];
@@ -140,6 +141,47 @@
 
 	
     return YES;
+}
+
+-(void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
+    NSLog(@"shortcutItem %@", shortcutItem);
+    BOOL handled = NO;
+    /*
+    if (tabBarController.selectedIndex == 0 && [nv.topViewController isKindOfClass:[ForumsTableViewController class]]) {
+        [(ForumsTableViewController *)nv.topViewController reload];
+    }
+
+    if (tabBarController.selectedIndex == 1 && [nv.topViewController isKindOfClass:[FavoritesTableViewController class]]) {
+        [(FavoritesTableViewController *)nv.topViewController reload];
+    }
+
+    if (tabBarController.selectedIndex == 2 && [nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
+        [(HFRMPViewController *)nv.topViewController fetchContent];
+    }
+    */
+    HFRNavigationController *nv = self.rootController.selectedViewController;
+    if ([shortcutItem.type isEqual: @"hfrplus.red.super.openfavorites"]) {
+        [self.rootController setSelectedIndex:1];
+        [nv popToRootViewControllerAnimated:NO];
+        if ([nv.topViewController isKindOfClass:[FavoritesTableViewController class]]) {
+            [(FavoritesTableViewController *)nv.topViewController reload];
+        }
+        handled = YES;
+    } else if ([shortcutItem.type isEqual: @"hfrplus.red.super.openmessages"]) {
+        [self.rootController setSelectedIndex:2];
+        [nv popToRootViewControllerAnimated:NO];
+        if ([nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
+            [(HFRMPViewController *)nv.topViewController fetchContent];
+        }
+        handled = YES;
+    } else if ([shortcutItem.type isEqual: @"hfrplus.red.super.opencategories"]) {
+        [self.rootController setSelectedIndex:0];
+        if ([nv.topViewController isKindOfClass:[ForumsTableViewController class]]) {
+            [(ForumsTableViewController *)nv.topViewController reload];
+        }
+        handled = YES;
+    }
+    completionHandler(handled);
 }
 
 -(void)setThemeFromNotification:(NSNotification *)notification{
