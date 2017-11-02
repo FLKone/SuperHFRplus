@@ -909,20 +909,8 @@
 		4C9C2B3A1BAE77EC00511853 /* IASKSpecifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSpecifier.h; sourceTree = "<group>"; };
 		4C9C2B3B1BAE77EC00511853 /* IASKSpecifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSpecifier.m; sourceTree = "<group>"; };
 		4C9C2B3E1BAE77ED00511853 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B3F1BAE77ED00511853 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B401BAE77ED00511853 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
 		4C9C2B411BAE77ED00511853 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B421BAE77ED00511853 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
 		4C9C2B431BAE77ED00511853 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B441BAE77ED00511853 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B451BAE77ED00511853 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B461BAE77ED00511853 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B471BAE77ED00511853 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/IASKLocalizable.strings"; sourceTree = "<group>"; };
-		4C9C2B481BAE77ED00511853 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B491BAE77ED00511853 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B4A1BAE77ED00511853 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B4B1BAE77ED00511853 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
-		4C9C2B4C1BAE77ED00511853 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
 		4C9C2B4E1BAE77ED00511853 /* IASKPSSliderSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSSliderSpecifierViewCell.h; sourceTree = "<group>"; };
 		4C9C2B4F1BAE77ED00511853 /* IASKPSSliderSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSSliderSpecifierViewCell.m; sourceTree = "<group>"; };
 		4C9C2B501BAE77ED00511853 /* IASKPSTextFieldSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSTextFieldSpecifierViewCell.h; sourceTree = "<group>"; };
@@ -2770,19 +2758,7 @@
 				German,
 				fr,
 				Base,
-				de,
-				el,
 				en,
-				es,
-				it,
-				ja,
-				nl,
-				"pt-PT",
-				pt,
-				ru,
-				sv,
-				th,
-				tr,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -3431,20 +3407,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				4C9C2B3E1BAE77ED00511853 /* Base */,
-				4C9C2B3F1BAE77ED00511853 /* de */,
-				4C9C2B401BAE77ED00511853 /* el */,
 				4C9C2B411BAE77ED00511853 /* en */,
-				4C9C2B421BAE77ED00511853 /* es */,
 				4C9C2B431BAE77ED00511853 /* fr */,
-				4C9C2B441BAE77ED00511853 /* it */,
-				4C9C2B451BAE77ED00511853 /* ja */,
-				4C9C2B461BAE77ED00511853 /* nl */,
-				4C9C2B471BAE77ED00511853 /* pt-PT */,
-				4C9C2B481BAE77ED00511853 /* pt */,
-				4C9C2B491BAE77ED00511853 /* ru */,
-				4C9C2B4A1BAE77ED00511853 /* sv */,
-				4C9C2B4B1BAE77ED00511853 /* th */,
-				4C9C2B4C1BAE77ED00511853 /* tr */,
 			);
 			name = IASKLocalizable.strings;
 			sourceTree = "<group>";
