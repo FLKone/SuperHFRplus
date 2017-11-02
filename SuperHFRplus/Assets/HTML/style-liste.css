@@ -8,8 +8,8 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 	padding:0 !important;
 
 	/*font-size:12px !important;*/
-	font-family:Helvetica !important;
-	
+	font-family:-apple-system !important;
+
     /*-webkit-user-select: none;
     
 	-webkit-touch-callout: none;
@@ -540,7 +540,7 @@ a#searchintra_nextbutton {
 /* iOS7 */
 
 .ios7 * {
-    font-family:-apple-system, HelveticaNeue !important;
+    font-family:-apple-system !important;
 }
 
 .ios7.searchintra {
@@ -605,7 +605,7 @@ body.ios7 {
     width:19px;
     height:15px;
     top:24px;
-background-size:100% 100%;
+    background-size:100% 100%;
 }
 
 .ios7 #toolbarpage .button2 {
