@@ -48,49 +48,31 @@
 #pragma mark Data lifecycle
 
 -(void) showAll:(id)sender {
-    
-    NSLog(@"showAll %d", self.showAll);
 
-    UIButton *btn = (UIButton *)[self.navigationController.navigationBar viewWithTag:237];
-    UIButton *btn2 = (UIButton *)[self.navigationController.navigationBar viewWithTag:238];
-    
     if (self.showAll) {
         self.showAll = NO;
-        [btn setSelected:NO];
-        //[btn setHighlighted:NO];
-        
-        [btn2 setSelected:NO];
-        //[btn2 setHighlighted:NO];
-        
-        //On réaffiche le header
-        if (self.childViewControllers.count > 0) {
-            [self.favoritesTableView setTableHeaderView:((PullToRefreshErrorViewController *)[self.childViewControllers objectAtIndex:0]).view];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
+
+            //On réaffiche le header
+            if (self.childViewControllers.count > 0) {
+                [self.favoritesTableView setTableHeaderView:((PullToRefreshErrorViewController *)[self.childViewControllers objectAtIndex:0]).view];
+            }
+        });
         
     }
     else {
         self.showAll = YES;
-        [btn setSelected:YES];
-        //[btn setHighlighted:YES];
-        
-        [btn2 setSelected:YES];
-        //[btn2 setHighlighted:YES];
-        
-        [self.favoritesTableView setTableHeaderView:nil];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
+
+            [self.favoritesTableView setTableHeaderView:nil];
+        });
     }
 
-    if(self.status == kNoResults)
-    {
-        if (self.showAll) {
-            //[self.favoritesTableView setHidden:NO];
-            //[self.maintenanceView setHidden:YES];
-        }
-        else {
-            //[self.favoritesTableView setHidden:YES];
-            //[self.maintenanceView setHidden:NO];
-        }
-    }
-    
     if (![self.favoritesTableView isHidden]) {
         [self.favoritesTableView reloadData];
     }
@@ -603,208 +585,16 @@
 	self.navigationItem.rightBarButtonItem = segmentBarItem;
     
     // showAll
-    /*
- //   UIBarButtonItem *segmentBarItem3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize target:self action:@selector(reload)];
+    UIImage *buttonImage = [UIImage imageNamed:@"all_categories"];
+    UIImage *buttonImageLandscape = [UIImage imageNamed:@"all_categories_land"];
+    UIBarButtonItem *allBtn = [[UIBarButtonItem alloc] initWithImage:buttonImage
+                                                 landscapeImagePhone:buttonImageLandscape
+                                                               style:UIBarButtonItemStylePlain
+                                                              target:self
+                                                              action:@selector(showAll:)];
 
-    UIBarButtonItem *segmentBarItem2 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"categories"] landscapeImagePhone:[UIImage imageNamed:@"categories"] style:UIBarButtonItemStyleDone target:self action:@selector(showAll:)];
-    //segmentBarItem2.frame = CGRectMake(0, 0, 40, 40);
-	self.navigationItem.leftBarButtonItem = segmentBarItem2;
-    [segmentBarItem2 release];
-   */
-    Theme theme = [[ThemeManager sharedManager] theme];
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-    
-        UIImage *buttonImage2 = [UIImage imageNamed:@"all_categories_land"];
-        UIButton *aButton2 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [aButton2 setAdjustsImageWhenHighlighted:NO];
-        
-        [aButton2 setImage:buttonImage2 forState:UIControlStateNormal];
-        [aButton2 setImage:buttonImage2 forState:UIControlStateSelected];
-        [aButton2 setImage:buttonImage2 forState:UIControlStateHighlighted];
-        [aButton2 setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateSelected];
-        [aButton2 setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateHighlighted];
-        //[aButton setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateNormal];
-        
-        
-        
-        aButton2.frame = CGRectMake(12.0f,(self.navigationController.navigationBar.frame.size.height - buttonImage2.size.height)/2,buttonImage2.size.width,buttonImage2.size.height);
-        aButton2.tag = 238;
-        
-        [aButton2 addTarget:self action:@selector(showAll:) forControlEvents:UIControlEventTouchUpInside];
-        [self.navigationController.navigationBar insertSubview:aButton2 atIndex:1];
-        
-        
-        
-        UIImage *buttonImage = [UIImage imageNamed:@"all_categories"];
-        UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [aButton setAdjustsImageWhenHighlighted:NO];
-        
-        [aButton setImage:buttonImage forState:UIControlStateNormal];
-        [aButton setImage:buttonImage forState:UIControlStateSelected];
-        [aButton setImage:buttonImage forState:UIControlStateHighlighted];
-        [aButton setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateSelected];
-        [aButton setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateHighlighted];
-        //[aButton setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateNormal];
-        
-        
-        
-        aButton.frame = CGRectMake(8.0f,(self.navigationController.navigationBar.frame.size.height - buttonImage.size.height)/2,buttonImage.size.width,buttonImage.size.height);
-        aButton.tag = 237;
-        
-        [aButton addTarget:self action:@selector(showAll:) forControlEvents:UIControlEventTouchUpInside];
-        [self.navigationController.navigationBar insertSubview:aButton atIndex:1];
-        
-        aButton.translatesAutoresizingMaskIntoConstraints = NO;
-        aButton2.translatesAutoresizingMaskIntoConstraints = NO;
+    self.navigationItem.leftBarButtonItem = allBtn;
 
-        UILayoutGuide *guide = self.navigationController.navigationBar.safeAreaLayoutGuide;
-        //Leading
-
-        NSLayoutConstraint *leading = [NSLayoutConstraint
-                                       constraintWithItem:aButton
-                                       attribute:NSLayoutAttributeLeading
-                                       relatedBy:NSLayoutRelationEqual
-                                       toItem:guide
-                                       attribute:NSLayoutAttributeLeading
-                                       multiplier:1.0f
-                                       constant:8.f];
-        NSLayoutConstraint *top = [NSLayoutConstraint
-                                       constraintWithItem:aButton
-                                       attribute:NSLayoutAttributeCenterY
-                                       relatedBy:NSLayoutRelationEqual
-                                       toItem:guide
-                                       attribute:NSLayoutAttributeCenterY
-                                       multiplier:1.0f
-                                       constant:0.f];
-        NSLayoutConstraint *top2 = [NSLayoutConstraint
-                                   constraintWithItem:aButton2
-                                   attribute:NSLayoutAttributeCenterY
-                                   relatedBy:NSLayoutRelationEqual
-                                   toItem:guide
-                                   attribute:NSLayoutAttributeCenterY
-                                   multiplier:1.0f
-                                   constant:0.f];
-        //Bottom
-        NSLayoutConstraint *bheight =[NSLayoutConstraint
-                                     constraintWithItem:aButton
-                                     attribute:NSLayoutAttributeHeight
-                                     relatedBy:NSLayoutRelationEqual
-                                     toItem:nil
-                                     attribute:NSLayoutAttributeNotAnAttribute
-                                     multiplier:1.0f
-                                     constant:buttonImage.size.height];
-
-        NSLayoutConstraint *bsize =[NSLayoutConstraint
-                                  constraintWithItem:aButton
-                                  attribute:NSLayoutAttributeWidth
-                                  relatedBy:NSLayoutRelationEqual
-                                  toItem:nil
-                                  attribute:NSLayoutAttributeNotAnAttribute
-                                  multiplier:1.0f
-                                  constant:buttonImage.size.width];
-
-        NSLayoutConstraint *leading2 = [NSLayoutConstraint
-                                       constraintWithItem:aButton2
-                                       attribute:NSLayoutAttributeLeading
-                                       relatedBy:NSLayoutRelationEqual
-                                       toItem:guide
-                                       attribute:NSLayoutAttributeLeading
-                                       multiplier:1.0f
-                                       constant:8.f];
-
-        //Bottom
-        NSLayoutConstraint *bheight2 =[NSLayoutConstraint
-                                      constraintWithItem:aButton2
-                                      attribute:NSLayoutAttributeHeight
-                                      relatedBy:NSLayoutRelationEqual
-                                      toItem:nil
-                                      attribute:NSLayoutAttributeNotAnAttribute
-                                      multiplier:1.0f
-                                      constant:buttonImage.size.height];
-
-        NSLayoutConstraint *bsize2 =[NSLayoutConstraint
-                                    constraintWithItem:aButton2
-                                    attribute:NSLayoutAttributeWidth
-                                    relatedBy:NSLayoutRelationEqual
-                                    toItem:nil
-                                    attribute:NSLayoutAttributeNotAnAttribute
-                                    multiplier:1.0f
-                                    constant:buttonImage.size.width];
-
-
-        //[button.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor];
-        //[button.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor];
-        [self.navigationController.navigationBar addConstraint:leading];
-        [self.navigationController.navigationBar addConstraint:top];
-        [aButton addConstraint:bsize];
-        [aButton addConstraint:bheight];
-
-        [self.navigationController.navigationBar addConstraint:leading2];
-        [self.navigationController.navigationBar addConstraint:top2];
-        [aButton2 addConstraint:bsize2];
-        [aButton2 addConstraint:bheight2];
-        //[self.navigationController.navigationBar addConstraint:top];
-
-
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            UIInterfaceOrientation o = [[UIApplication sharedApplication] statusBarOrientation];
-            if (UIDeviceOrientationIsLandscape(o)) {
-                NSLog(@"LAND IPHONE");
-                [[self.navigationController.navigationBar viewWithTag:237] setHidden:YES];
-                [[self.navigationController.navigationBar viewWithTag:238] setHidden:NO];
-            }
-            else {
-                [[self.navigationController.navigationBar viewWithTag:237] setHidden:NO];
-                [[self.navigationController.navigationBar viewWithTag:238] setHidden:YES];
-            }
-            
-        }
-        else
-        {
-            [[self.navigationController.navigationBar viewWithTag:238] setHidden:YES];
-        }
-        
-        /*
-        
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:aButton];
-        backButton.customView.frame = CGRectMake(-10.0f,0.0f,backButton.customView.frame.size.width,backButton.customView.frame.size.height);
-        NSLog(@"frame %@", NSStringFromCGRect(self.navigationItem.leftBarButtonItem.customView.frame));
-
-        self.navigationItem.leftBarButtonItem = backButton;
-        //backButton.customView.frame = CGRectMake(0.0f,0.0f,backButton.customView.frame.size.width,backButton.customView.frame.size.height);
-
-        NSLog(@"frame %@", NSStringFromCGRect(self.navigationItem.leftBarButtonItem.customView.frame));
-        //NSLog(@"frame %@", NSStringFromCGRect(self.navigationItem.rightBarButtonItem.frame));
-         */
-    }
-    else
-    {
-        AKSingleSegmentedControl* segmentedControl = [[AKSingleSegmentedControl alloc] initWithItems:[NSArray array]];
-        //[segmentedControl setMomentary:YES];
-        [segmentedControl insertSegmentWithImage:[UIImage imageNamed:@"icon_list_bullets"] atIndex:0 animated:NO];
-        segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        [segmentedControl addTarget:self action:@selector(showAll:) forControlEvents:UIControlEventValueChanged];
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            segmentedControl.tintColor = [UIColor colorWithRed:156/255.f green:161/255.f blue:167/255.f alpha:1.00];
-        }
-
-        UIBarButtonItem * segmentBarItem2 = [[UIBarButtonItem alloc] initWithCustomView: segmentedControl];
-        self.navigationItem.leftBarButtonItem = segmentBarItem2;
-        
-    }
-/*
-
-
-     //segmentedControl2.segmentedControlStyle = UISegmentedControlStyleBar;
-	//segmentedControl2.momentary = YES;
-	    
-    */
-    /*
-    UIBarButtonItem *segmentBarItem2 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_list_bullets.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(showAll:)];
-	self.navigationItem.leftBarButtonItem = segmentBarItem2;
-    [segmentBarItem2 release];
-      */  
-    
     //Supprime les lignes vides à la fin de la liste
     self.favoritesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
