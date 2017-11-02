@@ -32,30 +32,6 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>super</string>
-			<key>Key</key>
-			<string>icon</string>
-			<key>Title</key>
-			<string>Icône</string>
-			<key>Titles</key>
-			<array>
-				<string>Classique</string>
-				<string>Super</string>
-				<string>REDFACE</string>
-				<string>Beta</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<string>classic</string>
-				<string>super</string>
-				<string>redface</string>
-				<string>beta</string>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
 			<string>all</string>
 			<key>Key</key>
 			<string>landscape_mode</string>
@@ -86,7 +62,7 @@
 			<key>Titles</key>
 			<array>
 				<string>Catégories</string>
-				<string>Vos Sujets</string>
+				<string>Favoris</string>
 				<string>Messages</string>
 			</array>
 			<key>Type</key>
@@ -108,11 +84,11 @@
 			<key>Key</key>
 			<string>vos_sujets</string>
 			<key>Title</key>
-			<string>Vos Sujets</string>
+			<string>Onglet &quot;Favoris&quot;</string>
 			<key>Titles</key>
 			<array>
 				<string>Drapeaux &amp; Favoris</string>
-				<string>Favoris</string>
+				<string>Favoris uniquement</string>
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
@@ -124,7 +100,7 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>0</string>
+			<integer>0</integer>
 			<key>Key</key>
 			<string>theme</string>
 			<key>Title</key>
@@ -140,6 +116,30 @@
 			<array>
 				<integer>0</integer>
 				<integer>1</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>super</string>
+			<key>Key</key>
+			<string>icon</string>
+			<key>Title</key>
+			<string>Icône</string>
+			<key>Titles</key>
+			<array>
+				<string>Classique</string>
+				<string>Super</string>
+				<string>REDFACE</string>
+				<string>Beta</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>classic</string>
+				<string>super</string>
+				<string>redface</string>
+				<string>beta</string>
 			</array>
 		</dict>
 		<dict>

@@ -46,7 +46,7 @@
         
         tabBarItem2.selectedImage = [[UIImage imageNamed:@"favorites_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
         tabBarItem2.image = [[UIImage imageNamed:@"favorites"]imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem2.title = @"Vos Sujets";
+        tabBarItem2.title = @"Favoris";
         //tabBarItem2.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
         //tabBarItem2.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
         

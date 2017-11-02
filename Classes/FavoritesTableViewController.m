@@ -573,7 +573,7 @@
 	//NSLog(@"viewDidLoad ftv");
     [super viewDidLoad];
 
-	self.title = @"Vos Sujets";
+	self.title = @"Favoris";
     self.showAll = NO;
     self.navigationController.navigationBar.translucent = NO;
     
