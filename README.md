@@ -1,16 +1,16 @@
 <table>
 <tr>
-<td><img src="https://raw.githubusercontent.com/FLKone/HFRplus/master/HFRplus/Images.xcassets/AppIcon.appiconset/Icon-Small-40.png" alt="HFR+" title="HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
-<td><img src="https://raw.githubusercontent.com/FLKone/HFRplus/master/HFRplus/Images.xcassets/AppIcon%20RE.appiconset/Icon-Small-40.png" alt="HFR+" title="HFR+REDFACE" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
+<td><img src="https://raw.githubusercontent.com/FLKone/HFRplus/master/HFRplus/Images.xcassets/AppIcon%20RE.appiconset/Icon-Small-40.png" alt="HFR+" title="HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
+<td><img src="https://raw.githubusercontent.com/FLKone/SuperHFRplus/master/SuperHFRplus/Images.xcassets/AppIcon%20RE.appiconset/Icon-Small-40.png" alt="Super HFR+" title="Super HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
 </tr>   
 
 <tr>   
 <td>HFR+</td>
-<td>HFR+REDFACE</td>
+<td>Super HFR+</td>
 </tr>   
 <tr>   
-<td> <a href="https://itunes.apple.com/app/hfr/id384464712">AppStore</a></td>
-<td> <a href="https://itunes.apple.com/app/hfr+redface/id781621952">AppStore</a></td>
+<td> <a href="https://itunes.apple.com/us/app/o-hardware-fr/id781621952?mt=8">AppStore</a></td>
+<td> <a href="https://itunes.apple.com/us/app/super-hfr-hardware-fr/id1303081080?mt=8">AppStore</a></td>
 </tr>   
 </table>
 
@@ -31,29 +31,6 @@ Roadmap
     <td>2.0</td><td>Nouvelle version</td><td>TBD</td>
   </tr>   
 </table>
-
-
-Utilisation
--------------------------
-
-Un fichier config.h est nécessaire (dans le répertoire HFRplus) :
-
-``` objective-c
-//
-//  config.h
-//  HFRplus
-//
-
-#ifndef HFRplus_config_h
-#define HFRplus_config_h
-
-static NSString *const kTestFlightAPI = @"TestFlight API Key";
-static NSString *const kTestFlightAPIRE = @"TestFlight API Key (used for REDFACE Edition)";
-static NSString *const kGoogleCSEAPI = @"Google Custom Search Engine API Key";
-
-#endif
-```
-
 
 Crédits
 -------------------------
