@@ -1,6 +1,6 @@
 <table>
 <tr>
-<td><img src="https://github.com/FLKone/SuperHFRplus/blob/master/SuperHFRplus/Assets/AlternativeIcons/Icon-REDFACE%402x.png" alt="HFR+" title="HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
+<td><img src="https://github.com/FLKone/SuperHFRplus/blob/master/SuperHFRplus/Assets/Icons.xcassets/Classic.appiconset/Icon-App-60x60%402x.png" alt="HFR+" title="HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
 <td><img src="https://github.com/FLKone/SuperHFRplus/blob/master/SuperHFRplus/Assets/Icons.xcassets/Classic-Red.appiconset/Icon-App-60x60%402x.png" alt="Super HFR+" title="Super HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
 </tr>   
 
