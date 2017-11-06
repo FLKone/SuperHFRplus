@@ -1,13 +1,17 @@
 <table>
 <tr>
-<td><img src="https://raw.githubusercontent.com/FLKone/HFRplus/master/HFRplus/Images.xcassets/AppIcon%20RE.appiconset/Icon-Small-40.png" alt="HFR+" title="HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
-<td><img src="https://raw.githubusercontent.com/FLKone/SuperHFRplus/master/SuperHFRplus/Images.xcassets/AppIcon%20RE.appiconset/Icon-Small-40.png" alt="Super HFR+" title="Super HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
+<td><img src="https://github.com/FLKone/SuperHFRplus/blob/master/SuperHFRplus/Assets/AlternativeIcons/Icon-REDFACE%402x.png" alt="HFR+" title="HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
+<td><img src="https://github.com/FLKone/SuperHFRplus/blob/master/SuperHFRplus/Assets/Icons.xcassets/Classic-Red.appiconset/Icon-App-60x60%402x.png" alt="Super HFR+" title="Super HFR+" style="display:block; margin: 10px auto 30px auto;" class="center"></td>
 </tr>   
 
 <tr>   
 <td>HFR+</td>
 <td>Super HFR+</td>
-</tr>   
+</tr>
+<tr>
+<td>v1</td>
+<td>v2</td>
+</tr>
 <tr>   
 <td> <a href="https://itunes.apple.com/us/app/o-hardware-fr/id781621952?mt=8">AppStore</a></td>
 <td> <a href="https://itunes.apple.com/us/app/super-hfr-hardware-fr/id1303081080?mt=8">AppStore</a></td>
