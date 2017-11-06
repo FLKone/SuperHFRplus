@@ -7,7 +7,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>HFR+</string>
 	<key>CFBundleExecutable</key>
-	<string>SuperHFRplus</string>
+	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundleAlternateIcons</key>
