@@ -13,13 +13,13 @@
 <td>v2</td>
 </tr>
 <tr>   
-<td> <a href="https://itunes.apple.com/fr/app/o-hardware-fr/id781621952?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/fr-fr/appstore-sm.svg) no-repeat;width:60px;height:15px;background-size:contain;"><img src="https://linkmaker.itunes.apple.com/assets/shared/badges/fr-fr/appstore-sm.svg"/></a> </td>
-<td> <a href="https://itunes.apple.com/fr/app/super-hfr-hardware-fr/id1303081080?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/fr-fr/appstore-lrg.svg) no-repeat;width:135px;height:40px;background-size:contain;"><img src="https://linkmaker.itunes.apple.com/assets/shared/badges/fr-fr/appstore-lrg.svg"/></a> </td>
+<td> <a href="https://itunes.apple.com/fr/app/hfr-hardware-fr/id781621952?mt=8"><img src="https://linkmaker.itunes.apple.com/assets/shared/badges/fr-fr/appstore-lrg.svg"/></a> </td>
+<td> <a href="https://itunes.apple.com/fr/app/super-hfr-hardware-fr/id1303081080?mt=8"><img src="https://linkmaker.itunes.apple.com/assets/shared/badges/fr-fr/appstore-lrg.svg"/></a> </td>
 </tr>   
 </table>
 
 
-HFR+ v2 - Compatible iOS 11+
+Super HFR+ v2 - Compatible iOS 11+
 =========================
 Application iOS (iPhone, iPod Touch et iPad) pour le forum hardware.fr :o
 
