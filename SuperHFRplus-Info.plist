@@ -139,6 +139,8 @@
 	<string>MainWindow</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow-iPad</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Utilisé pour sauvegarder des photos/images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Utilisé pour ajouter des photos aux messages.</string>
 	<key>UIAppFonts</key>
