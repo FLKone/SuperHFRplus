@@ -181,6 +181,7 @@
 		4C9C2B8F1BAE801700511853 /* BugFilled-25@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9C2B811BAE801700511853 /* BugFilled-25@2x.png */; };
 		4C9C2B911BAE801700511853 /* BugFilled-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9C2B821BAE801700511853 /* BugFilled-25.png */; };
 		4C9C2B931BAE801700511853 /* QuestionsFilled-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9C2B831BAE801700511853 /* QuestionsFilled-25.png */; };
+		4CACF40D1FB3754E00A41CC6 /* MDNKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACF40C1FB3754E00A41CC6 /* MDNKit.swift */; };
 		4CB132951B9058530081B44D /* 146-gavel.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB132921B9058530081B44D /* 146-gavel.png */; };
 		4CB132971B9058530081B44D /* 146-gavel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB132931B9058530081B44D /* 146-gavel@2x.png */; };
 		4CB1329C1B905BF80081B44D /* BlackListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB132991B905BF80081B44D /* BlackListTableViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -932,6 +933,7 @@
 		4C9C2B811BAE801700511853 /* BugFilled-25@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BugFilled-25@2x.png"; sourceTree = "<group>"; };
 		4C9C2B821BAE801700511853 /* BugFilled-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BugFilled-25.png"; sourceTree = "<group>"; };
 		4C9C2B831BAE801700511853 /* QuestionsFilled-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "QuestionsFilled-25.png"; sourceTree = "<group>"; };
+		4CACF40C1FB3754E00A41CC6 /* MDNKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDNKit.swift; sourceTree = "<group>"; };
 		4CB132921B9058530081B44D /* 146-gavel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "146-gavel.png"; sourceTree = "<group>"; };
 		4CB132931B9058530081B44D /* 146-gavel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "146-gavel@2x.png"; sourceTree = "<group>"; };
 		4CB132981B905BF80081B44D /* BlackListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlackListTableViewController.h; sourceTree = "<group>"; };
@@ -1726,21 +1728,6 @@
 			path = FLWebView;
 			sourceTree = "<group>";
 		};
-		4C0609E81FB3655700972458 /* API */ = {
-			isa = PBXGroup;
-			children = (
-				4C0609E91FB3656300972458 /* HFR */,
-			);
-			path = API;
-			sourceTree = "<group>";
-		};
-		4C0609E91FB3656300972458 /* HFR */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = HFR;
-			sourceTree = "<group>";
-		};
 		4C0B8D4F1BA4521000D329BA /* CatIcons */ = {
 			isa = PBXGroup;
 			children = (
@@ -2003,6 +1990,22 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		4CACF40A1FB3753000A41CC6 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				4CACF40B1FB3753000A41CC6 /* MDNKit */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		4CACF40B1FB3753000A41CC6 /* MDNKit */ = {
+			isa = PBXGroup;
+			children = (
+				4CACF40C1FB3754E00A41CC6 /* MDNKit.swift */,
+			);
+			path = MDNKit;
+			sourceTree = "<group>";
+		};
 		4CB132A91B9094BD0081B44D /* MenuItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -2050,7 +2053,7 @@
 		CA00C35417C2FC620067B457 /* SuperHFRplus */ = {
 			isa = PBXGroup;
 			children = (
-				4C0609E81FB3655700972458 /* API */,
+				4CACF40A1FB3753000A41CC6 /* API */,
 				CA00C53C17C30C360067B457 /* Assets */,
 				CA00C45F17C302610067B457 /* Helpers */,
 				CA00C35717C2FC620067B457 /* Vendor */,
@@ -3379,6 +3382,7 @@
 				CA7C70C8185EF50E00B348BA /* MBProgressHUD.m in Sources */,
 				CA7C70CF185EF50E00B348BA /* HTMLNode.m in Sources */,
 				D80DBD6A1E55BE730051B751 /* ASIAuthenticationDialog.m in Sources */,
+				4CACF40D1FB3754E00A41CC6 /* MDNKit.swift in Sources */,
 				CA7C70D4185EF50E00B348BA /* RegexKitLite.m in Sources */,
 				CA7C70DE185EF50E00B348BA /* MKStoreObserver.m in Sources */,
 				4C3903571BCACEC200FD6F1F /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */,
