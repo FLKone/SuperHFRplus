@@ -1636,7 +1636,7 @@
             dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
                 [alert dismissViewControllerAnimated:YES completion:^{
                     if (isTT) {
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kTTURL] options:@{} completionHandler:nil];
+                        [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
                     }
                 }];
             });
