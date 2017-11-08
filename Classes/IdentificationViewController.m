@@ -50,9 +50,8 @@
     }
     
     //Bouton Finish
-    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(finish)];
-    
-    self.navigationItem.rightBarButtonItem = segmentBarItem;
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Annuler" style:UIBarButtonItemStyleDone target:self action:@selector(finish)];
+    self.navigationItem.leftBarButtonItem = cancelButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
