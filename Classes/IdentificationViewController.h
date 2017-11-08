@@ -15,11 +15,14 @@
 	IBOutlet UITextField *pseudoField;
 	IBOutlet UITextField *passField;
     IBOutlet UILabel *titleLabel;
+    IBOutlet UITextView *logView;
 }
 @property (nonatomic, weak) id <IdentificationViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) UITextField* pseudoField;
 @property (nonatomic, strong) UITextField* passField;
+@property (nonatomic, strong) UITextView *logView;
+
 
 -(IBAction) done:(id)sender;
 

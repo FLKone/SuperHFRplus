@@ -17,6 +17,7 @@
 		4C052E1B1BA86C9400B61952 /* Flat-RedFlag-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C052E111BA86C9400B61952 /* Flat-RedFlag-25.png */; };
 		4C052E1D1BA86C9400B61952 /* Flat-CyanFlag-25@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C052E121BA86C9400B61952 /* Flat-CyanFlag-25@2x.png */; };
 		4C052E1F1BA86C9400B61952 /* Flat-CyanFlag-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C052E131BA86C9400B61952 /* Flat-CyanFlag-25.png */; };
+		4C0609E71FB3633300972458 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0609E61FB3633300972458 /* AuthViewController.swift */; };
 		4C061D731BD275410034CD0A /* smileyloading.html in Resources */ = {isa = PBXBuildFile; fileRef = 4C061D711BD275410034CD0A /* smileyloading.html */; };
 		4C0B2DA61B9F2DF40026A582 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C0B2DA41B9F2DF40026A582 /* Launch Screen.storyboard */; };
 		4C0B8D871BA4522900D329BA /* BugFilled-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C0B8D501BA4522900D329BA /* BugFilled-40.png */; };
@@ -716,6 +717,7 @@
 		4C052E111BA86C9400B61952 /* Flat-RedFlag-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flat-RedFlag-25.png"; sourceTree = "<group>"; };
 		4C052E121BA86C9400B61952 /* Flat-CyanFlag-25@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flat-CyanFlag-25@2x.png"; sourceTree = "<group>"; };
 		4C052E131BA86C9400B61952 /* Flat-CyanFlag-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flat-CyanFlag-25.png"; sourceTree = "<group>"; };
+		4C0609E61FB3633300972458 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		4C061D711BD275410034CD0A /* smileyloading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = smileyloading.html; sourceTree = "<group>"; };
 		4C0B2DA41B9F2DF40026A582 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		4C0B8D501BA4522900D329BA /* BugFilled-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BugFilled-40.png"; sourceTree = "<group>"; };
@@ -1553,11 +1555,12 @@
 		01BF877E121C4407007624B6 /* Compte */ = {
 			isa = PBXGroup;
 			children = (
+				4C0609E61FB3633300972458 /* AuthViewController.swift */,
 				01BF877F121C4407007624B6 /* IdentificationViewController.h */,
 				01BF8780121C4407007624B6 /* IdentificationViewController.m */,
+				01BF8783121C4407007624B6 /* IdentificationViewController.xib */,
 				01BF8781121C4407007624B6 /* CompteViewController.h */,
 				01BF8782121C4407007624B6 /* CompteViewController.m */,
-				01BF8783121C4407007624B6 /* IdentificationViewController.xib */,
 				01BF8784121C4407007624B6 /* CompteViewController.xib */,
 			);
 			name = Compte;
@@ -1721,6 +1724,21 @@
 				4C00313C1BD0404500F87F13 /* WKWebView+FLWKWebView.m */,
 			);
 			path = FLWebView;
+			sourceTree = "<group>";
+		};
+		4C0609E81FB3655700972458 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				4C0609E91FB3656300972458 /* HFR */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		4C0609E91FB3656300972458 /* HFR */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = HFR;
 			sourceTree = "<group>";
 		};
 		4C0B8D4F1BA4521000D329BA /* CatIcons */ = {
@@ -2032,6 +2050,7 @@
 		CA00C35417C2FC620067B457 /* SuperHFRplus */ = {
 			isa = PBXGroup;
 			children = (
+				4C0609E81FB3655700972458 /* API */,
 				CA00C53C17C30C360067B457 /* Assets */,
 				CA00C45F17C302610067B457 /* Helpers */,
 				CA00C35717C2FC620067B457 /* Vendor */,
@@ -3369,6 +3388,7 @@
 				D8F5CBB21DF462F100B029FC /* ThemeColors.m in Sources */,
 				CA7C70E9185EF50E00B348BA /* HTMLParser.m in Sources */,
 				4C39035B1BCACEC200FD6F1F /* PSTCollectionViewCell.m in Sources */,
+				4C0609E71FB3633300972458 /* AuthViewController.swift in Sources */,
 				4C0031241BD01CE700F87F13 /* HFRTabBar.m in Sources */,
 				4CC814FE1BAC86ED00F8BB81 /* UIColor+Extension.m in Sources */,
 				4C3903671BCACEC200FD6F1F /* PSTCollectionViewUpdateItem.m in Sources */,

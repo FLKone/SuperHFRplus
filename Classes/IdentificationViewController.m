@@ -16,7 +16,7 @@
 
 @implementation IdentificationViewController
 @synthesize delegate;
-@synthesize pseudoField, passField;
+@synthesize pseudoField, passField, logView;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -28,12 +28,21 @@
  }
  */
 
+-(void)log:(id)newLog {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss.SSS"];
+    NSDate *todaysDate;
+    todaysDate = [NSDate date];
+
+    [self.logView setText:[NSString stringWithFormat:@"%@\n~~~ %@ %@", self.logView.text, [formatter stringFromDate:todaysDate], newLog]];
+}
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     //NSLog(@"viewDidLoad");
     self.title = @"Identification";
-    
+    [self log:@"viewDidLoad"];
+
     [super viewDidLoad];
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
@@ -139,6 +148,8 @@
 }
 
 -(IBAction)connexion {
+    [self log:@"Auth: Removing Cookies"];
+
     // remove cookie before auth
     NSHTTPCookieStorage *cookShared = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSArray *cookies = [cookShared cookies];
@@ -158,24 +169,42 @@
     
     //NSLog(@"connexion");
     ASIFormDataRequest  *request =
-    [[ASIFormDataRequest  alloc]  initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], @"/login_validation.php?config=hfr.inc"]]];
-    [request setPostValue:pseudoField.text forKey:@"pseudo"];
-    [request setPostValue:passField.text forKey:@"password"];
-    [request setPostValue:@"send" forKey:@"action"];
-    
-    [request setPostValue:@"Se connecter" forKey:@"login"];
+    [[ASIFormDataRequest alloc]  initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], @"/login_validation.php?config=hfr.inc"]]];
+    [request setStringEncoding:NSUTF8StringEncoding];
+
+    [request addPostValue:pseudoField.text forKey:@"pseudo"];
+    [request addPostValue:passField.text forKey:@"password"];
+    [request addPostValue:@"send" forKey:@"action"];
+
+    [request addPostValue:@"Se connecter" forKey:@"login"];
+    [self log:@"Auth: Sending Request"];
+
     [request startSynchronous];
-    
+
     if (request) {
-        
-        
+        [self log:@"Auth: Request Headers"];
+        [self log:[request requestHeaders]];
+        [self log:@"Auth: Request Post Body"];
+        [self log:[[NSString alloc] initWithData:[request postBody] encoding:NSUTF8StringEncoding]];
+
+        [self log:@"Auth: Request sent"];
+
         if ([request error]) {
             //NSLog(@"localizedDescription %@", [[request error] localizedDescription]);
             //NSLog(@"responseString %@", [request responseString]);
         } else if ([request responseString]) {
             //NSLog(@"responseString %@", [request responseString]);
             //NSLog(@"responseString %@", [request responseHeaders]);
-            
+
+            [self log:@"Request: OK"];
+
+            [self log:@"Response: Headers"];
+            [self log:[request responseHeaders]];
+
+            [self log:@"Response: RAW"];
+            [self log:[request responseString]];
+
+
             NSArray * urlArray = [[request responseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"1; url=login_redirection.php([^\"]*)\" />"];
             
             //NSLog(@"%d", urlArray.count);

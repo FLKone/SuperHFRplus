@@ -6,6 +6,7 @@
 #define Bridging_Header_h
 
 #import "HFRplusAppDelegate.h"
+#import "IdentificationViewController.h"
 
 #endif /* Bridging_Header_h */
 

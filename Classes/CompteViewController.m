@@ -9,6 +9,7 @@
 #import "ASIHTTPRequest.h"
 #import "RegexKitLite.h"
 #import "IdentificationViewController.h"
+#import "SuperHFRplusSwift-Swift.h"
 #import "HFRplusAppDelegate.h"
 #import "RangeOfCharacters.h"
 #import "ThemeColors.h"
@@ -125,17 +126,20 @@
     // Create the root view controller for the navigation controller
     // The new view controller configures a Cancel and Done button for the
     // navigation bar.
-    IdentificationViewController *identificationController = [[IdentificationViewController alloc]
-                                                              initWithNibName:@"IdentificationViewController" bundle:nil];
-    identificationController.delegate = self;
-    identificationController.view.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
+    AuthViewController *authController = [[AuthViewController alloc] initWithNibName:@"IdentificationViewController"
+                                                                              bundle:nil];
+    //IdentificationViewController *identificationController = [[IdentificationViewController alloc]
+      //                                                        initWithNibName:@"IdentificationViewController" bundle:nil];
+    authController.delegate = self;
+    authController.view.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
     
     // Create the navigation controller and present it modally.
     HFRNavigationController *navigationController = [[HFRNavigationController alloc]
-                                                    initWithRootViewController:identificationController];
+                                                    initWithRootViewController:authController];
     
     navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self presentModalViewController:navigationController animated:YES];
+    [self presentViewController:navigationController animated:YES completion:nil];
+    //[self presentModalViewController:navigationController animated:YES];
     [self.loginView setHidden:YES];
     
     // The navigation controller is now owned by the current view controller
