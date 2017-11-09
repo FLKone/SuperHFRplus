@@ -624,6 +624,7 @@
 		D8835E9E1E5F13C70073398C /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D8835E7E1E5F13C70073398C /* UIImageView+HighlightedWebCache.m */; };
 		D8835EA01E5F13C70073398C /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D8835E801E5F13C70073398C /* UIImageView+WebCache.m */; };
 		D8835EA21E5F13C70073398C /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D8835E821E5F13C70073398C /* UIView+WebCacheOperation.m */; };
+		D89AB2E11FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */; };
 		D89AF55E1E55DE120096504F /* ThorHammerGrey-20.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55B1E55DE120096504F /* ThorHammerGrey-20.png */; };
 		D89AF5601E55DE120096504F /* ThorHammerGrey-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */; };
 		D8C8F1561E56ECA000B1381E /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C8F1541E56ECA000B1381E /* ThemeManager.m */; };
@@ -1423,6 +1424,8 @@
 		D8835E801E5F13C70073398C /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		D8835E811E5F13C70073398C /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		D8835E821E5F13C70073398C /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		D89AB2DF1FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImpactFeedbackGenerator+UserDefaults.h"; sourceTree = "<group>"; };
+		D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImpactFeedbackGenerator+UserDefaults.m"; sourceTree = "<group>"; };
 		D89AF55B1E55DE120096504F /* ThorHammerGrey-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThorHammerGrey-20.png"; sourceTree = "<group>"; };
 		D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThorHammerGrey-20@2x.png"; sourceTree = "<group>"; };
 		D8C8F1531E56ECA000B1381E /* ThemeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeManager.h; sourceTree = "<group>"; };
@@ -2191,6 +2194,8 @@
 				4CC814FC1BAC86ED00F8BB81 /* UIColor+Extension.m */,
 				4C1793891E93B78B007EA6CB /* UINavigationBar+Helper.h */,
 				4C17938A1E93B78B007EA6CB /* UINavigationBar+Helper.m */,
+				D89AB2DF1FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.h */,
+				D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -3285,6 +3290,7 @@
 				4C0B8DFD1BA455BF00D329BA /* InfoTableViewCell.m in Sources */,
 				CA7C70C1185EF50E00B348BA /* CreditsViewController.m in Sources */,
 				D8835E8C1E5F13C70073398C /* SDWebImageDecoder.m in Sources */,
+				D89AB2E11FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m in Sources */,
 				4C39035D1BCACEC200FD6F1F /* PSTCollectionViewController.m in Sources */,
 				CA7C70C2185EF50E00B348BA /* IdentificationViewController.m in Sources */,
 				CA7C70C3185EF50E00B348BA /* CompteViewController.m in Sources */,

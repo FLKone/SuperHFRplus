@@ -35,6 +35,7 @@
 
 #import "ProfilViewController.h"
 #import "UIMenuItem+CXAImageSupport.h"
+#import "UIImpactFeedbackGenerator+UserDefaults.h"
 #import "BlackList.h"
 
 #import "ThemeManager.h"
@@ -1440,9 +1441,8 @@
     
 	if (![self.messagesWebView isLoading]) {
         NSLog(@"SVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggered");
-        UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] init];
-        [myGen initWithStyle:(UIImpactFeedbackStyleLight)];
-        [myGen impactOccurred];
+        UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] initWithStyle:(UIImpactFeedbackStyleLight)];
+        [myGen impactOccurredWithDefaults];
         myGen = NULL;
 
 		[self.messagesWebView stringByEvaluatingJavaScriptFromString:@"$('#actualiserbtn').addClass('loading');"];
