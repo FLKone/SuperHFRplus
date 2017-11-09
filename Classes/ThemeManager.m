@@ -31,11 +31,7 @@
             theme = ThemeLight;
         }
         
-        // Apply theme to keyboard
-        if ([[UITextField appearance] respondsToSelector:@selector(setKeyboardAppearance:)]) {
-            [UITextField appearance].keyboardAppearance = [ThemeColors keyboardAppearance:theme];
-        }
-        
+        [self applyAppearance];
     }
     return self;
 }
@@ -64,11 +60,7 @@
     }
     */
     
-    // Apply theme to keyboard
-    if ([[UITextField appearance] respondsToSelector:@selector(setKeyboardAppearance:)]) {
-        [UITextField appearance].keyboardAppearance = [ThemeColors keyboardAppearance:theme];
-    }
-    
+    [self applyAppearance];
 }
                                       
 - (Theme)theme{
@@ -83,6 +75,16 @@
     else {
         [self setTheme:ThemeLight];
     }
+}
+
+-(void)applyAppearance {
+    // Apply theme to keyboard
+    if ([[UITextField appearance] respondsToSelector:@selector(setKeyboardAppearance:)]) {
+        [UITextField appearance].keyboardAppearance = [ThemeColors keyboardAppearance:theme];
+    }
+    
+    [[UIView appearanceWhenContainedInInstancesOfClasses:@[[UIAlertController class]]]
+     setTintColor:[ThemeColors tintColor:theme]];
 }
 
 - (void)applyThemeToCell:(UITableViewCell *)cell{
@@ -135,6 +137,20 @@
          ];
         
     //}
+}
+
+- (void)applyThemeToAlertController:(UIAlertController *)alert{
+    // Vieww hierarchy : https://stackoverflow.com/a/44606994/1853603
+    UIView *firstSubview = alert.view.subviews.firstObject;
+    UIView *alertContentView = firstSubview.subviews.firstObject;
+    for (UIView *subSubView in alertContentView.subviews) {
+        subSubView.backgroundColor = [ThemeColors alertBackgroundColor:theme];
+    }
+    
+    // If dark theme, hide white effect view
+    if(theme == ThemeDark){
+         [alertContentView.subviews objectAtIndex:1].alpha = 0.0f;
+    }
 }
 
 @end

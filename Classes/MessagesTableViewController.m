@@ -1007,6 +1007,7 @@
     
     // Apply theme to UIAlertController
     [self presentViewController:styleAlert animated:YES completion:nil];    
+    [[ThemeManager sharedManager] applyThemeToAlertController:styleAlert];
 }
 
 -(void)showPoll {
