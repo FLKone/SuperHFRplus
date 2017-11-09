@@ -156,13 +156,12 @@
 
 -(void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section{
     UITableViewHeaderFooterView *hv = (UITableViewHeaderFooterView *)view;
-    hv.textLabel.textColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+    hv.textLabel.textColor = [ThemeColors headSectionTextColor:[[ThemeManager sharedManager] theme]];
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section{
     UITableViewHeaderFooterView *hv = (UITableViewHeaderFooterView *)view;
-    hv.textLabel.textColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-
+    hv.textLabel.textColor = [ThemeColors headSectionTextColor:[[ThemeManager sharedManager] theme]];
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
