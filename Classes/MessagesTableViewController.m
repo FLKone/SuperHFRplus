@@ -998,13 +998,19 @@
         }]];
     }
 
-    
-    // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-    UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
-    [styleAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }]];
-    
+    // cancelButtonStyle not needed on iPad
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
+        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+        [styleAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }]];
+    } else {
+        // Required for UIUserInterfaceIdiomPad
+        UIPopoverPresentationController *popPresenter = [styleAlert popoverPresentationController];
+        popPresenter.barButtonItem = sender;
+        popPresenter.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
+    }
     // Apply theme to UIAlertController
     [self presentViewController:styleAlert animated:YES completion:nil];    
     [[ThemeManager sharedManager] applyThemeToAlertController:styleAlert];
