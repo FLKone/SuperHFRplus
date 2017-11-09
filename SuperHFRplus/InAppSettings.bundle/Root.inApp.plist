@@ -25,6 +25,8 @@
 			<string>PSChildPaneSpecifier</string>
 		</dict>
 		<dict>
+			<key>FooterText</key>
+			<string>Compatible à partir de l&apos;iPhone 6S</string>
 			<key>Title</key>
 			<string>Général</string>
 			<key>Type</key>
