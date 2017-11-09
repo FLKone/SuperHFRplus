@@ -143,6 +143,16 @@
 			</array>
 		</dict>
 		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>haptics</string>
+			<key>Title</key>
+			<string>Retours haptiques</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>Sujets</string>
 			<key>Type</key>
