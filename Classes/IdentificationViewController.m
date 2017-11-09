@@ -29,6 +29,7 @@
  */
 
 -(void)log:(id)newLog {
+    return;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"HH:mm:ss.SSS"];
     NSDate *todaysDate;
