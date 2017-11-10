@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "IASKAppSettingsViewController.h"
+@import InAppSettingsKit;
 
 @interface SettingsViewController : IASKAppSettingsViewController <IASKSettingsDelegate, UIAlertViewDelegate, UITableViewDelegate> {
     

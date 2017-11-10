@@ -7,9 +7,9 @@
 
 #import "SettingsViewController.h"
 #import "HFRplusAppDelegate.h"
-#import "IASKSettingsReader.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+@import InAppSettingsKit;
 
 @implementation SettingsViewController
 
