@@ -11,6 +11,8 @@
 #import "ThemeManager.h"
 #import "UINavigationBar+Helper.h"
 #import "MWPhotoBrowser.h"
+#import "InAppSettingsKit+Theme.h"
+
 @interface HFRNavigationController ()
 
 @end
@@ -22,6 +24,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+
     }
     return self;
 }
@@ -29,6 +32,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+     self.delegate = self;
 	// Do any additional setup after loading the view.
     NSLog(@"viewDidLoad HFR HFR NavControll.");
     
@@ -60,6 +64,14 @@
 
 }
 
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    NSLog(@"HFR Navigation Will show %@", viewController);
+    if ([viewController isKindOfClass:[IASKSpecifierValuesViewController class]]) {
+        Theme theme = [[ThemeManager sharedManager] theme];
+
+        [(IASKSpecifierValuesViewController *)viewController setThemeColors:theme];
+    }
+}
 - (NSString *) userThemeDidChange {
     
     NSLog(@"HFR userThemeDidChange");
@@ -88,12 +100,16 @@
     
     [self.topViewController viewWillAppear:NO];
 
+    if ([self.topViewController isKindOfClass:[IASKSpecifierValuesViewController class]]) {
+        [(IASKSpecifierValuesViewController *)self.topViewController setThemeColors:theme];
+    }
     return @"";
 }
 
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
 }
+
 
 - (void)navigationBarDoubleTap:(UIGestureRecognizer*)recognizer {
     NSLog(@"navigationBarDoubleTapnavigationBarDoubleTap");

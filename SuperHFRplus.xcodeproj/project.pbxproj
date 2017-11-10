@@ -209,6 +209,7 @@
 		4CC3C75C1B99BC18001B8632 /* AlerteModoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CC3C7581B99BC18001B8632 /* AlerteModoViewController.xib */; };
 		4CC3C7671B9A1513001B8632 /* UITextView+Placeholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC3C7651B9A1513001B8632 /* UITextView+Placeholder.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4CC814FE1BAC86ED00F8BB81 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC814FC1BAC86ED00F8BB81 /* UIColor+Extension.m */; };
+		4CCF76681FB5CE12008CF525 /* InAppSettingsKit+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCF76671FB5CE12008CF525 /* InAppSettingsKit+Theme.m */; };
 		4CD6B8811B977E0E007FC29E /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD6B87F1B977E06007FC29E /* SafariServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		4CD6B8841B9796F5007FC29E /* CancelFilled-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD6B8821B9796F5007FC29E /* CancelFilled-20.png */; };
 		4CD6B8871B979713007FC29E /* CancelFilled-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD6B8851B979713007FC29E /* CancelFilled-20@2x.png */; };
@@ -939,6 +940,8 @@
 		4CC3C7651B9A1513001B8632 /* UITextView+Placeholder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Placeholder.m"; sourceTree = "<group>"; };
 		4CC814FB1BAC86ED00F8BB81 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
 		4CC814FC1BAC86ED00F8BB81 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
+		4CCF76661FB5CE12008CF525 /* InAppSettingsKit+Theme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InAppSettingsKit+Theme.h"; sourceTree = "<group>"; };
+		4CCF76671FB5CE12008CF525 /* InAppSettingsKit+Theme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "InAppSettingsKit+Theme.m"; sourceTree = "<group>"; };
 		4CD6B87F1B977E06007FC29E /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		4CD6B8821B9796F5007FC29E /* CancelFilled-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CancelFilled-20.png"; sourceTree = "<group>"; };
 		4CD6B8851B979713007FC29E /* CancelFilled-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CancelFilled-20@2x.png"; sourceTree = "<group>"; };
@@ -2083,6 +2086,8 @@
 				4C17938A1E93B78B007EA6CB /* UINavigationBar+Helper.m */,
 				D89AB2DF1FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.h */,
 				D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */,
+				4CCF76661FB5CE12008CF525 /* InAppSettingsKit+Theme.h */,
+				4CCF76671FB5CE12008CF525 /* InAppSettingsKit+Theme.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -3187,6 +3192,7 @@
 			files = (
 				CAF5DB8219341BBB000B5215 /* AvatarTableViewCell.m in Sources */,
 				CAADF6C81929681300ECA4C1 /* ProfilViewController.m in Sources */,
+				4CCF76681FB5CE12008CF525 /* InAppSettingsKit+Theme.m in Sources */,
 				CA7C70BF185EF50E00B348BA /* InfosViewController.m in Sources */,
 				4C17938C1E93B78B007EA6CB /* UINavigationBar+Helper.m in Sources */,
 				CA7C70C0185EF50E00B348BA /* AideViewController.m in Sources */,

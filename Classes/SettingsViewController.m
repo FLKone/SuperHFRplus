@@ -17,13 +17,16 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.delegate = self;
         //...
+        self.delegate = self;
+
     }
     return self;
 }
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
     
      IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
@@ -36,26 +39,28 @@
 -(void)viewDidLoad {
     //NSLog(@"viewDidLoadviewDidLoadviewDidLoadviewDidLoad");
     [super viewDidLoad];
+    self.showCreditsFooter = NO;
+    [self.tableView setDelegate:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated   {
     [super viewWillAppear:animated];
     
-    NSSet *hiddenKeys;
+    NSMutableSet *hiddenKeys = [NSMutableSet set];
     
     // Désactivation de la configuration du thème pour iOS 5-6
     if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        hiddenKeys = [NSSet setWithObjects:@"theme", nil];
+        [hiddenKeys addObject:@"theme"];
     }
     
-    //BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
+    BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
     IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
     
-    //if (!enabled) {
-        hiddenKeys = [hiddenKeys setByAddingObject:@"menu_debug_entry"];
-    //}
+    if (!enabled) {
+        [hiddenKeys addObject:@"menu_debug_entry"];
+    }
     
-    //NSLog(@"hiddenKeys %@", hiddenKeys);
+    NSLog(@"hiddenKeys %@", hiddenKeys);
     
     settingsVC.hiddenKeys = hiddenKeys;//enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
@@ -67,37 +72,38 @@
 - (void)settingDidChange:(NSNotification*)notification {
     NSLog(@"settingDidChange %@", notification);
 
-    if ([notification.object isEqual:@"menu_debug"]) {
+    if ([notification.userInfo objectForKey:@"menu_debug"]) {
         //IASKAppSettingsViewController *activeController = self;
-        NSSet *hiddenKeys;
-        
+        NSMutableSet *hiddenKeys = [NSMutableSet set];
+
         // Désactivation de la configuration du thème pour iOS 5-6
         if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            hiddenKeys = [NSSet setWithObjects:@"theme", nil];
+            [hiddenKeys addObject:@"theme"];
         }
         
-        BOOL enabled = (BOOL)[[notification.userInfo objectForKey:@"menu_debug"] intValue];
-        
+        BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
+
         IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
     
         //((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]).hiddenKeys = enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
         
         if (!enabled) {
-            hiddenKeys = [hiddenKeys setByAddingObject:@"menu_debug_entry"];
+            [hiddenKeys addObject:@"menu_debug_entry"];
         }
         
-        //NSLog(@"hiddenKeys %@", hiddenKeys);
+        NSLog(@"hiddenKeys %@", hiddenKeys);
         
         settingsVC.hiddenKeys = hiddenKeys;//enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
         
         //[activeController setHiddenKeys:enabled ? nil : [NSSet setWithObjects:@"AutoConnectTest", nil] animated:YES];
         
-    } else if([notification.object isEqual:@"theme"]) {
+    } else if([notification.userInfo objectForKey:@"theme"]) {
 
         Theme theme = (Theme)[[notification.userInfo objectForKey:@"theme"] intValue];
         [[ThemeManager sharedManager] setTheme:theme];
         [self setThemeColors:theme];
-    } else if([notification.object isEqual:@"icon"]) {
+
+    } else if([notification.userInfo objectForKey:@"icon"]) {
         NSString *newIcon = [notification.userInfo objectForKey:@"icon"];
 
         if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)

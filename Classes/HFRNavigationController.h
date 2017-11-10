@@ -7,6 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HFRNavigationController : UINavigationController
+@interface HFRNavigationController : UINavigationController <UINavigationControllerDelegate>
 
 @end
