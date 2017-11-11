@@ -29,6 +29,16 @@
       language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4CCF35201FB74209003B8373"
+               BuildableName = "SuperHFRplusUITests.xctest"
+               BlueprintName = "SuperHFRplusUITests"
+               ReferencedContainer = "container:SuperHFRplus.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
