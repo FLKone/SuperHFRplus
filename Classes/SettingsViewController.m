@@ -174,6 +174,11 @@
     [[ThemeManager sharedManager] applyThemeToCell:cell];
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 #pragma mark -
 - (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForKey:(NSString*)key {
     //NSLog(@"settingsViewController");
