@@ -52,7 +52,7 @@
 	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
 }
 
-- (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 
     NSLog(@"didFinishLaunchingWithOptions");
 

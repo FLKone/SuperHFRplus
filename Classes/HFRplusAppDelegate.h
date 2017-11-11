@@ -15,7 +15,7 @@
 
 #import "Reachability.h"
 
-@interface HFRplusAppDelegate : NSObject {
+@interface HFRplusAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
 	TabBarController *rootController;	
 	SplitViewController *splitViewController;
@@ -59,7 +59,6 @@
 @property (nonatomic, strong) Reachability *internetReach;
 
 + (HFRplusAppDelegate *)sharedAppDelegate;
-- (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
 - (void)readMPBadge;
