@@ -1,0 +1,7 @@
+app_identifier ENV["DELIVER_BDLID"] # The bundle identifier of your app
+apple_id ENV["DELIVER_USER"] # Your Apple email address
+
+team_id ENV["DELIVER_TEAMID"] # Developer Portal Team ID
+
+# you can even provide different app identifiers, Apple IDs and team names per lane:
+# More information: https://docs.fastlane.tools/advanced/#appfile

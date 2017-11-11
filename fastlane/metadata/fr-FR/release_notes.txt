@@ -1,0 +1,9 @@
+• Thème Sombre : Dans l'éditeur le clavier pouvait parfois s'afficher en blanc.
+• Thème Clair : 2 fois plus blanc :o
+• L'enregistrement des images via le mode Photo provoquait un plantage.
+
+Pour rappel les nouveautés de la version 2.0 :
+• Icône personnalisable dans les réglages.
+• Raccourcis vers les différents onglets (Catégories, Favoris, Messages) depuis l'icône. (Disponible uniquement à partir de l'iPhone 6S grâce à 3D Touch).
+• Retours haptiques (vibrations) lors de l'actualisation, l'ajout d'un message etc.
+• Compatible iPhone X.
