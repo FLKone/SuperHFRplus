@@ -204,6 +204,15 @@
 		4CB311ED19FAF8750097D84D /* hammer.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 4CB311EB19FAF8750097D84D /* hammer.min.js */; };
 		4CB311F019FAFCAE0097D84D /* hammer.min.map in Resources */ = {isa = PBXBuildFile; fileRef = 4CB311EE19FAFCAE0097D84D /* hammer.min.map */; };
 		4CB311F319FAFF2C0097D84D /* jquery.hammer.js in Resources */ = {isa = PBXBuildFile; fileRef = 4CB311F119FAFF2C0097D84D /* jquery.hammer.js */; };
+		4CC27B3F1FB75ADC003FE99E /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4CC27B3D1FB75ADC003FE99E /* Interface.storyboard */; };
+		4CC27B411FB75ADC003FE99E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CC27B401FB75ADC003FE99E /* Assets.xcassets */; };
+		4CC27B481FB75ADD003FE99E /* SuperHFRplusWatch Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 4CC27B471FB75ADD003FE99E /* SuperHFRplusWatch Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		4CC27B4D1FB75ADD003FE99E /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC27B4C1FB75ADD003FE99E /* InterfaceController.swift */; };
+		4CC27B4F1FB75ADD003FE99E /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC27B4E1FB75ADD003FE99E /* ExtensionDelegate.swift */; };
+		4CC27B511FB75ADD003FE99E /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC27B501FB75ADD003FE99E /* NotificationController.swift */; };
+		4CC27B531FB75ADD003FE99E /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC27B521FB75ADD003FE99E /* ComplicationController.swift */; };
+		4CC27B551FB75ADD003FE99E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CC27B541FB75ADD003FE99E /* Assets.xcassets */; };
+		4CC27B5B1FB75ADD003FE99E /* SuperHFRplusWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 4CC27B3B1FB75ADC003FE99E /* SuperHFRplusWatch.app */; };
 		4CC3C7511B99BB6F001B8632 /* DeleteMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC3C74F1B99BB6F001B8632 /* DeleteMessageViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		4CC3C75A1B99BC18001B8632 /* AlerteModoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC3C7571B99BC18001B8632 /* AlerteModoViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		4CC3C75C1B99BC18001B8632 /* AlerteModoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CC3C7581B99BC18001B8632 /* AlerteModoViewController.xib */; };
@@ -629,6 +638,48 @@
 		D8F5CBB21DF462F100B029FC /* ThemeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F5CBB01DF462F100B029FC /* ThemeColors.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4CC27B491FB75ADD003FE99E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4CC27B461FB75ADD003FE99E;
+			remoteInfo = "SuperHFRplusWatch Extension";
+		};
+		4CC27B581FB75ADD003FE99E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4CC27B3A1FB75ADC003FE99E;
+			remoteInfo = SuperHFRplusWatch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4CC27B5A1FB75ADD003FE99E /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				4CC27B5B1FB75ADD003FE99E /* SuperHFRplusWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CC27B611FB75ADD003FE99E /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				4CC27B481FB75ADD003FE99E /* SuperHFRplusWatch Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		013F0DB4121E0E8700BEBEB1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		013F0E95121E117800BEBEB1 /* LinkItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LinkItem.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -931,6 +982,18 @@
 		4CB311EB19FAF8750097D84D /* hammer.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = hammer.min.js; sourceTree = "<group>"; };
 		4CB311EE19FAFCAE0097D84D /* hammer.min.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = hammer.min.map; sourceTree = "<group>"; };
 		4CB311F119FAFF2C0097D84D /* jquery.hammer.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = jquery.hammer.js; sourceTree = "<group>"; };
+		4CC27B3B1FB75ADC003FE99E /* SuperHFRplusWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperHFRplusWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CC27B3E1FB75ADC003FE99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		4CC27B401FB75ADC003FE99E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4CC27B421FB75ADC003FE99E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4CC27B471FB75ADD003FE99E /* SuperHFRplusWatch Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "SuperHFRplusWatch Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CC27B4C1FB75ADD003FE99E /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		4CC27B4E1FB75ADD003FE99E /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		4CC27B501FB75ADD003FE99E /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		4CC27B521FB75ADD003FE99E /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
+		4CC27B541FB75ADD003FE99E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4CC27B561FB75ADD003FE99E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4CC27B571FB75ADD003FE99E /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		4CC3C74E1B99BB6F001B8632 /* DeleteMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteMessageViewController.h; sourceTree = "<group>"; };
 		4CC3C74F1B99BB6F001B8632 /* DeleteMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteMessageViewController.m; sourceTree = "<group>"; };
 		4CC3C7561B99BC18001B8632 /* AlerteModoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlerteModoViewController.h; sourceTree = "<group>"; };
@@ -1405,6 +1468,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4CC27B441FB75ADD003FE99E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA7C711D185EF50E00B348BA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1626,6 +1696,8 @@
 			isa = PBXGroup;
 			children = (
 				CA7C7132185EF50E00B348BA /* SuperHFRplusSwift.app */,
+				4CC27B3B1FB75ADC003FE99E /* SuperHFRplusWatch.app */,
+				4CC27B471FB75ADD003FE99E /* SuperHFRplusWatch Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1636,6 +1708,8 @@
 				CA00C35417C2FC620067B457 /* SuperHFRplus */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				4CC27B3C1FB75ADC003FE99E /* SuperHFRplusWatch */,
+				4CC27B4B1FB75ADD003FE99E /* SuperHFRplusWatch Extension */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -1942,6 +2016,30 @@
 			);
 			name = MenuItem;
 			path = iOS7;
+			sourceTree = "<group>";
+		};
+		4CC27B3C1FB75ADC003FE99E /* SuperHFRplusWatch */ = {
+			isa = PBXGroup;
+			children = (
+				4CC27B3D1FB75ADC003FE99E /* Interface.storyboard */,
+				4CC27B401FB75ADC003FE99E /* Assets.xcassets */,
+				4CC27B421FB75ADC003FE99E /* Info.plist */,
+			);
+			path = SuperHFRplusWatch;
+			sourceTree = "<group>";
+		};
+		4CC27B4B1FB75ADD003FE99E /* SuperHFRplusWatch Extension */ = {
+			isa = PBXGroup;
+			children = (
+				4CC27B4C1FB75ADD003FE99E /* InterfaceController.swift */,
+				4CC27B4E1FB75ADD003FE99E /* ExtensionDelegate.swift */,
+				4CC27B501FB75ADD003FE99E /* NotificationController.swift */,
+				4CC27B521FB75ADD003FE99E /* ComplicationController.swift */,
+				4CC27B541FB75ADD003FE99E /* Assets.xcassets */,
+				4CC27B561FB75ADD003FE99E /* Info.plist */,
+				4CC27B571FB75ADD003FE99E /* PushNotificationPayload.apns */,
+			);
+			path = "SuperHFRplusWatch Extension";
 			sourceTree = "<group>";
 		};
 		CA00C35417C2FC620067B457 /* SuperHFRplus */ = {
@@ -2631,6 +2729,40 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4CC27B3A1FB75ADC003FE99E /* SuperHFRplusWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CC27B621FB75ADD003FE99E /* Build configuration list for PBXNativeTarget "SuperHFRplusWatch" */;
+			buildPhases = (
+				4CC27B391FB75ADC003FE99E /* Resources */,
+				4CC27B611FB75ADD003FE99E /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4CC27B4A1FB75ADD003FE99E /* PBXTargetDependency */,
+			);
+			name = SuperHFRplusWatch;
+			productName = SuperHFRplusWatch;
+			productReference = 4CC27B3B1FB75ADC003FE99E /* SuperHFRplusWatch.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		4CC27B461FB75ADD003FE99E /* SuperHFRplusWatch Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CC27B601FB75ADD003FE99E /* Build configuration list for PBXNativeTarget "SuperHFRplusWatch Extension" */;
+			buildPhases = (
+				4CC27B431FB75ADD003FE99E /* Sources */,
+				4CC27B441FB75ADD003FE99E /* Frameworks */,
+				4CC27B451FB75ADD003FE99E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SuperHFRplusWatch Extension";
+			productName = "SuperHFRplusWatch Extension";
+			productReference = 4CC27B471FB75ADD003FE99E /* SuperHFRplusWatch Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
 		CA7C6FA3185EF50E00B348BA /* SuperHFRplus */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA7C712F185EF50E00B348BA /* Build configuration list for PBXNativeTarget "SuperHFRplus" */;
@@ -2639,10 +2771,12 @@
 				CA7C70B9185EF50E00B348BA /* Sources */,
 				CA7C711D185EF50E00B348BA /* Frameworks */,
 				4CFB848B1FB4BC6F0014BE6D /* ShellScript */,
+				4CC27B5A1FB75ADD003FE99E /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4CC27B591FB75ADD003FE99E /* PBXTargetDependency */,
 			);
 			name = SuperHFRplus;
 			productName = HFRplus;
@@ -2655,9 +2789,19 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0910;
 				LastUpgradeCheck = 0900;
 				TargetAttributes = {
+					4CC27B3A1FB75ADC003FE99E = {
+						CreatedOnToolsVersion = 9.1;
+						DevelopmentTeam = 4Z4VCUMET3;
+						ProvisioningStyle = Automatic;
+					};
+					4CC27B461FB75ADD003FE99E = {
+						CreatedOnToolsVersion = 9.1;
+						DevelopmentTeam = 4Z4VCUMET3;
+						ProvisioningStyle = Automatic;
+					};
 					CA7C6FA3185EF50E00B348BA = {
 						DevelopmentTeam = 4Z4VCUMET3;
 						LastSwiftMigration = 0910;
@@ -2688,11 +2832,30 @@
 			projectRoot = "";
 			targets = (
 				CA7C6FA3185EF50E00B348BA /* SuperHFRplus */,
+				4CC27B3A1FB75ADC003FE99E /* SuperHFRplusWatch */,
+				4CC27B461FB75ADD003FE99E /* SuperHFRplusWatch Extension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4CC27B391FB75ADC003FE99E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CC27B411FB75ADC003FE99E /* Assets.xcassets in Resources */,
+				4CC27B3F1FB75ADC003FE99E /* Interface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CC27B451FB75ADD003FE99E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CC27B551FB75ADD003FE99E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA7C6FA4185EF50E00B348BA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3186,6 +3349,17 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4CC27B431FB75ADD003FE99E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CC27B511FB75ADD003FE99E /* NotificationController.swift in Sources */,
+				4CC27B531FB75ADD003FE99E /* ComplicationController.swift in Sources */,
+				4CC27B4F1FB75ADD003FE99E /* ExtensionDelegate.swift in Sources */,
+				4CC27B4D1FB75ADD003FE99E /* InterfaceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA7C70B9185EF50E00B348BA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3331,7 +3505,28 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		4CC27B4A1FB75ADD003FE99E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4CC27B461FB75ADD003FE99E /* SuperHFRplusWatch Extension */;
+			targetProxy = 4CC27B491FB75ADD003FE99E /* PBXContainerItemProxy */;
+		};
+		4CC27B591FB75ADD003FE99E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4CC27B3A1FB75ADC003FE99E /* SuperHFRplusWatch */;
+			targetProxy = 4CC27B581FB75ADD003FE99E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		4CC27B3D1FB75ADC003FE99E /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CC27B3E1FB75ADC003FE99E /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
 		CA1070C115A4DA1E002E6C19 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -3344,6 +3539,148 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		4CC27B5C1FB75ADD003FE99E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4Z4VCUMET3;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				IBSC_MODULE = SuperHFRplusWatch_Extension;
+				INFOPLIST_FILE = SuperHFRplusWatch/Info.plist;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 4.1;
+			};
+			name = Debug;
+		};
+		4CC27B5D1FB75ADD003FE99E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4Z4VCUMET3;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				IBSC_MODULE = SuperHFRplusWatch_Extension;
+				INFOPLIST_FILE = SuperHFRplusWatch/Info.plist;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 4.1;
+			};
+			name = Release;
+		};
+		4CC27B5E1FB75ADD003FE99E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4Z4VCUMET3;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "SuperHFRplusWatch Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 4.1;
+			};
+			name = Debug;
+		};
+		4CC27B5F1FB75ADD003FE99E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4Z4VCUMET3;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "SuperHFRplusWatch Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 4.1;
+			};
+			name = Release;
+		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3415,7 +3752,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = SuperHFRplus.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -3445,12 +3782,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: julien Alexandre (F5S3AE68QG)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3472,8 +3805,6 @@
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -3488,12 +3819,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: julien Alexandre (4Z4VCUMET3)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3513,8 +3840,6 @@
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3524,6 +3849,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4CC27B601FB75ADD003FE99E /* Build configuration list for PBXNativeTarget "SuperHFRplusWatch Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CC27B5E1FB75ADD003FE99E /* Debug */,
+				4CC27B5F1FB75ADD003FE99E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4CC27B621FB75ADD003FE99E /* Build configuration list for PBXNativeTarget "SuperHFRplusWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CC27B5C1FB75ADD003FE99E /* Debug */,
+				4CC27B5D1FB75ADD003FE99E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SuperHFRplus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
