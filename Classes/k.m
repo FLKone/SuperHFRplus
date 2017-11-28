@@ -31,13 +31,12 @@
         
     }
     NSLog(@"Noxy");
-    return @"http://forum.hardware.fr";
     */
 }
 
 + (NSString *)RealForumURL
 {
-    return @"http://forum.hardware.fr";
+    return @"https://forum.hardware.fr";
 }
 
 

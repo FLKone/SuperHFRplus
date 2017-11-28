@@ -234,6 +234,6 @@
 }
 
 - (IBAction)goToCreate {
-    [[HFRplusAppDelegate sharedAppDelegate] openURL:@"http://forum.hardware.fr/inscription.php"];
+    [[HFRplusAppDelegate sharedAppDelegate] openURL:@"https://forum.hardware.fr/inscription.php"];
 }
 @end
