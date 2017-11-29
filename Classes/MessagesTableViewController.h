@@ -83,7 +83,7 @@
 
 	NSDate *firstDate;
     
-    UIActionSheet *styleAlert;
+    UIAlertController *styleAlert;
     
     //Poll
     HTMLNode *pollNode;
@@ -138,7 +138,7 @@
 @property (nonatomic, strong) UISwipeGestureRecognizer *swipeLeftRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *swipeRightRecognizer;
 
-@property (nonatomic, strong) UIActionSheet *styleAlert;
+@property (nonatomic, strong) UIAlertController *styleAlert;
 
 @property (nonatomic, strong) NSOperationQueue *queue; //v3
 

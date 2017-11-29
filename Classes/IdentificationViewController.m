@@ -29,6 +29,7 @@
  */
 
 -(void)log:(id)newLog {
+    return;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"HH:mm:ss.SSS"];
     NSDate *todaysDate;
@@ -50,9 +51,8 @@
     }
     
     //Bouton Finish
-    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(finish)];
-    
-    self.navigationItem.rightBarButtonItem = segmentBarItem;
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Annuler" style:UIBarButtonItemStyleDone target:self action:@selector(finish)];
+    self.navigationItem.leftBarButtonItem = cancelButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -234,6 +234,6 @@
 }
 
 - (IBAction)goToCreate {
-    [[HFRplusAppDelegate sharedAppDelegate] openURL:@"http://forum.hardware.fr/inscription.php"];
+    [[HFRplusAppDelegate sharedAppDelegate] openURL:@"https://forum.hardware.fr/inscription.php"];
 }
 @end

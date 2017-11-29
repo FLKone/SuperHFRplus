@@ -35,6 +35,7 @@
 
 #import "ProfilViewController.h"
 #import "UIMenuItem+CXAImageSupport.h"
+#import "UIImpactFeedbackGenerator+UserDefaults.h"
 #import "BlackList.h"
 
 #import "ThemeManager.h"
@@ -977,69 +978,42 @@
         [self.arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Navigateur✚", @"fullScreen", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         
     }
-    //UIActionSheet *styleAlert;
 
+    
+    styleAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
-    /*NSMutableArray *optionsList = [NSMutableArray arrayWithObjects:@"Première page", @"Dernière page", nil];
-
-	if(topicAnswerUrl.length > 0) {
-        [optionsList addObject:@"Répondre"];
+    
+    for( NSDictionary *dico in arrayActionsMessages) {
+        [styleAlert addAction:[UIAlertAction actionWithTitle:[dico valueForKey:@"title"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            if ([self respondsToSelector:NSSelectorFromString([dico valueForKey:@"code"])])
+            {
+                //[self performSelector:];
+                [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+            }
+            else {
+                NSLog(@"CRASH not respondsToSelector %@", [dico valueForKey:@"code"]);
+                
+                [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+            }
+        }]];
     }
-    
-    if (self.isUnreadable) {
-        [optionsList addObject:@"Marquer comme non lu"];
-    } 
-    
-    
-     */
-    if ([styleAlert isVisible]) {
-        [styleAlert dismissWithClickedButtonIndex:styleAlert.numberOfButtons-1 animated:YES];
-        return;
-    }
-    else {
-        styleAlert = [[UIActionSheet alloc] init];
-    }
-    
-    
-    
-    //styleAlert = [[UIActionSheet alloc] init];
-	styleAlert.delegate = self;
-    
-	styleAlert.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    
-    for( NSDictionary *dico in arrayActionsMessages)  
-        [styleAlert addButtonWithTitle:[dico valueForKey:@"title"]]; 
 
-    [styleAlert addButtonWithTitle:@"Annuler"]; 
-    styleAlert.cancelButtonIndex = styleAlert.numberOfButtons-1;
-    
-    // use the same style as the nav bar
-    styleAlert.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    [styleAlert showFromBarButtonItem:sender animated:YES];
-    
-    //[styleAlert showInView:[[[HFRplusAppDelegate sharedAppDelegate] rootController] view]];
-    //[styleAlert release];    
-    
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    //NSLog(@"clickedButtonAtIndex %d", buttonIndex);
-    
-    if (buttonIndex < self.arrayActionsMessages.count) {
-        NSLog(@"action %@", [self.arrayActionsMessages objectAtIndex:buttonIndex]);
-        if ([self respondsToSelector:NSSelectorFromString([[self.arrayActionsMessages objectAtIndex:buttonIndex] objectForKey:@"code"])])
-        {
-            //[self performSelector:];
-            [self performSelectorOnMainThread:NSSelectorFromString([[self.arrayActionsMessages objectAtIndex:buttonIndex] objectForKey:@"code"]) withObject:nil waitUntilDone:NO];
-        }
-        else {
-            NSLog(@"CRASH not respondsToSelector %@", [[self.arrayActionsMessages objectAtIndex:buttonIndex] objectForKey:@"code"]);
-            
-            [self performSelectorOnMainThread:NSSelectorFromString([[self.arrayActionsMessages objectAtIndex:buttonIndex] objectForKey:@"code"]) withObject:nil waitUntilDone:NO];
-            
-        }
+    // cancelButtonStyle not needed on iPad
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
+        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+        [styleAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }]];
+    } else {
+        // Required for UIUserInterfaceIdiomPad
+        UIPopoverPresentationController *popPresenter = [styleAlert popoverPresentationController];
+        popPresenter.barButtonItem = sender;
+        popPresenter.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
     }
-    
+    // Apply theme to UIAlertController
+    [self presentViewController:styleAlert animated:YES completion:nil];    
+    [[ThemeManager sharedManager] applyThemeToAlertController:styleAlert];
 }
 
 -(void)showPoll {
@@ -1440,9 +1414,8 @@
     
 	if (![self.messagesWebView isLoading]) {
         NSLog(@"SVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggered");
-        UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] init];
-        [myGen initWithStyle:(UIImpactFeedbackStyleLight)];
-        [myGen impactOccurred];
+        UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] initWithStyle:(UIImpactFeedbackStyleLight)];
+        [myGen impactOccurredWithDefaults];
         myGen = NULL;
 
 		[self.messagesWebView stringByEvaluatingJavaScriptFromString:@"$('#actualiserbtn').addClass('loading');"];
@@ -1636,7 +1609,7 @@
             dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
                 [alert dismissViewControllerAnimated:YES completion:^{
                     if (isTT) {
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kTTURL] options:@{} completionHandler:nil];
+                        [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
                     }
                 }];
             });

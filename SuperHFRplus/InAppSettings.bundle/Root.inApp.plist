@@ -25,6 +25,8 @@
 			<string>PSChildPaneSpecifier</string>
 		</dict>
 		<dict>
+			<key>FooterText</key>
+			<string>Compatible à partir de l&apos;iPhone 6S</string>
 			<key>Title</key>
 			<string>Général</string>
 			<key>Type</key>
@@ -141,6 +143,16 @@
 				<string>redface</string>
 				<string>beta</string>
 			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>haptics</string>
+			<key>Title</key>
+			<string>Retours haptiques</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
 			<key>Title</key>
@@ -266,6 +278,34 @@
 			<key>Key</key>
 			<string>EmptyCacheButton</string>
 		</dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Menu debug</string>
+            <key>Key</key>
+            <string>menu_debug</string>
+            <key>DefaultValue</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>IASKCellImage</key>
+            <string>BugFilled-25</string>
+            <key>IASKViewControllerClass</key>
+            <string>HFRDebugViewController</string>
+            <key>Title</key>
+            <string>Debug</string>
+            <key>Type</key>
+            <string>PSChildPaneSpecifier</string>
+            <key>Key</key>
+            <string>menu_debug_entry</string>
+        </dict>
+        <dict>
+            <key>Title</key>
+            <string></string>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>1.0</string>

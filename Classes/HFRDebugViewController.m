@@ -17,9 +17,9 @@
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 
-#define kBenchUrlForum   @"http://forum.hardware.fr"
-#define kBenchUrlCategorie   @"http://forum.hardware.fr/hfr/Hardware/liste_sujet-1.htm"
-#define kBenchUrlTopic   @"http://forum.hardware.fr/hfr/apple/officiel-application-hfr-sujet_1711_1.htm"
+#define kBenchUrlForum   @"https://forum.hardware.fr"
+#define kBenchUrlCategorie   @"https://forum.hardware.fr/hfr/Hardware/liste_sujet-1.htm"
+#define kBenchUrlTopic   @"https://forum.hardware.fr/hfr/apple/officiel-application-hfr-sujet_1711_1.htm"
 
 @implementation HFRDebugViewController
 @synthesize choixURL;

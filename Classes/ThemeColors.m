@@ -343,6 +343,17 @@
     }
 }
 
++ (UIColor *)alertBackgroundColor:(Theme)theme{
+    switch (theme) {
+        case ThemeLight:
+            return [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.9];
+        case ThemeDark:
+            return [UIColor colorWithRed:30.0/255.0 green:31.0/255.0 blue:33.0/255.0 alpha:0.7];
+        default:
+            return [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.9];
+
+    }
+}
 
 + (UIBarStyle)barStyle:(Theme)theme{
     switch (theme) {

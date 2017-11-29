@@ -11,7 +11,7 @@
 #import "SplitViewController.h"
 #import "DetailNavigationViewController.h"
 
-#import "IASKAppSettingsViewController.h"
+@import InAppSettingsKit;
 
 #import "Reachability.h"
 

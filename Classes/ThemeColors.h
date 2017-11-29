@@ -36,6 +36,7 @@
 + (UIColor *)overlayColor:(Theme)theme;
 + (UIColor *)toolbarColor:(Theme)theme;
 + (UIColor *)toolbarPageBackgroundColor:(Theme)theme;
++ (UIColor *)alertBackgroundColor:(Theme)theme;
 + (NSString *)creditsCss:(Theme)theme;
 + (NSString *)smileysCss:(Theme)theme;
 + (NSString *)messagesRetinaCssPath:(Theme)theme;

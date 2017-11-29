@@ -9,6 +9,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "UIScrollView+SVPullToRefresh.h"
+#import "UIImpactFeedbackGenerator+UserDefaults.h"
 #import "Constants.h"
 
 //fequal() and fequalzro() from http://stackoverflow.com/a/1614761/184130
@@ -732,9 +733,8 @@ static char UIScrollViewPullToRefreshView;
         case SVPullToRefreshStateTriggered:
         {
             NSLog(@"SVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggered");
-            UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] init];
-            [myGen initWithStyle:(UIImpactFeedbackStyleLight)];
-            [myGen impactOccurred];
+            UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] initWithStyle:(UIImpactFeedbackStyleLight)];
+            [myGen impactOccurredWithDefaults];
             myGen = NULL;
 
             break;
