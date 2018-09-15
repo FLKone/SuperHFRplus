@@ -1,2 +1,1 @@
-github "futuretap/InAppSettingsKit" ~> 2.8
-github "SnapKit/SnapKit" ~> 4.0.0
+github "futuretap/InAppSettingsKit" "master"

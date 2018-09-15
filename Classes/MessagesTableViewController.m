@@ -780,6 +780,10 @@
                                              selector:@selector(userThemeDidChange)
                                                  name:kThemeChangedNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(smileysSizeDidChange)
+                                                 name:kSmileysSizeChangedNotification
+                                               object:nil];
     
     if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userTextSizeDidChange) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -1770,6 +1774,13 @@
             display_sig_css = @"";
         }
         
+        NSString *doubleSmileysCSS = @"";
+        if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+            doubleSmileysCSS = @".smileycustom {max-height:60px;}";
+        }
+
+        
+        
         NSString *customFontSize = [self userTextSizeDidChange];
         Theme theme = [[ThemeManager sharedManager] theme];
         
@@ -1786,6 +1797,9 @@
             <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
             <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
             <style type='text/css'>\
+            %@\
+            </style>\
+            <style id='smileys_double' type='text/css'>\
             %@\
             </style>\
             </head><body class='iosversion'><a name='top' id='top'></a>\
@@ -1807,7 +1821,7 @@
             $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
             function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
             </script>\
-            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], customFontSize, display_sig_css, tmpHTML, refreshBtn, tooBar];
+            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar];
         
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             if (self.isSearchInstra) {
@@ -2734,6 +2748,15 @@
     return @"";
 }
 
+
+- (void)smileysSizeDidChange {
+    NSString *script = @"document.getElementById('smileys_double').disabled = true;";
+    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+        script = @"document.getElementById('smileys_double').disabled = false;";
+    }
+    [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
+}
+
 #pragma mark -
 #pragma mark Memory management
 - (void)didReceiveMemoryWarning {
@@ -2773,6 +2796,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerDidHideMenuNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VisibilityChanged" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kSmileysSizeChangedNotification object:nil];
 
     
     if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {

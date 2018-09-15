@@ -99,6 +99,8 @@
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	NSString *display = [defaults stringForKey:@"display_images"];
+
+    
 	
     //NSLog(@"display %@", display);
     
@@ -178,7 +180,25 @@
 														  withString:@"<img src='$1' />"];
 	
 	
-	//NSLog(@"--------------\n%@", myRawContent);
+    //Check signature//
+    NSString *display_sig = [defaults stringForKey:@"display_sig"];
+    
+    if (![display_sig isEqualToString:@"yes"]) {
+        NSRange range = [myRawContent rangeOfString:@"<span class=\"signature\">"];
+        if (range.location == NSNotFound) {
+            NSLog(@"*****No signature ******");
+        } else {
+            NSLog(@"*****Signature !!! ******");
+            NSString *separatorString = @"<span class=\"signature\">";
+            NSString *newRC = [myRawContent componentsSeparatedByString:separatorString].firstObject;
+            myRawContent = newRC;
+            myRawContent = [myRawContent stringByAppendingString:@"</div>"];
+        }
+    }
+    
+    
+    
+	NSLog(@"--------------\n%@", myRawContent);
 	
     if (self.quotedNB) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<a class=\"quotedhfrlink\" href=\"%@\">%@</a>", self.quotedLINK, self.quotedNB]];

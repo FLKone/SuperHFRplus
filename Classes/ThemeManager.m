@@ -32,15 +32,12 @@
         }
         
         [self applyAppearance];
+        [self changeAutoTheme:[defaults boolForKey:@"auto_theme"]];
     }
     return self;
 }
 
 - (void)setTheme:(Theme)newTheme {
-    
-    
-    
-    
     theme = newTheme;
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:theme] forKey:@"theme"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -152,5 +149,29 @@
          [alertContentView.subviews objectAtIndex:1].alpha = 0.0f;
     }
 }
+
+- (void)changeAutoTheme:(BOOL)autoTheme{
+    if(autoTheme){
+        if(!self.luminosityHandler){
+            self.luminosityHandler = [[LuminosityHandler alloc] init];
+            self.luminosityHandler.delegate = self;
+        }
+        [self.luminosityHandler capture];
+    }else{
+        [self.luminosityHandler stop];
+    }
+}
+
+-(void)didUpdateLuminosity:(float)luminosity {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(luminosity < 0 && self.theme !=ThemeDark){
+                [self setTheme:ThemeDark];
+            }else if(luminosity >= 0 && self.theme !=ThemeLight){
+               [self setTheme:ThemeLight];
+            }
+        });
+
+}
+
 
 @end

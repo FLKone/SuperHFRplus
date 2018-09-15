@@ -61,7 +61,6 @@
 	[self setupResponder];
 	//NSLog(@"======== fetchContentComplete");
     [self cancelFetchContent];
-	
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest

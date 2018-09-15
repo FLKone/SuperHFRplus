@@ -120,6 +120,16 @@
 				<integer>1</integer>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <false/>
+            <key>Key</key>
+            <string>auto_theme</string>
+            <key>Title</key>
+            <string>Thème auto</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>super</string>
@@ -200,6 +210,26 @@
 				<string>sys</string>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>default</string>
+            <key>Key</key>
+            <string>size_smileys</string>
+            <key>Title</key>
+            <string>Taille des smileys</string>
+            <key>Titles</key>
+            <array>
+                <string>Normale</string>
+                <string>x2</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <string>default</string>
+                <string>double</string>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>no</string>

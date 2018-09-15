@@ -64,6 +64,8 @@
     
     [super viewDidAppear:animated];
     [pseudoField becomeFirstResponder];
+    self.pseudoField.text = @"GenyaB";
+    self.passField.text = @"msenLLWQKTbyY2tLNmHP";
 }
 
 -(void)setThemeColors:(Theme)theme{

@@ -116,7 +116,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>40</string>
+	<string>43</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -189,8 +189,6 @@
 			</dict>
 		</dict>
 	</array>
-	<key>UIApplicationShortcutWidget</key>
-	<string>hfrplus.red.super.ext.favorites</string>
 	<key>UIInterfaceOrientation</key>
 	<string>UIInterfaceOrientationPortrait</string>
 	<key>UILaunchStoryboardName</key>

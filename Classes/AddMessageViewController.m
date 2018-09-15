@@ -896,9 +896,15 @@
             case 0:
             {
                 if (self.smileView.alpha == 0.0) {
+                    
+                    NSString *doubleSmileysCSS = @"";
+                    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+                        doubleSmileysCSS = @"#smileperso img.smile {max-height:60px;min-height: 30px;} #smileperso .button {height:60px;min-width:50px;} #smileperso .button img {max-height:60px;}";
+                    }
+                    
                     [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
-                                                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@</style>');\
-                                                                            ", [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]]]];
+                                                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
+                                                                            ", [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]], doubleSmileysCSS]];
                     self.loaded = NO;
                     [textView resignFirstResponder];
                     [textFieldSmileys resignFirstResponder];
@@ -1540,14 +1546,19 @@
             //NSLog(@"pas createDirectoryAtPath");
         }
         
-        int smilePerPage = 40;
+        int doubleSmileys = 1;
+        if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+            doubleSmileys = 2;
+        }
+        
+        int smilePerPage = 40/doubleSmileys;
         float surface = [UIScreen mainScreen].bounds.size.height*[UIScreen mainScreen].bounds.size.width;
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             if (surface > 250000) {
-                smilePerPage = 55;
+                smilePerPage = roundf(55/doubleSmileys);
             }
             else if (surface > 180000) {
-                smilePerPage = 45;
+                smilePerPage = roundf(45/doubleSmileys);
             }
         }
         
@@ -1630,6 +1641,11 @@
     
     //NSLog(@"showSmileResults");
     
+    NSString *doubleSmileysCSS = @"";
+    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+        doubleSmileysCSS = @"#container_ajax img.smile, #smileperso img.smile {max-height:60px;min-height: 30px;}.button {height:60px;min-width:50px;}.button img {max-height:60px;}";
+    }
+    
     
     [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
                                                             $('#container').hide();\
@@ -1645,8 +1661,8 @@
                                                             window.location = 'oijlkajsdoihjlkjasdosmile://internal?query='+encodeURIComponent(this.alt).replace(/\\(/g, '%%28').replace(/\\)/g, '%%29');\
                                                             }\
                                                             });\
-                                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@</style>');\
-                                                            ", tmpHTML, [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]]]];
+                                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
+                                                            ", tmpHTML, [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]],doubleSmileysCSS]];
     
     
 }
