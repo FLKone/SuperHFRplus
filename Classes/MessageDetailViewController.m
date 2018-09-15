@@ -153,6 +153,8 @@
         <link type='text/css' rel='stylesheet %@' href='style-liste-retina.css' id='light-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
         <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
         <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
         <style type='text/css'>\
         %@\
         </style>\
@@ -693,14 +695,26 @@
         script = @"\
         document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
         document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
         document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = true;\
+        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = true;\
         document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = false;";
     }
-    else {
+    else if (theme == ThemeDark) {
+        script = @"\
+        document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = false;\
+        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = true;\
+        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;";
+    } else {
         script = @"\
         document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
         document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = false;\
+        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = true;\
+        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = false;\
         document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;";
     }
     [self.messageView stringByEvaluatingJavaScriptFromString:script];

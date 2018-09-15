@@ -1095,7 +1095,7 @@
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
             [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
                 [self dismissViewControllerAnimated:YES completion:nil];
             }]];
@@ -1286,7 +1286,7 @@
     
     [[ThemeManager sharedManager] applyThemeToAlertController:alertController];
     [self presentViewController:alertController animated:YES completion:^{
-        if([[ThemeManager sharedManager] theme] == ThemeDark){
+        if([[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED){
             for (UIView* textfield in alertController.textFields) {
                 UIView *container = textfield.superview;
                 UIView *effectView = container.superview.subviews[0];

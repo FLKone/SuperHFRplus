@@ -68,8 +68,7 @@
 - (void)switchTheme {
     if (self.theme == ThemeLight) {
         [self setTheme:ThemeDark];
-    }
-    else {
+    } else {
         [self setTheme:ThemeLight];
     }
 }
@@ -145,7 +144,7 @@
     }
     
     // If dark theme, hide white effect view
-    if(theme == ThemeDark){
+    if(theme == ThemeDark || theme == ThemeOLED){
          [alertContentView.subviews objectAtIndex:1].alpha = 0.0f;
     }
 }
@@ -164,8 +163,8 @@
 
 -(void)didUpdateLuminosity:(float)luminosity {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if(luminosity < 0 && self.theme !=ThemeDark){
-                [self setTheme:ThemeDark];
+            if(luminosity < 0 && self.theme !=ThemeOLED){
+                [self setTheme:ThemeOLED];
             }else if(luminosity >= 0 && self.theme !=ThemeLight){
                [self setTheme:ThemeLight];
             }

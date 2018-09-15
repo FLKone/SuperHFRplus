@@ -49,7 +49,8 @@ typedef enum {
 
 typedef enum Theme : int {
     ThemeLight = 0,
-    ThemeDark = 1
+    ThemeDark = 1,
+    ThemeOLED = 2
 } Theme;
 
 

@@ -595,6 +595,8 @@
 		D826905C1E58658D006971C3 /* avatar_male_gray_on_dark_48x48.png in Resources */ = {isa = PBXBuildFile; fileRef = D82690571E58658D006971C3 /* avatar_male_gray_on_dark_48x48.png */; };
 		D826905E1E58658D006971C3 /* avatar_male_gray_on_dark_48x48@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D82690581E58658D006971C3 /* avatar_male_gray_on_dark_48x48@2x.png */; };
 		D8672D35203F0AD00045785C /* InAppSettingsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8672D34203F0AD00045785C /* InAppSettingsKit.framework */; };
+		D8685927214D5E200054617C /* style-liste-oled.css in Resources */ = {isa = PBXBuildFile; fileRef = D8685925214D5E200054617C /* style-liste-oled.css */; };
+		D8685928214D5E200054617C /* style-liste-retina-oled.css in Resources */ = {isa = PBXBuildFile; fileRef = D8685926214D5E200054617C /* style-liste-retina-oled.css */; };
 		D86ED58520445F5C00A2D541 /* UIImage+BezierPath.m in Sources */ = {isa = PBXBuildFile; fileRef = D86ED58420445F5C00A2D541 /* UIImage+BezierPath.m */; };
 		D86ED58820447D1200A2D541 /* LuminosityHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D86ED58720447D1200A2D541 /* LuminosityHandler.m */; };
 		D8835E841E5F13C70073398C /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D8835E631E5F13C70073398C /* MKAnnotationView+WebCache.m */; };
@@ -1351,6 +1353,8 @@
 		D82690571E58658D006971C3 /* avatar_male_gray_on_dark_48x48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar_male_gray_on_dark_48x48.png; sourceTree = "<group>"; };
 		D82690581E58658D006971C3 /* avatar_male_gray_on_dark_48x48@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatar_male_gray_on_dark_48x48@2x.png"; sourceTree = "<group>"; };
 		D8672D34203F0AD00045785C /* InAppSettingsKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InAppSettingsKit.framework; path = Carthage/Build/iOS/InAppSettingsKit.framework; sourceTree = "<group>"; };
+		D8685925214D5E200054617C /* style-liste-oled.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "style-liste-oled.css"; sourceTree = "<group>"; };
+		D8685926214D5E200054617C /* style-liste-retina-oled.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "style-liste-retina-oled.css"; sourceTree = "<group>"; };
 		D86ED58320445F5C00A2D541 /* UIImage+BezierPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+BezierPath.h"; sourceTree = "<group>"; };
 		D86ED58420445F5C00A2D541 /* UIImage+BezierPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+BezierPath.m"; sourceTree = "<group>"; };
 		D86ED58620447D1200A2D541 /* LuminosityHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LuminosityHandler.h; sourceTree = "<group>"; };
@@ -2218,6 +2222,8 @@
 				CA00C58C17C30C370067B457 /* style-liste-retina.css */,
 				D82690411E585CAC006971C3 /* style-liste-dark.css */,
 				D82690421E585CAC006971C3 /* style-liste-retina-dark.css */,
+				D8685925214D5E200054617C /* style-liste-oled.css */,
+				D8685926214D5E200054617C /* style-liste-retina-oled.css */,
 			);
 			path = HTML;
 			sourceTree = "<group>";
@@ -2751,6 +2757,7 @@
 				CA7C6FBC185EF50E00B348BA /* bug.gif in Resources */,
 				4C0B8DA11BA4522900D329BA /* CircledUserMaleFilled-40@2x.png in Resources */,
 				CAF5DB8E1936CD7B000B5215 /* 10-arrows-in.png in Resources */,
+				D8685927214D5E200054617C /* style-liste-oled.css in Resources */,
 				CA7C6FBD185EF50E00B348BA /* tongue.gif in Resources */,
 				4C0B8DAD1BA4522900D329BA /* Wi-FiLogoFilled-40.png in Resources */,
 				CA7C6FBE185EF50E00B348BA /* flagyellowcopie@2x.png in Resources */,
@@ -3036,6 +3043,7 @@
 				CA7C706C185EF50E00B348BA /* gun.gif in Resources */,
 				CA7C706D185EF50E00B348BA /* sweat.gif in Resources */,
 				D8EFB18E1E59F23B000E45A2 /* loadinfo-white@2x.gif in Resources */,
+				D8685928214D5E200054617C /* style-liste-retina-oled.css in Resources */,
 				4C21E95A1BA5C70400691D65 /* CutFilled-20.png in Resources */,
 				CA7C706E185EF50E00B348BA /* image.png in Resources */,
 				4C0B8DC31BA4522900D329BA /* GraduationCapFilled-40@2x.png in Resources */,
