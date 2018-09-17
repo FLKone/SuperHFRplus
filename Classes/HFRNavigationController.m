@@ -74,7 +74,7 @@
 }
 - (NSString *) userThemeDidChange {
     
-    NSLog(@"HFR userThemeDidChange");
+    //NSLog(@"HFR userThemeDidChange");
     
     Theme theme = [[ThemeManager sharedManager] theme];
 
