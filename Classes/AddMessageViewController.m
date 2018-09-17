@@ -899,7 +899,7 @@
                     
                     NSString *doubleSmileysCSS = @"";
                     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-                        doubleSmileysCSS = @"#smileperso img.smile {max-height:60px;min-height: 30px;} #smileperso .button {height:60px;min-width:50px;} #smileperso .button img {max-height:60px;}";
+                        doubleSmileysCSS = @"#smileperso img.smile {max-height:60px;min-height: 30px;} #smileperso .button {height:60px;min-width:45px;} #smileperso .button img {max-height:60px;}";
                     }
                     
                     [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
@@ -1643,7 +1643,7 @@
     
     NSString *doubleSmileysCSS = @"";
     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-        doubleSmileysCSS = @"#container_ajax img.smile, #smileperso img.smile {max-height:60px;min-height: 30px;}.button {height:60px;min-width:50px;}.button img {max-height:60px;}";
+        doubleSmileysCSS = @"#container_ajax img.smile, #smileperso img.smile {max-height:60px;min-height: 30px;}.button {height:60px;min-width:45px;}.button img {max-height:60px;}";
     }
     
     

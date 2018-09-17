@@ -89,6 +89,21 @@
     }
 }
 
++ (UIColor *)titleTextAttributesColor:(Theme)theme{
+    switch (theme) {
+        case ThemeLight:
+            return [UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+        case ThemeDark:
+            return [UIColor colorWithRed:206.0/255.0 green:206.0/255.0 blue:206.0/255.0 alpha:1.0];
+        case ThemeOLED:
+            return [UIColor colorWithRed:186.0/255.0 green:186.0/255.0 blue:186.0/255.0 alpha:1.0];
+        default:
+            return [UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+            
+    }
+}
+
+
 + (UIColor *)lightTextColor:(Theme)theme{
     switch (theme) {
         case ThemeLight:
@@ -111,7 +126,7 @@
             return [UIColor colorWithRed:146.0/255.0 green:147.0/255.0 blue:151.0/255.0 alpha:1.0];
         case ThemeOLED:
             return [UIColor colorWithRed:106.0/255.0 green:106.0/255.0 blue:106.0/255.0 alpha:1.0];
-            default:
+        default:
             return [UIColor colorWithRed:85.0/255.0 green:85.0/255.0 blue:85.0/255.0 alpha:0.79];
             
     }
@@ -220,7 +235,7 @@
         case ThemeDark:
             return [UIColor colorWithRed:68.0/255.0 green:70.0/255.0 blue:77.0/255.0 alpha:1.0];
         case ThemeOLED:
-            return [UIColor colorWithRed:48.0/255.0 green:50.0/255.0 blue:57.0/255.0 alpha:1.0];
+            return [UIColor colorWithRed:204.0/255.0 green:204.0/255.0 blue:204.0/255.0 alpha:0.3];
         default:
             return [UIColor colorWithRed:204.0/255.0 green:204.0/255.0 blue:204.0/255.0 alpha:1.0];
             
@@ -272,7 +287,7 @@
             case ThemeDark:
                 return [UIColor colorWithRed:146.0/255.0 green:147.0/255.0 blue:151.0/255.0 alpha:1.0];
             case ThemeOLED:
-                return [UIColor colorWithRed:126.0/255.0 green:127.0/255.0 blue:131.0/255.0 alpha:1.0];
+                return [UIColor colorWithRed:176.0/255.0 green:177.0/255.0 blue:181.0/255.0 alpha:1.0];
             default:
                 return [UIColor colorWithRed:109/255.0f green:109/255.0f blue:114/255.0f alpha:1];
         }
@@ -482,9 +497,21 @@
 }
 + (NSString *)isDarkThemeAlternate:(Theme)theme{
     switch (theme) {
+        case ThemeOLED:
         case ThemeLight:
             return @"alternate";
         case ThemeDark:
+            return @"";
+        default:
+            return @"alternate";
+    }
+}
+
++ (NSString *)isOLEDThemeAlternate:(Theme)theme{
+    switch (theme) {
+        case ThemeDark:
+        case ThemeLight:
+            return @"alternate";
         case ThemeOLED:
             return @"";
         default:

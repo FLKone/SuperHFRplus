@@ -85,7 +85,7 @@ table p img
 table .s1 a {
 	font-weight:bold !important;
 	text-decoration:underline !important;
-	color:rgba(186, 186, 186, 1) !important;
+	color:rgba(136, 136, 136, 1) !important;
 }
 
 
@@ -173,7 +173,7 @@ background:-webkit-gradient(
 
 	font-size:13px !important;
 	line-height:20px;
-	color:rgba(186, 186, 186, 1);
+	color:rgba(136, 136, 136, 1);
 	float:left;
 	font-weight:bolder;
 	width:60%;
@@ -187,7 +187,7 @@ background:-webkit-gradient(
 
 	font-size:9px !important;
 	line-height:14px;
-	color:rgba(186, 186, 186, 1);
+	color:rgba(136, 136, 136, 1);
 	float:left;
 	font-weight:bold;
 	width:60%;
@@ -237,7 +237,7 @@ background:-webkit-gradient(
 	border-bottom-right-radius: 5px 5px;
 	border-top-left-radius: 5px 5px;
 	border-top-right-radius: 5px 5px;
-	color: rgba(186, 186, 186, 1);
+	color: rgba(136, 136, 136, 1);
 	cursor: pointer;
 	padding: 3px 8px 4px !important;
 	font-weight:bold;
@@ -259,7 +259,7 @@ background:-webkit-gradient(
     
 	padding:0 !important;
     background: rgba(0, 0, 0, 1);
-    color : rgb(166, 167, 171);
+    color : rgb(136, 137, 141);
 }
 
 
@@ -455,7 +455,7 @@ table.code *, table.fixed * {
 	background-image:url(08-chat.png) !important; 
 	background-position:top right !important;
     background-repeat:no-repeat !important;
-    color:rgba(186, 186, 186, 1) !important;
+    color:rgba(136, 136, 136, 1) !important;
     float:right;
     display:block !important;
     height:22px !important;
@@ -517,7 +517,7 @@ a#searchintra_nextbutton {
     line-height: 44px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: rgba(186, 186, 186, 1);
+    color: rgba(136, 136, 136, 1);
     font-weight: normal;
     text-align: center;
     font-size: 0.9em;
@@ -557,20 +557,21 @@ a#searchintra_nextbutton {
 }
 
 body.ios7 {
-    background: rgba(46, 47, 51, 1);
+    background: rgba(0, 0, 0, 1);
 }
 
 .ios7 .message .header {
     margin-top:0 !important;
     padding-top: 10px !important;
     padding-bottom: 3px !important;
-    background: rgba(48, 50, 57, 1);
+    background: rgba(0, 0, 0, 1);
+    border-top: solid 1px rgba(89, 89, 94, 0.5);
+    border-bottom: solid 1px rgba(89, 89, 94, 0.5);
     color: rgba(89, 89, 94, 1);
-    border:none;
 }
 
 .ios7 .message .header .left {
-    color: rgba(186, 186, 186, 1);
+    color: rgba(136, 136, 136, 1);
     text-shadow:none;
 }
 
@@ -603,7 +604,7 @@ body.ios7 {
 }
 
 .ios7 #toolbarpage a {
-    color:rgba(186, 186, 186, 1);
+    color:rgba(136, 136, 136, 1);
 }
 
 .ios7 #toolbarpage .button {

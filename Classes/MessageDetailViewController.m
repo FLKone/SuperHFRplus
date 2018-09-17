@@ -139,7 +139,7 @@
    
     NSString *doubleSmileysCSS = @"";
     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-        doubleSmileysCSS = @".smileycustom {max-height:60px;}";
+        doubleSmileysCSS = @".smileycustom {max-height:45px;}";
     }
 
     
@@ -165,7 +165,7 @@
         document.addEventListener('DOMContentLoaded', loadedML);\
         function loadedML() { document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded'; };\
         function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}} $('img').error(function(){\
-        $(this).attr('src', 'photoDefaultfailmini.png');}); </script>",[ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], customFontSize, doubleSmileysCSS, myRawContent];
+        $(this).attr('src', 'photoDefaultfailmini.png');}); </script>",[ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], customFontSize, doubleSmileysCSS, myRawContent];
 
 	HTMLString = [HTMLString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	//HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"href=\"/forum2.php?" withString:@"href=\"http://forum.hardware.fr/forum2.php?"];
@@ -724,7 +724,7 @@
         self.quoteBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
         self.editBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
         
-        [(UILabel *)self.navigationItem.titleView setTextColor:[ThemeColors textColor:[[ThemeManager sharedManager] theme]]];
+        [(UILabel *)self.navigationItem.titleView setTextColor:[ThemeColors titleTextAttributesColor:[[ThemeManager sharedManager] theme]]];
 
     }
 

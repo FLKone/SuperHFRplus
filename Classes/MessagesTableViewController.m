@@ -1232,6 +1232,8 @@
     self.searchBtnItem.tintColor = self.searchFilterBtnItem.tintColor = [ThemeColors tintColor:theme];
     self.searchBg.backgroundColor = [ThemeColors overlayColor:theme];
     self.searchLabel.textColor = [ThemeColors textColor:theme];
+    
+    self.messagesWebView.allowsLinkPreview = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -1776,7 +1778,7 @@
         
         NSString *doubleSmileysCSS = @"";
         if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-            doubleSmileysCSS = @".smileycustom {max-height:60px;}";
+            doubleSmileysCSS = @".smileycustom {max-height:45px;}";
         }
 
         
@@ -1823,7 +1825,7 @@
             $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
             function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
             </script>\
-            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar];
+            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar];
         
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             if (self.isSearchInstra) {

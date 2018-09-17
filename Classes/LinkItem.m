@@ -118,7 +118,7 @@
 		//External Images			
 		NSString *regEx = @"<img src=\"([^\"]+)\" alt=\"[^\"]+\" title=\"[^\"]+\" onload=\"[^\"]+\" style=\"[^\"]+\">";			
 		myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx
-															  withString:[NSString stringWithFormat:@"<img onClick=\"window.location = 'oijlkajsdoihjlkjasdoimbrows://'+this.title+'/'+encodeURIComponent(this.alt); return false;\" class=\"hfrplusimg\" title=\"%%%%ID%%%%\" src=\"%@\" alt=\"$1\" longdesc=\"\">",landscape]];
+                                                              withString:[NSString stringWithFormat:@"<img onClick=\"window.location = 'oijlkajsdoihjlkjasdoimbrows://'+this.title+'/'+encodeURIComponent(this.alt); return false;\" class=\"hfrplusimg\" title=\"%%%%ID%%%%\" src=\"%@\" alt=\"$1\" longdesc=\"\">",landscape]];
 		
 		
 	} else if ([display isEqualToString:@"yes"]) {

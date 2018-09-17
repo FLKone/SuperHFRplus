@@ -60,8 +60,12 @@
     
     if(autoThemeEnabled){
         [self hideCell:@"theme"];
+        [self showCell:@"auto_theme_day"];
+        [self showCell:@"auto_theme_night"];
     }else{
         [self showCell:@"theme"];
+        [self hideCell:@"auto_theme_day"];
+        [self hideCell:@"auto_theme_night"];
     }
     
     
@@ -109,11 +113,15 @@
         
         if(enabled){
             [self hideCell:@"theme"];
+            [self showCell:@"auto_theme_day"];
+            [self showCell:@"auto_theme_night"];
         }else{
             [self showCell:@"theme"];
+            [self hideCell:@"auto_theme_day"];
+            [self hideCell:@"auto_theme_night"];
         }
         
-    }else if([notification.userInfo objectForKey:@"icon"]) {
+    }  else if([notification.userInfo objectForKey:@"icon"]) {
         NSString *newIcon = [notification.userInfo objectForKey:@"icon"];
 
         if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)
@@ -189,7 +197,7 @@
         [self.navigationController.navigationBar setTintColor:[ThemeColors tintColor:theme]];
     }
 
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors textColor:theme]}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors titleTextAttributesColor:theme]}];
     [self.navigationController.navigationBar setNeedsDisplay];
     self.view.backgroundColor = [ThemeColors greyBackgroundColor:theme];
     self.tableView.separatorColor = [ThemeColors cellBorderColor:theme];
