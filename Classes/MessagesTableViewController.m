@@ -100,7 +100,9 @@
     
     //NSLog(@"[self currentUrl] %@", [self currentUrl]);
     //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
-    
+
+    self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
+
 	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
 	[request setDelegate:self];
     [request setShowAccurateProgress:YES];
@@ -778,6 +780,10 @@
                                              selector:@selector(userThemeDidChange)
                                                  name:kThemeChangedNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(smileysSizeDidChange)
+                                                 name:kSmileysSizeChangedNotification
+                                               object:nil];
     
     if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userTextSizeDidChange) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -1001,7 +1007,7 @@
     // cancelButtonStyle not needed on iPad
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
         [styleAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
             [self dismissViewControllerAnimated:YES completion:nil];
         }]];
@@ -1226,6 +1232,8 @@
     self.searchBtnItem.tintColor = self.searchFilterBtnItem.tintColor = [ThemeColors tintColor:theme];
     self.searchBg.backgroundColor = [ThemeColors overlayColor:theme];
     self.searchLabel.textColor = [ThemeColors textColor:theme];
+    
+    self.messagesWebView.allowsLinkPreview = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -1768,6 +1776,13 @@
             display_sig_css = @"";
         }
         
+        NSString *doubleSmileysCSS = @"";
+        if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+            doubleSmileysCSS = @".smileycustom {max-height:45px;}";
+        }
+
+        
+        
         NSString *customFontSize = [self userTextSizeDidChange];
         Theme theme = [[ThemeManager sharedManager] theme];
         
@@ -1783,7 +1798,12 @@
             <link type='text/css' rel='stylesheet %@' href='style-liste-retina.css' id='light-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
             <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
             <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+            <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
+            <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
             <style type='text/css'>\
+            %@\
+            </style>\
+            <style id='smileys_double' type='text/css'>\
             %@\
             </style>\
             </head><body class='iosversion'><a name='top' id='top'></a>\
@@ -1805,7 +1825,7 @@
             $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
             function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
             </script>\
-            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], customFontSize, display_sig_css, tmpHTML, refreshBtn, tooBar];
+            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar];
         
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             if (self.isSearchInstra) {
@@ -2014,7 +2034,7 @@
             
             //NSLog(@"%@", aRequest.URL);
             
-            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""]];
+            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
             self.messagesTableViewController = aView;
             
             //setup the URL
@@ -2717,19 +2737,40 @@
         script = @"\
         document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
         document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
         document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = true;\
-        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = false;";
+        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = false;\
+        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = true;";
     }
-    else {
+    else  if (theme == ThemeDark) {
+        script = @"\
+        document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = false;\
+        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;\
+        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = true;";
+    } else {
         script = @"\
         document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
         document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = false;\
-        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;";
+        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
+        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = true;\
+        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;\
+        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = false;";
     }
     [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
     
     return @"";
+}
+
+
+- (void)smileysSizeDidChange {
+    NSString *script = @"document.getElementById('smileys_double').disabled = true;";
+    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+        script = @"document.getElementById('smileys_double').disabled = false;";
+    }
+    [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
 }
 
 #pragma mark -
@@ -2771,6 +2812,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerDidHideMenuNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"VisibilityChanged" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kSmileysSizeChangedNotification object:nil];
 
     
     if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {

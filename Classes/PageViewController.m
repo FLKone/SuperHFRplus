@@ -47,7 +47,7 @@
     
     UILabel *titleView = (UILabel *)[self navigationItem].titleView;
     if([titleView respondsToSelector:@selector(setTextColor:)]){
-        [titleView setTextColor:[ThemeColors navItemTextColor:theme]];
+        [titleView setTextColor:[ThemeColors titleTextAttributesColor:theme]];
     }
 }
 

@@ -29,7 +29,7 @@
 	NSString *statusMessage;
 	IBOutlet UILabel *maintenanceView;	
     
-    UIActionSheet		*topicActionSheet;
+    UIAlertController   *topicActionAlert;
     
     BOOL showAll;
 }
@@ -37,7 +37,7 @@
 @property (nonatomic, strong) IBOutlet UITableView *favoritesTableView;
 @property (nonatomic, strong) IBOutlet UIView *loadingView;
 
-@property (nonatomic, strong) UIActionSheet *topicActionSheet;
+@property (nonatomic, strong) UIAlertController *topicActionAlert;
 
 @property (nonatomic, strong) NSMutableArray *arrayData;
 @property (nonatomic, strong) NSMutableArray *arrayNewData;
