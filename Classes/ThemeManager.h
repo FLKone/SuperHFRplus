@@ -8,17 +8,21 @@
 
 #import <Foundation/Foundation.h>
 #import "Constants.h"
+#import "LuminosityHandler.h"
 
-@interface ThemeManager : NSObject{
+@interface ThemeManager : NSObject <LuminosityHandlerDelegate>  {
     Theme theme;
 }
 
 @property Theme theme;
+@property BOOL autoTheme;
+@property LuminosityHandler *luminosityHandler;
 
 + (id)sharedManager;
 - (void)applyThemeToCell:(UITableViewCell *)cell;
 - (void)applyThemeToTextField:(UITextField *)textfield;
 - (void)applyThemeToAlertController:(UIAlertController *)alert;
 - (void)switchTheme;
+- (void)changeAutoTheme:(BOOL)autoTheme;
 
 @end

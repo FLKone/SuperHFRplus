@@ -61,7 +61,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    
     [super viewDidAppear:animated];
     [pseudoField becomeFirstResponder];
 }

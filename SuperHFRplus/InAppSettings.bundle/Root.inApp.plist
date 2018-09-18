@@ -102,26 +102,6 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<integer>0</integer>
-			<key>Key</key>
-			<string>theme</string>
-			<key>Title</key>
-			<string>Thème</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
 			<string>super</string>
 			<key>Key</key>
 			<string>icon</string>
@@ -154,6 +134,88 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
+        <dict>
+            <key>Title</key>
+            <string>Thèmes</string>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <false/>
+            <key>Key</key>
+            <string>auto_theme</string>
+            <key>Title</key>
+            <string>Thème auto (beta)</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>0</integer>
+            <key>Key</key>
+            <string>theme</string>
+            <key>Title</key>
+            <string>Thème</string>
+            <key>Titles</key>
+            <array>
+                <string>Clair</string>
+                <string>Sombre</string>
+                <string>Sombre OLED</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+                <integer>2</integer>
+            </array>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>0</integer>
+            <key>Key</key>
+            <string>auto_theme_day</string>
+            <key>Title</key>
+            <string>Thème Jour</string>
+            <key>Titles</key>
+            <array>
+                <string>Clair</string>
+                <string>Sombre</string>
+                <string>Sombre OLED</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+                <integer>2</integer>
+            </array>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>0</integer>
+            <key>Key</key>
+            <string>auto_theme_night</string>
+            <key>Title</key>
+            <string>Thème Nuit</string>
+            <key>Titles</key>
+            <array>
+                <string>Clair</string>
+                <string>Sombre</string>
+                <string>Sombre OLED</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+                <integer>2</integer>
+            </array>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Sujets</string>
@@ -198,6 +260,26 @@
 			<array>
 				<string>default</string>
 				<string>sys</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>default</string>
+			<key>Key</key>
+			<string>size_smileys</string>
+			<key>Title</key>
+			<string>Taille des smileys</string>
+			<key>Titles</key>
+			<array>
+				<string>Normale</string>
+				<string>Grande</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>default</string>
+				<string>double</string>
 			</array>
 		</dict>
 		<dict>
@@ -278,34 +360,34 @@
 			<key>Key</key>
 			<string>EmptyCacheButton</string>
 		</dict>
-        <dict>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-            <key>Title</key>
-            <string>Menu debug</string>
-            <key>Key</key>
-            <string>menu_debug</string>
-            <key>DefaultValue</key>
-            <false/>
-        </dict>
-        <dict>
-            <key>IASKCellImage</key>
-            <string>BugFilled-25</string>
-            <key>IASKViewControllerClass</key>
-            <string>HFRDebugViewController</string>
-            <key>Title</key>
-            <string>Debug</string>
-            <key>Type</key>
-            <string>PSChildPaneSpecifier</string>
-            <key>Key</key>
-            <string>menu_debug_entry</string>
-        </dict>
-        <dict>
-            <key>Title</key>
-            <string></string>
-            <key>Type</key>
-            <string>PSGroupSpecifier</string>
-        </dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Menu debug</string>
+			<key>Key</key>
+			<string>menu_debug</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>IASKCellImage</key>
+			<string>BugFilled-25</string>
+			<key>IASKViewControllerClass</key>
+			<string>HFRDebugViewController</string>
+			<key>Title</key>
+			<string>Debug</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>Key</key>
+			<string>menu_debug_entry</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string></string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>1.0</string>
@@ -315,6 +397,20 @@
 			<string>Version</string>
 			<key>Type</key>
 			<string>PSTitleValueSpecifier</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string></string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>Advanced</string>
+			<key>Title</key>
+			<string>Avancés</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
 		</dict>
 	</array>
 </dict>

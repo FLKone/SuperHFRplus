@@ -27,6 +27,7 @@
 + (UIColor *)headSectionTextColor:(Theme)theme;
 + (UIColor *)textColor:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
++ (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
 + (UIColor *)lightTextColor:(Theme)theme;
 + (UIColor *)topicMsgTextColor:(Theme)theme;
@@ -43,6 +44,7 @@
 + (NSString *)messagesCssPath:(Theme)theme;
 + (NSString *)isLightThemeAlternate:(Theme)theme;
 + (NSString *)isDarkThemeAlternate:(Theme)theme;
++ (NSString *)isOLEDThemeAlternate:(Theme)theme;
 + (NSString *)landscapePath:(Theme)theme;
 + (UIImage *)imageFromColor:(UIColor *)color;
 + (UIBarStyle)barStyle:(Theme)theme;
