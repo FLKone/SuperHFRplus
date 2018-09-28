@@ -71,10 +71,14 @@ int nightDelay;
 }
 
 - (void)switchTheme {
-    if (self.theme == ThemeLight) {
-        [self setTheme:ThemeDark];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    Theme day = [defaults integerForKey:@"auto_theme_day"];
+    Theme night = [defaults integerForKey:@"auto_theme_night"];
+
+    if (self.theme == day) {
+        [self setTheme:night];
     } else {
-        [self setTheme:ThemeLight];
+        [self setTheme:day];
     }
 }
 
