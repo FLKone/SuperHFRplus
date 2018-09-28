@@ -618,6 +618,7 @@
 		D89AB2E11FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */; };
 		D89AF55E1E55DE120096504F /* ThorHammerGrey-20.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55B1E55DE120096504F /* ThorHammerGrey-20.png */; };
 		D89AF5601E55DE120096504F /* ThorHammerGrey-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */; };
+		D8A61745215E82E3006E9248 /* UIScrollView+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */; };
 		D8C8F1561E56ECA000B1381E /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C8F1541E56ECA000B1381E /* ThemeManager.m */; };
 		D8DDF2A91E58810A002F1484 /* ToolBarFastForward_on_tinted.png in Resources */ = {isa = PBXBuildFile; fileRef = D8DDF2A01E58810A002F1484 /* ToolBarFastForward_on_tinted.png */; };
 		D8DDF2AB1E58810A002F1484 /* ToolBarFastForward_on_tinted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D8DDF2A11E58810A002F1484 /* ToolBarFastForward_on_tinted@2x.png */; };
@@ -1396,6 +1397,8 @@
 		D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImpactFeedbackGenerator+UserDefaults.m"; sourceTree = "<group>"; };
 		D89AF55B1E55DE120096504F /* ThorHammerGrey-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThorHammerGrey-20.png"; sourceTree = "<group>"; };
 		D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThorHammerGrey-20@2x.png"; sourceTree = "<group>"; };
+		D8A61742215E82C6006E9248 /* UIScrollView+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Theme.h"; sourceTree = "<group>"; };
+		D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Theme.m"; sourceTree = "<group>"; };
 		D8C8F1531E56ECA000B1381E /* ThemeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeManager.h; sourceTree = "<group>"; };
 		D8C8F1541E56ECA000B1381E /* ThemeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeManager.m; sourceTree = "<group>"; };
 		D8DDF2A01E58810A002F1484 /* ToolBarFastForward_on_tinted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ToolBarFastForward_on_tinted.png; sourceTree = "<group>"; };
@@ -2102,6 +2105,8 @@
 				D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */,
 				4CCF76661FB5CE12008CF525 /* InAppSettingsKit+Theme.h */,
 				4CCF76671FB5CE12008CF525 /* InAppSettingsKit+Theme.m */,
+				D8A61742215E82C6006E9248 /* UIScrollView+Theme.h */,
+				D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -3320,6 +3325,7 @@
 				D80DBD6A1E55BE730051B751 /* ASIAuthenticationDialog.m in Sources */,
 				4CACF40D1FB3754E00A41CC6 /* MDNKit.swift in Sources */,
 				CA7C70D4185EF50E00B348BA /* RegexKitLite.m in Sources */,
+				D8A61745215E82E3006E9248 /* UIScrollView+Theme.m in Sources */,
 				CA7C70DE185EF50E00B348BA /* MKStoreObserver.m in Sources */,
 				4C3903571BCACEC200FD6F1F /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */,
 				CA7C70E7185EF50E00B348BA /* MKStoreManager.m in Sources */,

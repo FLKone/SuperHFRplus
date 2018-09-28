@@ -54,4 +54,5 @@
 + (UIImage *)tintImage:(UIImage *)image withTheme:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
++ (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 @end

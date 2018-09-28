@@ -617,4 +617,16 @@
            return UIActivityIndicatorViewStyleGray;
     }
 }
+
++ (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme{
+    switch (theme) {
+        case ThemeLight:
+        case ThemeDark:
+            return UIScrollViewIndicatorStyleDefault;
+        case ThemeOLED:
+            return UIScrollViewIndicatorStyleWhite;
+        default:
+            return UIScrollViewIndicatorStyleDefault;
+    }
+}
 @end
