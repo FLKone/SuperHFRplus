@@ -53,8 +53,8 @@
     if (self.showAll) {
         self.showAll = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage new] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
 
             //On réaffiche le header
             if (self.childViewControllers.count > 0) {
@@ -67,8 +67,8 @@
         self.showAll = YES;
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [self.navigationItem.leftBarButtonItem setBackgroundImage:[UIImage imageNamed:@"lightBlue.png"] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
 
             [self.favoritesTableView setTableHeaderView:nil];
         });
