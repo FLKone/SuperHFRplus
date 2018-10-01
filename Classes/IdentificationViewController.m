@@ -16,7 +16,9 @@
 
 @implementation IdentificationViewController
 @synthesize delegate;
-@synthesize pseudoField, passField, logView;
+@synthesize pseudoField, passField, logView, password;
+
+
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -53,6 +55,7 @@
     //Bouton Finish
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Annuler" style:UIBarButtonItemStyleDone target:self action:@selector(finish)];
     self.navigationItem.leftBarButtonItem = cancelButton;
+    self.passField.delegate = self;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -172,7 +175,7 @@
     [request setStringEncoding:NSUTF8StringEncoding];
 
     [request addPostValue:pseudoField.text forKey:@"pseudo"];
-    [request addPostValue:passField.text forKey:@"password"];
+    [request addPostValue:password forKey:@"password"];
     [request addPostValue:@"send" forKey:@"action"];
 
     [request addPostValue:@"Se connecter" forKey:@"login"];
@@ -235,4 +238,46 @@
 - (IBAction)goToCreate {
     [[HFRplusAppDelegate sharedAppDelegate] openURL:@"https://forum.hardware.fr/inscription.php"];
 }
+
+
+#pragma mark hidePassword
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    
+    if (range.length + range.location > [[textField text] length]) {
+        return NO;
+    }
+    
+    textField.text = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    if(!password){
+        password = @"";
+    }
+    NSString *pass = password;
+    if (range.length + range.location > [pass length]) {
+        return NO;
+    }
+    pass = [pass stringByReplacingCharactersInRange:range withString:string];
+    password = nil;
+    
+    password = [NSString stringWithString:pass];
+    
+    [self hideTextInTextField];
+    
+    return NO;
+}
+
+
+- (void)hideTextInTextField
+{
+    NSUInteger lenght = [passField.text length];
+    passField.text = @"";
+    
+    for (int i = 0; i < lenght; i++)
+    {
+        passField.text = [passField.text stringByAppendingString:@"●"];
+    }
+}
+
 @end
