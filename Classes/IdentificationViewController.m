@@ -8,10 +8,12 @@
 #import "HFRplusAppDelegate.h"
 #import "IdentificationViewController.h"
 #import "ASIFormDataRequest.h"
+#import "HTMLParser.h"
 #import "RegexKitLite.h"
 #import "Constants.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "MultisManager.h"
 
 
 @implementation IdentificationViewController
@@ -176,6 +178,8 @@
 
     [request addPostValue:pseudoField.text forKey:@"pseudo"];
     [request addPostValue:password forKey:@"password"];
+
+    
     [request addPostValue:@"send" forKey:@"action"];
 
     [request addPostValue:@"Se connecter" forKey:@"login"];
@@ -213,7 +217,7 @@
             if (urlArray.count > 0) {
                 //NSLog(@"connexion OK");
                 
-                [self finishOK];
+                [self checkLogin];
             }
             else {
                 //NSLog(@"connexion KO");
@@ -227,6 +231,71 @@
         }
     }
 }
+
+
+- (void)checkLogin {
+    //NSLog(@"checkLogin");
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/user/editprofil.php?config=hfr.inc&page=5", [k ForumURL]]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request setDelegate:self];
+    [request setUseCookiePersistence:YES];
+    [request startAsynchronous];
+}
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    //NSLog(@"requestFinished");
+
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    //NSLog(@"finish %@", [request responseString]);
+
+    NSString *regularExpressionString = @".*<td class=\"profilCase2\"><b>Avatar&nbsp;:</b></td>.*";
+    NSPredicate *regExPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regularExpressionString];
+    BOOL myStringMatchesRegEx = [regExPredicate evaluateWithObject:responseString];
+
+    if (myStringMatchesRegEx) {
+        //NSLog(@"finish OK");
+
+        //OK
+        // Generate Compte
+        // Get avatar
+        NSError * error = nil;
+        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request responseString] error:&error];
+        HTMLNode * bodyNode = [myParser body]; //Find the body tag
+        HTMLNode * hashNode = [bodyNode findChildWithAttribute:@"name" matchingName:@"hash_check" allowPartial:NO];
+        NSString *hash =  [hashNode getAttributeNamed:@"value"];
+        HTMLNode * profilCase3Node = [bodyNode findChildWithAttribute:@"class" matchingName:@"profilCase3" allowPartial:NO];
+        HTMLNode * avatarNode = [profilCase3Node findChildTag:@"img"];
+        NSString *avatarURL = @"";
+        if (avatarNode) {
+           NSLog(@"There is an avatar");
+            avatarURL = [avatarNode getAttributeNamed:@"src"];
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:avatarURL]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                [[MultisManager sharedManager] addCompteWithPseudo:pseudoField.text andCookies:request.responseCookies andAvatar:data andHash:hash];
+                [self finishOK];
+            }];
+        }else{
+            [[MultisManager sharedManager] addCompteWithPseudo:pseudoField.text andCookies:request.responseCookies andAvatar:nil andHash:hash];
+            [self finishOK];
+        }
+       
+    }
+    else {
+        //KO need to LOG IN
+
+        //NSLog(@"finish KO");
+        [self finish];
+    }
+
+}
+
+- (void)requestFailed:(ASIHTTPRequest *)request
+{
+    //NSError *error = [request error];
+}
+
+
 
 - (void)finishOK {
     [self.delegate identificationViewControllerDidFinishOK:self];
@@ -244,40 +313,40 @@
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    
-    if (range.length + range.location > [[textField text] length]) {
+
+    if(textField == passField){
+        if(!password){
+            password = @"";
+        }
+        NSString *pass = password;
+        if (range.length + range.location > [pass length]) {
+            return NO;
+        }
+        pass = [pass stringByReplacingCharactersInRange:range withString:string];
+        password = nil;
+        password = [NSString stringWithString:pass];
+        
+        [self hideTextInTextField];
+        
         return NO;
+    }else{
+        return YES;
     }
     
-    textField.text = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    
-    if(!password){
-        password = @"";
-    }
-    NSString *pass = password;
-    if (range.length + range.location > [pass length]) {
-        return NO;
-    }
-    pass = [pass stringByReplacingCharactersInRange:range withString:string];
-    password = nil;
-    
-    password = [NSString stringWithString:pass];
-    
-    [self hideTextInTextField];
-    
-    return NO;
 }
 
 
 - (void)hideTextInTextField
 {
-    NSUInteger lenght = [passField.text length];
-    passField.text = @"";
+    NSUInteger lenght = [password length];
+    NSString *string = @"";
+   
     
     for (int i = 0; i < lenght; i++)
     {
-        passField.text = [passField.text stringByAppendingString:@"●"];
+        string = [string stringByAppendingString:@"●"];
     }
+     passField.text = string;
 }
 
 @end

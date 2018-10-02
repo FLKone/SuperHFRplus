@@ -1,0 +1,51 @@
+require('semantic')
+
+opt_out_usage
+
+default_platform :ios
+
+platform :ios do
+
+  desc "Installs dependencies using Carthage"
+  lane :dependencies do |options|
+    action = options[:action]
+    carthage(use_binaries: false, command: action, cache_builds: true)
+  end
+
+  desc "Bootstrap the development environment"
+  lane :bootstrap do
+    dependencies
+  end
+
+  desc "Runs all the tests"
+  lane :test do |options|
+    scheme = options[:scheme]
+    device = options[:device]
+    scan(
+      scheme: scheme,
+      device: device,
+      clean: true,
+      skip_build: true,
+      output_types: 'junit'
+      )
+  end
+
+  desc "Runs all the tests in a CI environment"
+  lane :ci do
+    # TODO: Run rest of platforms
+    test
+  end
+
+  desc "Cocoapods library lint"
+  lane :pod_lint do
+    pod_lib_lint()
+  end
+
+  desc "Releases the library to Cocoapods & Github Releases and updates README/CHANGELOG"
+  desc "You need to specify the type of release with the `bump` parameter with the values [major|minor|patch]"
+  lane :release do |options|
+    release_options = {repository: 'SimpleKeychain', xcodeproj: 'SimpleKeychain.xcodeproj'}.merge(options)
+    prepare_release release_options
+    publish_release
+  end
+end

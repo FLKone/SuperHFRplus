@@ -383,7 +383,7 @@
         case ThemeDark:
             return [UIColor colorWithRed:19.0/255.0 green:19.0/255.0 blue:20.0/255.0 alpha:1.0];
         case ThemeOLED:
-            return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
+            return [UIColor colorWithRed:9.0/255.0 green:9.0/255.0 blue:10.0/255.0 alpha:1.0];
             default:
             return [UIColor colorWithRed:249.0/255.0 green:249.0/255.0 blue:249.0/255.0 alpha:1.0];
             
@@ -397,7 +397,7 @@
         case ThemeDark:
             return [UIColor colorWithRed:38.0/255.0 green:40.0/255.0 blue:46.0/255.0 alpha:1.0];
         case ThemeOLED:
-            return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
+            return [UIColor colorWithRed:20.0/255.0 green:22.0/255.0 blue:28.0/255.0 alpha:1.0];
         default:
             return [UIColor colorWithRed:249.0/255.0 green:249.0/255.0 blue:249.0/255.0 alpha:1.0];
             
@@ -411,7 +411,7 @@
         case ThemeDark:
             return [UIColor colorWithRed:30.0/255.0 green:31.0/255.0 blue:33.0/255.0 alpha:0.7];
         case ThemeOLED:
-            return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
+            return [UIColor colorWithRed:10.0/255.0 green:11.0/255.0 blue:13.0/255.0 alpha:1.0];
         default:
             return [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:0.9];
 
@@ -577,6 +577,18 @@
             return [UIImage imageNamed:@"ThorHammerGrey-20"];
         default:
             return [UIImage imageNamed:@"ThorHammerBlack-20"];
+    }
+}
+
++ (UIImage *)avatar:(Theme)theme{
+    switch (theme) {
+        case ThemeLight:
+            return [UIImage imageNamed:@"avatar_male_gray_on_light_48x48"];
+        case ThemeDark:
+        case ThemeOLED:
+            return [UIImage imageNamed:@"avatar_male_gray_on_dark_48x48"];
+        default:
+            return [UIImage imageNamed:@"avatar_male_gray_on_dark_48x48"];
     }
 }
 

@@ -1,0 +1,640 @@
+BCSymbolMap Version: 2.0
+-[IASKSettingsStoreFile initWithPath:]
+-[IASKSettingsStoreFile setObject:forKey:]
+-[IASKSettingsStoreFile objectForKey:]
+-[IASKSettingsStoreFile synchronize]
+-[IASKSettingsStoreFile filePath]
+-[IASKSettingsStoreFile .cxx_destruct]
+_OBJC_IVAR_$_IASKSettingsStoreFile._filePath
+_OBJC_IVAR_$_IASKSettingsStoreFile._dict
+Apple LLVM version 10.0.0 (clang-1000.11.45.2)
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSettingsStoreFile.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSettingsStoreFile.h
+-[IASKSlider key]
+-[IASKSlider setKey:]
+-[IASKSlider .cxx_destruct]
+_OBJC_IVAR_$_IASKSlider._key
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKSlider.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKSlider.h
+-[IASKAppSettingsViewController settingsReader]
+-[IASKAppSettingsViewController settingsStore]
+-[IASKAppSettingsViewController file]
+-[IASKAppSettingsViewController setFile:]
+-[IASKAppSettingsViewController createSelections]
+-[IASKAppSettingsViewController isPad]
+-[IASKAppSettingsViewController init]
+-[IASKAppSettingsViewController initWithStyle:]
+-[IASKAppSettingsViewController initWithNibName:bundle:]
+-[IASKAppSettingsViewController initWithCoder:]
+-[IASKAppSettingsViewController configure]
+-[IASKAppSettingsViewController viewDidLoad]
+-[IASKAppSettingsViewController viewWillAppear:]
+___48-[IASKAppSettingsViewController viewWillAppear:]_block_invoke
+___copy_helper_block_
+___destroy_helper_block_
+-[IASKAppSettingsViewController preferredContentSize]
+-[IASKAppSettingsViewController viewDidAppear:]
+-[IASKAppSettingsViewController viewWillDisappear:]
+-[IASKAppSettingsViewController viewDidDisappear:]
+-[IASKAppSettingsViewController setHiddenKeys:]
+-[IASKAppSettingsViewController setHiddenKeys:animated:]
+-[IASKAppSettingsViewController setNeverShowPrivacySettings:]
+-[IASKAppSettingsViewController dealloc]
+-[IASKAppSettingsViewController dismiss:]
+-[IASKAppSettingsViewController toggledValue:]
+-[IASKAppSettingsViewController sliderChangedValue:]
+-[IASKAppSettingsViewController numberOfSectionsInTableView:]
+-[IASKAppSettingsViewController tableView:numberOfRowsInSection:]
+-[IASKAppSettingsViewController tableView:heightForRowAtIndexPath:]
+-[IASKAppSettingsViewController tableView:titleForHeaderInSection:]
+-[IASKAppSettingsViewController tableView:viewForHeaderInSection:]
+-[IASKAppSettingsViewController tableView:heightForHeaderInSection:]
+-[IASKAppSettingsViewController tableView:titleForFooterInSection:]
+-[IASKAppSettingsViewController tableView:newCellForSpecifier:]
+-[IASKAppSettingsViewController tableView:cellForRowAtIndexPath:]
+___65-[IASKAppSettingsViewController tableView:cellForRowAtIndexPath:]_block_invoke
+___copy_helper_block_.448
+___destroy_helper_block_.449
+-[IASKAppSettingsViewController tableView:willSelectRowAtIndexPath:]
+-[IASKAppSettingsViewController tableView:didSelectRowAtIndexPath:]
+___67-[IASKAppSettingsViewController tableView:didSelectRowAtIndexPath:]_block_invoke
+-[IASKAppSettingsViewController mailComposeController:didFinishWithResult:error:]
+-[IASKAppSettingsViewController textFieldDidBeginEditing:]
+-[IASKAppSettingsViewController _textChanged:]
+-[IASKAppSettingsViewController textFieldShouldReturn:]
+-[IASKAppSettingsViewController singleTapToEndEdit:]
+-[IASKAppSettingsViewController textViewDidEndEditing:]
+-[IASKAppSettingsViewController textViewDidChange:]
+-[IASKAppSettingsViewController cacheRowHeightForTextView:]
+-[IASKAppSettingsViewController synchronizeSettings]
+-[IASKAppSettingsViewController userDefaultsDidChange]
+___54-[IASKAppSettingsViewController userDefaultsDidChange]_block_invoke
+___copy_helper_block_.682
+___destroy_helper_block_.683
+-[IASKAppSettingsViewController didChangeSettingViaIASK:]
+-[IASKAppSettingsViewController reload]
+-[IASKAppSettingsViewController setMultiValuesFromDelegateIfNeeded:]
+-[IASKAppSettingsViewController setSettingsReader:]
+-[IASKAppSettingsViewController setSettingsStore:]
+-[IASKAppSettingsViewController delegate]
+-[IASKAppSettingsViewController setDelegate:]
+-[IASKAppSettingsViewController showCreditsFooter]
+-[IASKAppSettingsViewController setShowCreditsFooter:]
+-[IASKAppSettingsViewController showDoneButton]
+-[IASKAppSettingsViewController setShowDoneButton:]
+-[IASKAppSettingsViewController hiddenKeys]
+-[IASKAppSettingsViewController neverShowPrivacySettings]
+-[IASKAppSettingsViewController currentFirstResponder]
+-[IASKAppSettingsViewController setCurrentFirstResponder:]
+-[IASKAppSettingsViewController rowHeights]
+-[IASKAppSettingsViewController setRowHeights:]
+-[IASKAppSettingsViewController .cxx_destruct]
+___clang_at_available_requires_core_foundation_framework
+_OBJC_IVAR_$_IASKAppSettingsViewController._settingsReader
+_OBJC_IVAR_$_IASKAppSettingsViewController._settingsStore
+_OBJC_IVAR_$_IASKAppSettingsViewController._file
+_OBJC_IVAR_$_IASKAppSettingsViewController._reloadDisabled
+_OBJC_IVAR_$_IASKAppSettingsViewController._selections
+_OBJC_IVAR_$_IASKAppSettingsViewController._showDoneButton
+_OBJC_IVAR_$_IASKAppSettingsViewController._showCreditsFooter
+___block_descriptor_tmp
+_OBJC_IVAR_$_IASKAppSettingsViewController._hiddenKeys
+_OBJC_IVAR_$_IASKAppSettingsViewController._currentChildViewController
+_OBJC_IVAR_$_IASKAppSettingsViewController._neverShowPrivacySettings
+l_OBJC_PROTOCOL_$_IASKSettingsDelegate
+l_OBJC_LABEL_PROTOCOL_$_IASKSettingsDelegate
+l_OBJC_PROTOCOL_REFERENCE_$_IASKSettingsDelegate
+___block_descriptor_tmp.450
+_tableView:willSelectRowAtIndexPath:.noSelectionTypes
+___block_descriptor_tmp.632
+_oldUserDefaults
+___block_descriptor_tmp.684
+_OBJC_IVAR_$_IASKAppSettingsViewController._delegate
+_OBJC_IVAR_$_IASKAppSettingsViewController._currentFirstResponder
+_OBJC_IVAR_$_IASKAppSettingsViewController._rowHeights
+l_OBJC_PROTOCOL_$_NSObject
+l_OBJC_LABEL_PROTOCOL_$_NSObject
+l_OBJC_PROTOCOL_$_UIScrollViewDelegate
+l_OBJC_LABEL_PROTOCOL_$_UIScrollViewDelegate
+l_OBJC_PROTOCOL_$_UITextViewDelegate
+l_OBJC_LABEL_PROTOCOL_$_UITextViewDelegate
+l_OBJC_PROTOCOL_$_IASKViewController
+l_OBJC_LABEL_PROTOCOL_$_IASKViewController
+l_OBJC_PROTOCOL_$_UITextFieldDelegate
+l_OBJC_LABEL_PROTOCOL_$_UITextFieldDelegate
+l_OBJC_PROTOCOL_$_MFMailComposeViewControllerDelegate
+l_OBJC_LABEL_PROTOCOL_$_MFMailComposeViewControllerDelegate
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKAppSettingsViewController.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKAppSettingsViewController.h
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKViewController.h
+IASKCGRectSwap
+__destroy_helper_block_
+__copy_helper_block_
+__54-[IASKAppSettingsViewController userDefaultsDidChange]_block_invoke
+UIEdgeInsetsInsetRect
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIGeometry.h
+__67-[IASKAppSettingsViewController tableView:didSelectRowAtIndexPath:]_block_invoke
+__65-[IASKAppSettingsViewController tableView:cellForRowAtIndexPath:]_block_invoke
+__48-[IASKAppSettingsViewController viewWillAppear:]_block_invoke
+UI_USER_INTERFACE_IDIOM
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIDevice.h
+CGPointMake
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGGeometry.h
+-[IASKSpecifierValuesViewController setSettingsStore:]
+-[IASKSpecifierValuesViewController viewWillAppear:]
+-[IASKSpecifierValuesViewController viewDidDisappear:]
+-[IASKSpecifierValuesViewController viewWillLayoutSubviews]
+-[IASKSpecifierValuesViewController numberOfSectionsInTableView:]
+-[IASKSpecifierValuesViewController tableView:numberOfRowsInSection:]
+-[IASKSpecifierValuesViewController tableView:titleForFooterInSection:]
+-[IASKSpecifierValuesViewController tableView:cellForRowAtIndexPath:]
+-[IASKSpecifierValuesViewController tableView:didSelectRowAtIndexPath:]
+-[IASKSpecifierValuesViewController preferredContentSize]
+-[IASKSpecifierValuesViewController currentSpecifier]
+-[IASKSpecifierValuesViewController setCurrentSpecifier:]
+-[IASKSpecifierValuesViewController settingsReader]
+-[IASKSpecifierValuesViewController setSettingsReader:]
+-[IASKSpecifierValuesViewController settingsStore]
+-[IASKSpecifierValuesViewController selection]
+-[IASKSpecifierValuesViewController didFirstLayout]
+-[IASKSpecifierValuesViewController setDidFirstLayout:]
+-[IASKSpecifierValuesViewController .cxx_destruct]
+_OBJC_IVAR_$_IASKSpecifierValuesViewController._selection
+_OBJC_IVAR_$_IASKSpecifierValuesViewController._settingsStore
+_OBJC_IVAR_$_IASKSpecifierValuesViewController._currentSpecifier
+_OBJC_IVAR_$_IASKSpecifierValuesViewController._settingsReader
+_OBJC_IVAR_$_IASKSpecifierValuesViewController._didFirstLayout
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKSpecifierValuesViewController.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKSpecifierValuesViewController.h
+-[IASKTextField key]
+-[IASKTextField setKey:]
+-[IASKTextField .cxx_destruct]
+_OBJC_IVAR_$_IASKTextField._key
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKTextField.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKTextField.h
+-[IASKTextViewCell initWithStyle:reuseIdentifier:]
+-[IASKTextViewCell layoutSubviews]
+-[IASKTextViewCell textView]
+-[IASKTextViewCell setTextView:]
+-[IASKTextViewCell .cxx_destruct]
+_OBJC_IVAR_$_IASKTextViewCell._textView
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKTextViewCell.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKTextViewCell.h
+-[IASKSwitch key]
+-[IASKSwitch setKey:]
+-[IASKSwitch .cxx_destruct]
+_OBJC_IVAR_$_IASKSwitch._key
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKSwitch.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKSwitch.h
+-[IASKPSTextFieldSpecifierViewCell initWithStyle:reuseIdentifier:]
+-[IASKPSTextFieldSpecifierViewCell layoutSubviews]
+-[IASKPSTextFieldSpecifierViewCell textField]
+-[IASKPSTextFieldSpecifierViewCell setTextField:]
+-[IASKPSTextFieldSpecifierViewCell .cxx_destruct]
+_OBJC_IVAR_$_IASKPSTextFieldSpecifierViewCell._textField
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKPSTextFieldSpecifierViewCell.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKPSTextFieldSpecifierViewCell.h
+-[IASKAbstractSettingsStore setObject:forKey:]
+-[IASKAbstractSettingsStore objectForKey:]
+-[IASKAbstractSettingsStore setBool:forKey:]
+-[IASKAbstractSettingsStore setFloat:forKey:]
+-[IASKAbstractSettingsStore setInteger:forKey:]
+-[IASKAbstractSettingsStore setDouble:forKey:]
+-[IASKAbstractSettingsStore boolForKey:]
+-[IASKAbstractSettingsStore floatForKey:]
+-[IASKAbstractSettingsStore integerForKey:]
+-[IASKAbstractSettingsStore doubleForKey:]
+-[IASKAbstractSettingsStore synchronize]
+l_OBJC_PROTOCOL_$_IASKSettingsStore
+l_OBJC_LABEL_PROTOCOL_$_IASKSettingsStore
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSettingsStore.m
+-[IASKMultipleValueSelection initWithSettingsStore:]
+-[IASKMultipleValueSelection dealloc]
+-[IASKMultipleValueSelection setSpecifier:]
+-[IASKMultipleValueSelection checkedItem]
+-[IASKMultipleValueSelection updateCheckedItem]
+-[IASKMultipleValueSelection settingsStore]
+-[IASKMultipleValueSelection setSettingsStore:]
+-[IASKMultipleValueSelection selectRowAtIndexPath:]
+-[IASKMultipleValueSelection updateSelectionInCell:indexPath:]
+-[IASKMultipleValueSelection selectCell:]
+-[IASKMultipleValueSelection deselectCell:]
+-[IASKMultipleValueSelection userDefaultsDidChange]
+-[IASKMultipleValueSelection tableView]
+-[IASKMultipleValueSelection setTableView:]
+-[IASKMultipleValueSelection specifier]
+-[IASKMultipleValueSelection section]
+-[IASKMultipleValueSelection setSection:]
+-[IASKMultipleValueSelection .cxx_destruct]
+_OBJC_IVAR_$_IASKMultipleValueSelection._specifier
+_OBJC_IVAR_$_IASKMultipleValueSelection._checkedIndex
+_OBJC_IVAR_$_IASKMultipleValueSelection._section
+_OBJC_IVAR_$_IASKMultipleValueSelection._settingsStore
+_OBJC_IVAR_$_IASKMultipleValueSelection._tableView
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKMultipleValueSelection.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKMultipleValueSelection.h
+-[IASKSettingsReader initWithSettingsFileNamed:applicationBundle:]
+-[IASKSettingsReader initWithFile:]
+-[IASKSettingsReader init]
+-[IASKSettingsReader setHiddenKeys:]
+-[IASKSettingsReader setShowPrivacySettings:]
+-[IASKSettingsReader privacySettingsSpecifiers]
+-[IASKSettingsReader getBundle]
+-[IASKSettingsReader _reinterpretBundle:]
+-[IASKSettingsReader _sectionHasHeading:]
+-[IASKSettingsReader headerSpecifierForSection:]
+-[IASKSettingsReader numberOfSections]
+-[IASKSettingsReader numberOfRowsForSection:]
+-[IASKSettingsReader specifierForIndexPath:]
+-[IASKSettingsReader indexPathForKey:]
+-[IASKSettingsReader specifierForKey:]
+-[IASKSettingsReader titleForSection:]
+-[IASKSettingsReader keyForSection:]
+-[IASKSettingsReader footerTextForSection:]
+-[IASKSettingsReader titleForId:]
+-[IASKSettingsReader pathForImageNamed:]
+-[IASKSettingsReader platformSuffixForInterfaceIdiom:]
+-[IASKSettingsReader file:withBundle:suffix:extension:]
+-[IASKSettingsReader locateSettingsFile:]
+-[IASKSettingsReader applicationBundle]
+-[IASKSettingsReader settingsBundle]
+-[IASKSettingsReader settingsDictionary]
+-[IASKSettingsReader localizationTable]
+-[IASKSettingsReader setLocalizationTable:]
+-[IASKSettingsReader dataSource]
+-[IASKSettingsReader setDataSource:]
+-[IASKSettingsReader hiddenKeys]
+-[IASKSettingsReader showPrivacySettings]
+-[IASKSettingsReader .cxx_destruct]
+_OBJC_IVAR_$_IASKSettingsReader._applicationBundle
+_OBJC_IVAR_$_IASKSettingsReader._settingsDictionary
+_OBJC_IVAR_$_IASKSettingsReader._settingsBundle
+_OBJC_IVAR_$_IASKSettingsReader._hiddenKeys
+_OBJC_IVAR_$_IASKSettingsReader._showPrivacySettings
+_OBJC_IVAR_$_IASKSettingsReader._dataSource
+_OBJC_IVAR_$_IASKSettingsReader._localizationTable
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSettingsReader.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSettingsReader.h
+-[IASKAppSettingsWebViewController initWithFile:specifier:]
+-[IASKAppSettingsWebViewController loadView]
+-[IASKAppSettingsWebViewController viewWillAppear:]
+-[IASKAppSettingsWebViewController webViewDidFinishLoad:]
+-[IASKAppSettingsWebViewController webView:shouldStartLoadWithRequest:navigationType:]
+___86-[IASKAppSettingsWebViewController webView:shouldStartLoadWithRequest:navigationType:]_block_invoke
+-[IASKAppSettingsWebViewController mailComposeController:didFinishWithResult:error:]
+-[IASKAppSettingsWebViewController webView]
+-[IASKAppSettingsWebViewController setWebView:]
+-[IASKAppSettingsWebViewController url]
+-[IASKAppSettingsWebViewController setUrl:]
+-[IASKAppSettingsWebViewController customTitle]
+-[IASKAppSettingsWebViewController setCustomTitle:]
+-[IASKAppSettingsWebViewController .cxx_destruct]
+_OBJC_IVAR_$_IASKAppSettingsWebViewController._webView
+_OBJC_IVAR_$_IASKAppSettingsWebViewController._url
+_OBJC_IVAR_$_IASKAppSettingsWebViewController._customTitle
+l_OBJC_PROTOCOL_$_UIWebViewDelegate
+l_OBJC_LABEL_PROTOCOL_$_UIWebViewDelegate
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKAppSettingsWebViewController.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Controllers/IASKAppSettingsWebViewController.h
+__86-[IASKAppSettingsWebViewController webView:shouldStartLoadWithRequest:navigationType:]_block_invoke
+-[IASKPSSliderSpecifierViewCell initWithStyle:reuseIdentifier:]
+-[IASKPSSliderSpecifierViewCell layoutSubviews]
+-[IASKPSSliderSpecifierViewCell prepareForReuse]
+-[IASKPSSliderSpecifierViewCell slider]
+-[IASKPSSliderSpecifierViewCell setSlider:]
+-[IASKPSSliderSpecifierViewCell minImage]
+-[IASKPSSliderSpecifierViewCell setMinImage:]
+-[IASKPSSliderSpecifierViewCell maxImage]
+-[IASKPSSliderSpecifierViewCell setMaxImage:]
+-[IASKPSSliderSpecifierViewCell .cxx_destruct]
+_OBJC_IVAR_$_IASKPSSliderSpecifierViewCell._slider
+_OBJC_IVAR_$_IASKPSSliderSpecifierViewCell._minImage
+_OBJC_IVAR_$_IASKPSSliderSpecifierViewCell._maxImage
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKPSSliderSpecifierViewCell.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKPSSliderSpecifierViewCell.h
+-[IASKTextView dealloc]
+-[IASKTextView configure]
+-[IASKTextView initWithFrame:]
+-[IASKTextView initWithCoder:]
+-[IASKTextView drawRect:]
+-[IASKTextView setText:]
+-[IASKTextView setPlaceholder:]
+-[IASKTextView setFrame:]
+-[IASKTextView updateShouldDrawPlaceholder]
+-[IASKTextView key]
+-[IASKTextView setKey:]
+-[IASKTextView placeholder]
+-[IASKTextView .cxx_destruct]
+_OBJC_IVAR_$_IASKTextView._shouldDrawPlaceholder
+_OBJC_IVAR_$_IASKTextView._placeholder
+_OBJC_IVAR_$_IASKTextView._key
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKTextView.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Views/IASKTextView.h
+-[IASKSpecifier initWithSpecifier:]
+-[IASKSpecifier isMultiValueSpecifierType]
+-[IASKSpecifier initWithSpecifier:radioGroupValue:]
+-[IASKSpecifier updateMultiValuesDict]
+-[IASKSpecifier setMultipleValuesDictValues:titles:]
+-[IASKSpecifier sortIfNeeded]
+___29-[IASKSpecifier sortIfNeeded]_block_invoke
+___29-[IASKSpecifier sortIfNeeded]_block_invoke.76
+___29-[IASKSpecifier sortIfNeeded]_block_invoke_2
+___copy_helper_block_.92
+___destroy_helper_block_.93
+-[IASKSpecifier displaySortedByTitle]
+-[IASKSpecifier localizedObjectForKey:]
+-[IASKSpecifier title]
+-[IASKSpecifier subtitle]
+-[IASKSpecifier placeholder]
+-[IASKSpecifier footerText]
+-[IASKSpecifier viewControllerClass]
+-[IASKSpecifier classFromString:]
+-[IASKSpecifier viewControllerSelector]
+-[IASKSpecifier viewControllerStoryBoardFile]
+-[IASKSpecifier viewControllerStoryBoardID]
+-[IASKSpecifier segueIdentifier]
+-[IASKSpecifier buttonClass]
+-[IASKSpecifier buttonAction]
+-[IASKSpecifier key]
+-[IASKSpecifier type]
+-[IASKSpecifier titleForCurrentValue:]
+-[IASKSpecifier multipleValuesCount]
+-[IASKSpecifier multipleValues]
+-[IASKSpecifier multipleTitles]
+-[IASKSpecifier multipleShortTitles]
+-[IASKSpecifier file]
+-[IASKSpecifier defaultValue]
+-[IASKSpecifier defaultStringValue]
+-[IASKSpecifier defaultBoolValue]
+-[IASKSpecifier trueValue]
+-[IASKSpecifier falseValue]
+-[IASKSpecifier minimumValue]
+-[IASKSpecifier maximumValue]
+-[IASKSpecifier minimumValueImage]
+-[IASKSpecifier maximumValueImage]
+-[IASKSpecifier isSecure]
+-[IASKSpecifier keyboardType]
+-[IASKSpecifier autocapitalizationType]
+-[IASKSpecifier autoCorrectionType]
+-[IASKSpecifier cellImage]
+-[IASKSpecifier highlightedCellImage]
+-[IASKSpecifier adjustsFontSizeToFitWidth]
+-[IASKSpecifier textAlignment]
+-[IASKSpecifier userInterfaceIdioms]
+-[IASKSpecifier valueForKey:]
+-[IASKSpecifier specifierDict]
+-[IASKSpecifier setSpecifierDict:]
+-[IASKSpecifier settingsReader]
+-[IASKSpecifier setSettingsReader:]
+-[IASKSpecifier multipleValuesDict]
+-[IASKSpecifier setMultipleValuesDict:]
+-[IASKSpecifier radioGroupValue]
+-[IASKSpecifier setRadioGroupValue:]
+-[IASKSpecifier .cxx_destruct]
+_isMultiValueSpecifierType.types
+_OBJC_IVAR_$_IASKSpecifier._specifierDict
+___block_descriptor_tmp.78
+___block_literal_global
+___block_descriptor_tmp.94
+_OBJC_IVAR_$_IASKSpecifier._multipleValuesDict
+_OBJC_IVAR_$_IASKSpecifier._settingsReader
+_OBJC_IVAR_$_IASKSpecifier._radioGroupValue
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSpecifier.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSpecifier.h
+__29-[IASKSpecifier sortIfNeeded]_block_invoke_2
+__29-[IASKSpecifier sortIfNeeded]_block_invoke.76
+__29-[IASKSpecifier sortIfNeeded]_block_invoke
+-[IASKSettingsStoreUserDefaults initWithUserDefaults:]
+-[IASKSettingsStoreUserDefaults init]
+-[IASKSettingsStoreUserDefaults setBool:forKey:]
+-[IASKSettingsStoreUserDefaults setFloat:forKey:]
+-[IASKSettingsStoreUserDefaults setDouble:forKey:]
+-[IASKSettingsStoreUserDefaults setInteger:forKey:]
+-[IASKSettingsStoreUserDefaults setObject:forKey:]
+-[IASKSettingsStoreUserDefaults boolForKey:]
+-[IASKSettingsStoreUserDefaults floatForKey:]
+-[IASKSettingsStoreUserDefaults doubleForKey:]
+-[IASKSettingsStoreUserDefaults integerForKey:]
+-[IASKSettingsStoreUserDefaults objectForKey:]
+-[IASKSettingsStoreUserDefaults synchronize]
+-[IASKSettingsStoreUserDefaults defaults]
+-[IASKSettingsStoreUserDefaults setDefaults:]
+-[IASKSettingsStoreUserDefaults .cxx_destruct]
+_OBJC_IVAR_$_IASKSettingsStoreUserDefaults._defaults
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSettingsStoreUserDefaults.m
+/Users/aynolor/_AYNOLOR/1506-HFRplus/GIT/SuperHFRplus/Carthage/Checkouts/InAppSettingsKit/InAppSettingsKit/Models/IASKSettingsStoreUserDefaults.h
+/Users/aynolor/Library/Caches/org.carthage.CarthageKit/DerivedData/10.0_10A254a/InAppSettingsKit/5e9ce24c32c25c5fbd48ee4087bae27a9787230a/Build/Intermediates.noindex/ArchiveIntermediates/InAppSettingsKitFramework/IntermediateBuildFilesPath/InAppSettingsKit.build/Release-iphoneos/InAppSettingsKitFramework.build/DerivedSources/InAppSettingsKit_vers.c
+__ZL15__ARCLite__loadv
+__ZL30add_image_hook_autoreleasepoolPK11mach_headerl
+__ZL34__arclite_objc_autoreleasePoolPushv
+__ZL33__arclite_objc_autoreleasePoolPopPv
+__ZL19patch_lazy_pointersPK11mach_headerP7patch_tm
+__ZL42__arclite_NSArray_objectAtIndexedSubscriptP7NSArrayP13objc_selectorj
+__ZL53__arclite_NSMutableArray_setObject_atIndexedSubscriptP14NSMutableArrayP13objc_selectorP11objc_objectj
+__ZL46__arclite_NSDictionary_objectForKeyedSubscriptP12NSDictionaryP13objc_selectorP11objc_object
+__ZL47__arclite_NSOrderedSet_objectAtIndexedSubscriptP12NSOrderedSetP13objc_selectorj
+__ZL58__arclite_NSMutableOrderedSet_setObject_atIndexedSubscriptP19NSMutableOrderedSetP13objc_selectorP11objc_objectj
+__ZL58__arclite_NSMutableDictionary__setObject_forKeyedSubscriptP19NSMutableDictionaryP13objc_selectorP11objc_objectS4_
+__ZL18add_image_hook_ARCPK11mach_headerl
+__ZL36__arclite_object_setInstanceVariableP11objc_objectPKcPv
+__ZL24__arclite_object_setIvarP11objc_objectP9objc_ivarS0_
+__ZL21__arclite_object_copyP11objc_objectm
+__ZL21__arclite_objc_retainP11objc_object
+__ZL26__arclite_objc_retainBlockP11objc_object
+__ZL22__arclite_objc_releaseP11objc_object
+__ZL26__arclite_objc_autoreleaseP11objc_object
+__ZL32__arclite_objc_retainAutoreleaseP11objc_object
+__ZL37__arclite_objc_autoreleaseReturnValueP11objc_object
+__ZL43__arclite_objc_retainAutoreleaseReturnValueP11objc_object
+__ZL44__arclite_objc_retainAutoreleasedReturnValueP11objc_object
+__ZL26__arclite_objc_storeStrongPP11objc_objectS0_
+__ZL22add_image_hook_swiftV1PK11mach_headerl
+__ZL42__arclite_NSUndoManagerProxy_isKindOfClassP11objc_objectP13objc_selectorP10objc_class
+__ZL30__arclite_NSManagedObject_initP11objc_objectP13objc_selector
+__ZL41__arclite_NSManagedObject_allocWithEntityP11objc_objectP13objc_selectorS0_
+__ZL36__arclite_NSManagedObject_allocBatchP11objc_objectP13objc_selectorPS0_S0_j
+__ZL37__arclite_NSKKMS_fastIndexForKnownKeyP11objc_objectP13objc_selectorS0_
+__ZL28__arclite_NSKKMS_indexForKeyP11objc_objectP13objc_selectorS0_
+__ZL29__arclite_NSKKsD_objectForKeyP11objc_objectP13objc_selectorS0_
+__ZL35__arclite_NSKKsD_removeObjectForKeyP11objc_objectP13objc_selectorS0_
+__ZL33__arclite_NSKKsD_setObject_forKeyP11objc_objectP13objc_selectorS0_S0_
+__ZL41__arclite_NSKKsD_addEntriesFromDictionaryP11objc_objectP13objc_selectorP12NSDictionary
+__ZL28__arclite_objc_readClassPairP10objc_classPK15objc_image_info
+__ZL32__arclite_objc_allocateClassPairP10objc_classPKcm
+__ZL32__arclite_object_getIndexedIvarsP11objc_object
+__ZL23__arclite_objc_getClassPKc
+__ZL27__arclite_objc_getMetaClassPKc
+__ZL31__arclite_objc_getRequiredClassPKc
+__ZL26__arclite_objc_lookUpClassPKc
+__ZL26__arclite_objc_getProtocolPKc
+__ZL23__arclite_class_getNameP10objc_class
+__ZL26__arclite_protocol_getNameP8Protocol
+__ZL37__arclite_objc_copyClassNamesForImagePKcPj
+__ZL17transcribeMethodsP10objc_classP15glue_class_ro_t
+__ZL19transcribeProtocolsP10objc_classP15glue_class_ro_t
+__ZL20transcribePropertiesP10objc_classP15glue_class_ro_t
+__ZL14initialize_impP11objc_objectP13objc_selector
+__ZL18allocateMaybeSwiftP18glue_swift_class_tm
+__ZL22copySwiftV1MangledNamePKcb
+__ZL13demangledNamePKcb
+__ZL16scanMangledFieldRPKcS0_S1_Ri
+__ZL30arclite_uninitialized_functionv
+__ZL12cxxConstructP11objc_object
+__ZL20fixStringForCoreDataP11objc_object
+_OBJC_METACLASS_$___ARCLite__
+__ZL24OBJC_CLASS_$___ARCLite__
+__ZL31OBJC_METACLASS_RO_$___ARCLite__
+__non_lazy_classes
+__ZL27OBJC_CLASS_RO_$___ARCLite__
+__ZL11_class_name
+__ZL32OBJC_$_CLASS_METHODS___ARCLite__
+__ZL17_load_method_name
+__ZL17_load_method_type
+__ZL23NSAutoreleasePool_class
+__ZZL30add_image_hook_autoreleasepoolPK11mach_headerlE7patches
+__ZGVZL30add_image_hook_autoreleasepoolPK11mach_headerlE7patches
+l_OBJC_PROTOCOL_$___ARCLiteIndexedSubscripting__
+l_OBJC_LABEL_PROTOCOL_$___ARCLiteIndexedSubscripting__
+l_OBJC_PROTOCOL_REFERENCE_$___ARCLiteIndexedSubscripting__
+l_OBJC_PROTOCOL_$___ARCLiteKeyedSubscripting__
+l_OBJC_LABEL_PROTOCOL_$___ARCLiteKeyedSubscripting__
+l_OBJC_PROTOCOL_REFERENCE_$___ARCLiteKeyedSubscripting__
+__ZZL18add_image_hook_ARCPK11mach_headerlE7patches
+__ZGVZL18add_image_hook_ARCPK11mach_headerlE7patches
+__ZL30NSUndoManagerProxy_targetClass
+__ZL29original_NSManagedObject_init
+__ZL40original_NSManagedObject_allocWithEntity
+__ZL35original_NSManagedObject_allocBatch
+__ZL25NSMutableDictionary_class
+__ZL22NSConstantString_class
+__ZL14NSString_class
+__ZL36original_NSKKMS_fastIndexForKnownKey
+__ZL27original_NSKKMS_indexForKey
+__ZL28original_NSKKsD_objectForKey
+__ZL34original_NSKKsD_removeObjectForKey
+__ZL32original_NSKKsD_setObject_forKey
+__ZL40original_NSKKsD_addEntriesFromDictionary
+__ZZL22add_image_hook_swiftV1PK11mach_headerlE7patches
+__ZGVZL22add_image_hook_swiftV1PK11mach_headerlE7patches
+__ZL31original_objc_allocateClassPair
+__ZL31original_object_getIndexedIvars
+__ZL22original_objc_getClass
+__ZL26original_objc_getMetaClass
+__ZL30original_objc_getRequiredClass
+__ZL25original_objc_lookUpClass
+__ZL25original_objc_getProtocol
+__ZL22original_class_getName
+__ZL25original_protocol_getName
+__ZL36original_objc_copyClassNamesForImage
+__ZL12demangleLock
+__ZL9Demangled
+Apple LLVM version 10.0.0 (clang-1000.11.45.1)
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c++ -arch armv7 -fmessage-length=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit=0 -std=c++11 -Wno-trigraphs -fno-exceptions -fno-rtti -fno-sanitize=vptr -mpascal-strings -Os -Wno-missing-field-initializers -Wmissing-prototypes -Wno-implicit-atomic-properties -Wno-objc-interface-ivars -Wno-arc-repeated-use-of-weak -Wno-non-virtual-dtor -Wno-overloaded-virtual -Wno-exit-time-destructors -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wno-undeclared-selector -Wno-deprecated-implementations -Wno-c++11-extensions -D NDEBUG=1 -D OBJC_OLD_DISPATCH_PROTOTYPES=1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.Internal.sdk -fstrict-aliasing -Wprotocol -Wdeprecated-declarations -Winvalid-offsetof -miphoneos-version-min=4.3 -g -fno-threadsafe-statics -Wno-sign-conversion -Wno-infinite-recursion -Wno-move -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-range-loop-analysis -Wno-semicolon-before-method-body -fembed-bitcode=all -iquote /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/arclite_iphoneos-generated-files.hmap -I /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/arclite_iphoneos-own-target-headers.hmap -I /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/arclite_iphoneos-all-target-headers.hmap -iquote /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/arclite_iphoneos-project-headers.hmap -I /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/Symbols/BuiltProducts/include -I /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/DerivedSources/armv7 -I /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/DerivedSources -F/Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/Symbols/BuiltProducts -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.Internal.sdk/System/Library/PrivateFrameworks -Wall -Wextra -Wno-gcc-compat -Wno-error=incomplete-umbrella -Wno-error=invalid-ios-deployment-target -Wno-error=incomplete-umbrella -Wno-error=invalid-ios-deployment-target -MMD -MT dependencies -MF /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/Objects-normal/armv7/arclite.d --serialize-diagnostics /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/Objects-normal/armv7/arclite.dia -c /Library/Caches/com.apple.xbs/Sources/arclite_iOS/arclite-71/source/arclite.mm -o /Library/Caches/com.apple.xbs/Binaries/arclite_iOS/install/TempContent/Objects/arclite.build/arclite_iOS.build/Objects-normal/armv7/arclite.o -mlinker-version=409.12 -march=armv7a
+/Library/Caches/com.apple.xbs/Sources/arclite_iOS/arclite-71/source/arclite.mm
+/Library/Caches/com.apple.xbs/Sources/arclite_iOS/arclite-71
+fixStringForCoreData
+cxxConstruct
+arclite_uninitialized_function
+scanMangledField
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.Internal.sdk/usr/include/_ctype.h
+__isctype
+demangledName
+copySwiftV1DemangledName
+copySwiftV1MangledName
+allocateMaybeSwift
+word_align
+isSwift
+initialize_imp
+transcribeProperties
+property_list_nth
+transcribeProtocols
+transcribeMethods
+data
+method_list_nth
+__arclite_objc_copyClassNamesForImage
+__arclite_protocol_getName
+__arclite_class_getName
+__arclite_objc_getProtocol
+__arclite_objc_lookUpClass
+__arclite_objc_getRequiredClass
+__arclite_objc_getMetaClass
+__arclite_objc_getClass
+__arclite_object_getIndexedIvars
+__arclite_objc_allocateClassPair
+metaclass
+__arclite_objc_readClassPair
+transcribeIvars
+ivar_list_nth
+max
+alignment
+ro
+fastFlags
+__arclite_NSKKsD_addEntriesFromDictionary
+__arclite_NSKKsD_setObject_forKey
+__arclite_NSKKsD_removeObjectForKey
+__arclite_NSKKsD_objectForKey
+__arclite_NSKKMS_indexForKey
+__arclite_NSKKMS_fastIndexForKnownKey
+__arclite_NSManagedObject_allocBatch
+__arclite_NSManagedObject_allocWithEntity
+__arclite_NSManagedObject_init
+__arclite_NSUndoManagerProxy_isKindOfClass
+add_image_hook_swiftV1
+patch_t<const char **(const char *, unsigned int *)>
+patch_t<const char *(Protocol *)>
+patch_t<const char *(Class)>
+patch_t<Protocol *(const char *)>
+patch_t<Class (const char *)>
+patch_t<void *(id)>
+patch_t<Class (Class, const char *, unsigned long)>
+patch_t<Class (Class, const objc_image_info *)>
+__arclite_objc_storeStrong
+__arclite_objc_release
+__arclite_objc_retain
+__arclite_objc_retainAutoreleasedReturnValue
+__arclite_objc_retainAutoreleaseReturnValue
+__arclite_objc_autoreleaseReturnValue
+__arclite_objc_retainAutorelease
+__arclite_objc_autorelease
+__arclite_objc_retainBlock
+__arclite_object_copy
+fixupCopiedReferences
+_class_getInstanceStart
+alignedInstanceStart
+__arclite_class_usesAutomaticRetainRelease
+classOrSuperClassesUseARR
+__arclite_object_setIvar
+isScannedOffset
+_ivar_getClass
+__arclite_object_setInstanceVariable
+add_image_hook_ARC
+patch_t<void (id *, id)>
+patch_t<id (id)>
+patch_t<void (id)>
+patch_t<id (id, unsigned long)>
+patch_t<void (id, objc_ivar *, id)>
+patch_t<objc_ivar *(id, const char *, void *)>
+__arclite_NSMutableDictionary__setObject_forKeyedSubscript
+__arclite_NSMutableOrderedSet_setObject_atIndexedSubscript
+__arclite_NSOrderedSet_objectAtIndexedSubscript
+__arclite_NSDictionary_objectForKeyedSubscript
+__arclite_NSMutableArray_setObject_atIndexedSubscript
+__arclite_NSArray_objectAtIndexedSubscript
+patch_lazy_pointers
+__arclite_objc_autoreleasePoolPop
+__arclite_objc_autoreleasePoolPush
+add_image_hook_autoreleasepool
+patch_t<void (void *)>
+patch_t<void *()>
+__ARCLite__load
+install_swiftV1
+replaceMethod
+install_ARC
+install_dict_nil_value
+addOrReplaceMethod
+keyedGetter
+install_subscripting
+addMethod
+indexedGetter
+install_autoreleasepool
