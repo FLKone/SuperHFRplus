@@ -160,4 +160,19 @@
     }
 }
 
+- (void)updateCookies:(NSArray *)cookies {
+    NSArray *comptesArray = [self getComtpes];
+    for (NSHTTPCookie *aCookie in cookies) {
+        if([aCookie.name isEqualToString:@"md_user"] && ![aCookie.value isEqualToString:@"deleted"] ){
+            for (NSMutableDictionary* compte in comptesArray) {
+                if([[compte objectForKey:PSEUDO_KEY] isEqualToString:aCookie.value]){
+                    [compte setValue:cookies forKey:COOKIES_KEY];
+                }
+            }
+        }
+    }
+    [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
+}
+
+
 @end

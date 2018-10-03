@@ -21,4 +21,5 @@
 - (void)deletePseudoAtIndex:(NSInteger *)index;
 - (UIImage *)getAvatarForCompte:(NSDictionary *)compte;
 - (void)forceCookiesForCompte:(NSDictionary *)compte;
+- (void)updateCookies:(NSArray *)cookies;
 @end
