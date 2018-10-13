@@ -10,7 +10,24 @@
 #import "Constants.h"
 
 
-@interface ThemeColors : NSObject
+@interface ThemeColors : NSObject {
+    CGFloat fDayColor1;
+    CGFloat fDayColor2;
+    CGFloat fDayColor3;
+}
+
++ (void)setDayColor1:(int)b; // Brightness for light colors
++ (void)setDayColor2:(int)b; // Brightness for dark colors
++ (void)setDayColor3:(int)b; // Action color
+
++ (CGFloat)fDayColor1;
++ (CGFloat)fDayColor2;
++ (CGFloat)fDayColor3;
+
+
++ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
++ (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
+
 + (UIColor *)tabBackgroundColor:(Theme)theme;
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor:(Theme)theme;

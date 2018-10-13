@@ -68,6 +68,17 @@
         [self hideCell:@"auto_theme_night"];
     }
     
+    BOOL adjustThemeDayEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"theme_day_adjust"];
+    
+    if (adjustThemeDayEnabled) {
+        [self showCell:@"theme_day_color1"];
+        [self showCell:@"theme_day_color2"];
+        [self showCell:@"theme_day_color3"];
+    } else {
+        [self hideCell:@"theme_day_color1"];
+        [self hideCell:@"theme_day_color2"];
+        [self hideCell:@"theme_day_color3"];
+    }
     
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
 }
@@ -120,8 +131,40 @@
             [self hideCell:@"auto_theme_day"];
             [self hideCell:@"auto_theme_night"];
         }
+    } else if([notification.userInfo objectForKey:@"theme_day_adjust"]) {
         
-    }  else if([notification.userInfo objectForKey:@"icon"]) {
+        BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"theme_day_adjust"];
+        
+        if (enabled) {
+            [self showCell:@"theme_day_color1"];
+        } else {
+            [self hideCell:@"theme_day_color1"];
+        }
+    } else if([notification.userInfo objectForKey:@"theme_day_color1"]) {
+        
+        NSInteger value = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_day_color1"];
+        [ThemeColors setDayColor1:value];
+        Theme theme = (Theme)[[notification.userInfo objectForKey:@"theme"] intValue];
+        [[ThemeManager sharedManager] setTheme:theme];
+        [self setThemeColors:theme];
+        
+    }else if([notification.userInfo objectForKey:@"theme_day_color2"]) {
+        
+        NSInteger value = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_day_color2"];
+        [ThemeColors setDayColor2:value];
+        Theme theme = (Theme)[[notification.userInfo objectForKey:@"theme"] intValue];
+        [[ThemeManager sharedManager] setTheme:theme];
+        [self setThemeColors:theme];
+        
+    }else if([notification.userInfo objectForKey:@"theme_day_color3"]) {
+        
+        NSInteger value = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_day_color3"];
+        [ThemeColors setDayColor3:value];
+        Theme theme = (Theme)[[notification.userInfo objectForKey:@"theme"] intValue];
+        [[ThemeManager sharedManager] setTheme:theme];
+        [self setThemeColors:theme];
+        
+    } else if([notification.userInfo objectForKey:@"icon"]) {
         NSString *newIcon = [notification.userInfo objectForKey:@"icon"];
 
         if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)

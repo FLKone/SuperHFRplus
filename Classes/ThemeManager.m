@@ -169,7 +169,7 @@ int nightDelay;
         [self.luminosityHandler stop];
     }
 }
-
+    
 -(void)didUpdateLuminosity:(float)luminosity {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

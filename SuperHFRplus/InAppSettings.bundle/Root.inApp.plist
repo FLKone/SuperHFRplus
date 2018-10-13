@@ -134,12 +134,78 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
-        <dict>
-            <key>Title</key>
-            <string>Thèmes</string>
-            <key>Type</key>
-            <string>PSGroupSpecifier</string>
-        </dict>
+		<dict>
+			<key>Title</key>
+			<string>Thèmes</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>theme</string>
+			<key>Title</key>
+			<string>Thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Clair</string>
+				<string>Sombre</string>
+				<string>Sombre OLED</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>auto_theme_day</string>
+			<key>Title</key>
+			<string>Thème Jour</string>
+			<key>Titles</key>
+			<array>
+				<string>Clair</string>
+				<string>Sombre</string>
+				<string>Sombre OLED</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>auto_theme_night</string>
+			<key>Title</key>
+			<string>Thème Nuit</string>
+			<key>Titles</key>
+			<array>
+				<string>Clair</string>
+				<string>Sombre</string>
+				<string>Sombre OLED</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
         <dict>
             <key>DefaultValue</key>
             <false/>
@@ -152,69 +218,55 @@
         </dict>
         <dict>
             <key>DefaultValue</key>
-            <integer>0</integer>
+            <false/>
             <key>Key</key>
-            <string>theme</string>
+            <string>theme_day_adjust</string>
             <key>Title</key>
-            <string>Thème</string>
-            <key>Titles</key>
-            <array>
-                <string>Clair</string>
-                <string>Sombre</string>
-                <string>Sombre OLED</string>
-            </array>
+            <string>Ajustement des couleurs</string>
             <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-            </array>
+            <string>PSToggleSwitchSpecifier</string>
         </dict>
         <dict>
-            <key>DefaultValue</key>
-            <integer>0</integer>
-            <key>Key</key>
-            <string>auto_theme_day</string>
-            <key>Title</key>
-            <string>Thème Jour</string>
-            <key>Titles</key>
-            <array>
-                <string>Clair</string>
-                <string>Sombre</string>
-                <string>Sombre OLED</string>
-            </array>
             <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-            </array>
+            <string>PSSliderSpecifier</string>
+            <key>Key</key>
+            <string>theme_day_color1</string>
+            <key>DefaultValue</key>
+            <integer>100</integer>
+            <key>MinimumValue</key>
+            <integer>0</integer>
+            <key>MaximumValue</key>
+            <integer>200</integer>
+            <key>MinimumValueImage</key>
+            <string>71-compass.png</string>
         </dict>
         <dict>
-            <key>DefaultValue</key>
-            <integer>0</integer>
-            <key>Key</key>
-            <string>auto_theme_night</string>
-            <key>Title</key>
-            <string>Thème Nuit</string>
-            <key>Titles</key>
-            <array>
-                <string>Clair</string>
-                <string>Sombre</string>
-                <string>Sombre OLED</string>
-            </array>
             <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-            </array>
+            <string>PSSliderSpecifier</string>
+            <key>Key</key>
+            <string>theme_day_color2</string>
+            <key>DefaultValue</key>
+            <integer>100</integer>
+            <key>MinimumValue</key>
+            <integer>0</integer>
+            <key>MaximumValue</key>
+            <integer>200</integer>
+            <key>MinimumValueImage</key>
+            <string>71-compass.png</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSSliderSpecifier</string>
+            <key>Key</key>
+            <string>theme_day_color3</string>
+            <key>DefaultValue</key>
+            <integer>100</integer>
+            <key>MinimumValue</key>
+            <integer>0</integer>
+            <key>MaximumValue</key>
+            <integer>200</integer>
+            <key>MinimumValueImage</key>
+            <string>71-compass.png</string>
         </dict>
 		<dict>
 			<key>Title</key>

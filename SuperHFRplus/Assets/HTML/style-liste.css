@@ -2,6 +2,16 @@
 style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 */
 
+:root {
+    /* Create variables with default colors */
+    --color-btn-actualiser: #2470d8; /* Texte du bouton Actualiser */
+    --color-message-header: #2DAEBF; /* ?? */
+    --color-url: #2470d8; /* Couleur des url dans les messages ET ?? */
+    --color-message-background:white; /* Fond des messages */
+    --color-background-bars:#F5F5F5;
+    --color-text:#202020;
+}
+
 * {
 	padding:0 !important;
 	margin:0 !important;
@@ -9,7 +19,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 
 	/*font-size:12px !important;*/
 	font-family:-apple-system !important;
-
+    color:var(--color-text);
     /*-webkit-user-select: none;
     
 	-webkit-touch-callout: none;
@@ -85,7 +95,7 @@ table p img
 table .s1 a {
 	font-weight:bold !important;
 	text-decoration:underline !important;
-	color:black !important;
+	color:black !important; /* Texte nom pseudo quotation */
 }
 
 
@@ -114,14 +124,14 @@ div.masque {
 .message .header {
     -webkit-user-select: none;
     -webkit-touch-callout:none;
-    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-tap-highlight-color:rgba(255,0,0,0);
 	height:34px;
 	padding:0 10px !important;
 	margin-top:5px !important;
 
-	border-top:1px solid #717d85;
+    border-top:1px solid red;
 	
-	border-bottom:1px solid #989ea4;
+	border-bottom:1px solid darkcyan;
 /*
 	background:#369;
 	border-top:1px solid gray;
@@ -134,8 +144,8 @@ background:-webkit-gradient(
     linear,
     left bottom,
     left top,
-    color-stop(0, rgb(164,178,189)),
-    color-stop(1, rgb(140,156,169))
+    color-stop(0, rgb(0,250,0)),
+    color-stop(1, rgb(140,0,0))
 );
 /*-webkit-gradient(
     linear,
@@ -153,7 +163,7 @@ background:-webkit-gradient(
 	height:30px;
 	margin-top:1px !important;
 	
-	border:1px solid #717d85;
+	border:1px solid #717d85; /* Bordure d'avatar */
 
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -188,7 +198,7 @@ background:-webkit-gradient(
 
 	font-size:9px !important;
 	line-height:14px;
-	color:white;
+	color:blue;
 	float:left;
 	font-weight:bold;
 	width:60%;
@@ -251,7 +261,7 @@ background:-webkit-gradient(
 .message .header .right a {
 	margin-top:3px !important;
 
-	color: #2DAEBF;
+	color: var(--color-message-header); /*#2DAEBF;*/
 	line-height: inherit;
 	outline: 0px;
 	text-decoration: none;
@@ -260,7 +270,7 @@ background:-webkit-gradient(
 .message .content {
     
 	padding:0 !important;
-    background:white;
+    background:var(--color-message-background);
 }
 
 
@@ -276,8 +286,7 @@ background:-webkit-gradient(
 }
 
 .message .content .right a {
-	color:#2470d8;
-	
+    color:var(--color-url);
 }
 
 .message .content .right ol, ul
@@ -293,7 +302,7 @@ background:-webkit-gradient(
 table.code, table.fixed, table.quote, table.citation, table.oldcitation {
     table-layout:fixed;
     border: none;
-    border-left: 3px solid  silver;
+    border-left: 3px solid silver; /* barre gauche de quotation */
 }
 
 hr {
@@ -316,7 +325,8 @@ table.code *, table.fixed * {
 }
 
 #actualiserbtn {
-	color:#2470d8;
+	color:var(--color-actualiser);
+    /*#2470d8;*/
 	line-height:44px;
 	font-size:15px !important;
 	font-weight:bold;
@@ -494,9 +504,9 @@ table.code *, table.fixed * {
     line-height: 44px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: black;
-    border-bottom: 1px solid #efeff4;
-    background: url(unselectedrow.png) no-repeat scroll right center white;
+    color: black; /*rien ?*/
+    border-bottom: 1px solid yellow; /* ?? */
+    background: url(unselectedrow.png) no-repeat scroll right center red; /*rien ?*/
     background-origin: content-box;
 }
 
@@ -565,13 +575,13 @@ body.ios7 {
     margin-top:0 !important;
     padding-top: 10px !important;
     padding-bottom: 3px !important;
-    background:#efeff4;
-    color: rgba(109, 109, 114, 1);
+    background: var(--color-background-bars); /*#efeff4; fond barre pseudo*/
+    color: green; /*rgba(109, 109, 114, 1);*/
     border:none;
 }
 
 .ios7 .message .header .left, .ios7 .message .header .leftdate {
-    color: rgba(109, 109, 114, 1);
+    color: rgba(109, 109, 114, 1); /*text nom pseudo et date message ;*/
     text-shadow:none;
 }
 
@@ -579,11 +589,11 @@ body.ios7 {
     font-weight:normal
 }
 
-.ios7 .message .header .right {
-    height:32px;
+.ios7 .message .header .right { /* bouton plus */
+    height: 32px;
     width: 32px;
-    float:right;
-    background:#efeff4 url(plus.png) no-repeat 0 3px;
+    float: right;
+    background: var(--color-background-bars); /* background bouton plus */ url(plus.png) no-repeat 0 3px;
 }
 
 .ios7 .message .header .right a.awesome {
@@ -591,14 +601,14 @@ body.ios7 {
 }
 
 .ios7 #toolbarpage {
-    background:#efeff4;
+    background:var(--color-background-bars); /* barre de navigation bas de page */
     text-shadow:none;
     border:none;
-    padding-top:11px !important;
+    padding-top:13px !important; /* Recentrage bas de page /
 }
 
 .ios7 #toolbarpage a {
-    color:black;
+    color:black;/*var(--color-texte);*/ /* Numero de page dans la barre de navigation bas de page */
 }
 
 .ios7 #toolbarpage .button {
