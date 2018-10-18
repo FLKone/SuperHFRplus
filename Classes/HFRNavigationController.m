@@ -110,7 +110,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
 }
 
-
 - (void)navigationBarDoubleTap:(UIGestureRecognizer*)recognizer {
     NSLog(@"navigationBarDoubleTapnavigationBarDoubleTap");
     [[ThemeManager sharedManager] switchTheme];

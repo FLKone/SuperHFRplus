@@ -24,6 +24,6 @@
 - (void)applyThemeToAlertController:(UIAlertController *)alert;
 - (void)switchTheme;
 - (void)changeAutoTheme:(BOOL)autoTheme;
-- (void)setBrightnessThemeColor1:(int)new_brightness;
+- (void)refreshTheme;
 
 @end

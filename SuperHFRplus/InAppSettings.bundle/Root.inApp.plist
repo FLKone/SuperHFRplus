@@ -210,63 +210,49 @@
             <key>DefaultValue</key>
             <false/>
             <key>Key</key>
-            <string>auto_theme</string>
+            <string>theme_dark_adjust</string>
             <key>Title</key>
-            <string>Thème auto (beta)</string>
+            <string>Ajustement thème sombre</string>
             <key>Type</key>
             <string>PSToggleSwitchSpecifier</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSSliderSpecifier</string>
+            <key>Key</key>
+            <string>theme_dark_color1</string>
+            <key>DefaultValue</key>
+            <integer>100</integer>
+            <key>MinimumValue</key>
+            <integer>0</integer>
+            <key>MaximumValue</key>
+            <integer>200</integer>
+            <key>MinimumValueImage</key>
+            <string>71-compass.png</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSSliderSpecifier</string>
+            <key>Key</key>
+            <string>theme_dark_color2</string>
+            <key>DefaultValue</key>
+            <integer>100</integer>
+            <key>MinimumValue</key>
+            <integer>0</integer>
+            <key>MaximumValue</key>
+            <integer>200</integer>
+            <key>MinimumValueImage</key>
+            <string>71-compass.png</string>
         </dict>
         <dict>
             <key>DefaultValue</key>
             <false/>
             <key>Key</key>
-            <string>theme_day_adjust</string>
+            <string>auto_theme</string>
             <key>Title</key>
-            <string>Ajustement des couleurs</string>
+            <string>Thème auto (beta)</string>
             <key>Type</key>
             <string>PSToggleSwitchSpecifier</string>
-        </dict>
-        <dict>
-            <key>Type</key>
-            <string>PSSliderSpecifier</string>
-            <key>Key</key>
-            <string>theme_day_color1</string>
-            <key>DefaultValue</key>
-            <integer>100</integer>
-            <key>MinimumValue</key>
-            <integer>0</integer>
-            <key>MaximumValue</key>
-            <integer>200</integer>
-            <key>MinimumValueImage</key>
-            <string>71-compass.png</string>
-        </dict>
-        <dict>
-            <key>Type</key>
-            <string>PSSliderSpecifier</string>
-            <key>Key</key>
-            <string>theme_day_color2</string>
-            <key>DefaultValue</key>
-            <integer>100</integer>
-            <key>MinimumValue</key>
-            <integer>0</integer>
-            <key>MaximumValue</key>
-            <integer>200</integer>
-            <key>MinimumValueImage</key>
-            <string>71-compass.png</string>
-        </dict>
-        <dict>
-            <key>Type</key>
-            <string>PSSliderSpecifier</string>
-            <key>Key</key>
-            <string>theme_day_color3</string>
-            <key>DefaultValue</key>
-            <integer>100</integer>
-            <key>MinimumValue</key>
-            <integer>0</integer>
-            <key>MaximumValue</key>
-            <integer>200</integer>
-            <key>MinimumValueImage</key>
-            <string>71-compass.png</string>
         </dict>
 		<dict>
 			<key>Title</key>

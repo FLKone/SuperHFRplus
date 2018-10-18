@@ -11,20 +11,21 @@
 
 
 @interface ThemeColors : NSObject {
-    CGFloat fDayColor1;
-    CGFloat fDayColor2;
-    CGFloat fDayColor3;
+    CGFloat fDarkColor1;
+    CGFloat fDarkColor2;
+    CGFloat fDarkColor3;
 }
 
-+ (void)setDayColor1:(int)b; // Brightness for light colors
-+ (void)setDayColor2:(int)b; // Brightness for dark colors
-+ (void)setDayColor3:(int)b; // Action color
++ (void)setDarkColor1:(int)b; // Brightness for dark colors in % compare to default Dark theme
++ (void)setDarkColor2:(int)b; // Action color for dark theme (converted to hue value)
++ (void)setDarkColor3:(int)b; // Currently unused
 
-+ (CGFloat)fDayColor1;
-+ (CGFloat)fDayColor2;
-+ (CGFloat)fDayColor3;
++ (CGFloat)fDarkColor1;
++ (CGFloat)fDarkColor2;
++ (CGFloat)fDarkColor3;
 
-
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
 + (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
 + (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
 
@@ -72,4 +73,5 @@
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
++ (NSString *) hexFromUIColor:(UIColor *)color;
 @end

@@ -4,12 +4,19 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 
 :root {
     /* Create variables with default colors */
-    --color-btn-actualiser: #2470d8; /* Texte du bouton Actualiser */
+    --color-action: #2470d8; /* Texte du bouton Actualiser */
     --color-message-header: #2DAEBF; /* ?? */
     --color-url: #2470d8; /* Couleur des url dans les messages ET ?? */
     --color-message-background:white; /* Fond des messages */
     --color-background-bars:#F5F5F5;
     --color-text:#202020;
+    --imagefile-avatar:url(avatar_male_gray_on_light_48x48.png); /* Image d'avatar */
+    --imagefile-toolbarplay:url(ToolBarPlay_on.png);
+    --imagefile-toolbarfastrewind:url(ToolBarFastRewind_on.png);
+    --imagefile-toolbarfastforward:url(ToolBarFastForward_on.png);
+    --imagefile-toolbarprevious:url(ToolBarPrevious_on.png);
+    --imagefile-loadinfo:url(loadinfo.gif);
+    --hue_action_color:hue-rotate(50%);
 }
 
 * {
@@ -75,7 +82,7 @@ span.signature > br:first-child {
 
 table
 { 
-	border: 1px solid silver;
+    border: 1px solid silver; /*Dark:rgba(206, 206, 206, 0.3);*/
 	padding: 4px !important;
 	width:100%;
 	max-width:100% !important;
@@ -95,7 +102,7 @@ table p img
 table .s1 a {
 	font-weight:bold !important;
 	text-decoration:underline !important;
-	color:black !important; /* Texte nom pseudo quotation */
+    color:var(--color-text) !important; /* Texte nom pseudo quotation */ /* Clair: black, Dark rgba(206, 206, 206, 1) */
 }
 
 
@@ -124,14 +131,13 @@ div.masque {
 .message .header {
     -webkit-user-select: none;
     -webkit-touch-callout:none;
-    -webkit-tap-highlight-color:rgba(255,0,0,0);
-	height:34px;
-	padding:0 10px !important;
-	margin-top:5px !important;
-
-    border-top:1px solid red;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+	height:38px;
+	padding:0 0px !important;
+    margin-top:5px !important;
+    border-top:5px solid #FFFFFF; /* Dark #717d85; */
 	
-	border-bottom:1px solid darkcyan;
+    border-bottom:5px solid #FFFFFF; /* Dark: #989ea4; */
 /*
 	background:#369;
 	border-top:1px solid gray;
@@ -144,8 +150,8 @@ background:-webkit-gradient(
     linear,
     left bottom,
     left top,
-    color-stop(0, rgb(0,250,0)),
-    color-stop(1, rgb(140,0,0))
+    color-stop(0, rgb(164,178,189)),
+    color-stop(1, rgb(140,156,169))
 );
 /*-webkit-gradient(
     linear,
@@ -159,22 +165,23 @@ background:-webkit-gradient(
 .message .header .left2 {
 	text-align:left;
 	float:left;
-	width:56px;
+	width:56px; /* Largeur et hauteur d'avatar */
 	height:30px;
 	margin-top:1px !important;
 	
-	border:1px solid #717d85; /* Bordure d'avatar */
+    /* BAE border:1px solid #717d85; /* Bordure d'avatar */ /* Dark :#222222;*/
+    border:0px
 
 	background-size: cover;
 	background-repeat: no-repeat;
 
 	/*
-	background-size: 100% 100%;	
+	background-size: 100% 100%;
 	*/
 	background-position:center;
 }
 .message .header .left2.noavatar {
-    background-image:url('avatar_male_gray_on_light_48x48.png');
+    background-image:var(--imagefile-avatar); /*Clair 'avatar_male_gray_on_light_48x48.png' */ /* Dark url('avatar_male_gray_on_dark_48x48.png'); */
 }
 
 
@@ -183,8 +190,8 @@ background:-webkit-gradient(
 	/*margin-top:2px !important;*/
 
 	font-size:13px !important;
-	line-height:20px;
-	color:white;
+	line-height:20px; /* Décalage texte pseudo  vers le bas*/
+    color:white; /* Dark : rgba(206, 206, 206, 1); */
 	float:left;
 	font-weight:bolder;
 	width:60%;
@@ -198,7 +205,7 @@ background:-webkit-gradient(
 
 	font-size:9px !important;
 	line-height:14px;
-	color:blue;
+	color:white; /*Dark rgba(206, 206, 206, 1);*/
 	float:left;
 	font-weight:bold;
 	width:60%;
@@ -248,7 +255,7 @@ background:-webkit-gradient(
 	border-bottom-right-radius: 5px 5px;
 	border-top-left-radius: 5px 5px;
 	border-top-right-radius: 5px 5px;
-	color: white;
+    color: white; /* Dark: rgba(206, 206, 206, 1);*/
 	cursor: pointer;
 	padding: 3px 8px 4px !important;
 	font-weight:bold;
@@ -261,7 +268,7 @@ background:-webkit-gradient(
 .message .header .right a {
 	margin-top:3px !important;
 
-	color: var(--color-message-header); /*#2DAEBF;*/
+	color: var(--color-message-header); /*#2DAEBF==rgb(45,174,191);*/
 	line-height: inherit;
 	outline: 0px;
 	text-decoration: none;
@@ -270,7 +277,8 @@ background:-webkit-gradient(
 .message .content {
     
 	padding:0 !important;
-    background:var(--color-message-background);
+    background:var(--color-message-background); /* Dark background: rgba(46, 47, 51, 1);
+                                                 color : rgb(186, 187, 191);*/
 }
 
 
@@ -302,7 +310,7 @@ background:-webkit-gradient(
 table.code, table.fixed, table.quote, table.citation, table.oldcitation {
     table-layout:fixed;
     border: none;
-    border-left: 3px solid silver; /* barre gauche de quotation */
+    border-left: 2px solid silver; /* barre gauche de quotation */ /* Dark: rgba(255, 255, 255, 0.2);*/
 }
 
 hr {
@@ -325,24 +333,23 @@ table.code *, table.fixed * {
 }
 
 #actualiserbtn {
-	color:var(--color-actualiser);
-    /*#2470d8;*/
+	color:var(--color-action); /*#2470d8;*/
 	line-height:44px;
 	font-size:15px !important;
 	font-weight:bold;
-	border-top:1px solid #e0e0e0;
-	border-bottom:1px solid #e0e0e0;
+    border-top:1px solid #e0e0e0; /* Dark: rgba(58, 60, 67, 1);*/
+	border-bottom:1px solid #e0e0e0; /* Dark rgba(58, 60, 67, 1); */
 	text-align:center;
 	width:100%;
-    background:white;
+    background:--color-message-background; /*Clair: white; Dark: rgba(38, 40, 47, 1); */
     -webkit-user-select: none;
     -webkit-touch-callout:none;
-    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-tap-highlight-color:rgba(0,0,0,0); /* Dark rgba(0,0,0,0) */
 
 }
 
 #actualiserbtn.loading {
-	background-image: url(loadinfo.gif);
+    background-image: var(--imagefile-loadinfo); /* Dark: url(loadinfo-white@2x.gif);*/
 	background-repeat: no-repeat;
 	background-position: 99px 14px;
 	background-size: 15px;
@@ -466,7 +473,7 @@ table.code *, table.fixed * {
 	background-image:url(08-chat.png) !important; 
 	background-position:top right !important;
     background-repeat:no-repeat !important;
-    color:white !important;
+    color:white !important; /* Dark: rgba(206, 206, 206, 1)*/
     float:right;
     display:block !important;
     height:22px !important;
@@ -504,9 +511,9 @@ table.code *, table.fixed * {
     line-height: 44px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: black; /*rien ?*/
-    border-bottom: 1px solid yellow; /* ?? */
-    background: url(unselectedrow.png) no-repeat scroll right center red; /*rien ?*/
+    color: black; /*rien ?*/ /* Dark rgb(146, 147, 151);*/
+    border-bottom: 1px solid yellow; /* ?? */ /* Dark rgb(68, 79, 77); */
+    background: url(unselectedrow.png) no-repeat scroll right center red; /*rien ?*/ /* Dark rgb(19, 19, 29); */
     background-origin: content-box;
 }
 
@@ -528,7 +535,7 @@ a#searchintra_nextbutton {
     line-height: 44px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: white;
+    color: white; /*Dark: rgba(206, 206, 206, 1);*/
     font-weight: normal;
     text-align: center;
     font-size: 0.9em;
@@ -562,21 +569,28 @@ a#searchintra_nextbutton {
     background: rgba(239, 239, 244, 0.9);
     border-top: 1px solid rgba(109, 109, 114, 0.1);
 }
+/* Dark:
+ .ios7 a#searchintra_nextbutton {
+ color:rgba(146, 147, 151, 1);
+ background: rgba(19, 19, 20, 0.85);
+ border-top: 1px solid rgba(109, 109, 114, 0.2);
+ */
 
 .ios7 .message .content .right>a.cLink {
     padding: 0 5px 0 10px !important;
 }
 
 body.ios7 {
-
+    /*Dark:background: rgba(46, 47, 51, 1);*/
 }
 
 .ios7 .message .header {
     margin-top:0 !important;
     padding-top: 10px !important;
     padding-bottom: 3px !important;
-    background: var(--color-background-bars); /*#efeff4; fond barre pseudo*/
-    color: green; /*rgba(109, 109, 114, 1);*/
+    background: var(--color-background-bars);
+    /*#efeff4; fond barre pseudo*/ /* Dark: rgba(68, 70, 77, 1);   */
+    color: rgba(109, 109, 114, 1);/* ?? */
     border:none;
 }
 
@@ -584,6 +598,17 @@ body.ios7 {
     color: rgba(109, 109, 114, 1); /*text nom pseudo et date message ;*/
     text-shadow:none;
 }
+
+/* Dark *
+.ios7 .message .header .left {
+    color: rgba(206, 206, 206, 1);
+    text-shadow:none;
+}
+
+.ios7 .message .header .leftdate {
+    color : rgb(146, 147, 151);
+    text-shadow:none;
+}*/
 
 .ios7 .message .header .leftdate {
     font-weight:normal
@@ -593,7 +618,7 @@ body.ios7 {
     height: 32px;
     width: 32px;
     float: right;
-    background: var(--color-background-bars); /* background bouton plus */ url(plus.png) no-repeat 0 3px;
+    background: var(--color-background-bars) /* background bouton plus */ url(plus.png) no-repeat 0 3px; /*Dark: url(plus-tinted.png)*/
 }
 
 .ios7 .message .header .right a.awesome {
@@ -602,13 +627,17 @@ body.ios7 {
 
 .ios7 #toolbarpage {
     background:var(--color-background-bars); /* barre de navigation bas de page */
+    /* Dark:
+     background: rgba(38, 40, 47, 1);
+     border-top: 1px solid rgba(58, 60, 67, 1) !important; */
+    
     text-shadow:none;
     border:none;
-    padding-top:13px !important; /* Recentrage bas de page /
+    padding-top:13px !important; /* Recentrage bas de page */
 }
 
 .ios7 #toolbarpage a {
-    color:black;/*var(--color-texte);*/ /* Numero de page dans la barre de navigation bas de page */
+    color:var(--color-texte); /* Numero de page dans la barre de navigation bas de page */ /* Dark: color:rgba(206, 206, 206, 1);*/
 }
 
 .ios7 #toolbarpage .button {
@@ -647,7 +676,7 @@ body.ios7 {
 	background-image:url(ToolBarFastRewind_off.png);
 }
 .ios7 #toolbarpage .button.begin.active {
-	background-image:url(ToolBarFastRewind_on.png);
+    background-image:var(--imagefile-toolbarfastrewind)/*url(ToolBarFastRewind_on.png); /* Dark _tinted */
 }
 .ios7 #toolbarpage .button.begin.hover {
     opacity:0.4;
@@ -657,7 +686,7 @@ body.ios7 {
 	background-image:url(ToolBarFastForward_off.png);
 }
 .ios7 #toolbarpage .button.end.active {
-	background-image:url(ToolBarFastForward_on.png);
+	background-image:var(--imagefile-toolbarfastforward); /*url(ToolBarFastForward_on.png); /* Dark _tinted */
 }
 .ios7 #toolbarpage .button.end.hover {
     opacity:0.4;
@@ -668,7 +697,7 @@ body.ios7 {
 	background-image:url(ToolBarPrevious_off.png);
 }
 .ios7 #toolbarpage .button2.begin.active {
-	background-image:url(ToolBarPrevious_on.png);
+    background-image:var(--imagefile-toolbarprevious); /* url(ToolBarPrevious_on.png); /* Dark _tinted */
 }
 .ios7 #toolbarpage .button2.begin.hover {
     opacity:0.4;
@@ -678,7 +707,8 @@ body.ios7 {
 	background-image:url(ToolBarPlay_off.png);
 }
 .ios7 #toolbarpage .button2.end.active {
-	background-image:url(ToolBarPlay_on.png);
+	background-image:var(--imagefile-toolbarplay); /* Dark _tinted */
+    filter: var(--hue_action_color);
 }
 .ios7 #toolbarpage .button2.end.hover {
     opacity:0.4;
