@@ -133,11 +133,11 @@ div.masque {
     -webkit-touch-callout:none;
     -webkit-tap-highlight-color:rgba(0,0,0,0);
 	height:38px;
-	padding:0 0px !important;
+	padding:0 10px !important;
     margin-top:5px !important;
     border-top:5px solid #FFFFFF; /* Dark #717d85; */
 	
-    border-bottom:5px solid #FFFFFF; /* Dark: #989ea4; */
+    border-bottom:1px solid #FFFFFF; /* Dark: #989ea4; */
 /*
 	background:#369;
 	border-top:1px solid gray;
