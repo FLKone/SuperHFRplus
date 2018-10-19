@@ -226,7 +226,7 @@
             <key>MinimumValue</key>
             <integer>0</integer>
             <key>MaximumValue</key>
-            <integer>200</integer>
+            <integer>150</integer>
             <key>MinimumValueImage</key>
             <string>71-compass.png</string>
         </dict>

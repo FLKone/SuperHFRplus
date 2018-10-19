@@ -74,4 +74,5 @@
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 + (NSString *) hexFromUIColor:(UIColor *)color;
++ (NSString *) getActionColorCssHueRotation:(Theme)theme;
 @end

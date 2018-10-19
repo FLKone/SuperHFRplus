@@ -27,7 +27,7 @@ static float fDarkColor3 = 100; // Unused
     fDarkColor1 = (float)b;
 }
 + (void)setDarkColor2:(int)b {
-    fDarkColor2 = (float)b/200.0; // valeur de 0 à 100
+    fDarkColor2 = (float)b/200.0; // valeur de 0 à 1
 }
 
 + (UIColor*)adjustDarkThemeBrightnessOfColor:color
@@ -630,5 +630,17 @@ static float fDarkColor3 = 100; // Unused
     }
     return [NSString stringWithFormat:@"#%02X%02X%02X", (int)((CGColorGetComponents(color.CGColor))[0]*255.0), (int)((CGColorGetComponents(color.CGColor))[1]*255.0), (int)((CGColorGetComponents(color.CGColor))[2]*255.0)];
     
+}
+
++ (NSString *) getActionColorCssHueRotation:(Theme)theme
+{
+    int iHueActionDegrees = 0;
+    if (theme >= ThemeDark)
+    {
+        // 0 => 140deg (rouge), 115/200 (0.575)=> 360eg (bleue), x => x×(360−140)÷0,575+140
+        iHueActionDegrees = (int)(fDarkColor2*(360-140)/0.6+140);
+    }
+    
+    return [NSString stringWithFormat:@"%ideg", iHueActionDegrees];
 }
 @end

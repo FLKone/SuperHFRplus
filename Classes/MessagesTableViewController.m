@@ -1793,18 +1793,9 @@
         <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\ */
 
         NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
-        NSString *sToolbarplayImageFile = @"url(ToolBarPlay_on.png)";
-        NSString *sToolbarfastrewindImageFile = @"url(ToolBarFastRewind_on.png)";
-        NSString *sToolbarfastforwardImageFile = @"url(ToolBarFastForward_on.png)";
-        NSString *sToolbarpreviousImageFile = @"url(ToolBarPrevious_on.png)";
         NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
-        
         if (theme > 0) { // Si thème Dark
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-            sToolbarplayImageFile = @"url(ToolBarPlay_on_tinted.png)";
-            sToolbarfastrewindImageFile = @"url(ToolBarFastRewind_on_tinted.png)";
-            sToolbarfastforwardImageFile = @"url(ToolBarFastForward_on_tinted.png)";
-            sToolbarpreviousImageFile = @"url(ToolBarPrevious_on_tinted.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
         }
         
@@ -1846,11 +1837,8 @@
             document.documentElement.style.setProperty('--color-text', '%@');\
             document.documentElement.style.setProperty('--color-background-bars', '%@');\
             document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-            document.documentElement.style.setProperty('--imagefile-toolbarplay', '%@');\
-            document.documentElement.style.setProperty('--imagefile-toolbarfastrewind', '%@');\
-            document.documentElement.style.setProperty('--imagefile-toolbarfastforward', '%@');\
-            document.documentElement.style.setProperty('--imagefile-toolbarprevious', '%@');\
             document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+            document.documentElement.style.setProperty('--hue_action_color', 'hue-rotate(%@)');\
             </script>\
             </body></html>", customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
@@ -1858,13 +1846,11 @@
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
                                 sAvatarImageFile,
-                                sToolbarplayImageFile,
-                                sToolbarfastrewindImageFile,
-                                sToolbarfastforwardImageFile,
-                                sToolbarpreviousImageFile,
-                                sLoadInfoImageFile
+                                sLoadInfoImageFile,
+                                [ThemeColors getActionColorCssHueRotation:theme]
                                 ];
-        NSLog(@"[ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]] %@",  [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]] );
+        
+        
          if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             if (self.isSearchInstra) {
                 HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7 searchintra"];
@@ -1879,13 +1865,13 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
         //NSLog(@"baseURL %@", baseURL);
-        
+        /*
         NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);
         NSLog(@"======================================================================================================");
         NSLog(@"baseURL %@", baseURL);
         NSLog(@"======================================================================================================");
-        
+        */
         self.loaded = NO;
         [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         
