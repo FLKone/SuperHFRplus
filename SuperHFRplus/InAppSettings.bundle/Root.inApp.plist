@@ -195,7 +195,7 @@
 			<array>
 				<string>Clair</string>
 				<string>Sombre</string>
-				<string>Sombre OLED</string>
+				<!--string>Sombre OLED</string-->
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
@@ -203,7 +203,7 @@
 			<array>
 				<integer>0</integer>
 				<integer>1</integer>
-				<integer>2</integer>
+				<!--integer>2</integer-->
 			</array>
 		</dict>
         <dict>
@@ -228,7 +228,7 @@
             <key>MaximumValue</key>
             <integer>150</integer>
             <key>MinimumValueImage</key>
-            <string>71-compass.png</string>
+            <string>circle_contrast</string>
         </dict>
         <dict>
             <key>Type</key>
@@ -242,7 +242,7 @@
             <key>MaximumValue</key>
             <integer>200</integer>
             <key>MinimumValueImage</key>
-            <string>71-compass.png</string>
+            <string>circle_color</string>
         </dict>
         <dict>
             <key>DefaultValue</key>

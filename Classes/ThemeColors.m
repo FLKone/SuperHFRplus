@@ -87,7 +87,6 @@ static float fDarkColor3 = 100; // Unused
     CGFloat newHue, hue, saturation, brightness, alpha;
     if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
         newHue = MAX(MIN(val, 1.0), 0.0);
-        NSLog(@"New hue value: %f", newHue);
         return [UIColor colorWithHue:newHue saturation:saturation brightness:brightness alpha:alpha];
     }
 }
@@ -637,7 +636,7 @@ static float fDarkColor3 = 100; // Unused
     int iHueActionDegrees = 0;
     if (theme >= ThemeDark)
     {
-        // 0 => 140deg (rouge), 115/200 (0.575)=> 360eg (bleue), x => x×(360−140)÷0,575+140
+        // 0 => 140deg (rouge), 120/200 (0.6)=> 360eg (bleue), x => x×(360−140)÷0,6+140
         iHueActionDegrees = (int)(fDarkColor2*(360-140)/0.6+140);
     }
     
