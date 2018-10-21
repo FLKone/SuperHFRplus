@@ -152,16 +152,6 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<false/>
-			<key>Key</key>
-			<string>auto_theme</string>
-			<key>Title</key>
-			<string>Thème auto (beta)</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
 			<integer>0</integer>
 			<key>Key</key>
 			<string>theme</string>
@@ -215,7 +205,7 @@
 			<array>
 				<string>Clair</string>
 				<string>Sombre</string>
-				<string>Sombre OLED</string>
+				<!--string>Sombre OLED</string-->
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
@@ -223,9 +213,57 @@
 			<array>
 				<integer>0</integer>
 				<integer>1</integer>
-				<integer>2</integer>
+				<!--integer>2</integer-->
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <false/>
+            <key>Key</key>
+            <string>theme_dark_adjust</string>
+            <key>Title</key>
+            <string>Ajustement thème sombre</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSSliderSpecifier</string>
+            <key>Key</key>
+            <string>theme_dark_color1</string>
+            <key>DefaultValue</key>
+            <integer>100</integer>
+            <key>MinimumValue</key>
+            <integer>0</integer>
+            <key>MaximumValue</key>
+            <integer>150</integer>
+            <key>MinimumValueImage</key>
+            <string>Contrast</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSSliderSpecifier</string>
+            <key>Key</key>
+            <string>theme_dark_color2</string>
+            <key>DefaultValue</key>
+            <integer>100</integer>
+            <key>MinimumValue</key>
+            <integer>0</integer>
+            <key>MaximumValue</key>
+            <integer>200</integer>
+            <key>MinimumValueImage</key>
+            <string>ColorWheel</string>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <false/>
+            <key>Key</key>
+            <string>auto_theme</string>
+            <key>Title</key>
+            <string>Thème auto (beta)</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Sujets</string>

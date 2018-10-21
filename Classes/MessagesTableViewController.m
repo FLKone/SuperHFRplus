@@ -1785,6 +1785,19 @@
         
         NSString *customFontSize = [self userTextSizeDidChange];
         Theme theme = [[ThemeManager sharedManager] theme];
+
+        /*<link type='text/css' rel='stylesheet %@' href='style-liste-retina.css' id='light-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\ */
+
+        NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
+        NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
+        if (theme > 0) { // Si thème Dark
+            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+        }
         
         NSString *HTMLString = [NSString
                                 stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
@@ -1794,12 +1807,7 @@
             <script type='text/javascript' src='jquery.doubletap.js'></script>\
             <script type='text/javascript' src='jquery.base64.js'></script>\
             <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
-            <link type='text/css' rel='stylesheet %@' href='style-liste.css' id='light-styles'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-retina.css' id='light-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+            <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
             <style type='text/css'>\
             %@\
             </style>\
@@ -1824,10 +1832,29 @@
             function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
             $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
             function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
-            </script>\
-            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar];
+                                document.documentElement.style.setProperty('--color-action', '%@');\
+                                document.documentElement.style.setProperty('--color-message-background', '%@');\
+                                document.documentElement.style.setProperty('--color-text', '%@');\
+                                document.documentElement.style.setProperty('--color-text2', '%@');\
+                                document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                                document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+                                    document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                                document.documentElement.style.setProperty('--hue_action_color', 'hue-rotate(%@)');\
+                                </script>\
+                                </body></html>",
+                                customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                                [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
+                                [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
+                                [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
+                                [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                                sAvatarImageFile,
+                                sLoadInfoImageFile,
+                                [ThemeColors getActionColorCssHueRotation:theme]
+                                ];
         
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        
+         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             if (self.isSearchInstra) {
                 HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7 searchintra"];
             }
@@ -1841,13 +1868,13 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
         //NSLog(@"baseURL %@", baseURL);
-        
-        //NSLog(@"======================================================================================================");
-        //NSLog(@"HTMLString %@", HTMLString);
-        //NSLog(@"======================================================================================================");
-        //NSLog(@"baseURL %@", baseURL);
-        //NSLog(@"======================================================================================================");
-        
+        /*
+        NSLog(@"======================================================================================================");
+        NSLog(@"HTMLString %@", HTMLString);
+        NSLog(@"======================================================================================================");
+        NSLog(@"baseURL %@", baseURL);
+        NSLog(@"======================================================================================================");
+        */
         self.loaded = NO;
         [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         

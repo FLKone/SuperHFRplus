@@ -1,3 +1,7 @@
+:root {
+    --color-actualiser: green;
+}
+
 #actualiserbtn.loading {
 	background-image: url(loadinfo@2x.gif);
 }

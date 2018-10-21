@@ -10,7 +10,25 @@
 #import "Constants.h"
 
 
-@interface ThemeColors : NSObject
+@interface ThemeColors : NSObject {
+    CGFloat fDarkColor1;
+    CGFloat fDarkColor2;
+    CGFloat fDarkColor3;
+}
+
++ (void)setDarkColor1:(int)b; // Brightness for dark colors in % compare to default Dark theme
++ (void)setDarkColor2:(int)b; // Action color for dark theme (converted to hue value)
++ (void)setDarkColor3:(int)b; // Currently unused
+
++ (CGFloat)fDarkColor1;
++ (CGFloat)fDarkColor2;
++ (CGFloat)fDarkColor3;
+
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
++ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
++ (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
+
 + (UIColor *)tabBackgroundColor:(Theme)theme;
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
@@ -26,6 +44,7 @@
 + (UIColor *)headSectionBackgroundColor:(Theme)theme;
 + (UIColor *)headSectionTextColor:(Theme)theme;
 + (UIColor *)textColor:(Theme)theme;
++ (UIColor *)textColor2:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
@@ -56,4 +75,6 @@
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
++ (NSString *) hexFromUIColor:(UIColor *)color;
++ (NSString *) getActionColorCssHueRotation:(Theme)theme;
 @end
