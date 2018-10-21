@@ -228,7 +228,7 @@
             <key>MaximumValue</key>
             <integer>150</integer>
             <key>MinimumValueImage</key>
-            <string>circle_contrast</string>
+            <string>Contrast</string>
         </dict>
         <dict>
             <key>Type</key>
@@ -242,7 +242,7 @@
             <key>MaximumValue</key>
             <integer>200</integer>
             <key>MinimumValueImage</key>
-            <string>circle_color</string>
+            <string>ColorWheel</string>
         </dict>
         <dict>
             <key>DefaultValue</key>

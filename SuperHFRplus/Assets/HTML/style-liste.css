@@ -512,8 +512,8 @@ table.code *, table.fixed * {
     padding: 0 0px 0 10px !important;
     text-decoration: none;
     color: black; /*rien ?*/ /* Dark rgb(146, 147, 151);*/
-    border-bottom: 1px solid yellow; /* ?? */ /* Dark rgb(68, 79, 77); */
-    background: url(unselectedrow.png) no-repeat scroll right center red; /*rien ?*/ /* Dark rgb(19, 19, 29); */
+    /*border-bottom: 1px solid yellow; /* ?? */ /* Dark rgb(68, 79, 77); */
+    background: url(unselectedrow.png) no-repeat scroll right center silver; /*rien ?*/ /* Dark rgb(19, 19, 29); */
     background-origin: content-box;
 }
 
