@@ -44,6 +44,7 @@
 + (UIColor *)headSectionBackgroundColor:(Theme)theme;
 + (UIColor *)headSectionTextColor:(Theme)theme;
 + (UIColor *)textColor:(Theme)theme;
++ (UIColor *)textColor2:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;

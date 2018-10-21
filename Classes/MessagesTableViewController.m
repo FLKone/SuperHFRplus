@@ -1832,18 +1832,21 @@
             function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
             $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
             function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
-            document.documentElement.style.setProperty('--color-action', '%@');\
-            document.documentElement.style.setProperty('--color-message-background', '%@');\
-            document.documentElement.style.setProperty('--color-text', '%@');\
-            document.documentElement.style.setProperty('--color-background-bars', '%@');\
-            document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-            document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
-            document.documentElement.style.setProperty('--hue_action_color', 'hue-rotate(%@)');\
-            </script>\
-            </body></html>", customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
+                                document.documentElement.style.setProperty('--color-action', '%@');\
+                                document.documentElement.style.setProperty('--color-message-background', '%@');\
+                                document.documentElement.style.setProperty('--color-text', '%@');\
+                                document.documentElement.style.setProperty('--color-text2', '%@');\
+                                document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                                document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+                                    document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                                document.documentElement.style.setProperty('--hue_action_color', 'hue-rotate(%@)');\
+                                </script>\
+                                </body></html>",
+                                customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
                                 [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
+                                [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
                                 sAvatarImageFile,
                                 sLoadInfoImageFile,

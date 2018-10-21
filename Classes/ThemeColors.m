@@ -116,7 +116,6 @@ static float fDarkColor3 = 100; // Unused
     return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0]; //OK
 }
 
-//
 + (UIColor *)textFieldBackgroundColor:(Theme)theme{
     switch (theme) {
         case ThemeLight: return [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1.0];
@@ -131,6 +130,17 @@ static float fDarkColor3 = 100; // Unused
         case ThemeLight: return [UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
         case ThemeDark:  return [UIColor colorWithRed:206.0/255.0 green:206.0/255.0 blue:206.0/255.0 alpha:1.0];
         case ThemeOLED:  return [UIColor colorWithRed:136.0/255.0 green:136.0/255.0 blue:136.0/255.0 alpha:1.0];
+        default:         return [UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+    }
+}
+
+// Theme clair: un peu plus clair que textColor
+// Thème sombre: un peu plus foncé que textColor
++ (UIColor *)textColor2:(Theme)theme{
+    switch (theme) {
+        case ThemeLight: return [UIColor colorWithRed:224/255.0 green:224/255.0 blue:224/255.0 alpha:1.0];
+        case ThemeDark:  return [UIColor colorWithRed:60.0/255.0 green:60.0/255.0 blue:60.0/255.0 alpha:1.0];
+        case ThemeOLED:  return [UIColor colorWithRed:30.0/255.0 green:30.0/255.0 blue:30.0/255.0 alpha:1.0];
         default:         return [UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
     }
 }
