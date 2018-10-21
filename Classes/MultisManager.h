@@ -22,4 +22,5 @@
 - (UIImage *)getAvatarForCompte:(NSDictionary *)compte;
 - (void)forceCookiesForCompte:(NSDictionary *)compte;
 - (void)updateCookies:(NSArray *)cookies;
+- (void)updateAllAccounts;
 @end

@@ -12,6 +12,8 @@
 #import "ThemeColors.h"
 #import "HFRplusAppDelegate.h"
 #import <SimpleKeychain/SimpleKeychain.h>
+#import "ASIFormDataRequest.h"
+
 
 
 
@@ -165,13 +167,35 @@
     for (NSHTTPCookie *aCookie in cookies) {
         if([aCookie.name isEqualToString:@"md_user"] && ![aCookie.value isEqualToString:@"deleted"] ){
             for (NSMutableDictionary* compte in comptesArray) {
-                if([[compte objectForKey:PSEUDO_KEY] isEqualToString:aCookie.value]){
+                if([[compte objectForKey:PSEUDO_KEY] isEqualToString:aCookie.value] ||  [[self sanitizePseudo:[compte objectForKey:PSEUDO_KEY]] isEqualToString:aCookie.value]){
                     [compte setValue:cookies forKey:COOKIES_KEY];
                 }
             }
         }
     }
     [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
+}
+
+- (void)updateAllAccounts{
+    NSArray *comptesArray = [self getComtpes];
+    for (NSMutableDictionary* compte in comptesArray) {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/user/editprofil.php?config=hfr.inc&page=1", [k ForumURL]]];
+        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+        [request setDelegate:self];
+        [request setUseCookiePersistence:NO];
+        [request setRequestCookies:[compte objectForKey:COOKIES_KEY]];
+        [request startAsynchronous];
+    }
+}
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    [self updateCookies:request.responseCookies];
+}
+
+-(NSString *)sanitizePseudo:(NSString *)pseudo  {
+    NSCharacterSet *allowedCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"!*'();:@&=+$,/?%#[] "] invertedSet];
+    return [pseudo stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
 }
 
 
