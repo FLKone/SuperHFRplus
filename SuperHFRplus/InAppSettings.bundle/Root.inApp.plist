@@ -10,7 +10,7 @@
 			<key>IASKViewControllerClass</key>
 			<string>CompteViewController</string>
 			<key>Title</key>
-			<string>Mon Compte</string>
+			<string>Compte(s)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -123,6 +123,16 @@
 				<string>redface</string>
 				<string>beta</string>
 			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>shake_to_refresh</string>
+			<key>Title</key>
+			<string>Shake to refresh</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>

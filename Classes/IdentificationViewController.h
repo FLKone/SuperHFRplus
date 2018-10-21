@@ -22,6 +22,8 @@
 @property (nonatomic, strong) UITextField* pseudoField;
 @property (nonatomic, strong) UITextField* passField;
 @property (nonatomic, strong) UITextView *logView;
+@property (nonatomic, strong) NSString *password;
+
 
 
 -(IBAction) done:(id)sender;
