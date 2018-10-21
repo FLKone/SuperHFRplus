@@ -19,6 +19,8 @@
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 
+#import "MultisManager.h"
+
 #import <SafariServices/SafariServices.h>
 
 @implementation HFRplusAppDelegate
@@ -138,6 +140,7 @@
                                                  name:kThemeChangedNotification
                                                object:nil];
     [self setTheme:[[ThemeManager sharedManager] theme]];
+    [[MultisManager sharedManager] updateAllAccounts];
 
 	
     return YES;

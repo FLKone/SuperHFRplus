@@ -10,7 +10,7 @@
 			<key>IASKViewControllerClass</key>
 			<string>CompteViewController</string>
 			<key>Title</key>
-			<string>Mon Compte</string>
+			<string>Compte(s)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -124,16 +124,16 @@
 				<string>beta</string>
 			</array>
 		</dict>
-        <dict>
-            <key>DefaultValue</key>
-            <true/>
-            <key>Key</key>
-            <string>shake_to_refresh</string>
-            <key>Title</key>
-            <string>Shake to refresh</string>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-        </dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>shake_to_refresh</string>
+			<key>Title</key>
+			<string>Shake to refresh</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
 		<dict>
 			<key>DefaultValue</key>
 			<true/>
@@ -144,88 +144,88 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
-        <dict>
-            <key>Title</key>
-            <string>Thèmes</string>
-            <key>Type</key>
-            <string>PSGroupSpecifier</string>
-        </dict>
-        <dict>
-            <key>DefaultValue</key>
-            <false/>
-            <key>Key</key>
-            <string>auto_theme</string>
-            <key>Title</key>
-            <string>Thème auto (beta)</string>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-        </dict>
-        <dict>
-            <key>DefaultValue</key>
-            <integer>0</integer>
-            <key>Key</key>
-            <string>theme</string>
-            <key>Title</key>
-            <string>Thème</string>
-            <key>Titles</key>
-            <array>
-                <string>Clair</string>
-                <string>Sombre</string>
-                <string>Sombre OLED</string>
-            </array>
-            <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-            </array>
-        </dict>
-        <dict>
-            <key>DefaultValue</key>
-            <integer>0</integer>
-            <key>Key</key>
-            <string>auto_theme_day</string>
-            <key>Title</key>
-            <string>Thème Jour</string>
-            <key>Titles</key>
-            <array>
-                <string>Clair</string>
-                <string>Sombre</string>
-                <string>Sombre OLED</string>
-            </array>
-            <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-            </array>
-        </dict>
-        <dict>
-            <key>DefaultValue</key>
-            <integer>0</integer>
-            <key>Key</key>
-            <string>auto_theme_night</string>
-            <key>Title</key>
-            <string>Thème Nuit</string>
-            <key>Titles</key>
-            <array>
-                <string>Clair</string>
-                <string>Sombre</string>
-                <string>Sombre OLED</string>
-            </array>
-            <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-            </array>
-        </dict>
+		<dict>
+			<key>Title</key>
+			<string>Thèmes</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<false/>
+			<key>Key</key>
+			<string>auto_theme</string>
+			<key>Title</key>
+			<string>Thème auto (beta)</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>theme</string>
+			<key>Title</key>
+			<string>Thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Clair</string>
+				<string>Sombre</string>
+				<string>Sombre OLED</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>auto_theme_day</string>
+			<key>Title</key>
+			<string>Thème Jour</string>
+			<key>Titles</key>
+			<array>
+				<string>Clair</string>
+				<string>Sombre</string>
+				<string>Sombre OLED</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>auto_theme_night</string>
+			<key>Title</key>
+			<string>Thème Nuit</string>
+			<key>Titles</key>
+			<array>
+				<string>Clair</string>
+				<string>Sombre</string>
+				<string>Sombre OLED</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
 		<dict>
 			<key>Title</key>
 			<string>Sujets</string>
