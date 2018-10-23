@@ -32,6 +32,7 @@
 + (UIColor *)tabBackgroundColor:(Theme)theme;
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
++ (UIColor *)messageBackgroundColor:(Theme)theme;
 + (UIColor *)addMessageBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColor:(Theme)theme;
 + (UIColor *)cellHighlightBackgroundColor:(Theme)theme;
@@ -45,6 +46,7 @@
 + (UIColor *)headSectionTextColor:(Theme)theme;
 + (UIColor *)textColor:(Theme)theme;
 + (UIColor *)textColor2:(Theme)theme;
++ (UIColor *)textColorPseudo:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
@@ -76,4 +78,6 @@
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 + (NSString *) hexFromUIColor:(UIColor *)color;
 + (NSString *) getActionColorCssHueRotation:(Theme)theme;
++ (NSString *) getColorBorderQuotation:(Theme)theme;
++ (NSString *) getColorBorderAvatar:(Theme)theme;
 @end

@@ -1794,52 +1794,58 @@
 
         NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
         NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
+        CGFloat fBrightnessToolbarOff = 1.0;
         if (theme > 0) { // Si thème Dark
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+            fBrightnessToolbarOff = 0.4;
         }
         
         NSString *HTMLString = [NSString
                                 stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
-            <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
-            <head>\
-            <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
-            <script type='text/javascript' src='jquery.doubletap.js'></script>\
-            <script type='text/javascript' src='jquery.base64.js'></script>\
-            <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
-            <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
-            <style type='text/css'>\
-            %@\
-            </style>\
-            <style id='smileys_double' type='text/css'>\
-            %@\
-            </style>\
-            </head><body class='iosversion'><a name='top' id='top'></a>\
-            <div class='bunselected %@' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'>\
-            %@\
-            </div>\
-            %@\
-            %@\
-            <div id='endofpage'></div>\
-            <div id='endofpagetoolbar'></div>\
-            <a name='bas'></a>\
-            <script type='text/javascript'>\
-            document.addEventListener('DOMContentLoaded', loadedML);\
-            document.addEventListener('touchstart', touchstart);\
-            function loadedML() { setTimeout(function() {document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded';},700); };\
-            function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
-            function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
-            function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
-            $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
-            function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
+                                <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
+                                <head>\
+                                <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
+                                <script type='text/javascript' src='jquery.doubletap.js'></script>\
+                                <script type='text/javascript' src='jquery.base64.js'></script>\
+                                <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
+                                <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+                                <style type='text/css'>\
+                                %@\
+                                </style>\
+                                <style id='smileys_double' type='text/css'>\
+                                %@\
+                                </style>\
+                                </head><body class='iosversion'><a name='top' id='top'></a>\
+                                <div class='bunselected %@' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'>\
+                                %@\
+                                </div>\
+                                %@\
+                                %@\
+                                <div id='endofpage'></div>\
+                                <div id='endofpagetoolbar'></div>\
+                                <a name='bas'></a>\
+                                <script type='text/javascript'>\
+                                document.addEventListener('DOMContentLoaded', loadedML);\
+                                document.addEventListener('touchstart', touchstart);\
+                                function loadedML() { setTimeout(function() {document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded';},700); };\
+                                function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
+                                function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
+                                function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
+                                $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
+                                function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
                                 document.documentElement.style.setProperty('--color-action', '%@');\
                                 document.documentElement.style.setProperty('--color-message-background', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
                                 document.documentElement.style.setProperty('--color-background-bars', '%@');\
                                 document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-                                    document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                                document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
                                 document.documentElement.style.setProperty('--hue_action_color', 'hue-rotate(%@)');\
+                                document.documentElement.style.setProperty('--brightness-button-toolbar', 'brightness(%f)');\
+                                document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+                                document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+                                document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
                                 </script>\
                                 </body></html>",
                                 customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
@@ -1850,7 +1856,11 @@
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
                                 sAvatarImageFile,
                                 sLoadInfoImageFile,
-                                [ThemeColors getActionColorCssHueRotation:theme]
+                                [ThemeColors getActionColorCssHueRotation:theme],
+                                fBrightnessToolbarOff,
+                                [ThemeColors getColorBorderQuotation:theme],
+                                [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
+                                [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]]
                                 ];
         
         

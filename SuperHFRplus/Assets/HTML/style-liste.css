@@ -11,6 +11,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-background-bars:#F5F5F5;
     --color-text:#202020;
     --color-text2:#202020;
+    --color-text-pseudo:#202020;
     --imagefile-avatar:url(avatar_male_gray_on_light_48x48.png); /* Image d'avatar */
     --imagefile-toolbarplay:url(ToolBarPlay_on.png);
     --imagefile-toolbarfastrewind:url(ToolBarFastRewind_on.png);
@@ -18,6 +19,9 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --imagefile-toolbarprevious:url(ToolBarPrevious_on.png);
     --imagefile-loadinfo:url(loadinfo.gif);
     --hue_action_color:hue-rotate(0deg); /* 0deg= bleu, 140=rouge=*/
+    --brightness-button-toolbar:brightness(1);
+    --color-border-quotation:silver;
+    --color-border-avatar:#717d85;
 }
 
 * {
@@ -170,8 +174,7 @@ background:-webkit-gradient(
 	height:30px;
 	margin-top:1px !important;
 	
-    /* BAE border:1px solid #717d85; /* Bordure d'avatar */ /* Dark :#222222;*/
-    border:0px;
+    border:1px solid var(--color-border-avatar); /* Bordure d'avatar */ /* Dark :#222222;*/
     
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -216,9 +219,19 @@ background:-webkit-gradient(
 }
 
 .message .header .right {
-	height:34px;
+	/*height:34px;
 	float:right;
-    font-size:15px !important;
+    font-size: 30px !important;
+    color: var(--color-action);*/
+    height:40px
+    width: 30px;
+    float: right;
+    font-size: 28px !important;
+    color: var(--color-action);
+    margin-top: 0px !important;
+    font-family: blisslight !important;
+    font-weight: bold;
+    
 	/*margin-right:11px !important;
 
 	font-size:9px !important;
@@ -237,7 +250,10 @@ background:-webkit-gradient(
 }
 
 .message .header .right a.small.awesome, .message .header .right a.small.awesome:visited {
-	font-size: 1em !important;
+	font-size: 13px !important;
+    color: var(--color-action);
+    .message .header .right
+
 }
 
 .message .header .right a.awesome, .message .header .right a.awesome:visited {
@@ -295,7 +311,7 @@ background:-webkit-gradient(
 }
 
 .message .content .right a {
-    color:var(--color-url);
+    color:var(--color-action)
 }
 
 .message .content .right ol, ul
@@ -311,7 +327,7 @@ background:-webkit-gradient(
 table.code, table.fixed, table.quote, table.citation, table.oldcitation {
     table-layout:fixed;
     border: none;
-    border-left: 2px solid silver; /* barre gauche de quotation */ /* Dark: rgba(255, 255, 255, 0.2);*/
+    border-left: 2px solid var(--color-border-quotation);
 }
 
 hr {
@@ -595,12 +611,12 @@ body.ios7 {
 }
 
 .ios7 .message .header .left {
-    color: var(--color-text);  /*texte nom pseudo*/
+    color: var(--color-text-pseudo);  /*texte nom pseudo*/
     text-shadow:none;
 }
 
 .ios7 .message .header .leftdate {
-    color: var(--color-text); /*text date message ;*/
+    color: var(--color-text-pseudo); /*text date message ;*/
     text-shadow:none;
 }
 
@@ -621,11 +637,11 @@ body.ios7 {
 
 .ios7 .message .header .right { /* bouton plus */
     height: 32px;
-    width: 32px;
+    width: 25px;
     float: right;
     /* background: no-repeat 0 3px; /*Dark: url(plus-tinted.png)*/
-    background-image:url(plus.png);
-    filter: var(--hue_action_color);
+    /*background-image:url(plus.png);
+    filter: hue-rotate(60deg); /* var(--hue_action_color); /* brightness(1.3); */
 }
 
 .ios7 .message .header .right a.awesome {
@@ -681,10 +697,11 @@ body.ios7 {
 .ios7 #toolbarpage .button.begin {
     left:16px;
 	background-image:url(ToolBarFastRewind_off.png);
+    filter: var(--brightness-button-toolbar);
 }
 .ios7 #toolbarpage .button.begin.active {
-    background-image:var(--imagefile-toolbarfastrewind);*url(ToolBarFastRewind_on.png); /* Dark _tinted */
-    filter: var(--hue_action_color);
+    background-image:var(--imagefile-toolbarfastrewind);/*url(ToolBarFastRewind_on.png); /* Dark _tinted */
+    filter: var(--hue_action_color) brightness(1.3);
 }
 .ios7 #toolbarpage .button.begin.hover {
     opacity:0.4;
@@ -692,10 +709,11 @@ body.ios7 {
 .ios7 #toolbarpage .button.end {
 	right:16px;
 	background-image:url(ToolBarFastForward_off.png);
+    filter: var(--brightness-button-toolbar);
 }
 .ios7 #toolbarpage .button.end.active {
 	background-image:var(--imagefile-toolbarfastforward); /*url(ToolBarFastForward_on.png); /* Dark _tinted */
-    filter: var(--hue_action_color);
+    filter: var(--hue_action_color) brightness(1.3);
 }
 .ios7 #toolbarpage .button.end.hover {
     opacity:0.4;
@@ -704,10 +722,11 @@ body.ios7 {
 .ios7 #toolbarpage .button2.begin {
 	left:65px;
 	background-image:url(ToolBarPrevious_off.png);
+    filter: var(--brightness-button-toolbar);
 }
 .ios7 #toolbarpage .button2.begin.active {
     background-image:var(--imagefile-toolbarprevious);/* url(ToolBarPrevious_on.png); /* Dark _tinted */
-    filter: var(--hue_action_color);
+    filter: var(--hue_action_color) brightness(1.3);
 }
 .ios7 #toolbarpage .button2.begin.hover {
     opacity:0.4;
@@ -715,10 +734,11 @@ body.ios7 {
 .ios7 #toolbarpage .button2.end {
 	right:65px;
 	background-image:url(ToolBarPlay_off.png);
+    filter: var(--brightness-button-toolbar);
 }
 .ios7 #toolbarpage .button2.end.active {
 	background-image:var(--imagefile-toolbarplay); /* Dark _tinted */
-    filter: var(--hue_action_color);
+    filter: var(--hue_action_color) brightness(1.3);
 }
 .ios7 #toolbarpage .button2.end.hover {
     opacity:0.4;
