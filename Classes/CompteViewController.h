@@ -8,17 +8,13 @@
 #import <UIKit/UIKit.h>
 #import "IdentificationViewController.h"
 
-@interface CompteViewController : UIViewController <IdentificationViewControllerDelegate> {
-	UIView *compteView;
-	UIView *loginView;
-	UIButton *profilBtn;
+@interface CompteViewController : UIViewController <IdentificationViewControllerDelegate, UITableViewDelegate, UITableViewDataSource> {
+	UITableView *comptesTableView;
 }
 
-@property (nonatomic, strong) IBOutlet UIView* compteView;
-@property (nonatomic, strong) IBOutlet UIView* loginView;
+@property (nonatomic, strong) IBOutlet UITableView* comptesTableView;
 @property (nonatomic, strong) IBOutlet UILabel* loadingLabel;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView* loadingIndicator;
-@property (nonatomic, strong) IBOutlet UIButton* profilBtn;
 
 - (void)checkLogin;
 - (IBAction)login;
