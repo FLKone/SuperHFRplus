@@ -218,7 +218,7 @@ background:-webkit-gradient(
     float:right;
     font-size:15px !important;
 
-    /* Texte plus colorisé:
+    /* Texte plus colorisé:*/
     height:40px
     width: 30px;
     float: right;
@@ -226,7 +226,7 @@ background:-webkit-gradient(
     color: var(--color-action);
     margin-top: 0px !important;
     font-family: blisslight !important;
-    font-weight: bold;*/
+    font-weight: bold;
     
 
 	
@@ -606,21 +606,9 @@ body.ios7 {
     font-weight:normal
 }
 
-.imgplus .cls-1 {
-    fill:var(--color-action);
-}
-
-.cls-1 path {
-    fill:red;
-}
-
-style.cls-1 {
-    fill:pink;
-}
-
 .ios7 .message .header .right { /* bouton plus */
     height: 32px;
-    width: 32px;
+    width: 25px;
     float: right;
 }
 
