@@ -1794,11 +1794,9 @@
 
         NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
         NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
-        CGFloat fBrightnessToolbarOff = 1.0;
         if (theme > 0) { // Si thème Dark
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
-            fBrightnessToolbarOff = 0.4;
         }
         
         NSString *HTMLString = [NSString
@@ -1835,14 +1833,13 @@
                                 $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
                                 function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
                                 document.documentElement.style.setProperty('--color-action', '%@');\
+                                document.documentElement.style.setProperty('--color-action-disabled', '%@');\
                                 document.documentElement.style.setProperty('--color-message-background', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
                                 document.documentElement.style.setProperty('--color-background-bars', '%@');\
                                 document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
                                 document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
-                                document.documentElement.style.setProperty('--hue_action_color', 'hue-rotate(%@)');\
-                                document.documentElement.style.setProperty('--brightness-button-toolbar', 'brightness(%f)');\
                                 document.documentElement.style.setProperty('--color-border-quotation', '%@');\
                                 document.documentElement.style.setProperty('--color-border-avatar', '%@');\
                                 document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
@@ -1850,14 +1847,13 @@
                                 </body></html>",
                                 customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
                                 [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
                                 sAvatarImageFile,
                                 sLoadInfoImageFile,
-                                [ThemeColors getActionColorCssHueRotation:theme],
-                                fBrightnessToolbarOff,
                                 [ThemeColors getColorBorderQuotation:theme],
                                 [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
                                 [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]]

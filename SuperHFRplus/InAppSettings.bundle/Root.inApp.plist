@@ -234,11 +234,11 @@
 			<key>Key</key>
 			<string>theme_dark_color2</string>
 			<key>DefaultValue</key>
-			<integer>16</integer>
+			<integer>0</integer>
 			<key>MinimumValue</key>
 			<integer>0</integer>
 			<key>MaximumValue</key>
-			<integer>200</integer>
+			<integer>360</integer>
 			<key>MinimumValueImage</key>
 			<string>ColorWheel</string>
 		</dict>

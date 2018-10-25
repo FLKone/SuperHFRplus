@@ -13,21 +13,13 @@
 @interface ThemeColors : NSObject {
     CGFloat fDarkColor1;
     CGFloat fDarkColor2;
-    CGFloat fDarkColor3;
 }
 
 + (void)setDarkColor1:(int)b; // Brightness for dark colors in % compare to default Dark theme
 + (void)setDarkColor2:(int)b; // Action color for dark theme (converted to hue value)
-+ (void)setDarkColor3:(int)b; // Currently unused
 
 + (CGFloat)fDarkColor1;
 + (CGFloat)fDarkColor2;
-+ (CGFloat)fDarkColor3;
-
-+ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
-+ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
-+ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
-+ (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
 
 + (UIColor *)tabBackgroundColor:(Theme)theme;
 + (UIColor *)navBackgroundColor:(Theme)theme;
@@ -55,6 +47,7 @@
 + (UIColor *)tintColor:(Theme)theme;
 + (UIColor *)tintLightColor:(Theme)theme;
 + (UIColor *)tintWhiteColor:(Theme)theme;
++ (UIColor *)tintColorDisabled:(Theme)theme;
 + (UIColor *)overlayColor:(Theme)theme;
 + (UIColor *)toolbarColor:(Theme)theme;
 + (UIColor *)toolbarPageBackgroundColor:(Theme)theme;
@@ -77,7 +70,10 @@
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 + (NSString *) hexFromUIColor:(UIColor *)color;
-+ (NSString *) getActionColorCssHueRotation:(Theme)theme;
 + (NSString *) getColorBorderQuotation:(Theme)theme;
-+ (NSString *) getColorBorderAvatar:(Theme)theme;
++ (UIColor *)  getColorBorderAvatar:(Theme)theme;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
++ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
++ (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
 @end
