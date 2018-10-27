@@ -13,7 +13,7 @@
 @implementation ThemeColors
 
 static float fDarkColor1 = 100;//[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
-static float fDarkColor2 = 0; //100% par défaut
+static float fDarkColor2 = 33/360.0; //100% par défaut
 
 // Ajustement brightness of dark theme
 // En input valeur de 50 a 200:
@@ -302,10 +302,10 @@ static float fDarkColor2 = 0; //100% par défaut
             case ThemeLight: return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
                 
             case ThemeDark: // Orange
-                c = [UIColor colorWithHue:31.0/360.0 saturation:1.0 brightness:1.0 alpha:1.0];
+                c = [UIColor colorWithHue:31.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
                 c2 = [self changeHue:c withValue:fDarkColor2];
                 return c2;
-            case ThemeOLED:  return [UIColor colorWithHue:31.0/360.0 saturation:1.0 brightness:1.0 alpha:1.0];
+            case ThemeOLED:  return [UIColor colorWithHue:33.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
             default:         return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
         }
     }

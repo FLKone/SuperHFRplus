@@ -1792,12 +1792,24 @@
         <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
         <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\ */
 
+        // Default value for light theme
         NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
         NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
-        if (theme > 0) { // Si thème Dark
-            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+        NSString* sBorderHeader = @"none";
+        
+        // Modified in theme Dark or OLED
+        switch (theme) {
+            case ThemeDark:
+                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+                break;
+            case ThemeOLED:
+                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+                sBorderHeader = @"1px solid #505050";
+                break;
         }
+        
         
         NSString *HTMLString = [NSString
                                 stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
@@ -1843,6 +1855,7 @@
                                 document.documentElement.style.setProperty('--color-border-quotation', '%@');\
                                 document.documentElement.style.setProperty('--color-border-avatar', '%@');\
                                 document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                                document.documentElement.style.setProperty('--border-header', '%@');\
                                 </script>\
                                 </body></html>",
                                 customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
@@ -1856,7 +1869,8 @@
                                 sLoadInfoImageFile,
                                 [ThemeColors getColorBorderQuotation:theme],
                                 [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
-                                [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]]
+                                [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                                sBorderHeader
                                 ];
         
         
