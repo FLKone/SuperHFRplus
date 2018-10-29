@@ -36,6 +36,15 @@ int nightDelay;
             theme = ThemeLight;
         }
         
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"])
+        {
+            //  Apply customisation
+            NSInteger value1 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
+            NSInteger value2 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color2"];
+            [ThemeColors setDarkColor1:value1];
+            [ThemeColors setDarkColor2:value2];
+        }
+        
         [self applyAppearance];
         [self changeAutoTheme:[defaults boolForKey:@"auto_theme"]];
     }
@@ -64,7 +73,18 @@ int nightDelay;
     
     [self applyAppearance];
 }
-                                      
+
+- (void)refreshTheme {
+    //Post it to the default notification center
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSNotification *myNotification = [NSNotification notificationWithName:kThemeChangedNotification
+                                                                   object:self  //object is usually the object posting the notification
+                                                                 userInfo:nil]; //userInfo is an optional dictionary
+    [[NSNotificationCenter defaultCenter] postNotification:myNotification];
+    
+    [self applyAppearance];
+}
+
 - (Theme)theme{
     //NSLog(@"%lu",(unsigned long)theme);
     return theme;
@@ -156,6 +176,18 @@ int nightDelay;
     if(theme == ThemeDark || theme == ThemeOLED){
          [alertContentView.subviews objectAtIndex:1].alpha = 0.0f;
     }
+    
+    // If present send title and text message color
+    if (alert.title != nil)
+    {
+        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:alert.title attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
+        [alert setValue:attributedString forKey:@"attributedMessage"];
+    }
+    if (alert.message != nil)
+    {
+        NSAttributedString* attributedString2 = [[NSAttributedString alloc] initWithString:alert.message attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
+        [alert setValue:attributedString2 forKey:@"attributedTitle"];
+    }
 }
 
 - (void)changeAutoTheme:(BOOL)autoTheme{
@@ -169,7 +201,7 @@ int nightDelay;
         [self.luminosityHandler stop];
     }
 }
-
+    
 -(void)didUpdateLuminosity:(float)luminosity {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

@@ -1785,49 +1785,96 @@
         
         NSString *customFontSize = [self userTextSizeDidChange];
         Theme theme = [[ThemeManager sharedManager] theme];
+
+        /*<link type='text/css' rel='stylesheet %@' href='style-liste-retina.css' id='light-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
+        <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\ */
+
+        // Default value for light theme
+        NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
+        NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
+        NSString* sBorderHeader = @"none";
+        
+        // Modified in theme Dark or OLED
+        switch (theme) {
+            case ThemeDark:
+                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+                break;
+            case ThemeOLED:
+                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+                sBorderHeader = @"1px solid #505050";
+                break;
+        }
+        
         
         NSString *HTMLString = [NSString
                                 stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
-            <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
-            <head>\
-            <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
-            <script type='text/javascript' src='jquery.doubletap.js'></script>\
-            <script type='text/javascript' src='jquery.base64.js'></script>\
-            <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
-            <link type='text/css' rel='stylesheet %@' href='style-liste.css' id='light-styles'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-retina.css' id='light-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
-            <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
-            <style type='text/css'>\
-            %@\
-            </style>\
-            <style id='smileys_double' type='text/css'>\
-            %@\
-            </style>\
-            </head><body class='iosversion'><a name='top' id='top'></a>\
-            <div class='bunselected %@' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'>\
-            %@\
-            </div>\
-            %@\
-            %@\
-            <div id='endofpage'></div>\
-            <div id='endofpagetoolbar'></div>\
-            <a name='bas'></a>\
-            <script type='text/javascript'>\
-            document.addEventListener('DOMContentLoaded', loadedML);\
-            document.addEventListener('touchstart', touchstart);\
-            function loadedML() { setTimeout(function() {document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded';},700); };\
-            function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
-            function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
-            function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
-            $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
-            function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
-            </script>\
-            </body></html>", [ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar];
+                                <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
+                                <head>\
+                                <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
+                                <script type='text/javascript' src='jquery.doubletap.js'></script>\
+                                <script type='text/javascript' src='jquery.base64.js'></script>\
+                                <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
+                                <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+                                <style type='text/css'>\
+                                %@\
+                                </style>\
+                                <style id='smileys_double' type='text/css'>\
+                                %@\
+                                </style>\
+                                </head><body class='iosversion'><a name='top' id='top'></a>\
+                                <div class='bunselected %@' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'>\
+                                %@\
+                                </div>\
+                                %@\
+                                %@\
+                                <div id='endofpage'></div>\
+                                <div id='endofpagetoolbar'></div>\
+                                <a name='bas'></a>\
+                                <script type='text/javascript'>\
+                                document.addEventListener('DOMContentLoaded', loadedML);\
+                                document.addEventListener('touchstart', touchstart);\
+                                function loadedML() { setTimeout(function() {document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded';},700); };\
+                                function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
+                                function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
+                                function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
+                                $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
+                                function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
+                                document.documentElement.style.setProperty('--color-action', '%@');\
+                                document.documentElement.style.setProperty('--color-action-disabled', '%@');\
+                                document.documentElement.style.setProperty('--color-message-background', '%@');\
+                                document.documentElement.style.setProperty('--color-text', '%@');\
+                                document.documentElement.style.setProperty('--color-text2', '%@');\
+                                document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                                document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+                                document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                                document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+                                document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+                                document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                                document.documentElement.style.setProperty('--border-header', '%@');\
+                                </script>\
+                                </body></html>",
+                                customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
+                                [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
+                                [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
+                                [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
+                                [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                                sAvatarImageFile,
+                                sLoadInfoImageFile,
+                                [ThemeColors getColorBorderQuotation:theme],
+                                [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
+                                [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                                sBorderHeader
+                                ];
         
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        
+         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             if (self.isSearchInstra) {
                 HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7 searchintra"];
             }
@@ -1841,13 +1888,13 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
         //NSLog(@"baseURL %@", baseURL);
-        
-        //NSLog(@"======================================================================================================");
-        //NSLog(@"HTMLString %@", HTMLString);
-        //NSLog(@"======================================================================================================");
-        //NSLog(@"baseURL %@", baseURL);
-        //NSLog(@"======================================================================================================");
-        
+        /*
+        NSLog(@"======================================================================================================");
+        NSLog(@"HTMLString %@", HTMLString);
+        NSLog(@"======================================================================================================");
+        NSLog(@"baseURL %@", baseURL);
+        NSLog(@"======================================================================================================");
+        */
         self.loaded = NO;
         [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         
@@ -2439,7 +2486,7 @@
     //Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
     
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = [NSString stringWithFormat:@"actionLink URL = %@%@#%@", [k RealForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]];
+    pasteboard.string = [NSString stringWithFormat:@"%@%@#%@", [k RealForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]];
     
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Lien copié dans le presse-papiers"

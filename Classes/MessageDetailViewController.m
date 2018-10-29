@@ -52,9 +52,9 @@
 		self.editBtn.style = UIBarButtonItemStyleBordered;
 		
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            self.actionBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
-            self.quoteBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
-            self.editBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
+            self.actionBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+            self.quoteBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+            self.editBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
         }
 
     }
@@ -144,17 +144,31 @@
 
     
     Theme theme = [[ThemeManager sharedManager] theme];
+    
+    // Default value for light theme
+    NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
+    NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
+    NSString* sBorderHeader = @"none";
+    
+    // Modified in theme Dark or OLED
+    switch (theme) {
+        case ThemeDark:
+            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+            break;
+        case ThemeOLED:
+            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+            sBorderHeader = @"1px solid #505050";
+            break;
+    }
+    
 	NSString *HTMLString = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
         <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
         <head>\
         <meta name='viewport' content='initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0' />\
         <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
-        <link type='text/css' rel='stylesheet %@' href='style-liste.css' id='light-styles'/>\
-        <link type='text/css' rel='stylesheet %@' href='style-liste-retina.css' id='light-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
-        <link type='text/css' rel='stylesheet %@' href='style-liste-dark.css' id='dark-styles'/>\
-        <link type='text/css' rel='stylesheet %@' href='style-liste-retina-dark.css' id='dark-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
-        <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
-        <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\
+        <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
         <style type='text/css'>\
         %@\
         </style>\
@@ -165,7 +179,30 @@
         document.addEventListener('DOMContentLoaded', loadedML);\
         function loadedML() { document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded'; };\
         function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}} $('img').error(function(){\
-        $(this).attr('src', 'photoDefaultfailmini.png');}); </script>",[ThemeColors isLightThemeAlternate:theme], [ThemeColors isLightThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isDarkThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], [ThemeColors isOLEDThemeAlternate:theme], customFontSize, doubleSmileysCSS, myRawContent];
+        $(this).attr('src', 'photoDefaultfailmini.png');});\
+        document.documentElement.style.setProperty('--color-action', '%@');\
+        document.documentElement.style.setProperty('--color-action-disabled', '%@');\
+        document.documentElement.style.setProperty('--color-message-background', '%@');\
+        document.documentElement.style.setProperty('--color-text', '%@');\
+        document.documentElement.style.setProperty('--color-text2', '%@');\
+        document.documentElement.style.setProperty('--color-background-bars', '%@');\
+        document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+        document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+        document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+        document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+        document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                            document.documentElement.style.setProperty('--border-header', '%@');</script>", customFontSize, doubleSmileysCSS, myRawContent,  [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                            [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
+                            [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
+                            [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
+                            [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
+                            [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                            sAvatarImageFile,
+                            sLoadInfoImageFile,
+                            [ThemeColors getColorBorderQuotation:theme],
+                            [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
+                            [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                            sBorderHeader];
 
 	HTMLString = [HTMLString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	//HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"href=\"/forum2.php?" withString:@"href=\"http://forum.hardware.fr/forum2.php?"];
@@ -720,9 +757,9 @@
     [self.messageView stringByEvaluatingJavaScriptFromString:script];
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        self.actionBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
-        self.quoteBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
-        self.editBtn.tintColor = [ThemeColors tintWhiteColor:[[ThemeManager sharedManager] theme]];
+        self.actionBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+        self.quoteBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+        self.editBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
         
         [(UILabel *)self.navigationItem.titleView setTextColor:[ThemeColors titleTextAttributesColor:[[ThemeManager sharedManager] theme]]];
 

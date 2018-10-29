@@ -68,11 +68,18 @@
         [self hideCell:@"auto_theme_night"];
     }
     
+    // Startup status got from User defaults
+    BOOL adjustThemeDarkEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"];
+    if (adjustThemeDarkEnabled) {
+        [self showCell:@"theme_dark_color1"];
+        [self showCell:@"theme_dark_color2"];
+    } else {
+        [self hideCell:@"theme_dark_color1"];
+        [self hideCell:@"theme_dark_color2"];
+    }
     
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
 }
-
-
 
 #pragma mark kIASKAppSettingChanged notification
 - (void)settingDidChange:(NSNotification*)notification {
@@ -120,8 +127,40 @@
             [self hideCell:@"auto_theme_day"];
             [self hideCell:@"auto_theme_night"];
         }
-        
-    }  else if([notification.userInfo objectForKey:@"icon"]) {
+    } else if([notification.userInfo objectForKey:@"theme_dark_adjust"])
+    {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"]) {
+            [self showCell:@"theme_dark_color1"];
+            [self showCell:@"theme_dark_color2"];
+            //  Apply customisation
+            NSInteger value1 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
+            NSInteger value2 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color2"];
+            [ThemeColors setDarkColor1:value1];
+            [ThemeColors setDarkColor2:value2];
+            [[ThemeManager sharedManager] refreshTheme];
+        } else {
+            [self hideCell:@"theme_dark_color1"];
+            [self hideCell:@"theme_dark_color2"];
+            // Back to default
+            [ThemeColors setDarkColor1:100];
+            [ThemeColors setDarkColor2:33];
+            [[ThemeManager sharedManager] refreshTheme];
+            
+        }
+    }
+    else if([notification.userInfo objectForKey:@"theme_dark_color1"])
+    {
+        NSInteger value = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
+        [ThemeColors setDarkColor1:value];
+        [[ThemeManager sharedManager] refreshTheme];
+    }
+    else if([notification.userInfo objectForKey:@"theme_dark_color2"])
+    {
+        NSInteger value = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color2"];
+        [ThemeColors setDarkColor2:value];
+        [[ThemeManager sharedManager] refreshTheme];
+    }
+    else if([notification.userInfo objectForKey:@"icon"]) {
         NSString *newIcon = [notification.userInfo objectForKey:@"icon"];
 
         if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)

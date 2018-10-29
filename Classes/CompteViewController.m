@@ -38,6 +38,7 @@ NSArray* comptes;
     
     comptesTableView.delegate = self;
     comptesTableView.dataSource = self;
+    self.pop = YES;
 
     
 }
@@ -47,7 +48,8 @@ NSArray* comptes;
     Theme theme = [[ThemeManager sharedManager] theme];
     [self setThemeColors:theme];
     [self refreshComptes];
-    if([comptes count] < 1){
+    if([comptes count] < 1 && self.pop){
+        self.pop = NO;
         [self addCompte];
     }
 }
@@ -80,16 +82,17 @@ NSArray* comptes;
         // Create the root view controller for the navigation controller
         // The new view controller configures a Cancel and Done button for the
         // navigation bar.
-        AuthViewController *authController = [[AuthViewController alloc] initWithNibName:@"IdentificationViewController"
-                                                                                  bundle:nil];
-        //IdentificationViewController *identificationController = [[IdentificationViewController alloc]
-          //                                                        initWithNibName:@"IdentificationViewController" bundle:nil];
-        authController.delegate = self;
-        authController.view.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
+    
+    // AuthViewController *authController = [[AuthViewController alloc] initWithNibName:@"IdentificationViewController"
+    //                                                                         bundle:nil];
+    IdentificationViewController *identificationController = [[IdentificationViewController alloc]
+                                                              initWithNibName:@"IdentificationViewController" bundle:nil];
+    identificationController.delegate = self;
+    identificationController.view.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
     
         // Create the navigation controller and present it modally.
         HFRNavigationController *navigationController = [[HFRNavigationController alloc]
-                                                        initWithRootViewController:authController];
+                                                        initWithRootViewController:identificationController];
     
         navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:navigationController animated:YES completion:nil];

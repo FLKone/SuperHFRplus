@@ -31,7 +31,7 @@
 @implementation ForumsTableViewController
 @synthesize request;
 @synthesize forumsTableView, loadingView, arrayData, arrayNewData, topicsTableViewController;
-@synthesize reloadOnAppear, status, statusMessage, maintenanceView, metaDataList, pressedIndexPath, forumActionSheet;
+@synthesize reloadOnAppear, status, statusMessage, maintenanceView, metaDataList, pressedIndexPath, forumActionAlert;
 @synthesize tmpCell;
 
 #pragma mark -
@@ -223,6 +223,8 @@
     if (hashCheckNode && ![[hashCheckNode getAttributeNamed:@"value"] isEqualToString:@""]) {
         //hash = logginé :o
         isLogged = true;
+        HTMLNode *hash_check = [bodyNode findChildWithAttribute:@"name" matchingName:@"hash_check" allowPartial:NO];
+        [[HFRplusAppDelegate sharedAppDelegate] setHash_check:[hash_check getAttributeNamed:@"value"]];
     }
     //-- check if user is logged in
     
@@ -1124,74 +1126,66 @@
         CGPoint longPressLocation = [longPressRecognizer locationInView:self.forumsTableView];
         self.pressedIndexPath = [[self.forumsTableView indexPathForRowAtPoint:longPressLocation] copy];
         
-        if (self.forumActionSheet != nil) {
-            self.forumActionSheet = nil;
+        if (self.forumActionAlert != nil) {
+            self.forumActionAlert = nil;
         }
         
-        self.forumActionSheet = [[UIActionSheet alloc] initWithTitle:@"Ouvrir directement les sujets..."
-                                                            delegate:self cancelButtonTitle:@"Annuler"
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:	@"Favoris", @"Suivis", @"Lus", @"Tous (défaut)",
-                                 nil,
-                                 nil];
+        NSMutableArray *arrayActionsMessages = [NSMutableArray array];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Favoris", @"favorisAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Suivis", @"suivisAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Lus", @"lusAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Tous (défaut)", @"allAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         
-        // use the same style as the nav bar
-        self.forumActionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+        
+        forumActionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        for( NSDictionary *dico in arrayActionsMessages) {
+            [forumActionAlert addAction:[UIAlertAction actionWithTitle:[dico valueForKey:@"title"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                if ([self respondsToSelector:NSSelectorFromString([dico valueForKey:@"code"])])
+                {
+                    //[self performSelector:];
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+                else {
+                    NSLog(@"CRASH not respondsToSelector %@", [dico valueForKey:@"code"]);
+                    
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+            }]];
+        }
+
         
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        {
-            [self.forumActionSheet showFromRect:origFrame inView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view] animated:YES];
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            [forumActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }]];
+        } else {
+            // Required for UIUserInterfaceIdiomPad
+            forumActionAlert.popoverPresentationController.sourceView = [[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view];
+            forumActionAlert.popoverPresentationController.sourceRect = origFrame;
+            forumActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
         }
-        else
-            [self.forumActionSheet showInView:[[[HFRplusAppDelegate sharedAppDelegate] rootController] view]];
+        
+        [self presentViewController:forumActionAlert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:forumActionAlert];
         
     }
 }
 
-- (void)actionSheet:(UIActionSheet *)modalView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
+-(void)favorisAction {
     NSLog(@"selc %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURL]);
     NSMutableDictionary *actuMeta = [self.metaDataList objectForKey:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
     if (!actuMeta) {
         actuMeta = [NSMutableDictionary dictionary];
     }
     NSLog(@"actuMeta %@", actuMeta);
-    
-    switch (buttonIndex)
-    {
-        case 0:
-        {
-            [actuMeta setValue:@(kFav) forKey:@"flag"];
-            break;
-        }
-        case 1:
-        {
-            [actuMeta setValue:@(kFlag) forKey:@"flag"];
-            
-            break;
-            
-        }
-        case 2:
-        {
-            [actuMeta setValue:@(kRed) forKey:@"flag"];
-            break;
-            
-        }
-        case 3:
-        {
-            [actuMeta setValue:@(kALL) forKey:@"flag"];
-            break;
-            
-        }
-        default:
-        {
-            break;
-        }
-            
-    }
+    [actuMeta setValue:@(kFav) forKey:@"flag"];
     
     NSLog(@"actuMeta %@", actuMeta);
     
@@ -1208,6 +1202,88 @@
     
     [self.forumsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:self.pressedIndexPath, nil] withRowAnimation:UITableViewRowAnimationFade];
     self.pressedIndexPath = nil;
+
+}
+
+-(void)suivisAction {
+    NSLog(@"selc %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURL]);
+    NSMutableDictionary *actuMeta = [self.metaDataList objectForKey:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+    if (!actuMeta) {
+        actuMeta = [NSMutableDictionary dictionary];
+    }
+    NSLog(@"actuMeta %@", actuMeta);
+    [actuMeta setValue:@(kFlag) forKey:@"flag"];
+    
+    NSLog(@"actuMeta %@", actuMeta);
+    
+    if ([actuMeta objectForKey:@"flag"]) {
+        [self.metaDataList setObject:actuMeta forKey:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+        
+        NSLog(@"mdl %@", self.metaDataList);
+        
+        NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *metaList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:FORUMSMETA_FILE]];
+        
+        [self.metaDataList writeToFile:metaList atomically:YES];
+    }
+    
+    [self.forumsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:self.pressedIndexPath, nil] withRowAnimation:UITableViewRowAnimationFade];
+    self.pressedIndexPath = nil;
+
+}
+
+-(void)lusAction {
+    NSLog(@"selc %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURL]);
+    NSMutableDictionary *actuMeta = [self.metaDataList objectForKey:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+    if (!actuMeta) {
+        actuMeta = [NSMutableDictionary dictionary];
+    }
+    NSLog(@"actuMeta %@", actuMeta);
+    [actuMeta setValue:@(kRed) forKey:@"flag"];
+    
+    NSLog(@"actuMeta %@", actuMeta);
+    
+    if ([actuMeta objectForKey:@"flag"]) {
+        [self.metaDataList setObject:actuMeta forKey:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+        
+        NSLog(@"mdl %@", self.metaDataList);
+        
+        NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *metaList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:FORUMSMETA_FILE]];
+        
+        [self.metaDataList writeToFile:metaList atomically:YES];
+    }
+    
+    [self.forumsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:self.pressedIndexPath, nil] withRowAnimation:UITableViewRowAnimationFade];
+    self.pressedIndexPath = nil;
+
+}
+
+-(void)allAction {
+    NSLog(@"selc %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURL]);
+    NSMutableDictionary *actuMeta = [self.metaDataList objectForKey:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+    if (!actuMeta) {
+        actuMeta = [NSMutableDictionary dictionary];
+    }
+    NSLog(@"actuMeta %@", actuMeta);
+    [actuMeta setValue:@(kALL) forKey:@"flag"];
+    
+    NSLog(@"actuMeta %@", actuMeta);
+    
+    if ([actuMeta objectForKey:@"flag"]) {
+        [self.metaDataList setObject:actuMeta forKey:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+        
+        NSLog(@"mdl %@", self.metaDataList);
+        
+        NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *metaList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:FORUMSMETA_FILE]];
+        
+        [self.metaDataList writeToFile:metaList atomically:YES];
+    }
+    
+    [self.forumsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:self.pressedIndexPath, nil] withRowAnimation:UITableViewRowAnimationFade];
+    self.pressedIndexPath = nil;
+
     
 }
 
