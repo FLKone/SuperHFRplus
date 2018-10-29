@@ -13,25 +13,18 @@
 @interface ThemeColors : NSObject {
     CGFloat fDarkColor1;
     CGFloat fDarkColor2;
-    CGFloat fDarkColor3;
 }
 
 + (void)setDarkColor1:(int)b; // Brightness for dark colors in % compare to default Dark theme
 + (void)setDarkColor2:(int)b; // Action color for dark theme (converted to hue value)
-+ (void)setDarkColor3:(int)b; // Currently unused
 
 + (CGFloat)fDarkColor1;
 + (CGFloat)fDarkColor2;
-+ (CGFloat)fDarkColor3;
-
-+ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
-+ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
-+ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
-+ (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
 
 + (UIColor *)tabBackgroundColor:(Theme)theme;
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
++ (UIColor *)messageBackgroundColor:(Theme)theme;
 + (UIColor *)addMessageBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColor:(Theme)theme;
 + (UIColor *)cellHighlightBackgroundColor:(Theme)theme;
@@ -45,6 +38,7 @@
 + (UIColor *)headSectionTextColor:(Theme)theme;
 + (UIColor *)textColor:(Theme)theme;
 + (UIColor *)textColor2:(Theme)theme;
++ (UIColor *)textColorPseudo:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
@@ -53,6 +47,7 @@
 + (UIColor *)tintColor:(Theme)theme;
 + (UIColor *)tintLightColor:(Theme)theme;
 + (UIColor *)tintWhiteColor:(Theme)theme;
++ (UIColor *)tintColorDisabled:(Theme)theme;
 + (UIColor *)overlayColor:(Theme)theme;
 + (UIColor *)toolbarColor:(Theme)theme;
 + (UIColor *)toolbarPageBackgroundColor:(Theme)theme;
@@ -76,5 +71,10 @@
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 + (NSString *) hexFromUIColor:(UIColor *)color;
-+ (NSString *) getActionColorCssHueRotation:(Theme)theme;
++ (NSString *) getColorBorderQuotation:(Theme)theme;
++ (UIColor *)  getColorBorderAvatar:(Theme)theme;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
++ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
++ (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
 @end

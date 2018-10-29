@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		156246D8218230DC00F5B8DC /* plus.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D7218230DC00F5B8DC /* plus.svg */; };
+		156246DD2182310000F5B8DC /* arrowend.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D92182310000F5B8DC /* arrowend.svg */; };
+		156246DE2182310000F5B8DC /* arrowforward.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DA2182310000F5B8DC /* arrowforward.svg */; };
+		156246DF2182310000F5B8DC /* arrowbegin.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DB2182310000F5B8DC /* arrowbegin.svg */; };
+		156246E02182310000F5B8DC /* arrowback.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DC2182310000F5B8DC /* arrowback.svg */; };
 		4C0031241BD01CE700F87F13 /* HFRTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C0031221BD01CE700F87F13 /* HFRTabBar.m */; };
 		4C00313E1BD0404500F87F13 /* UIWebView+FLUIWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00313A1BD0404500F87F13 /* UIWebView+FLUIWebView.m */; };
 		4C0031401BD0404500F87F13 /* WKWebView+FLWKWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00313C1BD0404500F87F13 /* WKWebView+FLWKWebView.m */; };
@@ -695,6 +700,11 @@
 		01BF8B6F121DAEF3007624B6 /* Topic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Topic.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		01BF8C4A121DBB09007624B6 /* UIAlertViewURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = UIAlertViewURL.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		01BF8C4B121DBB09007624B6 /* UIAlertViewURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = UIAlertViewURL.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
+		156246D92182310000F5B8DC /* arrowend.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowend.svg; sourceTree = "<group>"; };
+		156246DA2182310000F5B8DC /* arrowforward.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowforward.svg; sourceTree = "<group>"; };
+		156246DB2182310000F5B8DC /* arrowbegin.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowbegin.svg; sourceTree = "<group>"; };
+		156246DC2182310000F5B8DC /* arrowback.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowback.svg; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HFRplusAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRplusAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* HFRplusAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HFRplusAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -2481,6 +2491,11 @@
 		CA7472D317E14D4500B45E15 /* iOS7 */ = {
 			isa = PBXGroup;
 			children = (
+				156246DC2182310000F5B8DC /* arrowback.svg */,
+				156246DB2182310000F5B8DC /* arrowbegin.svg */,
+				156246D92182310000F5B8DC /* arrowend.svg */,
+				156246DA2182310000F5B8DC /* arrowforward.svg */,
+				156246D7218230DC00F5B8DC /* plus.svg */,
 				CAF5DB831936CD7B000B5215 /* 09-arrows-out@2x.png */,
 				CAF5DB841936CD7B000B5215 /* 10-arrows-in@2x.png */,
 				CAF5DB851936CD7B000B5215 /* 09-arrows-out.png */,
@@ -2783,6 +2798,7 @@
 				CAF5DB8E1936CD7B000B5215 /* 10-arrows-in.png in Resources */,
 				D8685927214D5E200054617C /* style-liste-oled.css in Resources */,
 				CA7C6FBD185EF50E00B348BA /* tongue.gif in Resources */,
+				156246E02182310000F5B8DC /* arrowback.svg in Resources */,
 				4C0B8DAD1BA4522900D329BA /* Wi-FiLogoFilled-40.png in Resources */,
 				CA7C6FBE185EF50E00B348BA /* flagyellowcopie@2x.png in Resources */,
 				CA7C6FBF185EF50E00B348BA /* buttonendhover.png in Resources */,
@@ -2893,6 +2909,7 @@
 				CA7C7002185EF50E00B348BA /* 122-stats@2x.png in Resources */,
 				4C21E9641BA5C70400691D65 /* ItalicFilled-20@2x.png in Resources */,
 				4C21E9701BA5C70400691D65 /* QuoteEFilled-20@2x.png in Resources */,
+				156246DD2182310000F5B8DC /* arrowend.svg in Resources */,
 				CA7C7003185EF50E00B348BA /* loadinfo.net.gif in Resources */,
 				CA7C7004185EF50E00B348BA /* ToolBarPlay_on.png in Resources */,
 				CA7C7005185EF50E00B348BA /* 28-star@2x.png in Resources */,
@@ -2998,6 +3015,7 @@
 				4C21E9781BA5C70400691D65 /* StrikethroughFilled-20@2x.png in Resources */,
 				CA7C7044185EF50E00B348BA /* TopicsTableViewController.xib in Resources */,
 				CA7C7045185EF50E00B348BA /* na.gif in Resources */,
+				156246DE2182310000F5B8DC /* arrowforward.svg in Resources */,
 				D87BB73F216266BA0079690C /* CompteTableViewCell.xib in Resources */,
 				4C193E741FA8820200434A37 /* Icons.xcassets in Resources */,
 				CA7C7046185EF50E00B348BA /* endhover.png in Resources */,
@@ -3084,6 +3102,7 @@
 				4C0B8DDD1BA4522900D329BA /* SupportFilled-40.png in Resources */,
 				CA7C7076185EF50E00B348BA /* flagred.png in Resources */,
 				CA7C7077185EF50E00B348BA /* template.htm in Resources */,
+				156246DF2182310000F5B8DC /* arrowbegin.svg in Resources */,
 				CA7C7078185EF50E00B348BA /* grayButton.png in Resources */,
 				CA7C707A185EF50E00B348BA /* commonsmile.plist in Resources */,
 				CA7C707C185EF50E00B348BA /* flagblue2.png in Resources */,
@@ -3192,6 +3211,7 @@
 				CA7C70B1185EF50E00B348BA /* multiplefavoris.gif in Resources */,
 				CA5E109818AC2A4F00C481A9 /* PollTableViewController.xib in Resources */,
 				CA7C70B2185EF50E00B348BA /* buttonbeginoff@2x.png in Resources */,
+				156246D8218230DC00F5B8DC /* plus.svg in Resources */,
 				CA7C70B3185EF50E00B348BA /* style-liste-retina.css in Resources */,
 				CA7C70B4185EF50E00B348BA /* buttonendhover@2x.png in Resources */,
 				CA7C70B5185EF50E00B348BA /* loading.gif in Resources */,

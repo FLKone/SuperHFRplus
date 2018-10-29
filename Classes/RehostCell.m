@@ -103,99 +103,96 @@
 }
 
 -(IBAction)copyFull {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Copier le BBCode" message:@"avec ou sans lien?"
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Avec!", @"Sans!", @"Le lien uniquement!", nil];
-	
-	[alert setTag:111];
-	[alert show];
+    [self copyImage:bbcodeImageFull];
 }
 
 -(IBAction)copyPreview {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Copier le BBCode" message:@"avec ou sans lien?"
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Avec!", @"Sans!", @"Le lien uniquement!", nil];
-	
-	[alert setTag:222];
-	[alert show];
+    [self copyImage:bbcodeImagePreview];
 }
 
 -(IBAction)copyMini {
-	//NSLog(@"indexPath %@", self.indexPath);
-    
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Copier le BBCode" message:@"avec ou sans lien?"
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Avec!", @"Sans!", @"Le lien uniquement!", nil];
-	
-	[alert setTag:333];
-	[alert show];
+    [self copyImage:bbcodeImageMini];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	
+-(IBAction)copyImage:(bbcodeImageSizeType) bbcodeImageSize {
+
     
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Copier le BBCode" message:@"Avec ou sans lien?"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    UIAlertAction* actionAvec = [UIAlertAction actionWithTitle:@"Avec" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) { [self copyToPasteBoard:bbcodeImageSize withLink:bbcodeImageWithLink]; }];
+    UIAlertAction* actionSans = [UIAlertAction actionWithTitle:@"Sans" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) { [self copyToPasteBoard:bbcodeImageSize withLink:bbcodeImageNoLink]; }];
+    UIAlertAction* actionLink = [UIAlertAction actionWithTitle:@"Le lien seulement" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) { [self copyToPasteBoard:bbcodeImageSize withLink:bbcodeLinkOnly]; }];
+    
+    [alert addAction:actionAvec];
+    [alert addAction:actionSans];
+    [alert addAction:actionLink];
+    [alert addAction:cancelAction];
+    
+    UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [activeVC presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
+- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType withLink:(bbcodeLinkType)linkType
+{
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = @"";
     
-    switch (buttonIndex) {
-		case 1:
+    switch (linkType) {
+		case bbcodeImageWithLink:
 		{
-			switch (alertView.tag) {
-				case 111:
+			switch (imageSizeType) {
+				case bbcodeImageFull:
 					pasteboard.string = rehostImage.link_full;
 					break;
-				case 222:
+				case bbcodeImagePreview:
 					pasteboard.string = rehostImage.link_preview;
 					break;
-				case 333:
+				case bbcodeImageMini:
 					pasteboard.string = rehostImage.link_miniature;
-					break;
-				default:
 					break;
 			}
 			break;
 		}
-		case 2:
-			switch (alertView.tag) {
-				case 111:
+		case bbcodeImageNoLink:
+			switch (imageSizeType) {
+				case bbcodeImageFull:
 					pasteboard.string = rehostImage.nolink_full;
 					break;
-				case 222:
+				case bbcodeImagePreview:
 					pasteboard.string = rehostImage.nolink_preview;
 					break;
-				case 333:
+				case bbcodeImageMini:
 					pasteboard.string = rehostImage.nolink_miniature;
-					break;
-				default:
 					break;
 			}
 			break;
-        case 3:
+        case bbcodeLinkOnly:
         {
-            
-			switch (alertView.tag) {
-				case 111:
+			switch (imageSizeType) {
+				case bbcodeImageFull:
 					pasteboard.string = [[rehostImage.nolink_full stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
 					break;
-				case 222:
+				case bbcodeImagePreview:
 					pasteboard.string = [[rehostImage.nolink_preview stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
 					break;
-				case 333:
+				case bbcodeImageMini:
 					pasteboard.string = [[rehostImage.nolink_miniature stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
-					break;
-				default:
 					break;
 			}
 			break;
         }
-		default:
-            
-			break;
 	}
 
     //NSLog(@"%@", pasteboard.string);
     if (pasteboard.string.length) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"imageReceived" object:pasteboard.string];
     }
-
-
 }
 @end

@@ -143,7 +143,7 @@
             [self hideCell:@"theme_dark_color2"];
             // Back to default
             [ThemeColors setDarkColor1:100];
-            [ThemeColors setDarkColor2:100];
+            [ThemeColors setDarkColor2:33];
             [[ThemeManager sharedManager] refreshTheme];
             
         }
