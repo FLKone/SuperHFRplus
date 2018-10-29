@@ -61,8 +61,14 @@
     }
     
     // TODO : check if compte already exist
-    if([comptesArray count]== 0){
+    if([comptesArray count] == 0){
          [newCompte setObject:[NSNumber numberWithBool:YES] forKey:MAIN_KEY];
+    }else{
+        for (NSMutableDictionary* compte in comptesArray) {
+            if([pseudo isEqualToString:[compte objectForKey:PSEUDO_KEY]]){
+                return;
+            }
+        }
     }
     [comptesArray addObject:newCompte];
     [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];

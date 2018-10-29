@@ -15,6 +15,7 @@
 @property (nonatomic, strong) IBOutlet UITableView* comptesTableView;
 @property (nonatomic, strong) IBOutlet UILabel* loadingLabel;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView* loadingIndicator;
+@property BOOL pop;
 
 - (void)checkLogin;
 - (IBAction)login;
