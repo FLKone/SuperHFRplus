@@ -65,6 +65,7 @@
 + (UIStatusBarStyle)statusBarStyle:(Theme)theme;
 + (UIKeyboardAppearance)keyboardAppearance:(Theme)theme;
 + (UIImage *)thorHammer:(Theme)theme;
++ (UIImage *)avatar:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withTheme:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;

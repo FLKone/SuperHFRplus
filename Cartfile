@@ -1,1 +1,2 @@
 github "futuretap/InAppSettingsKit" "master"
+github "auth0/SimpleKeychain"

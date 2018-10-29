@@ -15,6 +15,7 @@
 	
 	self.title = @"Editer";
 	//[[self.navBar.items objectAtIndex:2] setTitle:self.title];
+    self.selectCompte.enabled = NO;
 
 
 }

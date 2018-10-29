@@ -23,6 +23,8 @@
 #import "ASIDataDecompressor.h"
 #import "ASIDataCompressor.h"
 
+#import "MultisManager.h"
+
 // Automatically set on build
 NSString *ASIHTTPRequestVersion = @"v1.8.1-8 2011-06-05";
 
@@ -2200,6 +2202,9 @@ static NSOperationQueue *sharedQueue = nil;
 		
 		// Store cookies in global persistent store
 		[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:newCookies forURL:[self url] mainDocumentURL:nil];
+        
+        // Refresh cookies of user
+        [[MultisManager sharedManager] updateCookies:newCookies];
 		
 		// We also keep any cookies in the sessionCookies array, so that we have a reference to them if we need to remove them later
 		NSHTTPCookie *cookie;

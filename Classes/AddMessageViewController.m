@@ -20,6 +20,8 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "HFRUIImagePickerController.h"
+#import "MultisManager.h"
+
 
 #import "EditMessageViewController.h"
 
@@ -36,7 +38,7 @@
 @synthesize haveTo, textFieldTo;
 @synthesize haveCategory, textFieldCat;
 @synthesize offsetY, smileyCustom;
-
+@synthesize selectCompte, selectedCompte;
 @synthesize popover = _popover, refreshAnchor, statusMessage;
 
 
@@ -211,6 +213,7 @@
         self.segmentControler.tintColor = [UIColor darkGrayColor];
     }
     
+
     
 }
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -387,7 +390,18 @@
     [segmentControler setEnabled:YES forSegmentAtIndex:0];
     [segmentControler setEnabled:YES forSegmentAtIndex:1];
     
-
+    // MULTIS
+    MultisManager *manager = [MultisManager sharedManager];
+    NSDictionary *mainCompte = [manager getMainCompte];
+    [self onSelectedCompteChange:mainCompte];
+    selectCompte.layer.cornerRadius = selectCompte.frame.size.width / 2;
+    selectCompte.clipsToBounds = YES;
+    selectCompte.layer.borderWidth = 1.0f;
+    selectCompte.layer.borderColor = [ThemeColors tintColor:theme].CGColor;
+    selectCompte.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    [selectCompte addTarget:self action:@selector(selectCompteFn:) forControlEvents:UIControlEventTouchUpInside];
+    selectCompte.enabled = ![[arrayInputData objectForKey:@"cat"] isEqualToString:@"prive"]; // Disable account switching for MP
+    selectCompte.hidden = [[[MultisManager sharedManager] getComtpes] count] < 2;
 }
 
 #pragma mark -
@@ -764,6 +778,11 @@
                 [arequest setPostValue:@"1" forKey:key];
             }
         }
+        else if ([key isEqualToString:@"pseudo"]) {
+                [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_KEY] forKey:@"pseudo"];
+        }else if ([key isEqualToString:@"hash_check"]) {
+            [arequest setPostValue:[selectedCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
+        }
         else
             [arequest setPostValue:[self.arrayInputData objectForKey:key] forKey:key];
     }
@@ -782,11 +801,25 @@
     if (self.haveTo) {
         [arequest setPostValue:[textFieldTo text] forKey:@"dest"];
     }
+    
+    // Set selected compte cookies
+    MultisManager *manager = [MultisManager sharedManager];
+    
+    [arequest setUseCookiePersistence:NO];
+    [arequest setRequestCookies:[selectedCompte objectForKey:COOKIES_KEY]];
+    
     [arequest startSynchronous];
+    
+    
+
+    
     
     if (arequest) {
         if ([arequest error]) {
+            // Set main compte cookies
+            [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
             //NSLog(@"error: %@", [[arequest error] localizedDescription]);
+            
             
             UIAlertView *alertKO = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[[arequest error] localizedDescription]
                                                              delegate:self cancelButtonTitle:@"Retour" otherButtonTitles: nil];
@@ -794,6 +827,9 @@
         }
         else if ([arequest responseString])
         {
+            // Set main compte cookies
+            [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
+            
             NSError * error = nil;
             HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
             
@@ -1944,6 +1980,48 @@
     //    [self imagePickerControllerDidCancel:picker];
     
 }
+
+#pragma mark -
+#pragma mark Multis
+
+
+- (void)selectCompteFn:(id)sender {
+    NSLog(@"SELECT");
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    NSArray *comptes = [[MultisManager sharedManager] getComtpes];
+    for (int j =0 ; j<comptes.count; j++)
+    {
+        NSString *titleString = [comptes[j] objectForKey:PSEUDO_KEY];
+        UIAlertAction * action = [UIAlertAction actionWithTitle:titleString style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            [self onSelectCompte:j];
+        }];
+        [alert addAction:action];
+    }
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancel];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    
+    [alert setValue:[[NSAttributedString alloc] initWithString:@"Choisir un compte"
+                                                    attributes:@{
+                                                                 NSForegroundColorAttributeName: [ThemeColors placeholderColor:[[ThemeManager sharedManager] theme]]
+                                                                 }
+                     ] forKey:@"attributedTitle"];
+    
+
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)onSelectCompte:(int)index{
+    NSArray *comptes = [[MultisManager sharedManager] getComtpes];
+    [self onSelectedCompteChange:[comptes objectAtIndex:index]];
+}
+
+- (void)onSelectedCompteChange:(NSDictionary *)newSelectedCompte {
+    MultisManager *manager = [MultisManager sharedManager];
+    selectedCompte = newSelectedCompte;
+    [selectCompte setImage:[manager getAvatarForCompte:selectedCompte] forState:UIControlStateNormal];
+}
+
 
 
 #pragma mark -

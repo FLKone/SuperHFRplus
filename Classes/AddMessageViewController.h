@@ -118,6 +118,10 @@
 
 @property (nonatomic, weak) IBOutlet UIView *accessoryView;
 
+// MULTIS
+@property (nonatomic, weak) IBOutlet UIButton *selectCompte;
+@property (nonatomic, strong) NSDictionary *selectedCompte;
+
 -(IBAction)cancel;
 -(IBAction)done;
 -(IBAction)segmentFilterAction:(id)sender;
