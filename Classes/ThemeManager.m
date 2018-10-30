@@ -176,6 +176,18 @@ int nightDelay;
     if(theme == ThemeDark || theme == ThemeOLED){
          [alertContentView.subviews objectAtIndex:1].alpha = 0.0f;
     }
+    
+    // If present send title and text message color
+    if (alert.title != nil)
+    {
+        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:alert.title attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
+        [alert setValue:attributedString forKey:@"attributedMessage"];
+    }
+    if (alert.message != nil)
+    {
+        NSAttributedString* attributedString2 = [[NSAttributedString alloc] initWithString:alert.message attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
+        [alert setValue:attributedString2 forKey:@"attributedTitle"];
+    }
 }
 
 - (void)changeAutoTheme:(BOOL)autoTheme{
