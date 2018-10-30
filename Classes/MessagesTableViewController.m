@@ -195,19 +195,20 @@
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
-	
 	[self.loadingView setHidden:YES];
 	
-    //NSLog(@"theRequest.error %@", theRequest.error);
-    //NSLog(@"theRequest.url %@", theRequest.url);
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-    [alert setTag:667];
-	[alert show];
-    
-    [self cancelFetchContent];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 #pragma mark -
@@ -1792,65 +1793,85 @@
         <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
         <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\ */
 
+        // Default value for light theme
         NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
         NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
-        if (theme > 0) { // Si thème Dark
-            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+        NSString* sBorderHeader = @"none";
+        
+        // Modified in theme Dark or OLED
+        switch (theme) {
+            case ThemeDark:
+                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+                break;
+            case ThemeOLED:
+                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+                sBorderHeader = @"1px solid #505050";
+                break;
         }
+        
         
         NSString *HTMLString = [NSString
                                 stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
-            <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
-            <head>\
-            <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
-            <script type='text/javascript' src='jquery.doubletap.js'></script>\
-            <script type='text/javascript' src='jquery.base64.js'></script>\
-            <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
-            <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
-            <style type='text/css'>\
-            %@\
-            </style>\
-            <style id='smileys_double' type='text/css'>\
-            %@\
-            </style>\
-            </head><body class='iosversion'><a name='top' id='top'></a>\
-            <div class='bunselected %@' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'>\
-            %@\
-            </div>\
-            %@\
-            %@\
-            <div id='endofpage'></div>\
-            <div id='endofpagetoolbar'></div>\
-            <a name='bas'></a>\
-            <script type='text/javascript'>\
-            document.addEventListener('DOMContentLoaded', loadedML);\
-            document.addEventListener('touchstart', touchstart);\
-            function loadedML() { setTimeout(function() {document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded';},700); };\
-            function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
-            function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
-            function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
-            $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
-            function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
+                                <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
+                                <head>\
+                                <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
+                                <script type='text/javascript' src='jquery.doubletap.js'></script>\
+                                <script type='text/javascript' src='jquery.base64.js'></script>\
+                                <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
+                                <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+                                <style type='text/css'>\
+                                %@\
+                                </style>\
+                                <style id='smileys_double' type='text/css'>\
+                                %@\
+                                </style>\
+                                </head><body class='iosversion'><a name='top' id='top'></a>\
+                                <div class='bunselected %@' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'>\
+                                %@\
+                                </div>\
+                                %@\
+                                %@\
+                                <div id='endofpage'></div>\
+                                <div id='endofpagetoolbar'></div>\
+                                <a name='bas'></a>\
+                                <script type='text/javascript'>\
+                                document.addEventListener('DOMContentLoaded', loadedML);\
+                                document.addEventListener('touchstart', touchstart);\
+                                function loadedML() { setTimeout(function() {document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded';},700); };\
+                                function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
+                                function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
+                                function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
+                                $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
+                                function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
                                 document.documentElement.style.setProperty('--color-action', '%@');\
+                                document.documentElement.style.setProperty('--color-action-disabled', '%@');\
                                 document.documentElement.style.setProperty('--color-message-background', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
                                 document.documentElement.style.setProperty('--color-background-bars', '%@');\
                                 document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-                                    document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
-                                document.documentElement.style.setProperty('--hue_action_color', 'hue-rotate(%@)');\
+                                document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                                document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+                                document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+                                document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                                document.documentElement.style.setProperty('--border-header', '%@');\
                                 </script>\
                                 </body></html>",
                                 customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
                                 [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
                                 sAvatarImageFile,
                                 sLoadInfoImageFile,
-                                [ThemeColors getActionColorCssHueRotation:theme]
+                                [ThemeColors getColorBorderQuotation:theme],
+                                [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
+                                [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                                sBorderHeader
                                 ];
         
         

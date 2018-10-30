@@ -209,27 +209,21 @@
 	//NSLog(@"theRequest.error %@", theRequest.error);
     [self.favoritesTableView.pullToRefreshView stopAnimating];
 
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self.favoritesTableView triggerPullToRefresh]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	if (buttonIndex == 1 && alertView.tag == 669) {
-        
-        
-        
-    }    
-	else if (buttonIndex == 1) {
-		[self.favoritesTableView triggerPullToRefresh];
-	}
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 #pragma mark - PullTableViewDelegate
-
-
 
 -(void)reset {
 	/*

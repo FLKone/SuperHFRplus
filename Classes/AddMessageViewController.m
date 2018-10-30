@@ -817,13 +817,17 @@
     if (arequest) {
         if ([arequest error]) {
             // Set main compte cookies
+            
             [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
-            //NSLog(@"error: %@", [[arequest error] localizedDescription]);
-            
-            
-            UIAlertView *alertKO = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[[arequest error] localizedDescription]
-                                                             delegate:self cancelButtonTitle:@"Retour" otherButtonTitles: nil];
-            [alertKO show];
+
+            // Popup erreur
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) { }];
+            [alert addAction:actionCancel];
+            [self presentViewController:alert animated:YES completion:nil];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
         else if ([arequest responseString])
         {
