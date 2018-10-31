@@ -47,20 +47,28 @@
     return comptesArray ? comptesArray : [NSArray array];
 }
 
-- (void)addCompteWithPseudo:(NSString *)pseudo andCookies:(NSArray *)cookies andAvatar:(nullable NSString *)avatar andHash:(NSString *)hash{
+- (void)addCompteWithPseudo:(NSString *)pseudo andCookies:(NSArray *)cookies andAvatar:(nullable NSString *)avatar andHash:(nullable NSString *)hash{
     NSData *comptesData = [[A0SimpleKeychain keychain] dataForKey:HFR_COMPTES_KEY];
     NSMutableArray *comptesArray = comptesData ? [(NSArray*) [NSKeyedUnarchiver unarchiveObjectWithData:comptesData] mutableCopy] : [NSMutableArray array];
     NSMutableDictionary *newCompte = [NSMutableDictionary dictionary];
     [newCompte setValue:pseudo forKey:PSEUDO_KEY];
     [newCompte setValue:cookies forKey:COOKIES_KEY];
-    [newCompte setValue:hash forKey:HASH_KEY];
+    if(hash){
+        [newCompte setValue:hash forKey:HASH_KEY];
+    }
     if(avatar){
         [newCompte setValue:avatar forKey:AVATAR_KEY];
     }
     
     // TODO : check if compte already exist
-    if([comptesArray count]== 0){
+    if([comptesArray count] == 0){
          [newCompte setObject:[NSNumber numberWithBool:YES] forKey:MAIN_KEY];
+    }else{
+        for (NSMutableDictionary* compte in comptesArray) {
+            if([pseudo isEqualToString:[compte objectForKey:PSEUDO_KEY]]){
+                return;
+            }
+        }
     }
     [comptesArray addObject:newCompte];
     [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
@@ -162,6 +170,15 @@
     }
 }
 
+- (void)setHashForCompte:(NSDictionary *)compteToUpdate andHash:(NSString *)hash {
+    NSArray *comptesArray = [self getComtpes];
+    for (NSMutableDictionary* compte in comptesArray) {
+        if([[compte objectForKey:PSEUDO_KEY] isEqualToString:[compteToUpdate objectForKey:PSEUDO_KEY]]){
+            [compte setValue:hash forKey:HASH_KEY];
+        }
+    }
+}
+
 - (void)updateCookies:(NSArray *)cookies {
     NSArray *comptesArray = [self getComtpes];
     for (NSHTTPCookie *aCookie in cookies) {
@@ -178,6 +195,17 @@
 
 - (void)updateAllAccounts{
     NSArray *comptesArray = [self getComtpes];
+     // Migrate check
+    if(comptesArray.count == 0){
+        NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+        for (NSHTTPCookie *aCookie in cookies) {
+            if([aCookie.name isEqualToString:@"md_user"] && ![aCookie.value isEqualToString:@"deleted"]){
+                // There is an account
+                [self createAccountFromCachedCookies:cookies andPseudo:aCookie.value];
+            }
+        }
+        return;
+    }
     for (NSMutableDictionary* compte in comptesArray) {
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/user/editprofil.php?config=hfr.inc&page=1", [k ForumURL]]];
         ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
@@ -191,6 +219,10 @@
 - (void)requestFinished:(ASIHTTPRequest *)request
 {
     [self updateCookies:request.responseCookies];
+}
+
+-(void)createAccountFromCachedCookies:(NSArray *)cookies andPseudo:(NSString *)pseudo {
+    [self addCompteWithPseudo:pseudo andCookies:cookies andAvatar:nil andHash:nil];
 }
 
 -(NSString *)sanitizePseudo:(NSString *)pseudo  {
