@@ -45,7 +45,7 @@
 
 @synthesize request;
 
-@synthesize myPickerView, pickerViewArray, actionSheet, topicActionSheet, subCatSegmentedControl;
+@synthesize myPickerView, pickerViewArray, actionSheet, topicActionAlert, subCatSegmentedControl;
 
 
 @synthesize tmpCell;
@@ -828,10 +828,10 @@
 
 -(void)OrientationChanged
 {
-    if (self.topicActionSheet) {
-        
-        [self.topicActionSheet dismissWithClickedButtonIndex:[self.topicActionSheet cancelButtonIndex] animated:YES];
+    if (topicActionAlert) {
+        [topicActionAlert dismissViewControllerAnimated:YES completion:nil];
     }
+    
 }
 
 -(void)StatusChanged:(NSNotification *)notification {
@@ -1709,95 +1709,99 @@
 		CGPoint longPressLocation = [longPressRecognizer locationInView:self.topicsTableView];
 		self.pressedIndexPath = [[self.topicsTableView indexPathForRowAtPoint:longPressLocation] copy];
 				
-        if (self.topicActionSheet != nil) {
-            self.topicActionSheet = nil;
+        if (self.topicActionAlert != nil) {
+            self.topicActionAlert = nil;
         }
         
-		self.topicActionSheet = [[UIActionSheet alloc] initWithTitle:@"Aller à..."
-																delegate:self cancelButtonTitle:@"Annuler"
-												  destructiveButtonTitle:nil
-													   otherButtonTitles:	@"la dernière page", @"la dernière réponse", @"la page numéro...", @"Copier le lien",
-									 nil,
-									 nil];
-		
-		// use the same style as the nav bar
-		self.topicActionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-		
+        NSMutableArray *arrayActionsMessages = [NSMutableArray array];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la dernière page", @"lastPageAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la dernière réponse", @"lastPostAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la page numéro...", @"chooseTopicPage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        
+        topicActionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+        for( NSDictionary *dico in arrayActionsMessages) {
+            [topicActionAlert addAction:[UIAlertAction actionWithTitle:[dico valueForKey:@"title"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                if ([self respondsToSelector:NSSelectorFromString([dico valueForKey:@"code"])])
+                {
+                    //[self performSelector:];
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+                else {
+                    NSLog(@"CRASH not respondsToSelector %@", [dico valueForKey:@"code"]);
+                    
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+            }]];
+        }
+				
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
 
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         {
-            [self.topicActionSheet showFromRect:origFrame inView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view] animated:YES];
+            // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }]];
         }
-        else    
-            [self.topicActionSheet showInView:[[[HFRplusAppDelegate sharedAppDelegate] rootController] view]];
+        else   {
+            // Required for UIUserInterfaceIdiomPad
+            topicActionAlert.popoverPresentationController.sourceView = [[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view];
+        topicActionAlert.popoverPresentationController.sourceRect = origFrame;
+        topicActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
+        }
+        [self presentViewController:topicActionAlert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:topicActionAlert];
+    }
 
-	}
 }
 
-- (void)actionSheet:(UIActionSheet *)modalView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	switch (buttonIndex)
-	{
-		case 0:
-		{
-			MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]];
-			self.messagesTableViewController = aView;
-			
-			self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];	
-			self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];	
-
-            [self pushTopic];
-            //[self.navigationController pushViewController:messagesTableViewController animated:YES];			
-			//NSLog(@"url pressed last page: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]);
-			break;
-		}
-		case 1:
-		{
-			MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPost]];
-			self.messagesTableViewController = aView;
-			
-			self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];	
-			self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];	
-
-            [self pushTopic];
-			//NSLog(@"url pressed last post: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPost]);
-			break;
-			
-		}
-		case 2:
-		{
-			//NSLog(@"page numero");
-            [self chooseTopicPage];
-			break;
-			
-		}
-		case 3:
-		{
-			NSLog(@"copier lien page 1");
-
-            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-            pasteboard.string = [NSString stringWithFormat:@"%@%@", [k RealForumURL], [[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Lien copié dans le presse-papiers"
-                                                           delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-            alert.tag = kAlertPasteBoardOK;
-            
-            
-            [alert show];
-			break;
-			
-		}
-        default:
-        {
-            NSLog(@"default");
-            self.pressedIndexPath = nil;
-            break;
-        }
-			
-	}
+-(void)lastPageAction{
+    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]];
+    self.messagesTableViewController = aView;
+    
+    self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];
+    self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];
+    
+    [self pushTopic];
+    //[self.navigationController pushViewController:messagesTableViewController animated:YES];
+    //NSLog(@"url pressed last page: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]);
 }
+
+-(void)lastPostAction{
+    
+    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPost]];
+    self.messagesTableViewController = aView;
+    
+    self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];
+    self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];
+    
+    [self pushTopic];
+    //NSLog(@"url pressed last post: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPost]);
+}
+
+-(void)copyLinkAction {
+    NSLog(@"copier lien page 1");
+    
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = [NSString stringWithFormat:@"%@%@", [k RealForumURL], [[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString * message = [[NSMutableAttributedString alloc] initWithString:@"Lien copié dans le presse-papiers"];
+    [message addAttribute:NSForegroundColorAttributeName value:[ThemeColors textColor:[[ThemeManager sharedManager] theme]] range:(NSRange){0, [message.string length]}];
+    [alert setValue:message forKey:@"attributedMessage"];
+    [self presentViewController:alert animated:YES completion:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        });
+    }];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    
+}
+
 
 -(void)test {
     AideViewController *avc = [[AideViewController alloc] initWithNibName:@"AideViewController" bundle:nil];
@@ -1858,22 +1862,53 @@
 
 -(void)chooseTopicPage {
     //NSLog(@"chooseTopicPage Topics");
-
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Aller à la page" message:nil
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"OK", nil];
-	
-    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
     
-    UITextField *textField = [alert textFieldAtIndex:0];
-    textField.placeholder = [NSString stringWithFormat:@"(numéro entre 1 et %d)", [[arrayData objectAtIndex:pressedIndexPath.row] maxTopicPage]];
-    textField.textAlignment = NSTextAlignmentCenter;
-    textField.delegate = self;
-    [textField addTarget:self action:@selector(textFieldTopicDidChange:) forControlEvents:UIControlEventEditingChanged];
-    textField.keyboardAppearance = UIKeyboardAppearanceDefault;
-    textField.keyboardType = UIKeyboardTypeNumberPad;
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle: nil
+                                                                              message: nil
+                                                                       preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString * message = [[NSMutableAttributedString alloc] initWithString:@"Aller à la page"];
+    [message addAttribute:NSForegroundColorAttributeName value:[ThemeColors textColor:[[ThemeManager sharedManager] theme]] range:(NSRange){0, [message.string length]}];
+    [alertController setValue:message forKey:@"attributedTitle"];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = [NSString stringWithFormat:@"(numéro entre 1 et %d)", [[arrayData objectAtIndex:pressedIndexPath.row] maxTopicPage]];
+        [[ThemeManager sharedManager] applyThemeToTextField:textField];
+        textField.textAlignment = NSTextAlignmentCenter;
+        textField.delegate = self;
+        [textField addTarget:self action:@selector(textFieldTopicDidChange:) forControlEvents:UIControlEventEditingChanged];
+        textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+        
+    }];
     
-	[alert setTag:669];
-	[alert show];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSArray * textfields = alertController.textFields;
+        UITextField * pagefield = textfields[0];
+        int pageNumber = [[pagefield text] intValue];
+        [self gotoPageNumber:pageNumber];
+        
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Annuler"
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [alertController dismissViewControllerAnimated:YES completion:nil];
+                                                      }]];
+    
+    [[ThemeManager sharedManager] applyThemeToAlertController:alertController];
+    [self presentViewController:alertController animated:YES completion:^{
+        if([[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED){
+            for (UIView* textfield in alertController.textFields) {
+                UIView *container = textfield.superview;
+                UIView *effectView = container.superview.subviews[0];
+                
+                if (effectView && [effectView class] == [UIVisualEffectView class]){
+                    container.backgroundColor = [UIColor clearColor];
+                    [effectView removeFromSuperview];
+                }
+            }
+        }
+    }];
+    
+    
     
     
 }
@@ -1915,40 +1950,15 @@
 	}
 }
 
-- (void)didPresentAlertView:(UIAlertView *)alertView
-{
-	[super didPresentAlertView:alertView];
-    
-	//NSLog(@"didPresentAlertView PT %@", alertView);
-	
-	if (([alertView tag] == 669)) {
 
-	}
-}
-
-- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    [super alertView:alertView willDismissWithButtonIndex:buttonIndex];
-    
-	//NSLog(@"willDismissWithButtonIndex PT %@", alertView);
-    
-	if (([alertView tag] == 669)) {
-
-	}
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    [super alertView:alertView clickedButtonAtIndex:buttonIndex];
-	
-	if (buttonIndex == 1 && alertView.tag == 669) {
+-(void)gotoPageNumber:(int)number{
         //NSLog(@"goto topic page %d", [[pageNumberField text] intValue]);
         NSString * newUrl = [[NSString alloc] initWithString:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
        
         //NSLog(@"newUrl %@", newUrl);
 
-        newUrl = [newUrl stringByReplacingOccurrencesOfString:@"_1.htm" withString:[NSString stringWithFormat:@"_%d.htm", [[[alertView textFieldAtIndex:0] text] intValue]]];
-        newUrl = [newUrl stringByReplacingOccurrencesOfString:@"page=1&" withString:[NSString stringWithFormat:@"page=%d&", [[[alertView textFieldAtIndex:0] text] intValue]]];
+        newUrl = [newUrl stringByReplacingOccurrencesOfString:@"_1.htm" withString:[NSString stringWithFormat:@"_%d.htm", number]];
+        newUrl = [newUrl stringByReplacingOccurrencesOfString:@"page=1&" withString:[NSString stringWithFormat:@"page=%d&",number]];
         
         //NSLog(@"newUrl %@", newUrl);
 
@@ -1971,8 +1981,8 @@
         [self pushTopic];
         //[self.navigationController pushViewController:messagesTableViewController animated:YES];
     
-    }
 }
+
 
 
 #pragma mark -

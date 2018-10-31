@@ -13,6 +13,9 @@
 #import "Topic.h"
 #import "TopicCellView.h"
 
+#import "ThemeManager.h"
+#import "ThemeColors.h"
+
 @implementation HFRMPViewController
 @synthesize reloadOnAppear, actionButton, reloadButton;
 
@@ -171,33 +174,83 @@
 		CGPoint longPressLocation = [longPressRecognizer locationInView:self.topicsTableView];
 		self.pressedIndexPath = [[self.topicsTableView indexPathForRowAtPoint:longPressLocation] copy];
 		
-        if (self.topicActionSheet != nil) {
-            self.topicActionSheet = nil;
+        if (topicActionAlert != nil) {
+            topicActionAlert = nil;
         }
         
-		self.topicActionSheet = [[UIActionSheet alloc] initWithTitle:@"Aller à..."
-																delegate:self cancelButtonTitle:@"Annuler"
-												  destructiveButtonTitle:nil
-													   otherButtonTitles:	@"la dernière page", @"la première page", @"la page numéro...", @"Copier le lien",
-									 nil,
-									 nil];
-		
-		// use the same style as the nav bar
-		self.topicActionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-		
+        NSMutableArray *arrayActionsMessages = [NSMutableArray array];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la dernière page", @"lastPageAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la première page", @"firstPageAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la page numéro...", @"chooseTopicPage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        
+        topicActionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        for( NSDictionary *dico in arrayActionsMessages) {
+            [topicActionAlert addAction:[UIAlertAction actionWithTitle:[dico valueForKey:@"title"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                if ([self respondsToSelector:NSSelectorFromString([dico valueForKey:@"code"])])
+                {
+                    //[self performSelector:];
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+                else {
+                    NSLog(@"CRASH not respondsToSelector %@", [dico valueForKey:@"code"]);
+                    
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+            }]];
+        }
+        
+        
+        
+        
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        {
-            [self.topicActionSheet showFromRect:origFrame inView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view] animated:YES];
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }]];
+        } else {
+            // Required for UIUserInterfaceIdiomPad
+            topicActionAlert.popoverPresentationController.sourceView = [[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view];
+            topicActionAlert.popoverPresentationController.sourceRect = origFrame;
+            topicActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
         }
-        else    
-            [self.topicActionSheet showInView:[[[HFRplusAppDelegate sharedAppDelegate] rootController] view]];
-
-		
-	}
+        
+        [self presentViewController:topicActionAlert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:topicActionAlert];
+        
+    }
 }
+
+-(void)lastPageAction{
+    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]];
+    self.messagesTableViewController = aView;
+    
+    self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];
+    self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];
+    
+    [self pushTopic];
+    
+    //NSLog(@"url pressed last page: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]);
+}
+
+-(void)firstPageAction{
+    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
+    self.messagesTableViewController = aView;
+    
+    self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];
+    self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];
+    
+    [self pushTopic];
+    
+    //NSLog(@"url pressed last post: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURL]);
+}
+
 
 -(void)reset
 {
@@ -216,52 +269,6 @@
 	[super loadDataInTableView:contentData];
     [self statusBarButton:kNewTopic enable:NO];
 
-}
-
-- (void)actionSheet:(UIActionSheet *)modalView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    //NSLog(@"buttonIndex %d", buttonIndex);
-	switch (buttonIndex)
-	{
-		case 0:
-		{
-			
-			MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]];
-			self.messagesTableViewController = aView;
-			
-			self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];	
-			self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];	
-
-			[self pushTopic];
-			
-			//NSLog(@"url pressed last page: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURLOfLastPage]);
-			 
-			break;
-		}
-		case 1:
-		{
-			
-			MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:pressedIndexPath.row] aURL]];
-			self.messagesTableViewController = aView;
-			
-			self.messagesTableViewController.topicName = [[arrayData objectAtIndex:pressedIndexPath.row] aTitle];	
-			self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:pressedIndexPath.row] isViewed];	
-
-			[self pushTopic];
-			 
-			//NSLog(@"url pressed last post: %@", [[arrayData objectAtIndex:pressedIndexPath.row] aURL]);
-			 
-			break;
-			
-		}
-        default:
-        {
-            NSLog(@"default");
-            [super actionSheet:modalView clickedButtonAtIndex:buttonIndex];
-            break;
-        }
-			
-	}
 }
 
 - (void)fetchContentStarted:(ASIHTTPRequest *)theRequest

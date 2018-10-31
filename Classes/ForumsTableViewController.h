@@ -30,7 +30,7 @@
     //Meta data (order, subcat, default flag etc.)
     NSMutableDictionary *metaDataList;
     NSIndexPath *pressedIndexPath;
-    UIActionSheet		*forumActionSheet;
+    UIAlertController		*forumActionAlert;
 
 }
 
@@ -51,7 +51,7 @@
 
 @property (nonatomic, strong) NSMutableDictionary *metaDataList;
 @property (nonatomic, strong) NSIndexPath *pressedIndexPath;
-@property (nonatomic, strong) UIActionSheet *forumActionSheet;
+@property (nonatomic, strong) UIAlertController *forumActionAlert;
 
 
 -(void)loadDataInTableView:(NSData *)contentData;

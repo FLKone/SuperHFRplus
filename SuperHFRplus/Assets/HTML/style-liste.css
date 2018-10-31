@@ -2,19 +2,31 @@
 style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 */
 
+:root {
+    /* Create variables with default colors */
+    --color-action: #2470d8; /* Texte du bouton Actualiser */
+    --color-message-header: #2DAEBF; /* ?? */
+    --color-url: #2470d8; /* Couleur des url dans les messages ET ?? */
+    --color-message-background:white; /* Fond des messages */
+    --color-background-bars:#F5F5F5;
+    --color-text:#202020;
+    --color-text2:#202020;
+    --color-text-pseudo:#202020;
+    --imagefile-avatar:url(avatar_male_gray_on_light_48x48.png); /* Image d'avatar */
+    --imagefile-loadinfo:url(loadinfo.gif);
+    --color-border-quotation:silver;
+    --color-border-avatar:#717d85;
+    --color-action-disabled:#202020;
+    --border-header:none;
+}
+
 * {
 	padding:0 !important;
 	margin:0 !important;
 	padding:0 !important;
 
-	/*font-size:12px !important;*/
 	font-family:-apple-system !important;
-
-    /*-webkit-user-select: none;
-    
-	-webkit-touch-callout: none;
-	
-   	-webkit-tap-highlight-color:rgba(0,0,0,0);*/
+    color:var(--color-text);
 	-webkit-text-size-adjust: none;
 }
 
@@ -28,10 +40,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 }
 
 .hfrplusimg {
-	/*display:inline;
-	padding:5px !important;*/
     margin:2px 0 !important;
-	/*border: 1px solid silver;*/
 }
 
 img {
@@ -65,7 +74,7 @@ span.signature > br:first-child {
 
 table
 { 
-	border: 1px solid silver;
+    border: 1px solid silver;
 	padding: 4px !important;
 	width:100%;
 	max-width:100% !important;
@@ -85,7 +94,7 @@ table p img
 table .s1 a {
 	font-weight:bold !important;
 	text-decoration:underline !important;
-	color:black !important;
+    color:var(--color-text) !important; /* Texte nom pseudo quotation */
 }
 
 
@@ -96,8 +105,6 @@ div.masque {
 
 .message {
 	overflow:hidden;
-	/*background-color:#F6F8FA;*/
-
 }
 
 .message.del {
@@ -115,13 +122,12 @@ div.masque {
     -webkit-user-select: none;
     -webkit-touch-callout:none;
     -webkit-tap-highlight-color:rgba(0,0,0,0);
-	height:34px;
+	height:38px;
 	padding:0 10px !important;
-	margin-top:5px !important;
-
-	border-top:1px solid #717d85;
+    margin-top:5px !important;
+    border-top:5px solid #FFFFFF; /* Dark #717d85; */
 	
-	border-bottom:1px solid #989ea4;
+    border-bottom:1px solid #FFFFFF; /* Dark: #989ea4; */
 /*
 	background:#369;
 	border-top:1px solid gray;
@@ -149,22 +155,22 @@ background:-webkit-gradient(
 .message .header .left2 {
 	text-align:left;
 	float:left;
-	width:56px;
+	width:56px; /* Largeur et hauteur d'avatar */
 	height:30px;
 	margin-top:1px !important;
 	
-	border:1px solid #717d85;
-
+    border:1px solid var(--color-border-avatar); /* Bordure d'avatar */ /* Dark :#222222;*/
+    
 	background-size: cover;
 	background-repeat: no-repeat;
 
 	/*
-	background-size: 100% 100%;	
+	background-size: 100% 100%;
 	*/
 	background-position:center;
 }
 .message .header .left2.noavatar {
-    background-image:url('avatar_male_gray_on_light_48x48.png');
+    background-image:var(--imagefile-avatar); /*Clair 'avatar_male_gray_on_light_48x48.png' */ /* Dark url('avatar_male_gray_on_dark_48x48.png'); */
 }
 
 
@@ -173,8 +179,8 @@ background:-webkit-gradient(
 	/*margin-top:2px !important;*/
 
 	font-size:13px !important;
-	line-height:20px;
-	color:white;
+	line-height:20px; /* Décalage texte pseudo  vers le bas*/
+    color:white; /* Dark : rgba(206, 206, 206, 1); */
 	float:left;
 	font-weight:bolder;
 	width:60%;
@@ -188,7 +194,7 @@ background:-webkit-gradient(
 
 	font-size:9px !important;
 	line-height:14px;
-	color:white;
+	color:white; /*Dark rgba(206, 206, 206, 1);*/
 	float:left;
 	font-weight:bold;
 	width:60%;
@@ -198,28 +204,31 @@ background:-webkit-gradient(
 }
 
 .message .header .right {
-	height:34px;
-	float:right;
+    height:34px;
+    float:right;
     font-size:15px !important;
-	/*margin-right:11px !important;
 
-	font-size:9px !important;
-	line-height:40px;
-	color:#555;	float:right;
-	text-align:right;
+    /* Texte plus colorisé:*/
+    height:40px
+    width: 30px;
+    float: right;
+    font-size: 28px !important;
+    color: var(--color-action);
+    margin-top: 0px !important;
+    font-family: blisslight !important;
+    font-weight: bold;
+    
+    
+    
 
-	width:20px;
-
-	font-weight:bold;	
-	margin-top:2px !important;
-	text-shadow: white 0px 1px 1px;	
-
-	text-shadow: black 0px 1px 1px;*/
 	
 }
 
 .message .header .right a.small.awesome, .message .header .right a.small.awesome:visited {
-	font-size: 1em !important;
+	font-size: 13px !important;
+    color: var(--color-action);
+    .message .header .right
+
 }
 
 .message .header .right a.awesome, .message .header .right a.awesome:visited {
@@ -238,7 +247,7 @@ background:-webkit-gradient(
 	border-bottom-right-radius: 5px 5px;
 	border-top-left-radius: 5px 5px;
 	border-top-right-radius: 5px 5px;
-	color: white;
+    color: white; /* Dark: rgba(206, 206, 206, 1);*/
 	cursor: pointer;
 	padding: 3px 8px 4px !important;
 	font-weight:bold;
@@ -251,7 +260,7 @@ background:-webkit-gradient(
 .message .header .right a {
 	margin-top:3px !important;
 
-	color: #2DAEBF;
+	color: var(--color-message-header); /*#2DAEBF==rgb(45,174,191);*/
 	line-height: inherit;
 	outline: 0px;
 	text-decoration: none;
@@ -260,7 +269,8 @@ background:-webkit-gradient(
 .message .content {
     
 	padding:0 !important;
-    background:white;
+    background:var(--color-message-background); /* Dark background: rgba(46, 47, 51, 1);
+                                                 color : rgb(186, 187, 191);*/
 }
 
 
@@ -276,8 +286,7 @@ background:-webkit-gradient(
 }
 
 .message .content .right a {
-	color:#2470d8;
-	
+    color:var(--color-action)
 }
 
 .message .content .right ol, ul
@@ -293,7 +302,7 @@ background:-webkit-gradient(
 table.code, table.fixed, table.quote, table.citation, table.oldcitation {
     table-layout:fixed;
     border: none;
-    border-left: 3px solid  silver;
+    border-left: 2px solid var(--color-border-quotation);
 }
 
 hr {
@@ -316,23 +325,23 @@ table.code *, table.fixed * {
 }
 
 #actualiserbtn {
-	color:#2470d8;
+	color:var(--color-action);
 	line-height:44px;
 	font-size:15px !important;
 	font-weight:bold;
-	border-top:1px solid #e0e0e0;
-	border-bottom:1px solid #e0e0e0;
+    border-top:1px solid var(--color-text2);
+	border-bottom:1px solid var(--color-text2);
 	text-align:center;
 	width:100%;
-    background:white;
+    background:var(--color-message-background);
     -webkit-user-select: none;
     -webkit-touch-callout:none;
-    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-tap-highlight-color:rgba(0,0,0,0); /* Dark rgba(0,0,0,0) */
 
 }
 
 #actualiserbtn.loading {
-	background-image: url(loadinfo.gif);
+    background-image: var(--imagefile-loadinfo); /* Dark: url(loadinfo-white@2x.gif);*/
 	background-repeat: no-repeat;
 	background-position: 99px 14px;
 	background-size: 15px;
@@ -348,8 +357,8 @@ table.code *, table.fixed * {
     -webkit-user-select: none;
     -webkit-touch-callout:none;
     -webkit-tap-highlight-color:rgba(0,0,0,0);
-	color:#FFF;
-	line-height:43px;
+    color:var(--color-text);
+	line-height:32px;
 	font-size:15px !important;
 	font-weight:bold;
 	border-top:1px solid #000;
@@ -388,23 +397,17 @@ table.code *, table.fixed * {
 
 #toolbarpage .button.begin {
 	left:6px;
-	background-image:url(buttonbeginoff.png);
 }
 #toolbarpage .button.begin.active {
-	background-image:url(buttonbeginon.png);
 }
 #toolbarpage .button.begin.hover {
-	background-image:url(buttonbeginhover.png);
 }
 #toolbarpage .button.end {
 	right:6px;
-	background-image:url(buttonendoff.png);
 }
 #toolbarpage .button.end.active {
-	background-image:url(buttonendon.png);
 }
 #toolbarpage .button.end.hover {
-	background-image:url(buttonendhover.png);
 }
 
 #toolbarpage .button2 {
@@ -424,23 +427,17 @@ table.code *, table.fixed * {
 
 #toolbarpage .button2.begin {
 	left:55px;
-	background-image:url(buttonpreviousoff.png);
 }
 #toolbarpage .button2.begin.active {
-	background-image:url(buttonpreviouson.png);
 }
 #toolbarpage .button2.begin.hover {
-	background-image:url(buttonprevioushover.png);
 }
 #toolbarpage .button2.end {
 	right:55px;
-	background-image:url(buttonnextoff.png);
 }
 #toolbarpage .button2.end.active {
-	background-image:url(buttonnexton.png);
 }
 #toolbarpage .button2.end.hover {
-	background-image:url(buttonnexthover.png);
 }
 
 .u {
@@ -456,7 +453,7 @@ table.code *, table.fixed * {
 	background-image:url(08-chat.png) !important; 
 	background-position:top right !important;
     background-repeat:no-repeat !important;
-    color:white !important;
+    color:white !important; /* Dark: rgba(206, 206, 206, 1)*/
     float:right;
     display:block !important;
     height:22px !important;
@@ -494,9 +491,9 @@ table.code *, table.fixed * {
     line-height: 44px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: black;
-    border-bottom: 1px solid #efeff4;
-    background: url(unselectedrow.png) no-repeat scroll right center white;
+    color: black; /*rien ?*/ /* Dark rgb(146, 147, 151);*/
+    border-bottom: 1px solid var(--color-background-bars); /* ?? */ /* Dark rgb(68, 79, 77); */
+    background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background); /*rien ?*/ /* Dark rgb(19, 19, 29); */
     background-origin: content-box;
 }
 
@@ -518,7 +515,7 @@ a#searchintra_nextbutton {
     line-height: 44px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: white;
+    color: white; /*Dark: rgba(206, 206, 206, 1);*/
     font-weight: normal;
     text-align: center;
     font-size: 0.9em;
@@ -563,15 +560,22 @@ body.ios7 {
 
 .ios7 .message .header {
     margin-top:0 !important;
-    padding-top: 10px !important;
-    padding-bottom: 3px !important;
-    background:#efeff4;
-    color: rgba(109, 109, 114, 1);
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: var(--color-background-bars);
+    color: rgba(109, 109, 114, 1);/* ?? */
     border:none;
+    border-top: var(--border-header);
+    border-bottom: var(--border-header);
 }
 
-.ios7 .message .header .left, .ios7 .message .header .leftdate {
-    color: rgba(109, 109, 114, 1);
+.ios7 .message .header .left {
+    color: var(--color-text-pseudo);  /*texte nom pseudo*/
+    text-shadow:none;
+}
+
+.ios7 .message .header .leftdate {
+    color: var(--color-text-pseudo); /*text date message ;*/
     text-shadow:none;
 }
 
@@ -579,11 +583,10 @@ body.ios7 {
     font-weight:normal
 }
 
-.ios7 .message .header .right {
-    height:32px;
-    width: 32px;
-    float:right;
-    background:#efeff4 url(plus.png) no-repeat 0 3px;
+.ios7 .message .header .right { /* bouton/texte plus */
+    height: 32px;
+    width: 25px;
+    float: right;
 }
 
 .ios7 .message .header .right a.awesome {
@@ -591,27 +594,28 @@ body.ios7 {
 }
 
 .ios7 #toolbarpage {
-    background:#efeff4;
+    background:var(--color-background-bars); /* barre de navigation bas de page */
+    border-top: 1px solid var(--color-text2); !important;
     text-shadow:none;
     border:none;
-    padding-top:11px !important;
+    padding-top:10px !important; /* Recentrage bas de page */
 }
 
 .ios7 #toolbarpage a {
-    color:black;
+    color:var(--color-texte); /* Numero de page dans la barre de navigation bas de page */
 }
 
 .ios7 #toolbarpage .button {
     width:19px;
     height:15px;
-    top:24px;
+    top:18px;
     background-size:100% 100%;
 }
 
 .ios7 #toolbarpage .button2 {
     width:12px;
     height:15px;
-    top:24px;
+    top:18px;
     background-size:100% 100%;
 }
 
@@ -634,41 +638,58 @@ body.ios7 {
 
 .ios7 #toolbarpage .button.begin {
     left:16px;
-	background-image:url(ToolBarFastRewind_off.png);
+    -webkit-mask: url(arrowbegin.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button.begin.active {
-	background-image:url(ToolBarFastRewind_on.png);
+    left:16px;
+    -webkit-mask: url(arrowbegin.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action);
 }
 .ios7 #toolbarpage .button.begin.hover {
     opacity:0.4;
 }
 .ios7 #toolbarpage .button.end {
 	right:16px;
-	background-image:url(ToolBarFastForward_off.png);
+    -webkit-mask: url(arrowend.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button.end.active {
-	background-image:url(ToolBarFastForward_on.png);
+    -webkit-mask: url(arrowend.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action);
 }
 .ios7 #toolbarpage .button.end.hover {
     opacity:0.4;
 }
 
 .ios7 #toolbarpage .button2.begin {
-	left:54px;
-	background-image:url(ToolBarPrevious_off.png);
+	left:65px;
+    -webkit-mask: url(arrowback.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button2.begin.active {
-	background-image:url(ToolBarPrevious_on.png);
+    -webkit-mask: url(arrowback.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action);
 }
 .ios7 #toolbarpage .button2.begin.hover {
     opacity:0.4;
 }
 .ios7 #toolbarpage .button2.end {
-	right:54px;
-	background-image:url(ToolBarPlay_off.png);
+	right:65px;
+    -webkit-mask: url(arrowforward.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button2.end.active {
-	background-image:url(ToolBarPlay_on.png);
+    -webkit-mask: url(arrowforward.svg) no-repeat 100% 100%;
+    -webkit-mask-size: cover;
+    background-color:var(--color-action);
 }
 .ios7 #toolbarpage .button2.end.hover {
     opacity:0.4;
