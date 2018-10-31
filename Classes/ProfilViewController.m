@@ -1391,25 +1391,16 @@
     
     HTMLNode *tableNode = [bodyNode findChildTag:@"table"];
     
-    NSArray *temporaryProfilArray = [tableNode findChildTags:@"tr"];
+    HTMLNode *trChild = [[tableNode findChildTags:@"tr"] objectAtIndex:2];
+    HTMLNode *firstChild = [[trChild findChildTags:@"td"] objectAtIndex:0];
+
+    NSString *str = rawContentsOfNode([firstChild _node], [myParser _doc]);
     
-	for (HTMLNode * profilNode in temporaryProfilArray) {
-        
-        if ([[profilNode className] isEqualToString:@"profil"]) {
-            
-            if(![[profilNode firstChild] getAttributeNamed:@"class"]) {
-                NSString *str = rawContentsOfNode([[profilNode firstChild] _node], [myParser _doc]);
-                
-                //NSLog(@"OK %@", str);
-                NSString *txtTW = [str stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
-                txtTW = [txtTW stringByReplacingOccurrencesOfString:@"<td>" withString:@""];
-                txtTW = [txtTW stringByReplacingOccurrencesOfString:@"</td>" withString:@""];
-                [self.textView setText:txtTW];
-                
-                break;
-            }
-        }
-    }
+    NSString *txtTW = [str stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
+    txtTW = [txtTW stringByReplacingOccurrencesOfString:@"<td>" withString:@""];
+    txtTW = [txtTW stringByReplacingOccurrencesOfString:@"</td>" withString:@""];
+    [self.textView setText:txtTW];
+
     
     //PARSING
 	//[self.arrayData removeAllObjects];

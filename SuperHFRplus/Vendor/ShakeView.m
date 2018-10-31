@@ -28,8 +28,8 @@
 	
     if ( event.subtype == UIEventSubtypeMotionShake )
     {
-		//NSLog(@"IT SHOOK ME");	
-		if ([view_delegate respondsToSelector:@selector(shakeHappened:)])
+
+		if ([view_delegate respondsToSelector:@selector(shakeHappened:)] && [[NSUserDefaults standardUserDefaults] boolForKey:@"shake_to_refresh"])
 			[view_delegate shakeHappened:self]; //not necessary to pass yourself along.
 		
 	}

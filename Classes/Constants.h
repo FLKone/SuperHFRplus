@@ -49,7 +49,8 @@ typedef enum {
 
 typedef enum Theme : int {
     ThemeLight = 0,
-    ThemeDark = 1
+    ThemeDark = 1,
+    ThemeOLED = 2
 } Theme;
 
 
@@ -57,6 +58,7 @@ typedef enum Theme : int {
 #define kStatusChangedNotification  @"kStatusChangedNotification"
 #define kLoginChangedNotification  @"kLoginChangedNotification"
 #define kThemeChangedNotification  @"kThemeChangedNotification"
+#define kSmileysSizeChangedNotification  @"kSmileysSizeChangedNotification"
 
 //#define kForumURL                   @"http://forum.hardware.fr"
 #define kCatTemplateURL				@"/forum1.php?config=hfr.inc&cat=$1&page=1&subcat=$2&owntopic=$3"
@@ -102,3 +104,12 @@ typedef enum Theme : int {
 // iOS7
 #define HEIGHT_FOR_HEADER_IN_SECTION                ((SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 36.0f : 23.0f))
 #define SPACE_FOR_BARBUTTON                         ((SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 10.0f : 0.0f))
+
+// Multis feature
+#define HFR_COMPTES_KEY @"HFR_COMPTES_KEY"
+#define PSEUDO_KEY @"PSEUDO"
+#define COOKIES_KEY @"COOKIES"
+#define AVATAR_KEY @"AVATAR"
+#define HASH_KEY @"HASH"
+#define MAIN_KEY @"MAIN"
+

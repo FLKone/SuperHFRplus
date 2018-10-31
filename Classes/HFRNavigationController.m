@@ -74,7 +74,7 @@
 }
 - (NSString *) userThemeDidChange {
     
-    NSLog(@"HFR userThemeDidChange");
+    //NSLog(@"HFR userThemeDidChange");
     
     Theme theme = [[ThemeManager sharedManager] theme];
 
@@ -85,7 +85,7 @@
         [self.navigationBar setTintColor:[ThemeColors tintColor:theme]];
     }
     
-    [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors textColor:theme]}];
+    [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors titleTextAttributesColor:theme]}];
     
     /*
     if (theme == ThemeLight) {
@@ -109,7 +109,6 @@
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
 }
-
 
 - (void)navigationBarDoubleTap:(UIGestureRecognizer*)recognizer {
     NSLog(@"navigationBarDoubleTapnavigationBarDoubleTap");

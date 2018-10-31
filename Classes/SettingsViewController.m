@@ -46,27 +46,40 @@
 -(void)viewWillAppear:(BOOL)animated   {
     [super viewWillAppear:animated];
     
-    NSMutableSet *hiddenKeys = [NSMutableSet set];
-    
     // Désactivation de la configuration du thème pour iOS 5-6
     if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [hiddenKeys addObject:@"theme"];
+         [self hideCell:@"theme"];
     }
     
     BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
-    IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
-    
     if (!enabled) {
-        [hiddenKeys addObject:@"menu_debug_entry"];
+        [self hideCell:@"menu_debug_entry"];
     }
     
-    NSLog(@"hiddenKeys %@", hiddenKeys);
+    BOOL autoThemeEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"auto_theme"];
     
-    settingsVC.hiddenKeys = hiddenKeys;//enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
+    if(autoThemeEnabled){
+        [self hideCell:@"theme"];
+        [self showCell:@"auto_theme_day"];
+        [self showCell:@"auto_theme_night"];
+    }else{
+        [self showCell:@"theme"];
+        [self hideCell:@"auto_theme_day"];
+        [self hideCell:@"auto_theme_night"];
+    }
+    
+    // Startup status got from User defaults
+    BOOL adjustThemeDarkEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"];
+    if (adjustThemeDarkEnabled) {
+        [self showCell:@"theme_dark_color1"];
+        [self showCell:@"theme_dark_color2"];
+    } else {
+        [self hideCell:@"theme_dark_color1"];
+        [self hideCell:@"theme_dark_color2"];
+    }
+    
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
 }
-
-
 
 #pragma mark kIASKAppSettingChanged notification
 - (void)settingDidChange:(NSNotification*)notification {
@@ -74,26 +87,23 @@
 
     if ([notification.userInfo objectForKey:@"menu_debug"]) {
         //IASKAppSettingsViewController *activeController = self;
-        NSMutableSet *hiddenKeys = [NSMutableSet set];
 
         // Désactivation de la configuration du thème pour iOS 5-6
         if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            [hiddenKeys addObject:@"theme"];
+            [self hideCell:@"theme"];
         }
         
         BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
-
-        IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
     
         //((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]).hiddenKeys = enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
         
         if (!enabled) {
-            [hiddenKeys addObject:@"menu_debug_entry"];
+            [self hideCell:@"menu_debug_entry"];
+        }else{
+           [self showCell:@"menu_debug_entry"];
         }
         
-        NSLog(@"hiddenKeys %@", hiddenKeys);
-        
-        settingsVC.hiddenKeys = hiddenKeys;//enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
+       //enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
         
         //[activeController setHiddenKeys:enabled ? nil : [NSSet setWithObjects:@"AutoConnectTest", nil] animated:YES];
         
@@ -103,7 +113,54 @@
         [[ThemeManager sharedManager] setTheme:theme];
         [self setThemeColors:theme];
 
-    } else if([notification.userInfo objectForKey:@"icon"]) {
+    } else if([notification.userInfo objectForKey:@"auto_theme"]) {
+        
+        [[ThemeManager sharedManager] changeAutoTheme:[[NSUserDefaults standardUserDefaults] boolForKey:@"auto_theme"]];
+        BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"auto_theme"];
+        
+        if(enabled){
+            [self hideCell:@"theme"];
+            [self showCell:@"auto_theme_day"];
+            [self showCell:@"auto_theme_night"];
+        }else{
+            [self showCell:@"theme"];
+            [self hideCell:@"auto_theme_day"];
+            [self hideCell:@"auto_theme_night"];
+        }
+    } else if([notification.userInfo objectForKey:@"theme_dark_adjust"])
+    {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"]) {
+            [self showCell:@"theme_dark_color1"];
+            [self showCell:@"theme_dark_color2"];
+            //  Apply customisation
+            NSInteger value1 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
+            NSInteger value2 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color2"];
+            [ThemeColors setDarkColor1:value1];
+            [ThemeColors setDarkColor2:value2];
+            [[ThemeManager sharedManager] refreshTheme];
+        } else {
+            [self hideCell:@"theme_dark_color1"];
+            [self hideCell:@"theme_dark_color2"];
+            // Back to default
+            [ThemeColors setDarkColor1:100];
+            [ThemeColors setDarkColor2:33];
+            [[ThemeManager sharedManager] refreshTheme];
+            
+        }
+    }
+    else if([notification.userInfo objectForKey:@"theme_dark_color1"])
+    {
+        NSInteger value = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
+        [ThemeColors setDarkColor1:value];
+        [[ThemeManager sharedManager] refreshTheme];
+    }
+    else if([notification.userInfo objectForKey:@"theme_dark_color2"])
+    {
+        NSInteger value = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color2"];
+        [ThemeColors setDarkColor2:value];
+        [[ThemeManager sharedManager] refreshTheme];
+    }
+    else if([notification.userInfo objectForKey:@"icon"]) {
         NSString *newIcon = [notification.userInfo objectForKey:@"icon"];
 
         if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)
@@ -130,6 +187,13 @@
                                                       NSLog(@"%@", [error description]);
                                                   }];
         }
+    }  else if([notification.userInfo objectForKey:@"size_smileys"]) {
+        NSNotification *myNotification = [NSNotification notificationWithName:kSmileysSizeChangedNotification
+                                                                       object:self  //object is usually the object posting the notification
+                                                                     userInfo:nil]; //userInfo is an optional dictionary
+        
+        //Post it to the default notification center
+        [[NSNotificationCenter defaultCenter] postNotification:myNotification];
     }
     /*
     if UIApplication.shared.alternateIconName == nil {
@@ -143,6 +207,28 @@
     [self.tableView reloadData];
 }
 
+-(void)hideCell:(NSString *)cell{
+    IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
+    NSMutableSet *hiddenKeys = settingsVC.hiddenKeys ? [NSMutableSet setWithSet:settingsVC.hiddenKeys] : [NSMutableSet set];
+    if([hiddenKeys containsObject:cell]){
+        return;
+    }
+    
+    [hiddenKeys addObject:cell];
+    settingsVC.hiddenKeys = hiddenKeys;
+
+}
+
+-(void)showCell:(NSString *)cell{
+    IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
+    NSMutableSet *hiddenKeys = settingsVC.hiddenKeys ? [NSMutableSet setWithSet:settingsVC.hiddenKeys] : [NSMutableSet set];
+    if([hiddenKeys containsObject:cell]){
+        [hiddenKeys removeObject:cell];
+    }
+    settingsVC.hiddenKeys = hiddenKeys;
+}
+
+
 -(void)setThemeColors:(Theme)theme{
     [self.navigationController.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors navBackgroundColor:theme]] forBarMetrics:UIBarMetricsDefault];
     
@@ -150,7 +236,7 @@
         [self.navigationController.navigationBar setTintColor:[ThemeColors tintColor:theme]];
     }
 
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors textColor:theme]}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors titleTextAttributesColor:theme]}];
     [self.navigationController.navigationBar setNeedsDisplay];
     self.view.backgroundColor = [ThemeColors greyBackgroundColor:theme];
     self.tableView.separatorColor = [ThemeColors cellBorderColor:theme];
@@ -220,9 +306,6 @@
 	{
 		[fileManager removeItemAtPath:SmileCachePath error:NULL];
 	}
-    
-    
-    
 }
 
 
