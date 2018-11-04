@@ -192,6 +192,24 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
     }
 }
 
+// Fond des items des listes Categorie/ Sujets/Messages :
+// Theme light: reste blanc
++ (UIColor *)cellBackgroundColorSuperFavorite:(Theme)theme{
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        
+        switch (theme) {
+            case ThemeLight:  return [UIColor colorWithRed:255/255.0 green:191/255.0 blue:154/255.0 alpha:1.0];
+            case ThemeDark:   return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:36.0/255.0 green:37.0/255.0 blue:41.0/255.0 alpha:1.0]];
+            case ThemeOLED:   return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
+            default:          return [UIColor whiteColor];//[UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+        }
+    }
+    else {
+        return [UIColor whiteColor]; //OK
+    }
+}
+
+
 // ??
 + (UIColor *)cellHighlightBackgroundColor:(Theme)theme{
     switch (theme) {

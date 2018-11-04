@@ -40,6 +40,7 @@
 @synthesize pressedIndexPath, favoritesTableView, loadingView, showAll;
 @synthesize arrayData, arrayNewData, arrayCategories; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
 @synthesize messagesTableViewController;
+@synthesize idPostSuperFavorites;
 
 @synthesize request;
 
@@ -52,6 +53,7 @@
 
     if (self.showAll) {
         self.showAll = NO;
+        [self.favoritesTableView setEditing:YES];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
             [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
@@ -65,7 +67,7 @@
     }
     else {
         self.showAll = YES;
-
+        [self.favoritesTableView setEditing:YES animated:YES];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
             [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsCompact];
@@ -551,6 +553,8 @@
     self.arrayData = [[NSMutableArray alloc] init];
     self.arrayNewData = [[NSMutableArray alloc] init];
     self.arrayCategories = [[NSMutableArray alloc] init];
+    // TODO: load from NSCode
+    self.idPostSuperFavorites = [[NSMutableArray alloc] init];
     
 	self.statusMessage = [[NSString alloc] init];
 	
@@ -927,7 +931,7 @@
         //cell.flagLabel.font = [UIFont boldSystemFontOfSize:17];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-
+        [cell setShowsReorderControl:YES];
         return cell;
     }
     else {
@@ -1024,6 +1028,49 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    NSLog(@"Row moved");
+    // Only when displaying all CATs
+    if (self.showAll) {
+        NSLog(@"Row moved");
+        if (tableView == self.favoritesTableView)
+        {
+            NSLog(@"We are not bad");
+            Favorite *favFrom = [arrayCategories objectAtIndex:sourceIndexPath.row];
+            //Favorite *favTo = [arrayCategories objectAtIndex:destinationIndexPath.row];
+
+            [arrayCategories removeObjectAtIndex:sourceIndexPath.row];
+            [arrayCategories insertObject:favFrom atIndex:destinationIndexPath.row];
+            
+            [self.favoritesTableView reloadData];
+        }
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableview shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleNone;
+}
+
+- (BOOL)tableView: (UITableView *) tableView canMoveRowAtIndexPath: (NSIndexPath *) indexPath
+{
+    // Only when displaying all CATs
+    if (self.showAll) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL) tableView: (UITableView *) tableView canEditRowAtIndexPath: (NSIndexPath *) indexPath
+{
+    return YES;
+}
+
 #pragma mark -
 #pragma mark Table view delegate
 
@@ -1047,6 +1094,8 @@
         
     }
 }
+
+
 
 -(void)handleLongPress:(UILongPressGestureRecognizer*)longPressRecognizer {
 	if (longPressRecognizer.state == UIGestureRecognizerStateBegan) {
@@ -1236,6 +1285,23 @@
             
         });
     
+    }
+}
+
+
+-(void)setTopicSuperFavoriteWithIndex:(NSIndexPath *)indexPath {
+    if(self.arrayData.count > 0){
+        // Go to URL in BG
+        Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+        if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]])
+        {
+            [self.idPostSuperFavorites removeObject:[NSNumber numberWithInt:tmpTopic.postID]];
+        }
+        else
+        {
+            [self.idPostSuperFavorites addObject:[NSNumber numberWithInt:tmpTopic.postID]];
+        }
+        tmpTopic.isSuperFavorite = YES;
     }
 }
 
@@ -1436,7 +1502,15 @@
 
     markReadAction.image = [UIImage checkmarkImage];
     markReadAction.backgroundColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction]];
+    
+    UIContextualAction *markSuperFavorite = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"Super Fav" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
+        [self setTopicSuperFavoriteWithIndex:indexPath];
+    }];
+    
+    //markSuperFavorite.image = [UIImage checkmarkImage];
+    markSuperFavorite.backgroundColor = [UIColor colorWithRed:255/255.0 green:205/255.0 blue:40/255.0 alpha:1.0];
+    
+    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction, markSuperFavorite]];
     return config;
 }
 

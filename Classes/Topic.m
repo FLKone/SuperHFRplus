@@ -30,7 +30,7 @@
 
 @synthesize maxTopicPage, curTopicPage, aURLOfFirstPage;
 
-@synthesize postID, catID, isSticky, isClosed;
+@synthesize postID, catID, isSticky, isSuperFavorite, isClosed;
 
 
 - (id)init {
@@ -52,6 +52,7 @@
         
         self.aAuthorOrInter = [NSString string];
         self.isSticky = NO;
+        self.isSuperFavorite = NO;
         self.isClosed = NO;
 	}
 	return self;

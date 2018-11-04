@@ -27,6 +27,7 @@
 + (UIColor *)messageBackgroundColor:(Theme)theme;
 + (UIColor *)addMessageBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColor:(Theme)theme;
++ (UIColor *)cellBackgroundColorSuperFavorite:(Theme)theme;
 + (UIColor *)cellHighlightBackgroundColor:(Theme)theme;
 + (UITableViewCellSelectionStyle)cellSelectionStyle:(Theme)theme;
 + (UIColor *)cellIconColor:(Theme)theme;

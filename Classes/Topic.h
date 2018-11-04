@@ -37,6 +37,7 @@
     
     bool isSticky;
     bool isClosed;
+    bool isSuperFavorite;
 }
 
 @property (nonatomic, strong) NSString *_aTitle;
@@ -65,6 +66,7 @@
 @property int catID;
 
 @property bool isSticky;
+@property bool isSuperFavorite;
 @property bool isClosed;
 
 - (NSString*) aTitle;

@@ -17,7 +17,8 @@
     NSMutableArray *arrayData;
     NSMutableArray *arrayNewData;
     NSMutableArray *arrayCategories;
-
+    NSMutableArray *idPostSuperFavorites;
+    
 	MessagesTableViewController *messagesTableViewController;
 
 	NSIndexPath *pressedIndexPath;
@@ -42,6 +43,7 @@
 @property (nonatomic, strong) NSMutableArray *arrayData;
 @property (nonatomic, strong) NSMutableArray *arrayNewData;
 @property (nonatomic, strong) NSMutableArray *arrayCategories;
+@property (nonatomic, strong) NSMutableArray *idPostSuperFavorites;
 
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
 
