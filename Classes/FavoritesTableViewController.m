@@ -38,7 +38,7 @@
 
 @implementation FavoritesTableViewController
 @synthesize pressedIndexPath, favoritesTableView, loadingView, showAll;
-@synthesize arrayData, arrayNewData, arrayCategories; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
+@synthesize arrayData, arrayNewData, arrayCategories, arrayCategoriesOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
 @synthesize messagesTableViewController;
 @synthesize idPostSuperFavorites;
 
@@ -320,6 +320,13 @@
     BOOL first = YES;
     Favorite *aFavorite;
     NSLog(@"run");
+    int iOrder = 0;
+    NSMutableArray* tmpArrayCategories = [[NSMutableArray alloc] init];
+    BOOL catOrderIsEmpty = NO;
+    if (self.arrayCategoriesOrder.count == 0)
+    {
+        catOrderIsEmpty = YES;
+    }
     for (HTMLNode * trNode in temporaryFavoriteArray) { //Loop through all the tags
         
         
@@ -330,11 +337,29 @@
                 if (aFavorite.topics.count > 0) {
                     [self.arrayNewData addObject:aFavorite];
                 }
-                [self.arrayCategories addObject:aFavorite];
+                
+                
+                [tmpArrayCategories addObject:aFavorite];
             }
 
             aFavorite = [[Favorite alloc] init];
-            [aFavorite parseNode:trNode];  
+            [aFavorite parseNode:trNode];
+            
+            // First time: store default order from forum and store it in arrayCategoriesOrder
+            if (catOrderIsEmpty)
+            {
+                aFavorite.order = [NSNumber numberWithInt:iOrder];
+                iOrder++;
+                // Store the order
+                [self.arrayCategoriesOrder addObject:aFavorite.forum.aID];
+
+            }
+            else // Next times: use the order stored
+            {
+                NSUInteger iOrderStored = [self.arrayCategoriesOrder indexOfObject:aFavorite.forum.aID];
+                aFavorite.order = [NSNumber numberWithUnsignedInteger:iOrderStored];
+            }
+            NSLog(@"Favorite order: aID=%@, order=%@", aFavorite.forum.aID, aFavorite.order);
             first = NO;
             
         }
@@ -352,17 +377,27 @@
         if (aFavorite.topics.count > 0) {
             [self.arrayNewData addObject:aFavorite];
         }
-        [self.arrayCategories addObject:aFavorite];
+        [tmpArrayCategories addObject:aFavorite];
     }
     
-	if (self.status != kNoResults) {
+    // Reorder favorites
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"order" ascending:YES selector:@selector(compare:)];
+    tmpArrayCategories = (NSMutableArray *)[tmpArrayCategories sortedArrayUsingDescriptors: [NSArray arrayWithObject:sortDescriptor]];
+    self.arrayCategories = [NSMutableArray arrayWithArray:tmpArrayCategories];
+    
+    NSMutableArray* tmpArrayNewData = [[NSMutableArray alloc] init];
+    tmpArrayNewData = [NSMutableArray arrayWithArray:self.arrayNewData];
+    tmpArrayNewData = (NSMutableArray *)[tmpArrayNewData sortedArrayUsingDescriptors: [NSArray arrayWithObject:sortDescriptor]];
+    self.arrayNewData = [NSMutableArray arrayWithArray:tmpArrayNewData];
+    
+    if (self.status != kNoResults) {
         
         NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kComplete], @"status", nil];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
     }
     
-    //NSLog(@"self.arrayCategories %@", self.arrayCategories);
+    NSLog(@"self.arrayCategories %@", self.arrayCategories);
 
 }
 -(NSString*)wordAfterString:(NSString*)searchString inString:(NSString*)selfString
@@ -553,7 +588,8 @@
     self.arrayData = [[NSMutableArray alloc] init];
     self.arrayNewData = [[NSMutableArray alloc] init];
     self.arrayCategories = [[NSMutableArray alloc] init];
-    // TODO: load from NSCode
+    self.arrayCategoriesOrder = [[NSMutableArray alloc] init];
+
     self.idPostSuperFavorites = [[NSMutableArray alloc] init];
     
 	self.statusMessage = [[NSString alloc] init];
@@ -807,7 +843,7 @@
         [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
         [button setTitle:[[tmpForum aTitle] uppercaseString] forState:UIControlStateNormal];
         [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 10, 0, 0)];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
     }
     else
     {
@@ -1030,19 +1066,30 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
-    NSLog(@"Row moved");
     // Only when displaying all CATs
     if (self.showAll) {
-        NSLog(@"Row moved");
         if (tableView == self.favoritesTableView)
         {
-            NSLog(@"We are not bad");
             Favorite *favFrom = [arrayCategories objectAtIndex:sourceIndexPath.row];
             //Favorite *favTo = [arrayCategories objectAtIndex:destinationIndexPath.row];
 
-            [arrayCategories removeObjectAtIndex:sourceIndexPath.row];
-            [arrayCategories insertObject:favFrom atIndex:destinationIndexPath.row];
+            NSLog(@"Moving fav %@ from %ld to %ld", favFrom.forum.aID, sourceIndexPath.row, destinationIndexPath.row);
+            NSMutableArray *copyArrayCategories = [arrayCategories mutableCopy];
+            [copyArrayCategories removeObjectAtIndex:sourceIndexPath.row];
+            [copyArrayCategories insertObject:favFrom atIndex:destinationIndexPath.row];
             
+            [self.arrayCategoriesOrder removeObjectAtIndex:sourceIndexPath.row];
+            [self.arrayCategoriesOrder insertObject:favFrom.forum.aID atIndex:destinationIndexPath.row];
+            
+            // Store the updated order
+            int iOrder = 0;
+            for (id fav in copyArrayCategories)
+            {
+                NSLog(@"(Reordering) Favorite new order: aID=%@, order=%@", ((Favorite *)fav).forum.aID, ((Favorite *)fav).order);
+                
+                iOrder ++;
+            }
+            self.arrayCategories = copyArrayCategories;
             [self.favoritesTableView reloadData];
         }
     }

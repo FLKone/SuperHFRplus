@@ -17,6 +17,7 @@
     NSMutableArray *arrayData;
     NSMutableArray *arrayNewData;
     NSMutableArray *arrayCategories;
+    NSMutableArray *arrayCategoriesOrder;
     NSMutableArray *idPostSuperFavorites;
     
 	MessagesTableViewController *messagesTableViewController;
@@ -43,6 +44,7 @@
 @property (nonatomic, strong) NSMutableArray *arrayData;
 @property (nonatomic, strong) NSMutableArray *arrayNewData;
 @property (nonatomic, strong) NSMutableArray *arrayCategories;
+@property (nonatomic, strong) NSMutableArray *arrayCategoriesOrder; // Ordre des catégories: liste de Favorite.forum.aID (identifiant de catégorie)
 @property (nonatomic, strong) NSMutableArray *idPostSuperFavorites;
 
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;

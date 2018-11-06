@@ -22,7 +22,8 @@
         Forum *aForum = [[Forum alloc] init];
 		[self setForum:aForum];
         
-		self.topics = [NSMutableArray array];        
+		self.topics = [NSMutableArray array];
+        self.order = [[NSNumber alloc] init];
 	}
 	return self;
 }
