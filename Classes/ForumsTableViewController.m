@@ -178,7 +178,7 @@
     [self.forumsTableView.pullToRefreshView stopAnimating];
     
     // Popup retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:[theRequest.error localizedDescription] message:@"Ooops !"
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
@@ -191,13 +191,14 @@
     [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
+/* TODO : delete
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 	if (buttonIndex == 1) {
 		[self.forumsTableView triggerPullToRefresh];
 	}
 }
-
+*/
 #pragma mark -
 #pragma mark View lifecycle
 

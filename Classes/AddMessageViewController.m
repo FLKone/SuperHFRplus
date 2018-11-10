@@ -821,7 +821,7 @@
             [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
 
             // Popup erreur
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Erreur inconnue :/" message:@"Ooops !"
                                                                     preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
                                                                  handler:^(UIAlertAction * action) { }];
@@ -1541,12 +1541,6 @@
 - (void)fetchSmileContentFailed:(ASIHTTPRequest *)theRequest
 {
     [self cancelFetchContent];
-    //NSLog(@"fetchContentFailed %@", [theRequest.error localizedDescription]);
-    
-    //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-    //											   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-    //[alert show];
-    //[alert release];
 }
 
 -(void)loadSmileys:(int)page;

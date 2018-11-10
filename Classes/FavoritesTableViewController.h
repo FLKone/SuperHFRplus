@@ -17,7 +17,9 @@
     NSMutableArray *arrayData;
     NSMutableArray *arrayNewData;
     NSMutableArray *arrayCategories;
-    NSMutableArray *arrayCategoriesOrder;
+    NSMutableArray *arrayCategoriesHidden;
+    NSMutableArray *arrayCategoriesVisibleOrder;
+    NSMutableArray *arrayCategoriesHiddenOrder;
     NSMutableArray *idPostSuperFavorites;
     
 	MessagesTableViewController *messagesTableViewController;
@@ -34,6 +36,7 @@
     UIAlertController   *topicActionAlert;
     
     BOOL showAll;
+    BOOL editCategoriesList;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *favoritesTableView;
@@ -44,12 +47,15 @@
 @property (nonatomic, strong) NSMutableArray *arrayData;
 @property (nonatomic, strong) NSMutableArray *arrayNewData;
 @property (nonatomic, strong) NSMutableArray *arrayCategories;
-@property (nonatomic, strong) NSMutableArray *arrayCategoriesOrder; // Ordre des catégories: liste de Favorite.forum.aID (identifiant de catégorie)
+@property (nonatomic, strong) NSMutableArray *arrayCategoriesHidden;
+@property (nonatomic, strong) NSMutableArray *arrayCategoriesVisibleOrder; // Ordre des catégories visibles: liste de Favorite.forum.aID (identifiant de catégorie)
+@property (nonatomic, strong) NSMutableArray *arrayCategoriesHiddenOrder; // Ordre des catégories masquées: liste de Favorite.forum.aID (identifiant de catégorie)
 @property (nonatomic, strong) NSMutableArray *idPostSuperFavorites;
 
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
 
 @property BOOL showAll;
+@property BOOL editCategoriesList;
 
 @property bool reloadOnAppear;
 @property STATUS status;
