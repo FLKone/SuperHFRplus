@@ -1296,6 +1296,11 @@
     {
         return UITableViewCellEditingStyleNone;
     }
+    else if (!self.showAll)
+    {
+        return UITableViewCellEditingStyleDelete;
+    }
+    return UITableViewCellEditingStyleNone;
 }
 
 - (BOOL)tableView: (UITableView *) tableView canMoveRowAtIndexPath: (NSIndexPath *) indexPath
@@ -1314,7 +1319,10 @@
     if (self.showAll && self.editCategoriesList) {
         return YES;
     }
-    
+    else if (!self.showAll)
+    {
+        return YES;
+    }
     return NO;
 }
 
@@ -1751,7 +1759,7 @@
 
     markReadAction.image = [UIImage checkmarkImage];
     markReadAction.backgroundColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-    
+    /*
     UIContextualAction *markSuperFavorite = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"Super Fav" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
         [self setTopicSuperFavoriteWithIndex:indexPath];
     }];
@@ -1759,7 +1767,8 @@
     //markSuperFavorite.image = [UIImage checkmarkImage];
     markSuperFavorite.backgroundColor = [UIColor colorWithRed:255/255.0 green:205/255.0 blue:40/255.0 alpha:1.0];
     
-    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction, markSuperFavorite]];
+    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction, markSuperFavorite]];*/
+    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction]];
     return config;
 }
 

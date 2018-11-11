@@ -24,7 +24,8 @@
 	NSString *aURLOfLastPost;
 	NSString *aURLOfLastPage;
 	
-	NSString *aDateOfLastPost;
+    NSString *aDateOfLastPost;
+    NSDate   *dDateOfLastPost;
 	NSString *aAuthorOfLastPost;
 
 	NSString *aAuthorOrInter;
@@ -55,6 +56,7 @@
 @property (nonatomic, strong) NSString *aURLOfLastPost;
 @property (nonatomic, strong) NSString *aURLOfLastPage;
 @property (nonatomic, strong) NSString *aDateOfLastPost;
+@property (nonatomic, strong) NSDate   *dDateOfLastPost;
 @property (nonatomic, strong) NSString *aAuthorOfLastPost;
 
 @property (nonatomic, strong) NSString *aAuthorOrInter;
@@ -70,5 +72,4 @@
 @property bool isClosed;
 
 - (NSString*) aTitle;
-
 @end

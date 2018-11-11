@@ -24,6 +24,7 @@
 @synthesize aURLOfLastPage;
 
 @synthesize aDateOfLastPost;
+@synthesize dDateOfLastPost;
 @synthesize aAuthorOfLastPost;
 
 @synthesize aAuthorOrInter;
@@ -48,6 +49,7 @@
         self.aURLOfLastPage = [NSString string];
         
         self.aDateOfLastPost = [NSString string];
+        self.dDateOfLastPost = [NSDate alloc];
         self.aAuthorOfLastPost = [NSString string];
         
         self.aAuthorOrInter = [NSString string];

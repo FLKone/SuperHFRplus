@@ -109,9 +109,32 @@
     NSString *aURLOfLastPost = [[NSString alloc] initWithString:[linkLastRepNode getAttributeNamed:@"href"]];
     [aTopic setAURLOfLastPost:aURLOfLastPost];
     
+    
     NSString *maDate = [linkLastRepNode contents];
-    if ([theDate isEqual:[maDate substringToIndex:10]]) {
-        [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+    NSDateFormatter * df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"dd-MM-yyyy à HH:mm"];
+    aTopic.dDateOfLastPost = [df dateFromString:maDate];
+    if ([theDate isEqual:[maDate substringToIndex:10]])
+    {
+        NSTimeInterval secondsBetween = [nowTopic timeIntervalSinceDate:aTopic.dDateOfLastPost];
+        int numberMinutes = secondsBetween / 60;
+        int numberHours = secondsBetween / 3600;
+        if (numberMinutes == 0)
+        {
+            [aTopic setADateOfLastPost:@"<1 min"];
+        }
+        else if (numberMinutes >= 1 && numberMinutes < 60)
+        {
+            [aTopic setADateOfLastPost:[NSString stringWithFormat:@"%d min",numberMinutes]];
+        }
+        else if (secondsBetween >= 3600 && secondsBetween < 24*3600)
+        {
+            [aTopic setADateOfLastPost:[NSString stringWithFormat:@"%d h",numberHours]];
+        }
+        else
+        {
+            [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+        }
     }
     else {
         [aTopic setADateOfLastPost:[NSString stringWithFormat:@"%@/%@/%@", [maDate substringWithRange:NSMakeRange(0, 2)]
