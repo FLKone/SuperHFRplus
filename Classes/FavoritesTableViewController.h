@@ -15,6 +15,7 @@
 	IBOutlet UIView *loadingView;
 
     NSMutableArray *arrayData;
+    NSMutableArray *arrayTopics;
     NSMutableArray *arrayNewData;
     NSMutableArray *arrayCategories;
     NSMutableArray *arrayCategoriesHidden;
@@ -45,6 +46,7 @@
 @property (nonatomic, strong) UIAlertController *topicActionAlert;
 
 @property (nonatomic, strong) NSMutableArray *arrayData;
+@property (nonatomic, strong) NSMutableArray *arrayTopics;
 @property (nonatomic, strong) NSMutableArray *arrayNewData;
 @property (nonatomic, strong) NSMutableArray *arrayCategories;
 @property (nonatomic, strong) NSMutableArray *arrayCategoriesHidden;

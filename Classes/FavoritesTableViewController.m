@@ -42,7 +42,7 @@
 
 @implementation FavoritesTableViewController
 @synthesize pressedIndexPath, favoritesTableView, loadingView, showAll;
-@synthesize arrayData, arrayNewData, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
+@synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
 @synthesize messagesTableViewController;
 @synthesize idPostSuperFavorites;
 
@@ -188,7 +188,8 @@
 	[self loadDataInTableView:[theRequest responseData]];
 	
     [self.arrayData removeAllObjects];
-    
+    //[self.arrayTopics removeAllObjects];
+
     self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];
     
     [self.arrayNewData removeAllObjects];
@@ -280,7 +281,7 @@
     
     [self.arrayCategories removeAllObjects];
     [self.arrayCategoriesHidden removeAllObjects];
-
+    
 	HTMLParser * myParser = [[HTMLParser alloc] initWithData:contentData error:NULL];
 	HTMLNode * bodyNode = [myParser body];
 
@@ -350,6 +351,7 @@
     NSLog(@"run");
     int iOrder = 0;
     NSMutableArray* tmpArrayCategories = [[NSMutableArray alloc] init];
+    NSMutableArray* tmpTopics = [[NSMutableArray alloc] init];
     NSMutableArray* tmpArrayCategoriesHidden = [[NSMutableArray alloc] init];
     BOOL catOrderIsEmpty = NO;
     if (self.arrayCategoriesVisibleOrder.count + self.arrayCategoriesHiddenOrder.count== 0)
@@ -368,7 +370,8 @@
                     // On rajoute la catégorie si elle est visible à la liste des sujets (cat  + topics)
                     if (aFavorite.topics.count > 0)
                     {
-                        [self.arrayNewData addObject:aFavorite];
+                        //[self.arrayNewData addObject:aFavorite];
+                        [self addFavorite:aFavorite into:self.arrayNewData andTopicsInto:tmpTopics];
                     }
                     
                     // On rajoute la catégorie dans la liste des catégories visibles
@@ -439,7 +442,8 @@
             // On rajoute la catégorie si elle est visible à la liste des sujets (cat  + topics)
             if (aFavorite.topics.count > 0)
             {
-                [self.arrayNewData addObject:aFavorite];
+                //[self.arrayNewData addObject:aFavorite];
+                [self addFavorite:aFavorite into:self.arrayNewData andTopicsInto:tmpTopics];
             }
             
             // On rajoute la catégorie dans la liste des catégories visibles
@@ -467,15 +471,24 @@
     tmpArrayNewData = [NSMutableArray arrayWithArray:self.arrayNewData];
     tmpArrayNewData = (NSMutableArray *)[tmpArrayNewData sortedArrayUsingDescriptors: [NSArray arrayWithObject:sortDescriptor]];
     self.arrayNewData = [NSMutableArray arrayWithArray:tmpArrayNewData];
+
+    NSSortDescriptor *sortDescriptorDate = [[NSSortDescriptor alloc] initWithKey: @"dDateOfLastPost" ascending:NO selector:@selector(compare:)];
+    self.arrayTopics = (NSMutableArray *)[tmpTopics sortedArrayUsingDescriptors: [NSMutableArray arrayWithObject:sortDescriptorDate]];
     
     if (self.status != kNoResults) {
         
         NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kComplete], @"status", nil];
-        
         [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
     }
-    
-    //NSLog(@"self.arrayCategories %@", self.arrayCategories);
+}
+
+- (void)addFavorite:(Favorite*)fav into:(NSMutableArray*)arrayDataLocal andTopicsInto:(NSMutableArray*)arrayTopicsLocal
+{
+    [arrayDataLocal addObject:fav];
+    for (Topic* topic in fav.topics)
+    {
+        [arrayTopicsLocal addObject:topic];
+    }
 }
 
 -(NSString*)wordAfterString:(NSString*)searchString inString:(NSString*)selfString
@@ -652,6 +665,7 @@
 	[(ShakeView*)self.view setShakeDelegate:self];
 	
     self.arrayData = [[NSMutableArray alloc] init];
+    self.arrayTopics = [[NSMutableArray alloc] init];
     self.arrayNewData = [[NSMutableArray alloc] init];
     self.arrayCategories = [[NSMutableArray alloc] init];
 
@@ -785,14 +799,9 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-	//NSLog(@"FT viewDidDisappear %@", self.favoritesTableView.indexPathForSelectedRow);
 
 	[super viewDidDisappear:animated];
 	[self.view resignFirstResponder];
-	//[(UILabel *)[[favoritesTableView cellForRowAtIndexPath:favoritesTableView.indexPathForSelectedRow].contentView viewWithTag:999] setFont:[UIFont systemFontOfSize:13]];
-
-    
-	//[favoritesTableView deselectRowAtIndexPath:favoritesTableView.indexPathForSelectedRow animated:NO];
 }
 
 
@@ -877,11 +886,15 @@
         }
         return 0;
     }
-    else // for default favorite view
+    else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"])// for default favorite view
     {
         if ([[self.arrayData objectAtIndex:section] topics].count > 0) {
             return HEIGHT_FOR_HEADER_IN_SECTION;
         }
+    }
+    else
+    {
+        return HEIGHT_FOR_HEADER_IN_SECTION;
     }
     return 0;
 }
@@ -897,11 +910,16 @@
             if (section == 0) titleSection = @"Catégories visibles";
             if (section == 1) titleSection = @"Catégories masquées";
         }
-        else
+        else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories)
         {
             Forum *tmpForum = [[self.arrayData objectAtIndex:section] forum];
             titleSection = [tmpForum.aTitle uppercaseString];
         }
+        else
+        {
+            titleSection = @"Toutes catégories";
+        }
+        
         //UIView globale
         UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
         Theme theme = [[ThemeManager sharedManager] theme];
@@ -1025,8 +1043,13 @@
             return 1;
         }
     }
-    else {
+    else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
+    {
         return self.arrayData.count;
+    }
+    else
+    {
+        return 1;
     }
 }
 
@@ -1044,8 +1067,13 @@
             return @"Catégories masquées";
         }
     }
-    else {
+    else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
+    {
         return [[[self.arrayData objectAtIndex:section] forum] aTitle];
+    }
+    else
+    {
+        return @"Toutes catgéries";
     }
     return @"";
 }
@@ -1069,8 +1097,13 @@
             return self.arrayCategories.count;
         }
     }
-    else {
+    else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
+    {
         return [[self.arrayData objectAtIndex:section] topics].count;
+    }
+    else
+    {
+        return self.arrayTopics.count;
     }
 }
 
@@ -1105,11 +1138,7 @@
     }
     else {
         static NSString *CellIdentifier = @"FavoriteCell";
-        
-        
-        
         FavoriteCell *cell = (FavoriteCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        
         
         if (cell == nil) {
             cell = [[FavoriteCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -1119,8 +1148,17 @@
             [cell addGestureRecognizer:longPressRecognizer];
         }
     	
-        Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
-        
+        Topic *tmpTopic = nil;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
+        {
+            tmpTopic = [self getTopicAtIndexPath:indexPath];
+        }
+        else // mode SANS catégories
+        {
+            tmpTopic = [self.arrayTopics objectAtIndex:indexPath.row];
+            NSLog(@"Topic sans cat, row=%ld",indexPath.row);
+        }
+            
         // Configure the cell...
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
@@ -1329,6 +1367,14 @@
 #pragma mark -
 #pragma mark Table view delegate
 
+- (Topic*)getTopicAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"])// for default favorite view
+        return [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+    
+    return [self.arrayTopics objectAtIndex:indexPath.row];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if (self.showAll)
@@ -1336,9 +1382,8 @@
         [self loadCatForSection:indexPath.row];
     }
     else {
-        
-        Topic *aTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
-        
+        Topic *aTopic = [self getTopicAtIndexPath:indexPath];
+            
         MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[aTopic aURL]];
         self.messagesTableViewController = aView;
         
@@ -1411,7 +1456,7 @@
 
 -(void)lastPageAction{
     NSIndexPath *indexPath = pressedIndexPath;
-    Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
     
     MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[tmpTopic aURLOfLastPage]];
     self.messagesTableViewController = aView;
@@ -1425,7 +1470,7 @@
 
 -(void)lastPostAction{
     NSIndexPath *indexPath = pressedIndexPath;
-    Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
     
     MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[tmpTopic aURLOfLastPost]];
     self.messagesTableViewController = aView;
@@ -1440,7 +1485,7 @@
 -(void)copyLinkAction {
     
     NSIndexPath *indexPath = pressedIndexPath;
-    Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
     
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = [NSString stringWithFormat:@"%@%@", [k RealForumURL], [tmpTopic aURLOfFirstPage]];
@@ -1499,7 +1544,7 @@
 	if (self.favoritesTableView.indexPathForSelectedRow && self.arrayData.count > 0) {
 
         NSIndexPath *path = self.favoritesTableView.indexPathForSelectedRow;
-        [[[[self.arrayData objectAtIndex:[path section]] topics] objectAtIndex:[path row]] setIsViewed:YES];
+        [[self getTopicAtIndexPath:path] setIsViewed:YES];
 
         //NSArray* rowsToReload = [NSArray arrayWithObjects:self.favoritesTableView.indexPathForSelectedRow, nil];
         //[self.favoritesTableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationNone];
@@ -1510,8 +1555,8 @@
     else if (pressedIndexPath && self.arrayData.count > 0)
     {
         NSIndexPath *path = self.pressedIndexPath;
-        [[[[self.arrayData objectAtIndex:[path section]] topics] objectAtIndex:[path row]] setIsViewed:YES];
-		
+        [[self getTopicAtIndexPath:path] setIsViewed:YES];
+
         //NSArray* rowsToReload = [NSArray arrayWithObjects:self.pressedIndexPath, nil];
         //[self.favoritesTableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationNone];
 
@@ -1523,7 +1568,7 @@
 -(void)setTopicViewedWithIndex:(NSIndexPath *)indexPath {
     if(self.arrayData.count > 0){
         // Go to URL in BG
-        Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+        Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
         NSURL *topicLastPage =  [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [tmpTopic aURLOfLastPage]]];
         ASIHTTPRequest * req = [ASIHTTPRequest requestWithURL:topicLastPage];
         [req startAsynchronous];
@@ -1546,7 +1591,7 @@
 -(void)setTopicSuperFavoriteWithIndex:(NSIndexPath *)indexPath {
     if(self.arrayData.count > 0){
         // Go to URL in BG
-        Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+        Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
         if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]])
         {
             [self.idPostSuperFavorites removeObject:[NSNumber numberWithInt:tmpTopic.postID]];
@@ -1566,7 +1611,7 @@
     //NSLog(@"chooseTopicPage Favs");
 
     NSIndexPath *indexPath = self.pressedIndexPath;
-    Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
     
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle: nil
                                                                               message: nil
@@ -1615,8 +1660,7 @@
 }
 
 -(void)goToPage:(int)number {
-    NSIndexPath *path = self.pressedIndexPath;
-    Topic *aTopic = [[[self.arrayData objectAtIndex:[path section]] topics] objectAtIndex:[path row]];
+    Topic *aTopic = [self getTopicAtIndexPath:self.pressedIndexPath];
     
     NSString * newUrl = [aTopic aURL];
     
@@ -1646,17 +1690,8 @@
     
     newUrl = [newUrl stringByRemovingAnchor];
     
-    //NSLog(@"newUrl %@", newUrl);
-    
-    //if (self.messagesTableViewController == nil) {
     MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:newUrl];
     self.messagesTableViewController = aView;
-    //}
-    
-    
-    
-    //NSLog(@"%@", self.navigationController.navigationBar);
-    
     
     //setup the URL
     self.messagesTableViewController.topicName = [aTopic aTitle];
@@ -1669,7 +1704,7 @@
 	//NSLog(@"textFieldDidChange %d %@", [[(UITextField *)sender text] intValue], sender);	
 	
     NSIndexPath *indexPath = self.pressedIndexPath;
-    Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
 
 	if ([[(UITextField *)sender text] length] > 0) {
 		int val; 
@@ -1733,7 +1768,7 @@
             
             [arequest setPostValue:@"forum1f" forKey:@"type_page"];
 
-            Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
+            Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
             
             [arequest setPostValue:[NSString stringWithFormat:@"%d", [tmpTopic postID]] forKey:@"topic0"];
             [arequest setPostValue:[NSString stringWithFormat:@"%d", [tmpTopic catID]] forKey:@"valuecat0"];
@@ -1741,13 +1776,22 @@
             [arequest setPostValue:@"hardwarefr" forKey:@"valueforum0"];
             [arequest startAsynchronous];
             
-            [[[self.arrayData objectAtIndex:indexPath.section] topics] removeObjectAtIndex:indexPath.row];
-            [self.favoritesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-            if ([[self.arrayData objectAtIndex:indexPath.section] topics].count == 0) {
-                [self.favoritesTableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
-
+            if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"])// for default favorite view
+            {
+                [[[self.arrayData objectAtIndex:indexPath.section] topics] removeObjectAtIndex:indexPath.row];
+                [self.favoritesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                if ([[self.arrayData objectAtIndex:indexPath.section] topics].count == 0) {
+                    [self.favoritesTableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+                }
             }
-            
+            else
+            {
+                [self.arrayTopics removeObjectAtIndex:indexPath.row];
+                [self.favoritesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                if ([[self.arrayData objectAtIndex:indexPath.section] topics].count == 0) {
+                    [self.favoritesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+                }
+            }
         }
     }
 }

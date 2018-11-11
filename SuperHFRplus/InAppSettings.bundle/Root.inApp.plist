@@ -100,7 +100,7 @@
 				<string>1</string>
 			</array>
 		</dict>
-        <!--dict>
+        <dict>
             <key>DefaultValue</key>
             <true/>
             <key>Key</key>
@@ -109,7 +109,7 @@
             <string>Favoris triés par catégories</string>
             <key>Type</key>
             <string>PSToggleSwitchSpecifier</string>
-        </dict-->
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>super</string>
