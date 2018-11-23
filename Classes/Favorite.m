@@ -119,17 +119,21 @@
         NSTimeInterval secondsBetween = [nowTopic timeIntervalSinceDate:aTopic.dDateOfLastPost];
         int numberMinutes = secondsBetween / 60;
         int numberHours = secondsBetween / 3600;
-        if (numberMinutes == 0)
+        if (secondsBetween < 0)
         {
-            [aTopic setADateOfLastPost:@"<1 min"];
+            [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+        }
+        else if (numberMinutes == 0)
+        {
+            [aTopic setADateOfLastPost:@"il y a 1 min"];
         }
         else if (numberMinutes >= 1 && numberMinutes < 60)
         {
-            [aTopic setADateOfLastPost:[NSString stringWithFormat:@"%d min",numberMinutes]];
+            [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d min",numberMinutes]];
         }
         else if (secondsBetween >= 3600 && secondsBetween < 24*3600)
         {
-            [aTopic setADateOfLastPost:[NSString stringWithFormat:@"%d h",numberHours]];
+            [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d h",numberHours]];
         }
         else
         {
