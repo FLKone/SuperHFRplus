@@ -2,6 +2,10 @@
 style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 */
 
+:root {
+    --color-actualiser: green;
+}
+
 * {
 	padding:0 !important;
 	margin:0 !important;
@@ -249,7 +253,7 @@ background:-webkit-gradient(
 
 .message .header .right a {
 	margin-top:3px !important;
-	color: rgba(241, 143, 24, 1);
+	color: var(--color-actualiser);
 	line-height: inherit;
 	outline: 0px;
 	text-decoration: none;
@@ -275,7 +279,7 @@ background:-webkit-gradient(
 }
 
 .message .content .right a {
-	color: rgba(241, 143, 24, 1);
+	color: var(--color-message-content);
 	
 }
 
@@ -315,7 +319,7 @@ table.code *, table.fixed * {
 }
 
 #actualiserbtn {
-	color: rgba(241, 143, 24, 1);
+    color: var(--color-actualiser);
 	line-height:44px;
 	font-size:15px !important;
 	font-weight:bold;

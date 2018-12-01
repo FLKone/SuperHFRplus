@@ -7,18 +7,17 @@
 //
 
 #import "HFRplusAppDelegate.h"
-
 #import "PollTableViewController.h"
 #import "HTMLNode.h"
 #import "HTMLParser.h"
 #import "RegexKitLite.h"
 #import "RangeOfCharacters.h"
 #import "ASIFormDataRequest.h"
-
 #import "PollResultTableViewCell.h"
-
 #import "ASIHTTPRequest.h"
 #import "MessagesTableViewController.h"
+#import "ThemeManager.h"
+#import "ThemeColors.h"
 
 @interface PollTableViewController ()
 
@@ -334,10 +333,18 @@
 	
 	[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:YES];
 	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:667];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:[theRequest.error localizedDescription] message:@"Ooops !"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 
@@ -483,11 +490,14 @@
 
     if (arequest) {
         if ([arequest error]) {
-            //NSLog(@"error: %@", [[arequest error] localizedDescription]);
-            
-            UIAlertView *alertKO = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[[arequest error] localizedDescription]
-                                                             delegate:nil cancelButtonTitle:@"Retour" otherButtonTitles: nil];
-            [alertKO show];
+            // Popup erreur
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[arequest error] localizedDescription] message:@"Ooops !"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Retour" style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) { }];
+            [alert addAction:actionCancel];
+            [self presentViewController:alert animated:YES completion:nil];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
         else if ([arequest responseString])
         {
@@ -563,6 +573,7 @@
     
 }
 
+/* TODO: to remove: normaly should be no more used
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSLog(@"clickedButtonAtIndex PT %@ index : %ld", alertView, (long)buttonIndex);
@@ -570,7 +581,7 @@
     if (buttonIndex == 1 && alertView.tag == 667) {
         [self fetchContent];
     }
-}
+}*/
 
 #pragma mark - Table view data source
 

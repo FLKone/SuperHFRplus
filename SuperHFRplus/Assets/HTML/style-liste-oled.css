@@ -249,7 +249,7 @@ background:-webkit-gradient(
 
 .message .header .right a {
 	margin-top:3px !important;
-	color: rgba(241, 143, 24, 1);
+	color: rgba(42, 153, 250, 1);
 	line-height: inherit;
 	outline: 0px;
 	text-decoration: none;
@@ -275,7 +275,7 @@ background:-webkit-gradient(
 }
 
 .message .content .right a {
-	color: rgba(241, 143, 24, 1);
+	color: rgba(42, 153, 250, 1);
 	
 }
 
@@ -315,7 +315,7 @@ table.code *, table.fixed * {
 }
 
 #actualiserbtn {
-	color: rgba(241, 143, 24, 1);
+	color: rgba(42, 153, 250, 1);
 	line-height:44px;
 	font-size:15px !important;
 	font-weight:bold;

@@ -24,7 +24,8 @@
 	NSString *aURLOfLastPost;
 	NSString *aURLOfLastPage;
 	
-	NSString *aDateOfLastPost;
+    NSString *aDateOfLastPost;
+    NSDate   *dDateOfLastPost;
 	NSString *aAuthorOfLastPost;
 
 	NSString *aAuthorOrInter;
@@ -37,6 +38,7 @@
     
     bool isSticky;
     bool isClosed;
+    bool isSuperFavorite;
 }
 
 @property (nonatomic, strong) NSString *_aTitle;
@@ -54,6 +56,7 @@
 @property (nonatomic, strong) NSString *aURLOfLastPost;
 @property (nonatomic, strong) NSString *aURLOfLastPage;
 @property (nonatomic, strong) NSString *aDateOfLastPost;
+@property (nonatomic, strong) NSDate   *dDateOfLastPost;
 @property (nonatomic, strong) NSString *aAuthorOfLastPost;
 
 @property (nonatomic, strong) NSString *aAuthorOrInter;
@@ -65,8 +68,8 @@
 @property int catID;
 
 @property bool isSticky;
+@property bool isSuperFavorite;
 @property bool isClosed;
 
 - (NSString*) aTitle;
-
 @end

@@ -53,7 +53,7 @@
 	NSArray				*pickerViewArray;
 	UIActionSheet		*actionSheet;
 	
-    UIActionSheet		*topicActionSheet;
+    UIAlertController		*topicActionAlert;
     
     UISegmentedControl  *subCatSegmentedControl;
 	TopicCellView *__weak tmpCell;
@@ -73,7 +73,7 @@
 @property (nonatomic, strong) UIPickerView *myPickerView;
 @property (nonatomic, strong) NSArray *pickerViewArray;
 @property (nonatomic, strong) UIActionSheet *actionSheet;
-@property (nonatomic, strong) UIActionSheet *topicActionSheet;
+@property (nonatomic, strong) UIAlertController *topicActionAlert;
 
 @property (nonatomic, strong) UISegmentedControl  *subCatSegmentedControl;
 @property (nonatomic, strong) IBOutlet UITableView *topicsTableView;

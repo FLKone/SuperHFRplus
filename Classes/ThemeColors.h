@@ -10,22 +10,38 @@
 #import "Constants.h"
 
 
-@interface ThemeColors : NSObject
+@interface ThemeColors : NSObject {
+    CGFloat fDarkColor1;
+    CGFloat fDarkColor2;
+}
+
++ (void)setDarkColor1:(int)b; // Brightness for dark colors in % compare to default Dark theme
++ (void)setDarkColor2:(int)b; // Action color for dark theme (converted to hue value)
+
++ (CGFloat)fDarkColor1;
++ (CGFloat)fDarkColor2;
+
 + (UIColor *)tabBackgroundColor:(Theme)theme;
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
++ (UIColor *)messageBackgroundColor:(Theme)theme;
++ (UIColor *)messageModoBackgroundColor:(Theme)theme;
 + (UIColor *)addMessageBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColor:(Theme)theme;
++ (UIColor *)cellBackgroundColorSuperFavorite:(Theme)theme;
 + (UIColor *)cellHighlightBackgroundColor:(Theme)theme;
 + (UITableViewCellSelectionStyle)cellSelectionStyle:(Theme)theme;
 + (UIColor *)cellIconColor:(Theme)theme;
 + (UIColor *)cellTextColor:(Theme)theme;
++ (UIColor *)cellDisabledTextColor:(Theme)theme;
 + (UIColor *)cellBorderColor:(Theme)theme;
 + (UIColor *)cellTintColor:(Theme)theme;
 + (UIColor *)placeholderColor:(Theme)theme;
 + (UIColor *)headSectionBackgroundColor:(Theme)theme;
 + (UIColor *)headSectionTextColor:(Theme)theme;
 + (UIColor *)textColor:(Theme)theme;
++ (UIColor *)textColor2:(Theme)theme;
++ (UIColor *)textColorPseudo:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
@@ -34,6 +50,7 @@
 + (UIColor *)tintColor:(Theme)theme;
 + (UIColor *)tintLightColor:(Theme)theme;
 + (UIColor *)tintWhiteColor:(Theme)theme;
++ (UIColor *)tintColorDisabled:(Theme)theme;
 + (UIColor *)overlayColor:(Theme)theme;
 + (UIColor *)toolbarColor:(Theme)theme;
 + (UIColor *)toolbarPageBackgroundColor:(Theme)theme;
@@ -56,4 +73,11 @@
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
++ (NSString *) hexFromUIColor:(UIColor *)color;
++ (NSString *) getColorBorderQuotation:(Theme)theme;
++ (UIColor *)  getColorBorderAvatar:(Theme)theme;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
++ (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
++ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
++ (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
 @end
