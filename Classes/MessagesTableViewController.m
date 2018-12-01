@@ -544,6 +544,10 @@
                     }
                 }
                 else if ([[no getAttributeNamed:@"name"] isEqualToString:@"currentnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_currentnum"];
+                    [self.searchFromFP setOn:NO animated:NO];
+                }else if ([[no getAttributeNamed:@"name"] isEqualToString:@"firstnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_firstnum"];
                     [self.searchFromFP setOn:NO animated:NO];
                 }
             }
@@ -2984,6 +2988,13 @@
     if (sender.isOn) {
         [self.searchInputData removeObjectForKey:@"currentnum"];
         [self.searchInputData removeObjectForKey:@"firstnum"];
+    }else{
+        if([self.searchInputData valueForKey:@"tmp_currentnum"]){
+            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_currentnum"] forKey:@"currentnum"];
+        }
+        if([self.searchInputData valueForKey:@"tmp_firstnum"]){
+            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_firstnum"] forKey:@"firstnum"];
+        }
     }
 }
 

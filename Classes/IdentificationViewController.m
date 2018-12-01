@@ -176,8 +176,8 @@
     [[ASIFormDataRequest alloc]  initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], @"/login_validation.php?config=hfr.inc"]]];
     [request setStringEncoding:NSUTF8StringEncoding];
 
-    [request addPostValue:pseudoField.text forKey:@"pseudo"];
-    [request addPostValue:password forKey:@"password"];
+    [request addPostValue:@"GenyaB" forKey:@"pseudo"];
+    [request addPostValue:@"XTQ4mmi4T*>QCD" forKey:@"password"];
 
     
     [request addPostValue:@"send" forKey:@"action"];
