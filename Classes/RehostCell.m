@@ -135,6 +135,10 @@
     [alert addAction:cancelAction];
     
     UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    // Adjustment for ipad as we get the UISplitViewController:
+    if ([activeVC isKindOfClass:[UISplitViewController class]]) {
+        activeVC = [activeVC.childViewControllers objectAtIndex:0];
+    }
     [activeVC presentViewController:alert animated:YES completion:nil];
     [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }

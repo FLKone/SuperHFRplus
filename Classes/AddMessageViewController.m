@@ -822,7 +822,13 @@
         else if ([key isEqualToString:@"pseudo"]) {
                 [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_KEY] forKey:@"pseudo"];
         }else if ([key isEqualToString:@"hash_check"]) {
-            [arequest setPostValue:[selectedCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
+            if([selectedCompte objectForKey:HASH_KEY]){
+                [arequest setPostValue:[selectedCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
+            }else{
+                [arequest setPostValue:[[HFRplusAppDelegate sharedAppDelegate] hash_check] forKey:@"hash_check"];
+                // Set hash_check for compte
+                [[MultisManager sharedManager] setHashForCompte:selectedCompte andHash:[[HFRplusAppDelegate sharedAppDelegate] hash_check]];
+            }
         }
         else
             [arequest setPostValue:[self.arrayInputData objectForKey:key] forKey:key];
@@ -862,7 +868,7 @@
             [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
 
             // Popup erreur
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Erreur inconnue :/" message:@"Ooops !"
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
                                                                     preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
                                                                  handler:^(UIAlertAction * action) { }];
