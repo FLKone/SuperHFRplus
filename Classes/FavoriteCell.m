@@ -71,6 +71,8 @@
 		[self.labelDate setNumberOfLines:0];
 		//[label setOpaque:YES];
 		
+        //[self.isSuperFavorite setTag:996];
+        
 		[self.contentView insertSubview:self.labelDate atIndex:3];
 				
     }
@@ -85,7 +87,15 @@
 -(void)applyTheme {
     Theme theme = [[ThemeManager sharedManager] theme];
     self.backgroundColor = [ThemeColors cellBackgroundColor:theme];
-    self.contentView.superview.backgroundColor =[ThemeColors cellBackgroundColor:theme];
+    // Background color of topic cells in favorite list
+    if (self.isSuperFavorite)
+    {
+        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColorSuperFavorite:theme];
+    }
+    else
+    {
+        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColor:theme];
+    }
     [self.labelTitle setTextColor:[ThemeColors textColor:theme]];
     [self.labelMsg setTextColor:[ThemeColors topicMsgTextColor:theme]];
     [self.labelDate setTextColor:[ThemeColors cellTintColor:theme]];

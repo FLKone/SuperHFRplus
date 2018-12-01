@@ -8,6 +8,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-message-header: #2DAEBF; /* ?? */
     --color-url: #2470d8; /* Couleur des url dans les messages ET ?? */
     --color-message-background:white; /* Fond des messages */
+    --color-message-modo-background:#FEE; /* Fond des messages de modération */
     --color-background-bars:#F5F5F5;
     --color-text:#202020;
     --color-text2:#202020;
@@ -75,7 +76,7 @@ span.signature > br:first-child {
 table
 { 
     border: 1px solid silver;
-	padding: 4px !important;
+	padding-left: 4px !important;
 	width:100%;
 	max-width:100% !important;
 	margin-bottom:5px !important;
@@ -111,7 +112,7 @@ div.masque {
 	opacity:0.5;
 }
 .message.mode .content {
-	background-color: #FEE;
+	background-color: var(--color-message-modo-background);
 }
 
 .anchorlink {
@@ -269,8 +270,7 @@ background:-webkit-gradient(
 .message .content {
     
 	padding:0 !important;
-    background:var(--color-message-background); /* Dark background: rgba(46, 47, 51, 1);
-                                                 color : rgb(186, 187, 191);*/
+    background:var(--color-message-background);
 }
 
 

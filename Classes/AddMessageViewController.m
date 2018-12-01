@@ -66,17 +66,16 @@
         self.haveTo	= NO;
         
         self.offsetY = 0;
-        
-        
+            
         //Smileys / Rehost
         self.usedSearchDict = [[NSMutableDictionary alloc] init];
         self.usedSearchSortedArray = [[NSMutableArray alloc] init];
         self.rehostImagesArray = [[NSMutableArray alloc] init];
         self.rehostImagesSortedArray = [[NSMutableArray alloc] init];
         
-        
-        //NSLog(@"usedSearchDict AT LAUNCH %@", self.usedSearchDict);
-        //NSLog(@"usedSearchSortedArray %@", self.usedSearchSortedArray);
+        self.sBrouillon = [[NSUserDefaults standardUserDefaults] stringForKey:@"brouillon"];
+        if (self.sBrouillon == nil) self.sBrouillon = [[NSString alloc] init];
+        self.sBrouillonUtilise = NO;
         
         self.title = @"Nouv. message";
     }
@@ -213,9 +212,62 @@
         self.segmentControler.tintColor = [UIColor darkGrayColor];
     }
     
+    self.sBrouillonUtilise = NO;
+    // Popup brouillon (partout sauf en mode edition)
+    if (self.sBrouillon && self.sBrouillon.length > 0) {
 
-    
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Utiliser le brouillon ?" message:[self getBrouillonExtract]
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) { [self.textView setText:self.sBrouillon];
+                                                              self.sBrouillonUtilise = YES;}];
+        UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) { }];
+        UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) { [self modifyBrouillon:@""]; }];
+
+        [alert addAction:actionYes];
+        [alert addAction:actionNo];
+        [alert addAction:actionDel];
+
+        [self presentViewController:alert animated:YES completion:nil];
+        //TODO [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    }
 }
+
+- (NSString*) getBrouillonExtract {
+    int BROUILON_EXTRACT_LENGTH = 60;
+    NSString *first20Char = nil;
+    NSRange r1 = [self.sBrouillon rangeOfString:@"[quotemsg="];
+    NSRange r2 = [self.sBrouillon rangeOfString:@"[/quotemsg]"];
+    if (r1.location != NSNotFound && r2.location != NSNotFound) { // Test is quoted message to remove first quote
+        if (r2.location + r2.length + BROUILON_EXTRACT_LENGTH <= self.sBrouillon.length ) {
+            first20Char = [self.sBrouillon substringWithRange:NSMakeRange(r2.location + r2.length, BROUILON_EXTRACT_LENGTH)];
+            first20Char = [first20Char stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            first20Char = [NSString stringWithFormat:@"[quotemsg(...)\n%@(...)",first20Char];
+        }
+        else {
+            first20Char = [self.sBrouillon substringWithRange:NSMakeRange(r2.location + r2.length, self.sBrouillon.length - r2.location - r2.length )];
+            first20Char = [first20Char stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            first20Char = [NSString stringWithFormat:@"[quotemsg(...)\n%@",first20Char];
+        }
+    }
+    else
+    {
+        if (self.sBrouillon.length > BROUILON_EXTRACT_LENGTH) {
+            first20Char = [self.sBrouillon substringToIndex:BROUILON_EXTRACT_LENGTH];
+            first20Char = [first20Char stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            first20Char = [NSString stringWithFormat:@"%@(...)",first20Char];
+        }
+        else {
+            first20Char = self.sBrouillon;
+            first20Char = [first20Char stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        }
+    }
+    first20Char = [NSString stringWithFormat:@"\"%@\"",first20Char];
+    return first20Char;
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)initData { //- (void)viewDidLoad {
     //NSLog(@"viewDidLoad add");
@@ -389,7 +441,7 @@
     
     [segmentControler setEnabled:YES forSegmentAtIndex:0];
     [segmentControler setEnabled:YES forSegmentAtIndex:1];
-    
+
     // MULTIS
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
@@ -460,8 +512,9 @@
 #pragma mark -
 #pragma mark Responding to keyboard events
 
-- (void)textViewDidChange:(UITextView *)ftextView {
-    
+- (void)textViewDidChange:(UITextView *)ftextView
+{
+
     if ([ftextView text].length > 0) {
         [self.navigationItem.rightBarButtonItem setEnabled:YES];
     }
@@ -673,60 +726,50 @@
     }
     else {
         if ([self.textView text].length > 0 && !self.isDeleteMode) {
-            //NSLog(@"ALERT");
-            [self resignAll];
-            
-            NSString *alertMessage = @"Vous allez perdre le contenu de votre message.";
-            
-            if ([self isKindOfClass:[EditMessageViewController class]]) {
-                alertMessage = @"Vous allez perdre vos modifications.";
+            NSString *alertTitle = @"Enregistrer comme brouillons ?";
+            NSString *messageBrouillon=nil;
+            BOOL remplacerBrouillon = NO;
+            if (self.sBrouillon.length > 0) {
+                alertTitle = @"Remplacer le brouillon ?";
+                messageBrouillon = [self getBrouillonExtract];
+                remplacerBrouillon = YES;
             }
             
-            if ([UIAlertController class]) {
-                //NSLog(@"UIAlertController");
-                
-                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Attention !"
-                                                                               message:alertMessage
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                
-                UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                                     handler:^(UIAlertAction * action) {
-                                                                         [self.textView becomeFirstResponder];
-                                                                     }];
-                
-                [alert addAction:cancelAction];
-                
-                
-                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Confirmer" style:UIAlertActionStyleDefault
-                                                                      handler:^(UIAlertAction * action) {
-                                                                          [self finishMe];
-                                                                      }];
-                
-                [alert addAction:defaultAction];
-                [self presentViewController:alert animated:YES completion:^{
-                    
-                }];
-                
-                
-                
-            } else {
-                //NSLog(@"UIAlertView");
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention !" message:alertMessage
-                                                               delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Confirmer", nil];
-                [alert setTag:666];
-                [alert show];
-            }
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                           message:messageBrouillon
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
             
-            
-            
-            
+            UIAlertAction* yesAction = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                      [self modifyBrouillon:[self.textView text]];
+                                                                      [self finishMe];
+                                                                  }];
+            UIAlertAction* noAction = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                    if (!remplacerBrouillon) [self modifyBrouillon:@""];
+                                                                      [self finishMe];
+                                                                  }];
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) {
+                                                                     [self.textView becomeFirstResponder];
+                                                                 }];
+
+            [alert addAction:yesAction];
+            [alert addAction:noAction];
+            [alert addAction:cancelAction];
+            [self presentViewController:alert animated:YES completion:^{}];
+            //[[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
         else {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
             [self.delegate addMessageViewControllerDidFinish:self];
         }
     }
+}
+
+- (void)modifyBrouillon:(NSString*) sNewText {
+    self.sBrouillon = sNewText;
+    [[NSUserDefaults standardUserDefaults] setObject:sNewText forKey:@"brouillon"];
 }
 
 -(void)resignAll {
@@ -738,8 +781,6 @@
 }
 
 -(void)finishMe {
-    
-    //NSLog(@"finishMe");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
     [self.delegate addMessageViewControllerDidFinish:self];
 }
@@ -854,13 +895,17 @@
                 [alertKKO show];
             }
             else {
+                // On efface automatiquement le brouillon quand il a été utilisé et que le post du message est OK
+                if (self.sBrouillonUtilise) {
+                    [self modifyBrouillon:@""];
+                }
+                
                 [self resignAll];
                 
                 if ([UIAlertController class]) {
                     self.statusMessage = [[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    
-                    
-                } else {
+                }
+                else {
                     UIAlertView *alertOK = [[UIAlertView alloc] initWithTitle:@"Hooray !" message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
                                                                      delegate:self.delegate cancelButtonTitle:nil otherButtonTitles: nil];
                     [alertOK setTag:666];
@@ -872,10 +917,7 @@
                     indicator.center = CGPointMake(alertOK.bounds.size.width / 2, alertOK.bounds.size.height - 50);
                     [indicator startAnimating];
                     [alertOK addSubview:indicator];
-                    
-                    
                 }
-                
                 
                 //NSLog(@"responseString %@", [arequest responseString]);
                 [self setRefreshAnchor:@""];
@@ -900,19 +942,14 @@
                         [self setRefreshAnchor:[[urlArray objectAtIndex:0] objectAtIndex:1]];
                         //NSLog(@"refreshAnchor %@", self.refreshAnchor);
                     }
-                    
                 }
                 
                 NSLog(@"VisibilityChangedVisibilityChanged");
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
                 [self.delegate addMessageViewControllerDidFinishOK:self];
-                
             }
-            
-            
         }
     }
-    
 }
 
 -(void)segmentToWhite {
@@ -1040,6 +1077,10 @@
                 }
                 
                 break;
+            }
+            case 2:
+            {
+                [self.textView setText:self.sBrouillon];
             }
             default:
                 break;

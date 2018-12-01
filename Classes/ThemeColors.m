@@ -175,6 +175,21 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
     }
 }
 
++ (UIColor *)messageModoBackgroundColor:(Theme)theme{
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        
+        switch (theme) {
+            case ThemeLight:  return [UIColor colorWithRed:255/255.0 green:238/255.0 blue:238/255.0 alpha:1.0];
+            case ThemeDark:   return [UIColor colorWithRed:74/255.0 green:46/255.0 blue:60/255.0 alpha:1.0];
+            case ThemeOLED:   return [UIColor colorWithRed:74/255.0 green:46/255.0 blue:60/255.0 alpha:1.0];
+            default:          return [UIColor whiteColor];//[UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+        }
+    }
+    else {
+        return [UIColor whiteColor]; //OK
+    }
+}
+
 // Fond des items des listes Categorie/ Sujets/Messages :
 // Theme light: reste blanc
 + (UIColor *)cellBackgroundColor:(Theme)theme{
@@ -191,6 +206,24 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
         return [UIColor whiteColor]; //OK
     }
 }
+
+// Fond des items des listes Categorie/ Sujets/Messages :
+// Theme light: reste blanc
++ (UIColor *)cellBackgroundColorSuperFavorite:(Theme)theme{
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        
+        switch (theme) {
+            case ThemeLight:  return [UIColor colorWithRed:255/255.0 green:191/255.0 blue:154/255.0 alpha:1.0];
+            case ThemeDark:   return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:36.0/255.0 green:37.0/255.0 blue:41.0/255.0 alpha:1.0]];
+            case ThemeOLED:   return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
+            default:          return [UIColor whiteColor];//[UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+        }
+    }
+    else {
+        return [UIColor whiteColor]; //OK
+    }
+}
+
 
 // ??
 + (UIColor *)cellHighlightBackgroundColor:(Theme)theme{
@@ -217,6 +250,15 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
         case ThemeLight: return [UIColor blackColor];
         case ThemeDark:  return [UIColor colorWithRed:146.0/255.0 green:147.0/255.0 blue:151.0/255.0 alpha:1.0];
         case ThemeOLED:  return [UIColor colorWithRed:146.0/255.0 green:147.0/255.0 blue:151.0/255.0 alpha:1.0];
+        default:         return [UIColor blackColor];
+    }
+}
+
++ (UIColor *)cellDisabledTextColor:(Theme)theme{
+    switch (theme) {
+        case ThemeLight: return [UIColor colorWithRed:146.0/255.0 green:147.0/255.0 blue:151.0/255.0 alpha:1.0];
+        case ThemeDark:  return [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1.0];
+        case ThemeOLED:  return [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1.0];
         default:         return [UIColor blackColor];
     }
 }
@@ -253,7 +295,7 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 
 + (UIColor *)headSectionBackgroundColor:(Theme)theme{
     switch (theme) {
-        case ThemeLight: return [UIColor colorWithRed:239/255.0f green:239/255.0f blue:239/255.0f alpha:1.0];
+        case ThemeLight: return [UIColor colorWithRed: 230/255.0f green:230/255.0f blue:230/255.0f alpha:1.0];
         case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:19.0/255.0 green:19.0/255.0 blue:20.0/255.0 alpha:1.0]];
         case ThemeOLED:  return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
         default:         return [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:0.7];
@@ -263,9 +305,8 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 // Texte du titres de section (Categories ou titre dans les settings)
 + (UIColor *)headSectionTextColor:(Theme)theme{
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        UIColor* c;
         switch (theme) {
-            case ThemeLight: return [UIColor colorWithRed:109/255.0f green:109/255.0f blue:114/255.0f alpha:1];
+            case ThemeLight: return [UIColor colorWithRed:100/255.0f green:100/255.0f blue:100/255.0f alpha:1];
             case ThemeDark:  return [UIColor colorWithRed:146.0/255.0 green:147.0/255.0 blue:151.0/255.0 alpha:1.0];
             case ThemeOLED:  return [UIColor colorWithRed:176.0/255.0 green:177.0/255.0 blue:181.0/255.0 alpha:1.0];
             default: return [UIColor colorWithRed:109/255.0f green:109/255.0f blue:114/255.0f alpha:1];

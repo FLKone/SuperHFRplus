@@ -68,10 +68,18 @@
 {
     [self.loadingView setHidden:YES];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-                                                   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-    [alert setTag:777];
-    [alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:[theRequest.error localizedDescription] message:@"Ooops !"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 
@@ -201,11 +209,14 @@
     
     if (arequest) {
         if ([arequest error]) {
-            //NSLog(@"error: %@", [[arequest error] localizedDescription]);
-            
-            UIAlertView *alertKO = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[[arequest error] localizedDescription]
-                                                             delegate:self cancelButtonTitle:@"Retour" otherButtonTitles: nil];
-            [alertKO show];
+            // Popup erreur
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[arequest error] localizedDescription] message:@"Ooops !"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Retour" style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) { }];
+            [alert addAction:actionCancel];
+            [self presentViewController:alert animated:YES completion:nil];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
         else if ([arequest responseString])
         {
