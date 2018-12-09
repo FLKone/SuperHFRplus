@@ -35,7 +35,7 @@ int nightDelay;
         if(!theme){
             theme = ThemeLight;
         }
-        
+
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"])
         {
             //  Apply customisation

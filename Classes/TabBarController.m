@@ -24,47 +24,31 @@
 	//NSLog(@"TBC viewDidLoad %@", self.tabBar);
     self.title = @"Menu";
 
-    
-    UITabBarItem *tabBarItem1 = [self.tabBar.items objectAtIndex:0];
-    UITabBarItem *tabBarItem2 = [self.tabBar.items objectAtIndex:1];
-    UITabBarItem *tabBarItem3 = [self.tabBar.items objectAtIndex:2];
-    UITabBarItem *tabBarItem4 = [self.tabBar.items objectAtIndex:3];
-    
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        UITabBarItem *tabBarItem1 = [self.tabBar.items objectAtIndex:0];
+        UITabBarItem *tabBarItem2 = [self.tabBar.items objectAtIndex:1];
+        UITabBarItem *tabBarItem3 = [self.tabBar.items objectAtIndex:2];
+        UITabBarItem *tabBarItem4 = [self.tabBar.items objectAtIndex:3];
+        
         [tabBarItem1 setImage:[UIImage imageNamed:@"44-shoebox"]];
         [tabBarItem2 setImage:[UIImage imageNamed:@"28-star"]];
         [tabBarItem3 setImage:[UIImage imageNamed:@"18-envelope.png"]];
         [tabBarItem4 setImage:[UIImage imageNamed:@"19-gear.png"]];
         
     } else {
-        //NSLog(@"////// %@", self.tabBar.items);
-        tabBarItem1.selectedImage = [[UIImage imageNamed:@"categories_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem1.image = [[UIImage imageNamed:@"categories"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem1.title = @"Catégories";
-        //tabBarItem1.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem1.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        tabBarItem2.selectedImage = [[UIImage imageNamed:@"favorites_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem2.image = [[UIImage imageNamed:@"favorites"]imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem2.title = @"Favoris";
-        //tabBarItem2.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem2.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        tabBarItem3.selectedImage = [[UIImage imageNamed:@"mp_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem3.image = [[UIImage imageNamed:@"mp"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem3.title = @"Messages";
-        //tabBarItem3.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem3.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        tabBarItem4.selectedImage = [[UIImage imageNamed:@"dots_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem4.image = [[UIImage imageNamed:@"dots"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem4.title = @"Réglages";
-        //tabBarItem4.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem4.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        //tabBarItem4.selectedImage = [[UIImage imageNamed:@"search_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        //tabBarItem4.image = [[UIImage imageNamed:@"search"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        
+        for (int i=0; i<4; i++) {
+            UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
+            tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i]]
+                                        imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
+            tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i]]
+                                imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
+            switch (i) {
+                case 0: tabBarItem.title = @"Catégories"; break;
+                case 1: tabBarItem.title = @"Favoris"; break;
+                case 2: tabBarItem.title = @"Messages"; break;
+                case 3: tabBarItem.title = @"Réglages"; break;
+            }
+        }
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -119,6 +103,19 @@
         }
     }
     
+    for (int i=0; i<4; i++) {
+        UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
+        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i]]
+                                    imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
+        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i]]
+                            imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
+        switch (i) {
+            case 0: tabBarItem.title = @"Catégories"; break;
+            case 1: tabBarItem.title = @"Favoris"; break;
+            case 2: tabBarItem.title = @"Messages"; break;
+            case 3: tabBarItem.title = @"Réglages"; break;
+        }
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {

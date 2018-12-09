@@ -1860,7 +1860,7 @@
                                 </body></html>",
                                 customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
-                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                                 [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
@@ -1888,13 +1888,13 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
         //NSLog(@"baseURL %@", baseURL);
-        /*
+        
         NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);
         NSLog(@"======================================================================================================");
         NSLog(@"baseURL %@", baseURL);
         NSLog(@"======================================================================================================");
-        */
+        
         self.loaded = NO;
         [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         
@@ -2979,8 +2979,16 @@
     //NSLog(@"searchFromFPChanged %lu", (unsigned long)sender.isOn);
     
     if (sender.isOn) {
-        [self.searchInputData removeObjectForKey:@"currentnum"];
+        /*if (!self.firstnumBackup) {
+            self.firstnumBackup = [[NSString alloc] init];
+        }*/
+        self.firstnumBackup = [self.searchInputData objectForKey:@"firstnum"];
+        [self.searchInputData removeObjectForKey:@"currentnum"];// Not used? I think it should be removed
         [self.searchInputData removeObjectForKey:@"firstnum"];
+    }
+    else {
+        //[self.searchInputData setObject:self.firstnumBackup forKey:@"currentnum"];// Not used? I think it should be removed
+        [self.searchInputData setObject:self.firstnumBackup forKey:@"firstnum"];
     }
 }
 
@@ -3015,7 +3023,7 @@
     
     for (NSString *key in self.searchInputData) {
         [arequest setPostValue:[self.searchInputData objectForKey:key] forKey:key];
-        //NSLog(@"POST: %@ : %@", key, [self.searchInputData objectForKey:key]);
+        NSLog(@"POST: %@ : %@", key, [self.searchInputData objectForKey:key]);
     }
     
     [arequest setShouldRedirect:NO];

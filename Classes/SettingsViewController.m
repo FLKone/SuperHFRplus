@@ -78,6 +78,11 @@
         [self hideCell:@"theme_dark_color2"];
     }
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_period"]) {
+        [self showCell:@"theme_noel_disabled"];
+    } else {
+        [self hideCell:@"theme_noel_disabled"];
+    }
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
 }
 
@@ -147,6 +152,9 @@
             [[ThemeManager sharedManager] refreshTheme];
             
         }
+    }
+    else if([notification.userInfo objectForKey:@"theme_noel_disabled"]) {
+        [[ThemeManager sharedManager] refreshTheme];
     }
     else if([notification.userInfo objectForKey:@"theme_dark_color1"])
     {
