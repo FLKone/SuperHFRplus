@@ -901,8 +901,8 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (self.arrayData.count > 0)
-    {
+    /*if (self.arrayData.count > 0)
+    {*/
         //On récupère la section (forum)
         CGFloat curWidth = self.view.frame.size.width;
         NSString* titleSection = nil;
@@ -912,8 +912,10 @@
         }
         else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories)
         {
-            Forum *tmpForum = [[self.arrayData objectAtIndex:section] forum];
-            titleSection = [tmpForum.aTitle uppercaseString];
+            if (self.arrayData.count > 0) {
+                Forum *tmpForum = [[self.arrayData objectAtIndex:section] forum];
+                titleSection = [tmpForum.aTitle uppercaseString];
+            }
         }
         else
         {
@@ -1029,7 +1031,7 @@
         [customView addConstraint:top];
 
         return customView;
-    }
+    //}
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
