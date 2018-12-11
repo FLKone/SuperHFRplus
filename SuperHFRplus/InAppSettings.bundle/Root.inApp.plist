@@ -100,6 +100,16 @@
 				<string>1</string>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <true/>
+            <key>Key</key>
+            <string>sujets_avec_cat</string>
+            <key>Title</key>
+            <string>Favoris triés par catégories</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>super</string>

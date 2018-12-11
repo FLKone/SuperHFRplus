@@ -66,6 +66,9 @@
     NSString *refreshAnchor;
     
     NSString *statusMessage;
+    
+    NSString *sBrouillon;
+    BOOL sBrouillonUtilise;
 }
 
 @property (nonatomic, strong) IBOutlet UIView *loadingView;
@@ -122,6 +125,9 @@
 @property (nonatomic, weak) IBOutlet UIButton *selectCompte;
 @property (nonatomic, strong) NSDictionary *selectedCompte;
 
+// Brouillon
+@property (nonatomic, strong) NSString *sBrouillon;
+@property (nonatomic) BOOL sBrouillonUtilise;
 -(IBAction)cancel;
 -(IBAction)done;
 -(IBAction)segmentFilterAction:(id)sender;

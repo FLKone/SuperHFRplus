@@ -11,6 +11,9 @@
 #import "ASIFormDataRequest.h"
 #import "HTMLParser.h"
 
+#import "ThemeManager.h"
+#import "ThemeColors.h"
+
 @implementation RehostImage
 
 @synthesize version;
@@ -221,27 +224,31 @@
         
 	}
 	else {
-		// ERROR .x
-		//NSLog(@"ERROR: %@", [theRequest responseString]);
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
-													   delegate:self cancelButtonTitle:@"Tant pis..." otherButtonTitles:nil, nil];
-		[alert show];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0] forKey:@"progress"]];
-		
+        // Popup error
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Erreur inconnue :/" message:@"Ooops !"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction * action) {  }];
+        [alert addAction:actionCancel];
+        UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+        [activeVC presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 	}
 
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
-
-	//NSLog(@"fetchContentFailed %@", theRequest);
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[[theRequest error] localizedDescription]
-												   delegate:self cancelButtonTitle:@"Tant pis..." otherButtonTitles:nil, nil];
-	
-    [alert show];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0] forKey:@"progress"]];
+    // Popup error
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Erreur inconnue :/" message:@"Ooops !"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0] forKey:@"progress"]];
+                                                         }];
+    [alert addAction:actionCancel];
+    UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [activeVC presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 -(void)dealloc {
