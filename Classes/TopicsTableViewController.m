@@ -702,9 +702,34 @@
 			
 
 			NSString *maDate = [linkLastRepNode contents];
+            NSDateFormatter * df = [[NSDateFormatter alloc] init];
+            [df setDateFormat:@"dd-MM-yyyy à HH:mm"];
+            aTopic.dDateOfLastPost = [df dateFromString:maDate];
 			if ([theDate isEqual:[maDate substringToIndex:10]]) {
-				[aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
-			}
+                NSTimeInterval secondsBetween = [nowTopic timeIntervalSinceDate:aTopic.dDateOfLastPost];
+                int numberMinutes = secondsBetween / 60;
+                int numberHours = secondsBetween / 3600;
+                if (secondsBetween < 0)
+                {
+                    [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+                }
+                else if (numberMinutes == 0)
+                {
+                    [aTopic setADateOfLastPost:@"il y a 1 min"];
+                }
+                else if (numberMinutes >= 1 && numberMinutes < 60)
+                {
+                    [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d min",numberMinutes]];
+                }
+                else if (secondsBetween >= 3600 && secondsBetween < 24*3600)
+                {
+                    [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d h",numberHours]];
+                }
+                else
+                {
+                    [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+                }
+            }
 			else {
 				[aTopic setADateOfLastPost:[NSString stringWithFormat:@"%@/%@/%@", [maDate substringWithRange:NSMakeRange(0, 2)]
 									  , [maDate substringWithRange:NSMakeRange(3, 2)]
