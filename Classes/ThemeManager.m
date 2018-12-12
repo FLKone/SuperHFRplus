@@ -180,13 +180,13 @@ int nightDelay;
     // If present send title and text message color
     if (alert.title != nil)
     {
-        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:alert.message attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
-        [alert setValue:attributedString forKey:@"attributedMessage"];
+        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:alert.title attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
+        [alert setValue:attributedString forKey:@"attributedTitle"];
     }
     if (alert.message != nil)
     {
-        NSAttributedString* attributedString2 = [[NSAttributedString alloc] initWithString:alert.title attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
-        [alert setValue:attributedString2 forKey:@"attributedTitle"];
+        NSAttributedString* attributedString2 = [[NSAttributedString alloc] initWithString:alert.message attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
+        [alert setValue:attributedString2 forKey:@"attributedMessage"];
     }
 }
 
