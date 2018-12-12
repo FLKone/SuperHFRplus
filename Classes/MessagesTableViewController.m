@@ -3000,10 +3000,6 @@
             [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_firstnum"] forKey:@"firstnum"];
         }
     }
-    else {
-        //[self.searchInputData setObject:self.firstnumBackup forKey:@"currentnum"];// Not used? I think it should be removed
-        [self.searchInputData setObject:self.firstnumBackup forKey:@"firstnum"];
-    }
 }
 
 - (IBAction)searchPseudoChanged:(UITextField *)sender {

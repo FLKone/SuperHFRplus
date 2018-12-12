@@ -1366,7 +1366,7 @@
         [button.titleLabel setNumberOfLines:1];
 
 
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 10, 0, 10)];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
     }
     else
     {
