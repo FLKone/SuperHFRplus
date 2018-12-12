@@ -9,6 +9,7 @@
 #import "ThemeColors.h"
 #import "Constants.h"
 #import "ThemeManager.h"
+#import "TabBarController.h"
 
 @implementation ThemeColors
 
@@ -338,16 +339,19 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         UIColor *c;
         UIColor *c2;
-
-        switch (theme) {
-            case ThemeLight: return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
-                
-            case ThemeDark: // Orange
-                c = [UIColor colorWithHue:31.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
-                c2 = [self changeHue:c withValue:fDarkColor2];
-                return c2;
-            case ThemeOLED:  return [UIColor colorWithHue:33.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
-            default:         return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+            switch (theme) {
+                case ThemeLight: return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
+                case ThemeDark: // Orange
+                    c = [UIColor colorWithHue:31.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
+                    c2 = [self changeHue:c withValue:fDarkColor2];
+                    return c2;
+                case ThemeOLED:  return [UIColor colorWithHue:33.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
+                default:         return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
+            }
+        }
+        else {
+            return [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
         }
     }
     return [UIColor colorWithRed:0.0 green:0/255.0 blue:0.0 alpha:1.0];
@@ -383,7 +387,7 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
                 return [UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1.0];
         }
     }
-    return [UIColor colorWithRed:0.0 green:0/255.0 blue:0.0 alpha:1.0];
+    return [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1.0];
 }
 
 + (UIColor *)overlayColor:(Theme)theme{
@@ -662,6 +666,8 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
         return [NSString stringWithFormat:@"#FFFFFF"];
     }
     return [NSString stringWithFormat:@"#%02X%02X%02X", (int)((CGColorGetComponents(color.CGColor))[0]*255.0), (int)((CGColorGetComponents(color.CGColor))[1]*255.0), (int)((CGColorGetComponents(color.CGColor))[2]*255.0)];
+    //255.0/0/0 => FE010000
+    
     
 }
 
@@ -746,6 +752,58 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
         newHue = MAX(MIN(val, 1.0), 0.0);
         return [UIColor colorWithHue:newHue saturation:saturation brightness:brightness alpha:alpha];
     }
+}
+
++ (NSString*) tabBarItemSelectedImageAtIndex:(int)index {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        switch (index) {
+            case 0:return @"categories_on";
+            case 1:return @"favorites_on";
+            case 2:return @"mp_on";
+            case 3:return @"dots_on";
+        }
+    }
+    else {
+        switch (index) {
+            case 0:return @"cadeaux_on";
+            case 1:return @"cadeau_on";
+            case 2:return @"message_on";
+            case 3:return @"cane_on";
+        }
+    }
+    return @"";
+}
+
+
++ (NSString*) tabBarItemUnselectedImageAtIndex:(int)index {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        switch (index) {
+            case 0:return @"categories";
+            case 1:return @"favorites";
+            case 2:return @"mp";
+            case 3:return @"dots";
+        }
+    }
+    else {
+        switch (index) {
+            case 0:return @"cadeaux_off";
+            case 1:return @"cadeau_off";
+            case 2:return @"message_off";
+            case 3:return @"cane_off";
+        }
+    }
+    return @"";
+}
+
++ (UIImageRenderingMode) tabBarItemSelectedImageRendering {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        return UIImageRenderingModeAlwaysTemplate;
+    }
+    return UIImageRenderingModeAlwaysOriginal;
+}
+
++ (UIImageRenderingMode) tabBarItemUnselectedImageRendering {
+    return UIImageRenderingModeAlwaysTemplate;
 }
 
 

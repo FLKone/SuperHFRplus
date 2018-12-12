@@ -186,9 +186,9 @@
     if (![display_sig isEqualToString:@"yes"]) {
         NSRange range = [myRawContent rangeOfString:@"<span class=\"signature\">"];
         if (range.location == NSNotFound) {
-            NSLog(@"*****No signature ******");
+            //NSLog(@"*****No signature ******");
         } else {
-            NSLog(@"*****Signature !!! ******");
+            //NSLog(@"*****Signature !!! ******");
             NSString *separatorString = @"<span class=\"signature\">";
             NSString *newRC = [myRawContent componentsSeparatedByString:separatorString].firstObject;
             myRawContent = newRC;
@@ -198,7 +198,7 @@
     
     
     
-	NSLog(@"--------------\n%@", myRawContent);
+	//NSLog(@"--------------\n%@", myRawContent);
 	
     if (self.quotedNB) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<a class=\"quotedhfrlink\" href=\"%@\">%@</a>", self.quotedLINK, self.quotedNB]];

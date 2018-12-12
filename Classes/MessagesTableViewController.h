@@ -104,6 +104,8 @@
     UISwitch *searchFromFP;
     NSMutableDictionary *searchInputData;
     BOOL isSearchInstra;
+    
+    NSString* firstnumBackup;
 }
 
 
@@ -158,6 +160,7 @@
 
 @property (nonatomic, strong) HTMLNode *pollNode;
 @property (nonatomic, strong) HTMLParser *pollParser;
+@property (nonatomic, strong) NSString *firstnumBackup;
 
 @property (nonatomic, strong) IBOutlet UIView *searchBg;
 @property (nonatomic, strong) IBOutlet UIView *searchBox;
@@ -173,6 +176,7 @@
 @property (strong, nonatomic) IBOutlet UISwitch *searchFromFP;
 @property (nonatomic, strong) NSMutableDictionary *searchInputData;
 @property BOOL isSearchInstra;
+
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
 

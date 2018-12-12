@@ -2714,9 +2714,9 @@
 				LastUpgradeCheck = 0900;
 				TargetAttributes = {
 					CA7C6FA3185EF50E00B348BA = {
-						DevelopmentTeam = NCJNK4ZZ54;
+						DevelopmentTeam = QMG83DG7YP;
 						LastSwiftMigration = 0910;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -3519,7 +3519,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = NCJNK4ZZ54;
+				DEVELOPMENT_TEAM = QMG83DG7YP;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3562,7 +3562,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = NCJNK4ZZ54;
+				DEVELOPMENT_TEAM = QMG83DG7YP;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

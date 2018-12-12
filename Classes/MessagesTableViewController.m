@@ -1866,7 +1866,7 @@
                                 </body></html>",
                                 customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
-                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                                 [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
@@ -2986,7 +2986,11 @@
     //NSLog(@"searchFromFPChanged %lu", (unsigned long)sender.isOn);
     
     if (sender.isOn) {
-        [self.searchInputData removeObjectForKey:@"currentnum"];
+        /*if (!self.firstnumBackup) {
+            self.firstnumBackup = [[NSString alloc] init];
+        }*/
+        self.firstnumBackup = [self.searchInputData objectForKey:@"firstnum"];
+        [self.searchInputData removeObjectForKey:@"currentnum"];// Not used? I think it should be removed
         [self.searchInputData removeObjectForKey:@"firstnum"];
     }else{
         if([self.searchInputData valueForKey:@"tmp_currentnum"]){
@@ -2995,6 +2999,10 @@
         if([self.searchInputData valueForKey:@"tmp_firstnum"]){
             [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_firstnum"] forKey:@"firstnum"];
         }
+    }
+    else {
+        //[self.searchInputData setObject:self.firstnumBackup forKey:@"currentnum"];// Not used? I think it should be removed
+        [self.searchInputData setObject:self.firstnumBackup forKey:@"firstnum"];
     }
 }
 

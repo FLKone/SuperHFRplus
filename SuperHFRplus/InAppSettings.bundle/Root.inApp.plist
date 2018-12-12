@@ -160,16 +160,16 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
-        <dict>
-            <key>DefaultValue</key>
-            <false/>
-            <key>Key</key>
-            <string>auto_theme</string>
-            <key>Title</key>
-            <string>Thème auto (beta)</string>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-        </dict>
+		<dict>
+			<key>DefaultValue</key>
+			<false/>
+			<key>Key</key>
+			<string>auto_theme</string>
+			<key>Title</key>
+			<string>Thème auto (beta)</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
 		<dict>
 			<key>DefaultValue</key>
 			<integer>0</integer>
@@ -233,6 +233,16 @@
 				<integer>0</integer>
 				<integer>1</integer>
 			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<false/>
+			<key>Key</key>
+			<string>theme_noel_disabled</string>
+			<key>Title</key>
+			<string>Arrêter la magie de noël</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>

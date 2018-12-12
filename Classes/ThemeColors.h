@@ -80,4 +80,9 @@
 + (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
 + (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
 + (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
++ (NSString*) tabBarItemSelectedImageAtIndex:(int)index;
++ (NSString*) tabBarItemUnselectedImageAtIndex:(int)index;
++ (UIImageRenderingMode) tabBarItemSelectedImageRendering;
++ (UIImageRenderingMode) tabBarItemUnselectedImageRendering;
+
 @end
