@@ -219,8 +219,11 @@
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Utiliser le brouillon ?" message:[self getBrouillonExtract]
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) { [self.textView setText:self.sBrouillon];
-                                                              self.sBrouillonUtilise = YES;}];
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self.textView setText:self.sBrouillon];
+                                                              self.sBrouillonUtilise = YES;
+                                                              [self.navigationItem.rightBarButtonItem setEnabled:YES];
+                                                          }];
         UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action) { }];
         UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleDefault
@@ -231,7 +234,8 @@
         [alert addAction:actionDel];
 
         [self presentViewController:alert animated:YES completion:nil];
-        //TODO [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        //TODO: pour le moment ça flingue le style du titre et du message :/
+        //[[ThemeManager sharedManager] applyThemeToAlertController:alert];
     }
 }
 
@@ -514,7 +518,6 @@
 
 - (void)textViewDidChange:(UITextView *)ftextView
 {
-
     if ([ftextView text].length > 0) {
         [self.navigationItem.rightBarButtonItem setEnabled:YES];
     }
@@ -550,24 +553,7 @@
         
     }
 }
-/*
- 
- - (void)textViewDidChange:(UITextView *)ftextView
- {
-	//NSLog(@"textViewDidChange");
-	
-	if ([ftextView text].length > 0) {
- [self.navigationItem.rightBarButtonItem setEnabled:YES];
-	}
-	else {
- [self.navigationItem.rightBarButtonItem setEnabled:NO];
-	}
- 
- //[ftextView scrollRangeToVisible:NSMakeRange([ftextView.text length], 0)];
- 
- }
- 
- */
+
 - (void)viewWillAppear:(BOOL)animated{
     NSLog(@"viewWillAppear");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:@"SHOW"];
@@ -726,7 +712,7 @@
     }
     else {
         if ([self.textView text].length > 0 && !self.isDeleteMode) {
-            NSString *alertTitle = @"Enregistrer comme brouillons ?";
+            NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
             NSString *messageBrouillon=nil;
             BOOL remplacerBrouillon = NO;
             if (self.sBrouillon.length > 0) {
@@ -758,7 +744,7 @@
             [alert addAction:noAction];
             [alert addAction:cancelAction];
             [self presentViewController:alert animated:YES completion:^{}];
-            //[[ThemeManager sharedManager] applyThemeToAlertController:alert];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
         else {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
@@ -2044,7 +2030,7 @@
     }
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:nil];
     [alert addAction:cancel];
-    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    
     
     [alert setValue:[[NSAttributedString alloc] initWithString:@"Choisir un compte"
                                                     attributes:@{
@@ -2054,6 +2040,7 @@
     
 
     [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 - (void)onSelectCompte:(int)index{
