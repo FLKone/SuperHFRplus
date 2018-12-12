@@ -198,7 +198,7 @@
 	[self.loadingView setHidden:YES];
 	
     // Popup retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:[theRequest.error localizedDescription] message:@"Ooops !"
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
@@ -544,6 +544,10 @@
                     }
                 }
                 else if ([[no getAttributeNamed:@"name"] isEqualToString:@"currentnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_currentnum"];
+                    [self.searchFromFP setOn:NO animated:NO];
+                }else if ([[no getAttributeNamed:@"name"] isEqualToString:@"firstnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_firstnum"];
                     [self.searchFromFP setOn:NO animated:NO];
                 }
             }
@@ -2988,6 +2992,13 @@
         self.firstnumBackup = [self.searchInputData objectForKey:@"firstnum"];
         [self.searchInputData removeObjectForKey:@"currentnum"];// Not used? I think it should be removed
         [self.searchInputData removeObjectForKey:@"firstnum"];
+    }else{
+        if([self.searchInputData valueForKey:@"tmp_currentnum"]){
+            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_currentnum"] forKey:@"currentnum"];
+        }
+        if([self.searchInputData valueForKey:@"tmp_firstnum"]){
+            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_firstnum"] forKey:@"firstnum"];
+        }
     }
     else {
         //[self.searchInputData setObject:self.firstnumBackup forKey:@"currentnum"];// Not used? I think it should be removed

@@ -334,7 +334,7 @@
 	[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:YES];
 	
     // Popup retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:[theRequest.error localizedDescription] message:@"Ooops !"
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
@@ -491,7 +491,7 @@
     if (arequest) {
         if ([arequest error]) {
             // Popup erreur
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[arequest error] localizedDescription] message:@"Ooops !"
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[[arequest error] localizedDescription]
                                                                     preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Retour" style:UIAlertActionStyleCancel
                                                                  handler:^(UIAlertAction * action) { }];

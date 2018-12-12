@@ -58,6 +58,11 @@
         [self setSelectedIndex:[tab intValue]];
     }
     
+    
+    if([((HFRNavigationController *)self.viewControllers[0]).topViewController isKindOfClass:[ForumsTableViewController class]]){
+        ((ForumsTableViewController *)((HFRNavigationController *)self.viewControllers[0]).topViewController).reloadOnAppear = YES;
+    }
+    
 }
 
 -(UITraitCollection *)traitCollection
@@ -126,7 +131,6 @@
                                             name:kThemeChangedNotification
                                                object:nil];
     [self setTheme:[[ThemeManager sharedManager] theme]];
-    ((ForumsTableViewController*)((HFRNavigationController *)self.viewControllers[0]).topViewController).reloadOnAppear = YES;
 }
 
 - (BOOL)tabBarController:(UITabBarController * _Nonnull)tabBarController shouldSelectViewController:(UIViewController * _Nonnull)viewController {
