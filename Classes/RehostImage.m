@@ -225,7 +225,7 @@
 	}
 	else {
         // Popup error
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Erreur inconnue :/" message:@"Ooops !"
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:@"Erreur inconnue :/"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
                                                              handler:^(UIAlertAction * action) {  }];
@@ -240,7 +240,7 @@
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
     // Popup error
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Erreur inconnue :/" message:@"Ooops !"
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) { [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0] forKey:@"progress"]];

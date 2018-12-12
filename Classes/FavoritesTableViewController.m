@@ -243,7 +243,7 @@
     [self.favoritesTableView.pullToRefreshView stopAnimating];
 
     // Popup retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:[theRequest.error localizedDescription] message:@"Ooops !" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]  preferredStyle:UIAlertControllerStyleAlert];
 
     UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
@@ -1263,7 +1263,7 @@
                 if (copyArrayCategories.count <= 1)
                 {
                     // Popup retry
-                    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Petit malin ! Au moins une catégorie doit être visible." message:@"Ooops !"
+                    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message: @"Petit malin ! Au moins une catégorie doit être visible."
                                                                             preferredStyle:UIAlertControllerStyleAlert];
                     UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
                                                                          handler:^(UIAlertAction * action) { }];
