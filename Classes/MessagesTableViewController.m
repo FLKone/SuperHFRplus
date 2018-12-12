@@ -2986,11 +2986,7 @@
     //NSLog(@"searchFromFPChanged %lu", (unsigned long)sender.isOn);
     
     if (sender.isOn) {
-        /*if (!self.firstnumBackup) {
-            self.firstnumBackup = [[NSString alloc] init];
-        }*/
-        self.firstnumBackup = [self.searchInputData objectForKey:@"firstnum"];
-        [self.searchInputData removeObjectForKey:@"currentnum"];// Not used? I think it should be removed
+        [self.searchInputData removeObjectForKey:@"currentnum"];
         [self.searchInputData removeObjectForKey:@"firstnum"];
     }else{
         if([self.searchInputData valueForKey:@"tmp_currentnum"]){
@@ -2999,10 +2995,6 @@
         if([self.searchInputData valueForKey:@"tmp_firstnum"]){
             [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_firstnum"] forKey:@"firstnum"];
         }
-    }
-    else {
-        //[self.searchInputData setObject:self.firstnumBackup forKey:@"currentnum"];// Not used? I think it should be removed
-        [self.searchInputData setObject:self.firstnumBackup forKey:@"firstnum"];
     }
 }
 

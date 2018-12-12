@@ -234,7 +234,8 @@
         [alert addAction:actionDel];
 
         [self presentViewController:alert animated:YES completion:nil];
-        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        //TODO: pour le moment ça flingue le style du titre et du message :/
+        //[[ThemeManager sharedManager] applyThemeToAlertController:alert];
     }
 }
 
@@ -711,7 +712,7 @@
     }
     else {
         if ([self.textView text].length > 0 && !self.isDeleteMode) {
-            NSString *alertTitle = @"Enregistrer le texte courant comme brouillons ?";
+            NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
             NSString *messageBrouillon=nil;
             BOOL remplacerBrouillon = NO;
             if (self.sBrouillon.length > 0) {
