@@ -647,8 +647,8 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme{
     switch (theme) {
         case ThemeLight:
-        case ThemeDark:
             return UIScrollViewIndicatorStyleDefault;
+        case ThemeDark:
         case ThemeOLED:
             return UIScrollViewIndicatorStyleWhite;
         default:
