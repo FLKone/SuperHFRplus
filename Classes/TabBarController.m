@@ -90,12 +90,44 @@
     //}
 
     if(!self.bgView){
-        self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor redColor]]];
+        self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor clearColor]]];
         self.bgView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
         [self.bgView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
         [self.tabBar addSubview:self.bgView];
         [self.tabBar sendSubviewToBack:self.bgView];
 
+    }
+    
+    if(!self.bgOverlayView){
+        self.bgOverlayView = [[UIImageView alloc] init];
+        self.bgOverlayView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
+        [self.bgOverlayView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+        [self.tabBar addSubview:self.bgOverlayView];
+        [self.tabBar sendSubviewToBack:self.bgOverlayView];
+        [self.tabBar sendSubviewToBack:self.bgView];
+    }
+    
+    if(!self.bgOverlayViewBis){
+        self.bgOverlayViewBis = [[UIImageView alloc] init];
+        self.bgOverlayViewBis.frame = CGRectMake(0, self.tabBar.frame.size.height - 3.f, self.tabBar.frame.size.width, 3.f);
+        [self.bgOverlayViewBis setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+        [self.tabBar addSubview:self.bgOverlayViewBis];
+        [self.tabBar sendSubviewToBack:self.bgOverlayView];
+        [self.tabBar sendSubviewToBack:self.bgOverlayViewBis];
+        [self.tabBar sendSubviewToBack:self.bgView];
+    }
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        self.bgOverlayViewBis.image =  [ThemeColors imageFromColor:[UIColor clearColor]];
+        self.bgOverlayView.image =  [ThemeColors imageFromColor:[UIColor clearColor]];
+    }else{
+        UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        
+        UIImage *tab_snow = [UIImage imageNamed:@"tab_snow"];
+        UIImage *tiledImage = [tab_snow resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        self.bgOverlayViewBis.image = tiledImage;
+        self.bgOverlayView.image = navBG;
     }
     
     self.bgView.image =[ThemeColors imageFromColor:[ThemeColors tabBackgroundColor:theme]];

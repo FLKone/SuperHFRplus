@@ -79,7 +79,17 @@
     Theme theme = [[ThemeManager sharedManager] theme];
 
     
-    [self.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors navBackgroundColor:theme]] forBarMetrics:UIBarMetricsDefault];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        [self.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
+    }else{
+        UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        
+        [self.navigationBar setBackgroundImage:navBG forBarMetrics:UIBarMetricsDefault];
+    }
+    
+    
+    [self.navigationBar setBarTintColor:[ThemeColors navBackgroundColor:theme]];
     
     if ([self.navigationBar respondsToSelector:@selector(setTintColor:)]) {
         [self.navigationBar setTintColor:[ThemeColors tintColor:theme]];

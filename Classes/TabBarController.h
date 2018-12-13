@@ -13,5 +13,7 @@
 }
 
 @property (nonatomic, strong) UIImageView *bgView;
+@property (nonatomic, strong) UIImageView *bgOverlayView;
+@property (nonatomic, strong) UIImageView *bgOverlayViewBis;
 -(void)popAllToRoot:(BOOL)includingSelectedIndex;
 @end

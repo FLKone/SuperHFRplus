@@ -627,8 +627,29 @@
 		D89AF55E1E55DE120096504F /* ThorHammerGrey-20.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55B1E55DE120096504F /* ThorHammerGrey-20.png */; };
 		D89AF5601E55DE120096504F /* ThorHammerGrey-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */; };
 		D8A61745215E82E3006E9248 /* UIScrollView+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */; };
+		D8B4EDE521C184970042C392 /* snow11.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD121C184970042C392 /* snow11.png */; };
+		D8B4EDE621C184970042C392 /* snow10.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD221C184970042C392 /* snow10.png */; };
+		D8B4EDE721C184970042C392 /* snow12.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD321C184970042C392 /* snow12.png */; };
+		D8B4EDE821C184970042C392 /* snow13.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD421C184970042C392 /* snow13.png */; };
+		D8B4EDE921C184970042C392 /* snow17.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD521C184970042C392 /* snow17.png */; };
+		D8B4EDEA21C184970042C392 /* snow16.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD621C184970042C392 /* snow16.png */; };
+		D8B4EDEB21C184970042C392 /* snow14.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD721C184970042C392 /* snow14.png */; };
+		D8B4EDEC21C184970042C392 /* snow15.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD821C184970042C392 /* snow15.png */; };
+		D8B4EDED21C184970042C392 /* snow8.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD921C184970042C392 /* snow8.png */; };
+		D8B4EDEE21C184970042C392 /* snow9.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDDA21C184970042C392 /* snow9.png */; };
+		D8B4EDEF21C184970042C392 /* snow4.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDDB21C184970042C392 /* snow4.png */; };
+		D8B4EDF021C184970042C392 /* snow5.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDDC21C184970042C392 /* snow5.png */; };
+		D8B4EDF121C184970042C392 /* snow7.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDDD21C184970042C392 /* snow7.png */; };
+		D8B4EDF221C184970042C392 /* snow6.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDDE21C184970042C392 /* snow6.png */; };
+		D8B4EDF321C184970042C392 /* snow2.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDDF21C184970042C392 /* snow2.png */; };
+		D8B4EDF421C184970042C392 /* snow3.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDE021C184970042C392 /* snow3.png */; };
+		D8B4EDF521C184970042C392 /* snow1.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDE121C184970042C392 /* snow1.png */; };
+		D8B4EDF721C184970042C392 /* snow18.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDE321C184970042C392 /* snow18.png */; };
+		D8B4EDF821C184970042C392 /* snow19.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDE421C184970042C392 /* snow19.png */; };
+		D8B4EDFA21C1853E0042C392 /* snow20.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDF921C1853E0042C392 /* snow20.png */; };
 		D8C6A6E4216224F1003C6D59 /* MultisManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C6A6E2216224F1003C6D59 /* MultisManager.m */; };
 		D8C8F1561E56ECA000B1381E /* ThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C8F1541E56ECA000B1381E /* ThemeManager.m */; };
+		D8D699A221C26D0200A6D4C6 /* tab_snow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D8D699A121C26D0200A6D4C6 /* tab_snow@2x.png */; };
 		D8DDF2A91E58810A002F1484 /* ToolBarFastForward_on_tinted.png in Resources */ = {isa = PBXBuildFile; fileRef = D8DDF2A01E58810A002F1484 /* ToolBarFastForward_on_tinted.png */; };
 		D8DDF2AB1E58810A002F1484 /* ToolBarFastForward_on_tinted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D8DDF2A11E58810A002F1484 /* ToolBarFastForward_on_tinted@2x.png */; };
 		D8DDF2AD1E58810A002F1484 /* ToolBarFastRewind_on_tinted.png in Resources */ = {isa = PBXBuildFile; fileRef = D8DDF2A21E58810A002F1484 /* ToolBarFastRewind_on_tinted.png */; };
@@ -1418,10 +1439,31 @@
 		D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThorHammerGrey-20@2x.png"; sourceTree = "<group>"; };
 		D8A61742215E82C6006E9248 /* UIScrollView+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Theme.h"; sourceTree = "<group>"; };
 		D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Theme.m"; sourceTree = "<group>"; };
+		D8B4EDD121C184970042C392 /* snow11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow11.png; sourceTree = "<group>"; };
+		D8B4EDD221C184970042C392 /* snow10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow10.png; sourceTree = "<group>"; };
+		D8B4EDD321C184970042C392 /* snow12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow12.png; sourceTree = "<group>"; };
+		D8B4EDD421C184970042C392 /* snow13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow13.png; sourceTree = "<group>"; };
+		D8B4EDD521C184970042C392 /* snow17.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow17.png; sourceTree = "<group>"; };
+		D8B4EDD621C184970042C392 /* snow16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow16.png; sourceTree = "<group>"; };
+		D8B4EDD721C184970042C392 /* snow14.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow14.png; sourceTree = "<group>"; };
+		D8B4EDD821C184970042C392 /* snow15.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow15.png; sourceTree = "<group>"; };
+		D8B4EDD921C184970042C392 /* snow8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow8.png; sourceTree = "<group>"; };
+		D8B4EDDA21C184970042C392 /* snow9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow9.png; sourceTree = "<group>"; };
+		D8B4EDDB21C184970042C392 /* snow4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow4.png; sourceTree = "<group>"; };
+		D8B4EDDC21C184970042C392 /* snow5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow5.png; sourceTree = "<group>"; };
+		D8B4EDDD21C184970042C392 /* snow7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow7.png; sourceTree = "<group>"; };
+		D8B4EDDE21C184970042C392 /* snow6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow6.png; sourceTree = "<group>"; };
+		D8B4EDDF21C184970042C392 /* snow2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow2.png; sourceTree = "<group>"; };
+		D8B4EDE021C184970042C392 /* snow3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow3.png; sourceTree = "<group>"; };
+		D8B4EDE121C184970042C392 /* snow1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow1.png; sourceTree = "<group>"; };
+		D8B4EDE321C184970042C392 /* snow18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow18.png; sourceTree = "<group>"; };
+		D8B4EDE421C184970042C392 /* snow19.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow19.png; sourceTree = "<group>"; };
+		D8B4EDF921C1853E0042C392 /* snow20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow20.png; sourceTree = "<group>"; };
 		D8C6A6E2216224F1003C6D59 /* MultisManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultisManager.m; sourceTree = "<group>"; };
 		D8C6A6E3216224F1003C6D59 /* MultisManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultisManager.h; sourceTree = "<group>"; };
 		D8C8F1531E56ECA000B1381E /* ThemeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeManager.h; sourceTree = "<group>"; };
 		D8C8F1541E56ECA000B1381E /* ThemeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeManager.m; sourceTree = "<group>"; };
+		D8D699A121C26D0200A6D4C6 /* tab_snow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab_snow@2x.png"; sourceTree = "<group>"; };
 		D8DDF2A01E58810A002F1484 /* ToolBarFastForward_on_tinted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ToolBarFastForward_on_tinted.png; sourceTree = "<group>"; };
 		D8DDF2A11E58810A002F1484 /* ToolBarFastForward_on_tinted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ToolBarFastForward_on_tinted@2x.png"; sourceTree = "<group>"; };
 		D8DDF2A21E58810A002F1484 /* ToolBarFastRewind_on_tinted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ToolBarFastRewind_on_tinted.png; sourceTree = "<group>"; };
@@ -2379,6 +2421,7 @@
 				CABC727217E6077A003E722E /* downsmall7@2x.png */,
 				CABC727317E6077A003E722E /* upsmall7.png */,
 				CABC727417E6077A003E722E /* upsmall7@2x.png */,
+				D8B4EDD021C184970042C392 /* snow */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -2674,6 +2717,34 @@
 			path = SDWebImage;
 			sourceTree = "<group>";
 		};
+		D8B4EDD021C184970042C392 /* snow */ = {
+			isa = PBXGroup;
+			children = (
+				D8D699A121C26D0200A6D4C6 /* tab_snow@2x.png */,
+				D8B4EDD121C184970042C392 /* snow11.png */,
+				D8B4EDD221C184970042C392 /* snow10.png */,
+				D8B4EDD321C184970042C392 /* snow12.png */,
+				D8B4EDD421C184970042C392 /* snow13.png */,
+				D8B4EDD521C184970042C392 /* snow17.png */,
+				D8B4EDD621C184970042C392 /* snow16.png */,
+				D8B4EDD721C184970042C392 /* snow14.png */,
+				D8B4EDD821C184970042C392 /* snow15.png */,
+				D8B4EDD921C184970042C392 /* snow8.png */,
+				D8B4EDDA21C184970042C392 /* snow9.png */,
+				D8B4EDDB21C184970042C392 /* snow4.png */,
+				D8B4EDDC21C184970042C392 /* snow5.png */,
+				D8B4EDDD21C184970042C392 /* snow7.png */,
+				D8B4EDDE21C184970042C392 /* snow6.png */,
+				D8B4EDDF21C184970042C392 /* snow2.png */,
+				D8B4EDE021C184970042C392 /* snow3.png */,
+				D8B4EDE121C184970042C392 /* snow1.png */,
+				D8B4EDE321C184970042C392 /* snow18.png */,
+				D8B4EDE421C184970042C392 /* snow19.png */,
+				D8B4EDF921C1853E0042C392 /* snow20.png */,
+			);
+			path = snow;
+			sourceTree = "<group>";
+		};
 		D8F5CBAA1DF45C1100B029FC /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
@@ -2714,9 +2785,9 @@
 				LastUpgradeCheck = 0900;
 				TargetAttributes = {
 					CA7C6FA3185EF50E00B348BA = {
-						DevelopmentTeam = QMG83DG7YP;
+						DevelopmentTeam = NCJNK4ZZ54;
 						LastSwiftMigration = 0910;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -2755,6 +2826,7 @@
 				CA7C6FA5185EF50E00B348BA /* compose.png in Resources */,
 				CA7C6FA6185EF50E00B348BA /* ohill.gif in Resources */,
 				4C052E1D1BA86C9400B61952 /* Flat-CyanFlag-25@2x.png in Resources */,
+				D8D699A221C26D0200A6D4C6 /* tab_snow@2x.png in Resources */,
 				CA7C6FA7185EF50E00B348BA /* jquery-2.0.3.min.js in Resources */,
 				CA7C6FA8185EF50E00B348BA /* beginon.png in Resources */,
 				4C061D731BD275410034CD0A /* smileyloading.html in Resources */,
@@ -2763,6 +2835,7 @@
 				4C052E171BA86C9400B61952 /* Flat-YellowFlag-25.png in Resources */,
 				D8DDF2B51E58810A002F1484 /* ToolBarPrevious_on_tinted.png in Resources */,
 				4C21E9581BA5C70400691D65 /* CursorFilled-20@2x.png in Resources */,
+				D8B4EDEA21C184970042C392 /* snow16.png in Resources */,
 				4C0B8DE31BA4522900D329BA /* LaptopFilled-40.png in Resources */,
 				D826904A1E5864C9006971C3 /* plus-tinted.png in Resources */,
 				CA7C6FAC185EF50E00B348BA /* all_categories@2x.png in Resources */,
@@ -2814,6 +2887,7 @@
 				CA7C6FC4185EF50E00B348BA /* dtc.gif in Resources */,
 				CA7C6FC5185EF50E00B348BA /* endoff.png in Resources */,
 				CA7C6FC6185EF50E00B348BA /* bgiPad@2x.png in Resources */,
+				D8B4EDF121C184970042C392 /* snow7.png in Resources */,
 				CA7C6FC7185EF50E00B348BA /* style-liste.css in Resources */,
 				CA7C6FC8185EF50E00B348BA /* hebe.gif in Resources */,
 				4CB132E81B909D690081B44D /* ReplyAllArrowFilled-20.png in Resources */,
@@ -2827,6 +2901,7 @@
 				CA7C6FCD185EF50E00B348BA /* icon_text_align_justify.png in Resources */,
 				CA7C6FCE185EF50E00B348BA /* upsmall7@2x.png in Resources */,
 				CA7C6FCF185EF50E00B348BA /* templatev2.htm in Resources */,
+				D8B4EDED21C184970042C392 /* snow8.png in Resources */,
 				4C0B2DA61B9F2DF40026A582 /* Launch Screen.storyboard in Resources */,
 				CA7C6FD0185EF50E00B348BA /* ddr555.gif in Resources */,
 				CA7C6FD1185EF50E00B348BA /* HFRMPViewController.xib in Resources */,
@@ -2844,6 +2919,7 @@
 				CA7C6FD9185EF50E00B348BA /* buttonendoff.png in Resources */,
 				CA7C6FDA185EF50E00B348BA /* 121-landscapebig.png in Resources */,
 				CA7C6FDB185EF50E00B348BA /* ohwell.gif in Resources */,
+				D8B4EDE921C184970042C392 /* snow17.png in Resources */,
 				CA7C6FDC185EF50E00B348BA /* 119-piggy-bank@2x.png in Resources */,
 				D89AF55E1E55DE120096504F /* ThorHammerGrey-20.png in Resources */,
 				4CD6B8BC1B97AEF5007FC29E /* 6-Folder-32.png in Resources */,
@@ -2881,6 +2957,7 @@
 				4C21E95C1BA5C70400691D65 /* CutFilled-20@2x.png in Resources */,
 				CA7C6FF2185EF50E00B348BA /* nextIcon@2x.png in Resources */,
 				4CB132D31B9099950081B44D /* MessageFilled-20@2x.png in Resources */,
+				D8B4EDF521C184970042C392 /* snow1.png in Resources */,
 				4CB132FC1B90B7010081B44D /* ThorHammer-20.png in Resources */,
 				CAF5DB8C1936CD7B000B5215 /* 09-arrows-out.png in Resources */,
 				CA7C6FF3185EF50E00B348BA /* wink.gif in Resources */,
@@ -2890,6 +2967,7 @@
 				CA7C6FF6185EF50E00B348BA /* arrowbegin@2x.png in Resources */,
 				CA7C6FF7185EF50E00B348BA /* 18-envelope@2x.png in Resources */,
 				CA7C6FF8185EF50E00B348BA /* buttonnexthover@2x.png in Resources */,
+				D8B4EDEC21C184970042C392 /* snow15.png in Resources */,
 				4C0B8DC71BA4522900D329BA /* Debian-40.png in Resources */,
 				4C59E0841FA9D56C00C902F8 /* Icon-REDFACE@2x.png in Resources */,
 				CA7C6FFA185EF50E00B348BA /* whistle.gif in Resources */,
@@ -2903,6 +2981,7 @@
 				4C9C2B8B1BAE801700511853 /* ThorHammerFilled-25.png in Resources */,
 				CA7C7001185EF50E00B348BA /* MessageDetailViewController.xib in Resources */,
 				4C0B8DED1BA4522900D329BA /* ProcessorFilled-40.png in Resources */,
+				D8B4EDEF21C184970042C392 /* snow4.png in Resources */,
 				4C9C2B201BAE66EB00511853 /* ThorHammerBlack-20@2x.png in Resources */,
 				4CB132D01B9099900081B44D /* MessageFilled-20.png in Resources */,
 				4CB132A41B9068250081B44D /* InfosViewController.xib in Resources */,
@@ -2928,6 +3007,7 @@
 				CA7C700C185EF50E00B348BA /* bginput.png in Resources */,
 				CA7C700D185EF50E00B348BA /* up.png in Resources */,
 				CA7C700E185EF50E00B348BA /* ToolBarFastForward_off@2x.png in Resources */,
+				D8B4EDF421C184970042C392 /* snow3.png in Resources */,
 				4CD6B88A1B979718007FC29E /* ErrorFilled-20@2x.png in Resources */,
 				4CB132E51B909C890081B44D /* Quote-20.png in Resources */,
 				CA7C700F185EF50E00B348BA /* loadinfo.gif in Resources */,
@@ -2948,6 +3028,7 @@
 				CA7C701B185EF50E00B348BA /* 71-compass.png in Resources */,
 				D8DDF2AB1E58810A002F1484 /* ToolBarFastForward_on_tinted@2x.png in Resources */,
 				4C0B8D9D1BA4522900D329BA /* Settings3Filled-40.png in Resources */,
+				D8B4EDE521C184970042C392 /* snow11.png in Resources */,
 				CA7C701C185EF50E00B348BA /* arrowbegin.png in Resources */,
 				D8DDF2AF1E58810A002F1484 /* ToolBarFastRewind_on_tinted@2x.png in Resources */,
 				D82690441E585CAC006971C3 /* style-liste-dark.css in Resources */,
@@ -2961,11 +3042,13 @@
 				4CB1330E1B90B7940081B44D /* Thor Hammer Filled-23@2x.png in Resources */,
 				4C1991901FA9E91600A07A8A /* Icon-BETA@3x.png in Resources */,
 				4C0B8DD11BA4522900D329BA /* ControllerFilled-40@2x.png in Resources */,
+				D8B4EDFA21C1853E0042C392 /* snow20.png in Resources */,
 				4CB132951B9058530081B44D /* 146-gavel.png in Resources */,
 				CA7C7023185EF50E00B348BA /* miam.gif in Resources */,
 				4C0B8DE51BA4522900D329BA /* LaptopFilled-40@2x.png in Resources */,
 				4C0B8DB51BA4522900D329BA /* DesignFilled-40.png in Resources */,
 				4C0B8DAB1BA4522900D329BA /* Wi-FiLogoFilled-40@2x.png in Resources */,
+				D8B4EDF821C184970042C392 /* snow19.png in Resources */,
 				CA7C7024185EF50E00B348BA /* down.png in Resources */,
 				4C21E9621BA5C70400691D65 /* ItalicFilled-20.png in Resources */,
 				4C80A4FF1CF1B2610093CF9B /* CircuitFilled-40@2x.png in Resources */,
@@ -2990,6 +3073,7 @@
 				CA7C7030185EF50E00B348BA /* fou.gif in Resources */,
 				CA7C7031185EF50E00B348BA /* pt1cable.gif in Resources */,
 				CA7C7032185EF50E00B348BA /* 111-user@2x.png in Resources */,
+				D8B4EDF721C184970042C392 /* snow18.png in Resources */,
 				4C0B8DE11BA4522900D329BA /* SmartphoneTabletFilled-40@2x.png in Resources */,
 				4C9C2B931BAE801700511853 /* QuestionsFilled-25.png in Resources */,
 				CA7C7035185EF50E00B348BA /* multipleflag1.gif in Resources */,
@@ -3042,6 +3126,8 @@
 				CA7C7052185EF50E00B348BA /* HFRSearchViewController.xib in Resources */,
 				D89AF5601E55DE120096504F /* ThorHammerGrey-20@2x.png in Resources */,
 				CA7C7053185EF50E00B348BA /* ouch.gif in Resources */,
+				D8B4EDEB21C184970042C392 /* snow14.png in Resources */,
+				D8B4EDF321C184970042C392 /* snow2.png in Resources */,
 				CAF5DB6B1932BA58000B5215 /* info@2x.png in Resources */,
 				CA7C7054185EF50E00B348BA /* toolbar3@2x.png in Resources */,
 				4CB311ED19FAF8750097D84D /* hammer.min.js in Resources */,
@@ -3115,6 +3201,7 @@
 				4C444AF51BB0DE0D000EF444 /* LaunchLogo@2x.png in Resources */,
 				4C0B8DDF1BA4522900D329BA /* SmartphoneTabletFilled-40.png in Resources */,
 				D8DDF2B31E58810A002F1484 /* ToolBarPlay_on_tinted@2x.png in Resources */,
+				D8B4EDF021C184970042C392 /* snow5.png in Resources */,
 				CA7C7080185EF50E00B348BA /* ToolBarFastForward_off.png in Resources */,
 				CA7C7081185EF50E00B348BA /* arrowend@2x.png in Resources */,
 				4CD6B8B11B97ACA2007FC29E /* Folder-32.png in Resources */,
@@ -3131,6 +3218,7 @@
 				CA7C7087185EF50E00B348BA /* buttonnexton@2x.png in Resources */,
 				CA7C7088185EF50E00B348BA /* fuck.gif in Resources */,
 				CA7C7089185EF50E00B348BA /* buttonbeginhover.png in Resources */,
+				D8B4EDE821C184970042C392 /* snow13.png in Resources */,
 				CA7C708A185EF50E00B348BA /* selectedrow@2x.png in Resources */,
 				CA7C708B185EF50E00B348BA /* flagblue2@2x.png in Resources */,
 				CAF5DB711933D3D8000B5215 /* FeedbackViewController.xib in Resources */,
@@ -3149,6 +3237,7 @@
 				CA7C7093185EF50E00B348BA /* plus@2x.png in Resources */,
 				4C444AF31BB0DE0D000EF444 /* LaunchLogo.png in Resources */,
 				CA7C7094185EF50E00B348BA /* lightBlue.png in Resources */,
+				D8B4EDEE21C184970042C392 /* snow9.png in Resources */,
 				4C052DF91BA8537E00B61952 /* fontello.ttf in Resources */,
 				4C0B8D8D1BA4522900D329BA /* MoneyBoxFilled-40.png in Resources */,
 				CA7C7095185EF50E00B348BA /* icon_list_bullets.png in Resources */,
@@ -3192,6 +3281,7 @@
 				4C0B8D9F1BA4522900D329BA /* CircledUserMaleFilled-40.png in Resources */,
 				CA7C70A7185EF50E00B348BA /* arrowforward.png in Resources */,
 				CA7C70A8185EF50E00B348BA /* unselectedrow.png in Resources */,
+				D8B4EDE621C184970042C392 /* snow10.png in Resources */,
 				CA7C70A9185EF50E00B348BA /* all_categories.png in Resources */,
 				CA7C70AA185EF50E00B348BA /* endon.png in Resources */,
 				4C0B8D971BA4522900D329BA /* QuestionsFilled-40.png in Resources */,
@@ -3221,6 +3311,8 @@
 				4C0B8DF51BA4526100D329BA /* BoldFilled-20@2x.png in Resources */,
 				CA7C70B7185EF50E00B348BA /* jquery.doubletap.js in Resources */,
 				4C0B8DD71BA4522900D329BA /* VideoCallFilled-40.png in Resources */,
+				D8B4EDF221C184970042C392 /* snow6.png in Resources */,
+				D8B4EDE721C184970042C392 /* snow12.png in Resources */,
 				4CB132EB1B909D6D0081B44D /* ReplyAllArrowFilled-20@2x.png in Resources */,
 				CA7C70B8185EF50E00B348BA /* jquery.base64.js in Resources */,
 				4C0B8D871BA4522900D329BA /* BugFilled-40.png in Resources */,
@@ -3514,12 +3606,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Benjamin Schmitt (NCJNK4ZZ54)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Benjamin Schmitt (NCJNK4ZZ54)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Benjamin Schmitt (8LN2HE2BQ4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Benjamin Schmitt (8LN2HE2BQ4)";
 				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = QMG83DG7YP;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3539,10 +3631,10 @@
 					"$(PROJECT_DIR)/**",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.beta;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE = "867c77a6-45f4-4480-9e45-50b6528f3fc5";
-				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus App Store";
+				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus beta";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -3557,12 +3649,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Benjamin Schmitt (NCJNK4ZZ54)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Benjamin Schmitt (NCJNK4ZZ54)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Benjamin Schmitt (8LN2HE2BQ4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Benjamin Schmitt (8LN2HE2BQ4)";
 				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = QMG83DG7YP;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3580,10 +3672,10 @@
 					"$(PROJECT_DIR)/**",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.beta;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE = "867c77a6-45f4-4480-9e45-50b6528f3fc5";
-				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus App Store";
+				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus beta";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
