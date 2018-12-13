@@ -702,8 +702,18 @@
 		
         [self resetApp];
         
-		[(FavoritesTableViewController *)[favoritesNavController visibleViewController] reset];
-		[(HFRMPViewController *)[messagesNavController visibleViewController] reset];
+        if(favoritesNavController){
+            if ([favoritesNavController respondsToSelector:@selector(visibleViewController)]) {
+                FavoritesTableViewController* favVC = (FavoritesTableViewController *)[favoritesNavController visibleViewController];
+                [favVC reset];
+            }
+        }
+        if(messagesNavController){
+            if ([messagesNavController respondsToSelector:@selector(visibleViewController)]) {
+                HFRMPViewController* mpVC = (HFRMPViewController *)[messagesNavController visibleViewController];
+                [mpVC reset];
+            }
+        }
  
 	}
 	
