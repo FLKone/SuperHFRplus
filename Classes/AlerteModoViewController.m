@@ -126,6 +126,7 @@
     [self.textView setText:@""];
     
     self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    [self.navigationController.navigationBar setTranslucent:NO];
 
     
     [self fetchContent];
