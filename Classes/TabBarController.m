@@ -91,8 +91,6 @@
 
     if(!self.bgView){
         self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor clearColor]]];
-        self.bgView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
-        [self.bgView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
         [self.tabBar addSubview:self.bgView];
         [self.tabBar sendSubviewToBack:self.bgView];
 
@@ -100,8 +98,6 @@
     
     if(!self.bgOverlayView){
         self.bgOverlayView = [[UIImageView alloc] init];
-        self.bgOverlayView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
-        [self.bgOverlayView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
         [self.tabBar addSubview:self.bgOverlayView];
         [self.tabBar sendSubviewToBack:self.bgOverlayView];
         [self.tabBar sendSubviewToBack:self.bgView];
@@ -109,13 +105,22 @@
     
     if(!self.bgOverlayViewBis){
         self.bgOverlayViewBis = [[UIImageView alloc] init];
-        self.bgOverlayViewBis.frame = CGRectMake(0, self.tabBar.frame.size.height - 3.f, self.tabBar.frame.size.width, 3.f);
-        [self.bgOverlayViewBis setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
         [self.tabBar addSubview:self.bgOverlayViewBis];
         [self.tabBar sendSubviewToBack:self.bgOverlayView];
         [self.tabBar sendSubviewToBack:self.bgOverlayViewBis];
         [self.tabBar sendSubviewToBack:self.bgView];
     }
+    
+    self.bgView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
+    [self.bgView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+    
+    self.bgOverlayView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
+    [self.bgOverlayView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+    
+    self.bgOverlayViewBis.frame = CGRectMake(0, self.tabBar.frame.size.height - 3.f, self.tabBar.frame.size.width, 3.f);
+    [self.bgOverlayViewBis setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+
+    
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
         self.bgOverlayViewBis.image =  [ThemeColors imageFromColor:[UIColor clearColor]];
@@ -162,6 +167,10 @@
                                              selector:@selector(setThemeFromNotification:)
                                             name:kThemeChangedNotification
                                                object:nil];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
     [self setTheme:[[ThemeManager sharedManager] theme]];
 }
 
@@ -265,12 +274,6 @@
     }
 }
 
-/*
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-	NSLog(@"new orientation: %d", [[UIDevice currentDevice] orientation]);
-}
-*/
 
 
 @end
