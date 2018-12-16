@@ -140,53 +140,8 @@
                                                  name:kThemeChangedNotification
                                                object:nil];
     
-    // Noel
-    NSDate * now = [NSDate date];
-    NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];
-    [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
-    [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
-
-    NSDate* startNoelDate = [formatterLocal dateFromString:@"01 12 2018 - 00:00"];
-    NSDate*   endNoelDate = [formatterLocal dateFromString:@"20 12 2018 - 23:59"];
-
-
-    NSComparisonResult result1 = [now compare:startNoelDate];
-    NSComparisonResult result2 = [now compare:endNoelDate];
-    BOOL cestNoel = NO;
-    if (result1 == NSOrderedDescending && result2 == NSOrderedAscending) {
-        //C'est bientot Noel !!
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_period"];
-        NSObject* obj = [[NSUserDefaults standardUserDefaults] objectForKey:@"apply_noel"];
-        if (obj == nil) {
-            // La première fois on force le thème de Noel
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
-            // Mais plus les suivantes
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"apply_noel"];
-            cestNoel = YES;
-        }
-    } else {
-        
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
-    }
-    
-    [self setTheme:[[ThemeManager sharedManager] theme]];
-    [[ThemeManager sharedManager] refreshTheme];
     [[MultisManager sharedManager] updateAllAccounts];
-    if (cestNoel) {
-        // Popup retry
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
-                                                      message:@"Toute l'équipe de HFR+ vous souhaite de très bonnes fêtes de fin d'année !"
-                                                      preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
-                                                             handler:^(UIAlertAction * action) { }];
-        [alert addAction:actionOK];
-        
-        UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
-        [activeVC presentViewController:alert animated:YES completion:nil];
-        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        
-    }
+
     return YES;
 }
 
@@ -456,6 +411,53 @@
      */
     
     //NSLog(@"applicationDidBecomeActive");
+    
+    // Noel
+    NSDate * now = [NSDate date];
+    NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];
+    [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
+    [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
+    
+    NSDate* startNoelDate = [formatterLocal dateFromString:@"16 12 2018 - 18:14"];
+    NSDate*   endNoelDate = [formatterLocal dateFromString:@"20 12 2018 - 23:59"];
+    
+    
+    NSComparisonResult result1 = [now compare:startNoelDate];
+    NSComparisonResult result2 = [now compare:endNoelDate];
+    BOOL cestNoel = NO;
+    if (result1 == NSOrderedDescending && result2 == NSOrderedAscending) {
+        //C'est bientot Noel !!
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_period"];
+        NSObject* obj = [[NSUserDefaults standardUserDefaults] objectForKey:@"apply_noel"];
+        if (obj == nil) {
+            // La première fois on force le thème de Noel
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
+            // Mais plus les suivantes
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"apply_noel"];
+            cestNoel = YES;
+        }
+    } else {
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
+    }
+    
+    [self setTheme:[[ThemeManager sharedManager] theme]];
+    [[ThemeManager sharedManager] refreshTheme];
+    if (cestNoel) {
+        // Popup retry
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
+                                                                       message:@"Toute l'équipe de HFR+ vous souhaite de très bonnes fêtes de fin d'année !"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+        [alert addAction:actionOK];
+        
+        UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+        [activeVC presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        
+    }
 
 }
 
