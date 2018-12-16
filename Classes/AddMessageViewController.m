@@ -580,7 +580,7 @@
                                                           }];
         UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action) { }];
-        UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleDefault
+        UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleCancel
                                                           handler:^(UIAlertAction * action) { [self modifyBrouillon:@""]; }];
         
         [alert addAction:actionYes];
