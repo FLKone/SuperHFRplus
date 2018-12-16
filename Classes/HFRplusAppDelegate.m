@@ -418,8 +418,8 @@
     [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
     [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
     
-    NSDate* startNoelDate = [formatterLocal dateFromString:@"16 12 2018 - 18:14"];
-    NSDate*   endNoelDate = [formatterLocal dateFromString:@"20 12 2018 - 23:59"];
+    NSDate* startNoelDate = [formatterLocal dateFromString:@"24 12 2018 - 00:00"];
+    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2019 - 00:00"];
     
     
     NSComparisonResult result1 = [now compare:startNoelDate];
