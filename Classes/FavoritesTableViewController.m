@@ -954,8 +954,9 @@
 
         //UIButton clickable pour accéder à la catégorie
         UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
-        if (!self.editCategoriesList)
-            [button setTag:[self.arrayCategories indexOfObject:[self.arrayData objectAtIndex:section]]];
+    if (!self.editCategoriesList && [self.arrayCategories count] > 0){
+        [button setTag:[self.arrayCategories indexOfObject:[self.arrayData objectAtIndex:section]]];
+    }
         [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
 
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
