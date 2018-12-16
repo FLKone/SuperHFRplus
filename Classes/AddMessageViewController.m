@@ -211,32 +211,6 @@
         self.segmentControlerPage.tintColor = [UIColor darkGrayColor];
         self.segmentControler.tintColor = [UIColor darkGrayColor];
     }
-    
-    self.sBrouillonUtilise = NO;
-    // Popup brouillon (partout sauf en mode edition)
-    if (self.sBrouillon && self.sBrouillon.length > 0) {
-
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Utiliser le brouillon ?" message:[self getBrouillonExtract]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {
-                                                              [self.textView setText:self.sBrouillon];
-                                                              self.sBrouillonUtilise = YES;
-                                                              [self.navigationItem.rightBarButtonItem setEnabled:YES];
-                                                          }];
-        UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
-                                                         handler:^(UIAlertAction * action) { }];
-        UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) { [self modifyBrouillon:@""]; }];
-
-        [alert addAction:actionYes];
-        [alert addAction:actionNo];
-        [alert addAction:actionDel];
-
-        [self presentViewController:alert animated:YES completion:nil];
-        //TODO: pour le moment ça flingue le style du titre et du message :/
-        //[[ThemeManager sharedManager] applyThemeToAlertController:alert];
-    }
 }
 
 - (NSString*) getBrouillonExtract {
@@ -587,13 +561,35 @@
     self.textFieldCat.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     self.textFieldSmileys.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     [self.navigationController.navigationBar setTranslucent:NO];
-
-
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
+    self.sBrouillonUtilise = NO;
+    // Popup brouillon (partout sauf en mode edition)
+    if (self.sBrouillon && self.sBrouillon.length > 0) {
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Utiliser le brouillon ?" message:[self getBrouillonExtract]
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self.textView setText:self.sBrouillon];
+                                                              self.sBrouillonUtilise = YES;
+                                                              [self.navigationItem.rightBarButtonItem setEnabled:YES];
+                                                          }];
+        UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) { }];
+        UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) { [self modifyBrouillon:@""]; }];
+        
+        [alert addAction:actionYes];
+        [alert addAction:actionNo];
+        [alert addAction:actionDel];
 
+        [self presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    }
 }
 
 -(void)setupResponder {

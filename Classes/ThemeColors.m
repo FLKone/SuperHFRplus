@@ -32,7 +32,12 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 // Background barre principale du bas
 + (UIColor *)tabBackgroundColor:(Theme)theme{
     switch (theme) {
-        case ThemeLight: return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+        case ThemeLight:
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+                return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+            } else {
+                return [UIColor whiteColor];
+            }
         case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:23.0/255.0 green:24.0/255.0 blue:26.0/255.0 alpha:1.0]];
         case ThemeOLED:  return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
         default:         return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
@@ -43,7 +48,12 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 + (UIColor *)navBackgroundColor:(Theme)theme{
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         switch (theme) {
-            case ThemeLight: return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+            case ThemeLight:
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+                    return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+                } else {
+                    return [UIColor whiteColor];
+                }
             case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:23.0/255.0 green:24.0/255.0 blue:26.0/255.0 alpha:1.0]];
                 //case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:46.0/255.0 green:48.0/255.0 blue:51.0/255.0 alpha:1.0]];
             case ThemeOLED:  return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
@@ -358,12 +368,28 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 }
 
 + (UIColor *)tintLightColor:(Theme)theme{
-    switch (theme) {
-        case ThemeLight: return [UIColor colorWithRed:229.0/255.0 green:242.0/255.0 blue:255.0/255.0 alpha:1.0];
-        case ThemeDark:  return [UIColor colorWithRed:85.0/255.0 green:67.0/255.0 blue:52.0/255.0 alpha:1.0];
-        case ThemeOLED:  return [UIColor colorWithRed:85.0/255.0 green:67.0/255.0 blue:52.0/255.0 alpha:1.0];
-        default:  return [UIColor colorWithRed:229.0/255.0 green:242.0/255.0 blue:255.0/255.0 alpha:1.0];
-            
+    UIColor *c;
+    UIColor *c2;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        switch (theme) {
+            case ThemeLight: return [UIColor colorWithRed:229.0/255.0 green:242.0/255.0 blue:255.0/255.0 alpha:1.0];
+            case ThemeDark:
+                c = [UIColor colorWithRed:85.0/255.0 green:67.0/255.0 blue:52.0/255.0 alpha:1.0];
+                return [self changeHue:c withValue:fDarkColor2];
+                //[UIColor colorWithRed:85.0/255.0 green:67.0/255.0 blue:52.0/255.0 alpha:1.0];
+            case ThemeOLED:  return [UIColor colorWithRed:85.0/255.0 green:67.0/255.0 blue:52.0/255.0 alpha:1.0];
+            default:  return [UIColor colorWithRed:229.0/255.0 green:242.0/255.0 blue:255.0/255.0 alpha:1.0];
+        }
+    } else {
+        switch (theme) {
+            case ThemeLight:
+                c = [UIColor colorWithRed:229.0/255.0 green:242.0/255.0 blue:255.0/255.0 alpha:1.0];
+                return [self changeHue:c withValue:0];
+            case ThemeDark:
+            case ThemeOLED:
+                c = [UIColor colorWithRed:85.0/255.0 green:67.0/255.0 blue:52.0/255.0 alpha:1.0];
+                return [self changeHue:c withValue:0];
+        }
     }
 }
 
