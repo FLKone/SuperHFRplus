@@ -54,6 +54,8 @@
         if (![mySplit respondsToSelector:@selector(displayModeButtonItem)]) {
             NSLog(@"SHOW DETAIL ADD BUTN");
             [navItem setLeftBarButtonItem:[mySplit mybarButtonItem] animated:NO];
+        }else{
+                [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftBarButtonItem = mySplit.displayModeButtonItem;
         }
     }
 

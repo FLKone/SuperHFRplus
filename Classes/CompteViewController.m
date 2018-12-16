@@ -47,6 +47,10 @@ NSArray* comptes;
     [super viewWillAppear:animated];
     Theme theme = [[ThemeManager sharedManager] theme];
     [self setThemeColors:theme];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
     [self refreshComptes];
     if([comptes count] < 1 && self.pop){
         self.pop = NO;

@@ -705,13 +705,17 @@
         if(favoritesNavController){
             if ([favoritesNavController respondsToSelector:@selector(visibleViewController)]) {
                 FavoritesTableViewController* favVC = (FavoritesTableViewController *)[favoritesNavController visibleViewController];
-                [favVC reset];
+                if ([favVC respondsToSelector:@selector(reset)]) {
+                    [favVC reset];
+                }
             }
         }
         if(messagesNavController){
             if ([messagesNavController respondsToSelector:@selector(visibleViewController)]) {
                 HFRMPViewController* mpVC = (HFRMPViewController *)[messagesNavController visibleViewController];
-                [mpVC reset];
+                if ([mpVC respondsToSelector:@selector(reset)]) {
+                    [mpVC reset];
+                }
             }
         }
  
