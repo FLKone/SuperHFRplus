@@ -195,19 +195,20 @@
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
-	
 	[self.loadingView setHidden:YES];
 	
-    //NSLog(@"theRequest.error %@", theRequest.error);
-    //NSLog(@"theRequest.url %@", theRequest.url);
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-    [alert setTag:667];
-	[alert show];
-    
-    [self cancelFetchContent];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 #pragma mark -
@@ -543,6 +544,10 @@
                     }
                 }
                 else if ([[no getAttributeNamed:@"name"] isEqualToString:@"currentnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_currentnum"];
+                    [self.searchFromFP setOn:NO animated:NO];
+                }else if ([[no getAttributeNamed:@"name"] isEqualToString:@"firstnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_firstnum"];
                     [self.searchFromFP setOn:NO animated:NO];
                 }
             }
@@ -955,7 +960,7 @@
     
     BOOL actionsmesages_pagenumber  = [defaults boolForKey:@"actionsmesages_pagenumber"];
     if(actionsmesages_pagenumber && ([self lastPageNumber] > [self firstPageNumber])) 
-        [self.arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Page Numéro...", @"choosePage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [self.arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Page numéro...", @"choosePage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
     
     BOOL actionsmesages_toppage     = [defaults boolForKey:@"actionsmesages_toppage"];
     if(actionsmesages_toppage) 
@@ -1847,6 +1852,7 @@
                                 document.documentElement.style.setProperty('--color-action', '%@');\
                                 document.documentElement.style.setProperty('--color-action-disabled', '%@');\
                                 document.documentElement.style.setProperty('--color-message-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-modo-background', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
                                 document.documentElement.style.setProperty('--color-background-bars', '%@');\
@@ -1860,8 +1866,9 @@
                                 </body></html>",
                                 customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
-                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
-                                [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
+                                [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
+                                [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
+                                [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
@@ -2981,6 +2988,13 @@
     if (sender.isOn) {
         [self.searchInputData removeObjectForKey:@"currentnum"];
         [self.searchInputData removeObjectForKey:@"firstnum"];
+    }else{
+        if([self.searchInputData valueForKey:@"tmp_currentnum"]){
+            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_currentnum"] forKey:@"currentnum"];
+        }
+        if([self.searchInputData valueForKey:@"tmp_firstnum"]){
+            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_firstnum"] forKey:@"firstnum"];
+        }
     }
 }
 

@@ -84,6 +84,7 @@
     passField.layer.borderWidth = 1.0f;
     passField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Mot de passe" attributes:@{NSForegroundColorAttributeName:[ThemeColors cellBorderColor:theme]}];
     titleLabel.textColor = [ThemeColors cellTextColor:theme];
+    [self.navigationController.navigationBar setTranslucent:NO];
 }
 
 

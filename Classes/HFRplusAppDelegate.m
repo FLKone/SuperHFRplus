@@ -139,10 +139,9 @@
                                              selector:@selector(setThemeFromNotification:) //note the ":" - should take an NSNotification as parameter
                                                  name:kThemeChangedNotification
                                                object:nil];
-    [self setTheme:[[ThemeManager sharedManager] theme]];
+    
     [[MultisManager sharedManager] updateAllAccounts];
 
-	
     return YES;
 }
 
@@ -201,8 +200,16 @@
         [[UITabBar appearance] setTranslucent:YES];
     }
     
-    [[UINavigationBar appearance] setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors navBackgroundColor:theme]] forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors titleTextAttributesColor:theme]}];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        [[UINavigationBar appearance] setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
+    }else{
+        UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        [[UINavigationBar appearance] setBackgroundImage:navBG forBarMetrics:UIBarMetricsDefault];
+    }
+    [[UINavigationBar appearance] setBarTintColor:[ThemeColors navBackgroundColor:theme]];
 }
 
 
@@ -404,6 +411,53 @@
      */
     
     //NSLog(@"applicationDidBecomeActive");
+    
+    // Noel
+    NSDate * now = [NSDate date];
+    NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];
+    [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
+    [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
+    
+    NSDate* startNoelDate = [formatterLocal dateFromString:@"24 12 2018 - 00:00"];
+    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2019 - 00:00"];
+    
+    
+    NSComparisonResult result1 = [now compare:startNoelDate];
+    NSComparisonResult result2 = [now compare:endNoelDate];
+    BOOL cestNoel = NO;
+    if (result1 == NSOrderedDescending && result2 == NSOrderedAscending) {
+        //C'est bientot Noel !!
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_period"];
+        NSObject* obj = [[NSUserDefaults standardUserDefaults] objectForKey:@"apply_noel"];
+        if (obj == nil) {
+            // La première fois on force le thème de Noel
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
+            // Mais plus les suivantes
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"apply_noel"];
+            cestNoel = YES;
+        }
+    } else {
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
+    }
+    
+    [self setTheme:[[ThemeManager sharedManager] theme]];
+    [[ThemeManager sharedManager] refreshTheme];
+    if (cestNoel) {
+        // Popup retry
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
+                                                                       message:@"Toute l'équipe de HFR+ vous souhaite de très bonnes fêtes de fin d'année !"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+        [alert addAction:actionOK];
+        
+        UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+        [activeVC presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        
+    }
 
 }
 
@@ -650,8 +704,22 @@
 		
         [self resetApp];
         
-		[(FavoritesTableViewController *)[favoritesNavController visibleViewController] reset];
-		[(HFRMPViewController *)[messagesNavController visibleViewController] reset];
+        if(favoritesNavController){
+            if ([favoritesNavController respondsToSelector:@selector(visibleViewController)]) {
+                FavoritesTableViewController* favVC = (FavoritesTableViewController *)[favoritesNavController visibleViewController];
+                if ([favVC respondsToSelector:@selector(reset)]) {
+                    [favVC reset];
+                }
+            }
+        }
+        if(messagesNavController){
+            if ([messagesNavController respondsToSelector:@selector(visibleViewController)]) {
+                HFRMPViewController* mpVC = (HFRMPViewController *)[messagesNavController visibleViewController];
+                if ([mpVC respondsToSelector:@selector(reset)]) {
+                    [mpVC reset];
+                }
+            }
+        }
  
 	}
 	

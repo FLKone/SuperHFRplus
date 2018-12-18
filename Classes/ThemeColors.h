@@ -25,12 +25,15 @@
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
 + (UIColor *)messageBackgroundColor:(Theme)theme;
++ (UIColor *)messageModoBackgroundColor:(Theme)theme;
 + (UIColor *)addMessageBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColor:(Theme)theme;
++ (UIColor *)cellBackgroundColorSuperFavorite:(Theme)theme;
 + (UIColor *)cellHighlightBackgroundColor:(Theme)theme;
 + (UITableViewCellSelectionStyle)cellSelectionStyle:(Theme)theme;
 + (UIColor *)cellIconColor:(Theme)theme;
 + (UIColor *)cellTextColor:(Theme)theme;
++ (UIColor *)cellDisabledTextColor:(Theme)theme;
 + (UIColor *)cellBorderColor:(Theme)theme;
 + (UIColor *)cellTintColor:(Theme)theme;
 + (UIColor *)placeholderColor:(Theme)theme;
@@ -77,4 +80,9 @@
 + (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
 + (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
 + (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
++ (NSString*) tabBarItemSelectedImageAtIndex:(int)index;
++ (NSString*) tabBarItemUnselectedImageAtIndex:(int)index;
++ (UIImageRenderingMode) tabBarItemSelectedImageRendering;
++ (UIImageRenderingMode) tabBarItemUnselectedImageRendering;
+
 @end

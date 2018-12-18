@@ -330,7 +330,7 @@
             case kNewTopic:
             default:
             {
-                NSLog(@"NEW TOPIC");
+                //NSLog(@"NEW TOPIC");
                 [self.navigationItem.leftBarButtonItem setEnabled:enable];
                 [self.actionButton setEnabled:enable];
             }
@@ -339,14 +339,14 @@
         }
     }
     else {
-        NSLog(@"à gauche");
+        //NSLog(@"à gauche");
         
         switch (type) {
             case kNewTopic:
             default:
                 
             {
-                NSLog(@"NEW TOPIC");
+                //NSLog(@"NEW TOPIC");
                 [self.navigationItem.rightBarButtonItem setEnabled:enable];
                 [self.actionButton setEnabled:enable];
 

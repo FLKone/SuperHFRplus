@@ -66,31 +66,20 @@
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
 	[self.loadingView setHidden:YES];
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:777];
-	[alert show];
+
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-    [self cancelFetchContent];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	if (alertView.tag == 777) {
-		if (buttonIndex == 1) {
-			[self fetchContent];
-		}
-		else {
-			[self cancel];
-		}
-
-	}
-	else {
-		[super alertView:alertView clickedButtonAtIndex:buttonIndex];
-	}
-}
-
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {    

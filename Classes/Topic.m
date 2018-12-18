@@ -24,13 +24,14 @@
 @synthesize aURLOfLastPage;
 
 @synthesize aDateOfLastPost;
+@synthesize dDateOfLastPost;
 @synthesize aAuthorOfLastPost;
 
 @synthesize aAuthorOrInter;
 
 @synthesize maxTopicPage, curTopicPage, aURLOfFirstPage;
 
-@synthesize postID, catID, isSticky, isClosed;
+@synthesize postID, catID, isSticky, isSuperFavorite, isClosed;
 
 
 - (id)init {
@@ -48,10 +49,12 @@
         self.aURLOfLastPage = [NSString string];
         
         self.aDateOfLastPost = [NSString string];
+        self.dDateOfLastPost = [NSDate alloc];
         self.aAuthorOfLastPost = [NSString string];
         
         self.aAuthorOrInter = [NSString string];
         self.isSticky = NO;
+        self.isSuperFavorite = NO;
         self.isClosed = NO;
 	}
 	return self;

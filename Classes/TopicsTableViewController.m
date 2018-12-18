@@ -160,12 +160,17 @@
     
 	[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:YES];
 	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:667];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]  preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-    [self cancelFetchContent];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 
@@ -697,9 +702,34 @@
 			
 
 			NSString *maDate = [linkLastRepNode contents];
+            NSDateFormatter * df = [[NSDateFormatter alloc] init];
+            [df setDateFormat:@"dd-MM-yyyy à HH:mm"];
+            aTopic.dDateOfLastPost = [df dateFromString:maDate];
 			if ([theDate isEqual:[maDate substringToIndex:10]]) {
-				[aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
-			}
+                NSTimeInterval secondsBetween = [nowTopic timeIntervalSinceDate:aTopic.dDateOfLastPost];
+                int numberMinutes = secondsBetween / 60;
+                int numberHours = secondsBetween / 3600;
+                if (secondsBetween < 0)
+                {
+                    [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+                }
+                else if (numberMinutes == 0)
+                {
+                    [aTopic setADateOfLastPost:@"il y a 1 min"];
+                }
+                else if (numberMinutes >= 1 && numberMinutes < 60)
+                {
+                    [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d min",numberMinutes]];
+                }
+                else if (secondsBetween >= 3600 && secondsBetween < 24*3600)
+                {
+                    [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d h",numberHours]];
+                }
+                else
+                {
+                    [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+                }
+            }
 			else {
 				[aTopic setADateOfLastPost:[NSString stringWithFormat:@"%@/%@/%@", [maDate substringWithRange:NSMakeRange(0, 2)]
 									  , [maDate substringWithRange:NSMakeRange(3, 2)]
@@ -1361,7 +1391,7 @@
         [button.titleLabel setNumberOfLines:1];
 
 
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 10, 0, 10)];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
     }
     else
     {
@@ -1739,7 +1769,7 @@
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
 
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
             // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
             UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
@@ -1750,8 +1780,8 @@
         else   {
             // Required for UIUserInterfaceIdiomPad
             topicActionAlert.popoverPresentationController.sourceView = [[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view];
-        topicActionAlert.popoverPresentationController.sourceRect = origFrame;
-        topicActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
+            topicActionAlert.popoverPresentationController.sourceRect = origFrame;
+            topicActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
         }
         [self presentViewController:topicActionAlert animated:YES completion:nil];
         [[ThemeManager sharedManager] applyThemeToAlertController:topicActionAlert];

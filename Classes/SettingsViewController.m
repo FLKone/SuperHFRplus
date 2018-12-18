@@ -78,6 +78,11 @@
         [self hideCell:@"theme_dark_color2"];
     }
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_period"]) {
+        [self showCell:@"theme_noel_disabled"];
+    } else {
+        [self hideCell:@"theme_noel_disabled"];
+    }
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
 }
 
@@ -147,6 +152,9 @@
             [[ThemeManager sharedManager] refreshTheme];
             
         }
+    }
+    else if([notification.userInfo objectForKey:@"theme_noel_disabled"]) {
+        [[ThemeManager sharedManager] refreshTheme];
     }
     else if([notification.userInfo objectForKey:@"theme_dark_color1"])
     {
@@ -230,14 +238,27 @@
 
 
 -(void)setThemeColors:(Theme)theme{
-    [self.navigationController.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors navBackgroundColor:theme]] forBarMetrics:UIBarMetricsDefault];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        [self.navigationController.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
+    }else{
+        UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        
+        [self.navigationController.navigationBar setBackgroundImage:navBG forBarMetrics:UIBarMetricsDefault];
+    }
+    
+
+     [self.navigationController.navigationBar setBarTintColor:[ThemeColors navBackgroundColor:theme]];
     
     if ([self.navigationController.navigationBar respondsToSelector:@selector(setTintColor:)]) {
         [self.navigationController.navigationBar setTintColor:[ThemeColors tintColor:theme]];
     }
-
+    
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors titleTextAttributesColor:theme]}];
     [self.navigationController.navigationBar setNeedsDisplay];
+    
+    
     self.view.backgroundColor = [ThemeColors greyBackgroundColor:theme];
     self.tableView.separatorColor = [ThemeColors cellBorderColor:theme];
 
