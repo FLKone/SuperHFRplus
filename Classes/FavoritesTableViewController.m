@@ -904,135 +904,132 @@
     /*if (self.arrayData.count > 0)
     {*/
         //On récupère la section (forum)
-        CGFloat curWidth = self.view.frame.size.width;
-        NSString* titleSection = nil;
-        if (self.editCategoriesList) {
-            if (section == 0) titleSection = @"Catégories visibles";
-            if (section == 1) titleSection = @"Catégories masquées";
+    CGFloat curWidth = self.view.frame.size.width;
+    NSString* titleSection = nil;
+    if (self.editCategoriesList) {
+        if (section == 0) titleSection = @"Catégories visibles";
+        if (section == 1) titleSection = @"Catégories masquées";
+    }
+    else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories)
+    {
+        if (self.arrayData.count > 0) {
+            Forum *tmpForum = [[self.arrayData objectAtIndex:section] forum];
+            titleSection = [tmpForum.aTitle uppercaseString];
         }
-        else if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories)
-        {
-            if (self.arrayData.count > 0) {
-                Forum *tmpForum = [[self.arrayData objectAtIndex:section] forum];
-                titleSection = [tmpForum.aTitle uppercaseString];
-            }
-        }
-        else
-        {
-            titleSection = @"Toutes catégories";
-        }
+    }
+    else
+    {
+        titleSection = @"Toutes catégories";
+    }
+    
+    //UIView globale
+    UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
+    Theme theme = [[ThemeManager sharedManager] theme];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:theme];
+    customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+
+    //UIImageView de fond
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
+        imageView.alpha = 0.9;
+        imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
+        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         
-        //UIView globale
-        UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-        Theme theme = [[ThemeManager sharedManager] theme];
-        customView.backgroundColor = [ThemeColors headSectionBackgroundColor:theme];
-        customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [customView addSubview:imageView];
+    }
+    else {
+        //bordures/iOS7
+        UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
+        borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
+        
+        //[customView addSubview:borderView];
+        
+        UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
+        borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
+        
+        //[customView addSubview:borderView2];
+        
+    }
 
-        //UIImageView de fond
-        if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
-            imageView.alpha = 0.9;
-            imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
-            imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-            
-            [customView addSubview:imageView];
-        }
-        else {
-            //bordures/iOS7
-            UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
-            borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-            
-            //[customView addSubview:borderView];
-            
-            UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
-            borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-            
-            //[customView addSubview:borderView2];
-            
-        }
-
-        //UIButton clickable pour accéder à la catégorie
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
-    if (!self.editCategoriesList && [self.arrayCategories count] > 0){
+    //UIButton clickable pour accéder à la catégorie
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
+    if (!self.editCategoriesList && [self.arrayCategories count] > 0 && [[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) {
         [button setTag:[self.arrayCategories indexOfObject:[self.arrayData objectAtIndex:section]]];
     }
-        [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
 
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-            [button setTitle:titleSection forState:UIControlStateNormal];
-            [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
-            button.translatesAutoresizingMaskIntoConstraints = NO;
-            [customView addSubview:button];
-        }
-        else
-        {
-            [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-            [button setTitle:titleSection forState:UIControlStateNormal];
-            [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-            [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-            [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-        }
-        
-        if (!self.showAll) {
-            [button addTarget:self action:@selector(loadCatForType:) forControlEvents:UIControlEventTouchUpInside];
-        }
-        
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
+        [button setTitle:titleSection forState:UIControlStateNormal];
+        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
         button.translatesAutoresizingMaskIntoConstraints = NO;
-        UILayoutGuide *guide = customView.safeAreaLayoutGuide;
-        //Trailing
-        NSLayoutConstraint *trailing =[NSLayoutConstraint
-                                       constraintWithItem:button
-                                       attribute:NSLayoutAttributeTrailing
-                                       relatedBy:NSLayoutRelationEqual
-                                       toItem:guide
-                                       attribute:NSLayoutAttributeTrailing
-                                       multiplier:1.0f
-                                       constant:0.f];
-
-        //Leading
-
-        NSLayoutConstraint *leading = [NSLayoutConstraint
-                                       constraintWithItem:button
-                                       attribute:NSLayoutAttributeLeading
-                                       relatedBy:NSLayoutRelationEqual
-                                       toItem:guide
-                                       attribute:NSLayoutAttributeLeading
-                                       multiplier:1.0f
-                                       constant:0.f];
-
-        //Bottom
-        NSLayoutConstraint *bottom =[NSLayoutConstraint
-                                     constraintWithItem:button
-                                     attribute:NSLayoutAttributeBottom
-                                     relatedBy:NSLayoutRelationEqual
-                                     toItem:customView
-                                     attribute:NSLayoutAttributeBottom
-                                     multiplier:1.0f
-                                     constant:0.f];
-
-        NSLayoutConstraint *top =[NSLayoutConstraint
-                                     constraintWithItem:button
-                                     attribute:NSLayoutAttributeTop
-                                     relatedBy:NSLayoutRelationEqual
-                                     toItem:customView
-                                     attribute:NSLayoutAttributeTop
-                                     multiplier:1.0f
-                                     constant:0.f];
-
         [customView addSubview:button];
+    }
+    else
+    {
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
+        [button setTitle:titleSection forState:UIControlStateNormal];
+        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
+        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
+        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
+    }
+    
+    if (!self.showAll && [[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) {
+        [button addTarget:self action:@selector(loadCatForType:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    UILayoutGuide *guide = customView.safeAreaLayoutGuide;
+    //Trailing
+    NSLayoutConstraint *trailing =[NSLayoutConstraint
+                                   constraintWithItem:button
+                                   attribute:NSLayoutAttributeTrailing
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:guide
+                                   attribute:NSLayoutAttributeTrailing
+                                   multiplier:1.0f
+                                   constant:0.f];
 
-        //[button.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor];
-        //[button.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor];
-        [customView addConstraint:trailing];
-        [customView addConstraint:leading];
-        [customView addConstraint:bottom];
-        [customView addConstraint:top];
+    //Leading
 
-        return customView;
-    //}
+    NSLayoutConstraint *leading = [NSLayoutConstraint
+                                   constraintWithItem:button
+                                   attribute:NSLayoutAttributeLeading
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:guide
+                                   attribute:NSLayoutAttributeLeading
+                                   multiplier:1.0f
+                                   constant:0.f];
+
+    //Bottom
+    NSLayoutConstraint *bottom =[NSLayoutConstraint
+                                 constraintWithItem:button
+                                 attribute:NSLayoutAttributeBottom
+                                 relatedBy:NSLayoutRelationEqual
+                                 toItem:customView
+                                 attribute:NSLayoutAttributeBottom
+                                 multiplier:1.0f
+                                 constant:0.f];
+
+    NSLayoutConstraint *top =[NSLayoutConstraint
+                                 constraintWithItem:button
+                                 attribute:NSLayoutAttributeTop
+                                 relatedBy:NSLayoutRelationEqual
+                                 toItem:customView
+                                 attribute:NSLayoutAttributeTop
+                                 multiplier:1.0f
+                                 constant:0.f];
+
+    [customView addSubview:button];
+    
+    [customView addConstraint:trailing];
+    [customView addConstraint:leading];
+    [customView addConstraint:bottom];
+    [customView addConstraint:top];
+
+    return customView;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -1579,12 +1576,27 @@
         [self.favoritesTableView setEditing:NO animated:NO];
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [[[self.arrayData objectAtIndex:indexPath.section] topics] removeObjectAtIndex:indexPath.row];
-            [self.favoritesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-            if ([[self.arrayData objectAtIndex:indexPath.section] topics].count == 0) {
-                [self.favoritesTableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+            // Update internal data
+            if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
+            {
+                [[[self.arrayData objectAtIndex:indexPath.section] topics] removeObjectAtIndex:indexPath.row];
+                [self.favoritesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                if ([[self.arrayData objectAtIndex:indexPath.section] topics].count == 0) {
+                    [self.favoritesTableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+                }
+            }
+            else // mode SANS catégories
+            {
+                NSMutableArray *copyArrayTopics = [self.arrayTopics mutableCopy];
+                [copyArrayTopics removeObjectAtIndex:indexPath.row];
+                self.arrayTopics = copyArrayTopics;
+                [self.favoritesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                if (self.arrayTopics.count == 0) {
+                    [self reload];
+                }
             }
             
+            // Update view
         });
     
     }
@@ -1789,10 +1801,12 @@
             }
             else
             {
-                [self.arrayTopics removeObjectAtIndex:indexPath.row];
+                NSMutableArray *copyArrayTopics = [self.arrayTopics mutableCopy];
+                [copyArrayTopics removeObjectAtIndex:indexPath.row];
+                self.arrayTopics = copyArrayTopics;
                 [self.favoritesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                if ([[self.arrayData objectAtIndex:indexPath.section] topics].count == 0) {
-                    [self.favoritesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+                if (self.arrayTopics.count == 0) {
+                    [self reload];
                 }
             }
         }
