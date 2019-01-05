@@ -26,6 +26,9 @@
 + (UIColor *)greyBackgroundColor:(Theme)theme;
 + (UIColor *)messageBackgroundColor:(Theme)theme;
 + (UIColor *)messageModoBackgroundColor:(Theme)theme;
++ (UIColor *)messageMeBackgroundColor:(Theme)theme;
++ (UIColor *)messageHeaderMeBackgroundColor:(Theme)theme;
++ (UIColor *)messageMeQuotedBackgroundColor:(Theme)theme;
 + (UIColor *)addMessageBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColorSuperFavorite:(Theme)theme;
@@ -74,11 +77,12 @@
 + (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 + (NSString *) hexFromUIColor:(UIColor *)color;
++ (NSString *) rgbaFromUIColor:(UIColor *)color;
++ (NSString *) rgbaFromUIColor:(UIColor *)color withAlpha:(CGFloat) newAlpha;
 + (NSString *) getColorBorderQuotation:(Theme)theme;
 + (UIColor *)  getColorBorderAvatar:(Theme)theme;
 + (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
 + (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color withMin:(CGFloat)min;
-+ (UIColor *)changeBrightness:(UIColor*)color amount:(CGFloat)amount;
 + (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val;
 + (NSString*) tabBarItemSelectedImageAtIndex:(int)index;
 + (NSString*) tabBarItemUnselectedImageAtIndex:(int)index;

@@ -201,20 +201,31 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
     }
 }
 
++ (UIColor *)messageHeaderMeBackgroundColor:(Theme)theme{
+    switch (theme) {
+        case ThemeLight: return [UIColor colorWithRed:220/255.0 green:220/255.0 blue:235/255.0 alpha:1.0];
+        case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:54/255.0 green:44/255.0 blue:34/255.0 alpha:1.0] withMin:20.0];
+        case ThemeOLED:  return [UIColor colorWithRed:36/255.0 green:20.0/255.0 blue:4/255.0 alpha:1.0];
+        default:         return [UIColor whiteColor];
+    }
+}
+
+// Tint color avec transparence 0.07/1
++ (UIColor *)messageMeQuotedBackgroundColor:(Theme)theme{
+    CGFloat r, g, b, alpha;
+    UIColor* cTintColor = [self tintColor:theme];
+    [cTintColor getRed:&r green:&g blue:&b alpha:&alpha];
+    return [UIColor colorWithRed:r green:g blue:b alpha:0.07];
+}
+
 // Fond des items des listes Categorie/ Sujets/Messages :
 // Theme light: reste blanc
 + (UIColor *)cellBackgroundColor:(Theme)theme{
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-    
-        switch (theme) {
-            case ThemeLight:  return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
-            case ThemeDark:   return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:36.0/255.0 green:37.0/255.0 blue:41.0/255.0 alpha:1.0]];
-            case ThemeOLED:   return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
-            default:          return [UIColor whiteColor];//[UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
-        }
-    }
-    else {
-        return [UIColor whiteColor]; //OK
+    switch (theme) {
+        case ThemeLight:  return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+        case ThemeDark:   return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:36.0/255.0 green:37.0/255.0 blue:41.0/255.0 alpha:1.0]];
+        case ThemeOLED:   return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0];
+        default:          return [UIColor whiteColor];//[UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
     }
 }
 
@@ -692,9 +703,18 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
         return [NSString stringWithFormat:@"#FFFFFF"];
     }
     return [NSString stringWithFormat:@"#%02X%02X%02X", (int)((CGColorGetComponents(color.CGColor))[0]*255.0), (int)((CGColorGetComponents(color.CGColor))[1]*255.0), (int)((CGColorGetComponents(color.CGColor))[2]*255.0)];
-    //255.0/0/0 => FE010000
-    
-    
+}
+
++ (NSString *) rgbaFromUIColor:(UIColor *)color {
+    CGFloat r, g, b, alpha;
+    [color getRed:&r green:&g blue:&b alpha:&alpha];
+    return [NSString stringWithFormat:@"rgba(%d, %d, %d, %1.2f)", (int)(r*255), (int)(g*255), (int)(b*255), alpha];
+}
+
++ (NSString *) rgbaFromUIColor:(UIColor *)color withAlpha:(CGFloat) newAlpha {
+    CGFloat r, g, b, alpha;
+    [color getRed:&r green:&g blue:&b alpha:&alpha];
+    return [NSString stringWithFormat:@"rgba(%d, %d, %d, %1.2f)", (int)(r*255), (int)(g*255), (int)(b*255), newAlpha];
 }
 
 + (NSString *) getActionColorCssHueRotation:(Theme)theme
@@ -769,15 +789,13 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
     return nil;
 }
 
-
 // Modify hue of color in param with value val
 + (UIColor *)changeHue:(UIColor*)color withValue:(CGFloat)val
 {
     CGFloat newHue, hue, saturation, brightness, alpha;
-    if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-        newHue = MAX(MIN(val, 1.0), 0.0);
-        return [UIColor colorWithHue:newHue saturation:saturation brightness:brightness alpha:alpha];
-    }
+    [color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
+    newHue = MAX(MIN(val, 1.0), 0.0);
+    return [UIColor colorWithHue:newHue saturation:saturation brightness:brightness alpha:alpha];
 }
 
 + (NSString*) tabBarItemSelectedImageAtIndex:(int)index {

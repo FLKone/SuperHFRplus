@@ -1853,6 +1853,10 @@
                                 document.documentElement.style.setProperty('--color-action-disabled', '%@');\
                                 document.documentElement.style.setProperty('--color-message-background', '%@');\
                                 document.documentElement.style.setProperty('--color-message-modo-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-header-me-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
+                                document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
                                 document.documentElement.style.setProperty('--color-background-bars', '%@');\
@@ -1869,6 +1873,10 @@
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                                 [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
+                                [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars

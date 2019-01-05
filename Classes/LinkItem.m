@@ -10,6 +10,7 @@
 #import "HFRplusAppDelegate.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "MultisManager.h"
 
 @implementation LinkItem
 
@@ -21,6 +22,12 @@
 -(NSString *)toHTML:(int)index
 {
     //NSLog(@"toHTML index %d", index);
+
+    // Get current own pseudo
+    MultisManager *manager = [MultisManager sharedManager];
+    NSDictionary *mainCompte = [manager getMainCompte];
+    NSString *currentPseudo = [[mainCompte objectForKey:PSEUDO_KEY] lowercaseString];
+
     
 	NSString *tempHTML = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"templatev2" ofType:@"htm"] encoding:NSUTF8StringEncoding error:NULL];
 
@@ -32,7 +39,9 @@
 
 	if ([[self name] isEqualToString:@"Modération"]) {
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode "];
-	}
+	} else if ([[[self name] lowercaseString] isEqualToString:currentPseudo]) {
+        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
+    }
     
     if([self isBL]){
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message hfrbl"];
@@ -55,14 +64,16 @@
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%no_avatar_class%%" withString:@"noavatar"];
 	}
 
-	NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	// Search for own quotes
+    NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+     
+    // Good site for debugging regex: https://regex101.com
+    NSString *regExQuoted = @"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">ezzz a écrit :<\\/a>)";
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
+                                 withString:@"<table class=\"citation_me_quoted\">$1"];
 
-	//NSString *regExQuoteTitle = @"<a href=\"[^\"]+\" class=\"Topic\">([^<]+)</a>";			
-	//myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoteTitle
-	//													  withString:@"$1"];
-	
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
-
+    
     
     
 	
