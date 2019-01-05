@@ -1362,8 +1362,13 @@
 	//On récupe les images du message:
 	//NSLog(@"%@", [[arrayData objectAtIndex:index] toHTML:index]);
 	//NSLog(@"selectedURL %@", selectedURL);
-	
-	HTMLParser * myParser = [[HTMLParser alloc] initWithString:[[arrayData objectAtIndex:index] toHTML:index] error:NULL];
+    // Ego quote not applyed on MP
+    BOOL bEgoQuote = YES;
+    if ([self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
+        bEgoQuote = NO;
+    }
+
+	HTMLParser * myParser = [[HTMLParser alloc] initWithString:[[arrayData objectAtIndex:index] toHTML:index egoQuote:bEgoQuote] error:NULL];
 	HTMLNode * msgNode = [myParser doc]; //Find the body tag
 
 	NSArray * tmpImageArray =  [msgNode findChildrenWithAttribute:@"class" matchingName:@"hfrplusimg" allowPartial:NO];
@@ -1679,9 +1684,15 @@
 
         NSLog(@"Looking for %d", currentFlagValue);
         //NSLog(@"==============");
-
+        
+        // Ego quote not applyed on MP
+        BOOL bEgoQuote = YES;
+        if ([self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
+            bEgoQuote = NO;
+        }
+        
         for (i = 0; i < [self.arrayData count]; i++) { //Loop through all the tags
-            tmpHTML = [tmpHTML stringByAppendingString:[[self.arrayData objectAtIndex:i] toHTML:i]];
+            tmpHTML = [tmpHTML stringByAppendingString:[[self.arrayData objectAtIndex:i] toHTML:i egoQuote:bEgoQuote]];
             
             if (!ifCurrentFlag) {
 

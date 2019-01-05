@@ -19,7 +19,7 @@
 
 @synthesize quotedNB, quotedLINK, editedTime;
 
--(NSString *)toHTML:(int)index
+-(NSString *)toHTML:(int)index egoQuote:(BOOL)egoQuote
 {
     //NSLog(@"toHTML index %d", index);
 
@@ -39,7 +39,7 @@
 
 	if ([[self name] isEqualToString:@"Modération"]) {
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode "];
-	} else if ([[[self name] lowercaseString] isEqualToString:currentPseudo]) {
+	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudo]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
     }
     
@@ -64,14 +64,15 @@
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%no_avatar_class%%" withString:@"noavatar"];
 	}
 
-	// Search for own quotes
     NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
      
     // Good site for debugging regex: https://regex101.com
-    NSString *regExQuoted = @"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">ezzz a écrit :<\\/a>)";
-    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
-                                 withString:@"<table class=\"citation_me_quoted\">$1"];
-
+    // Search for own quotes
+    if (egoQuote == YES) {
+        NSString *regExQuoted = @"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">ezzz a écrit :<\\/a>)";
+        myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
+                                     withString:@"<table class=\"citation_me_quoted\">$1"];
+    }
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
     
     
