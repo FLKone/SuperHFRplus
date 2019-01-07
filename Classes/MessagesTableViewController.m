@@ -1692,14 +1692,17 @@
         }
         
         for (i = 0; i < [self.arrayData count]; i++) { //Loop through all the tags
-            tmpHTML = [tmpHTML stringByAppendingString:[[self.arrayData objectAtIndex:i] toHTML:i egoQuote:bEgoQuote]];
-            
-            if (!ifCurrentFlag) {
+            NSString* sNewMessage = [[self.arrayData objectAtIndex:i] toHTML:i egoQuote:bEgoQuote];
+            tmpHTML = [tmpHTML stringByAppendingString:sNewMessage];
 
+            if (!ifCurrentFlag) {
                 int tmpFlagValue = [[[[self.arrayData objectAtIndex:i] postID] stringByTrimmingCharactersInSet:nonDigits] intValue];
 
                 if (tmpFlagValue == currentFlagValue) {
-                    //NSLog(@"TROUVE");
+                    // Add separator  (but not after last post of page)
+                    if (i < [self.arrayData count] - 1) {
+                        tmpHTML = [tmpHTML stringByAppendingString:@"<div class=\"separator1\"></div>"];
+                    }
                     ifCurrentFlag = YES;
                     closePostID = tmpFlagValue;
                 }
@@ -1716,9 +1719,7 @@
                     closePostID = tmpFlagValue;
                 }
                 
-                //NSLog(@"-- curFlagID = %d", tmpFlagValue);
             }
-
         }
         
         if (closePostID) {
@@ -1814,16 +1815,9 @@
         NSString* sBorderHeader = @"none";
         
         // Modified in theme Dark or OLED
-        switch (theme) {
-            case ThemeDark:
-                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
-                break;
-            case ThemeOLED:
-                sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-                sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
-                sBorderHeader = @"1px solid #505050";
-                break;
+        if (theme == ThemeDark || theme == ThemeOLED) {
+            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
         }
         
         
@@ -1868,6 +1862,7 @@
                                 document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                                document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
                                 document.documentElement.style.setProperty('--color-background-bars', '%@');\
@@ -1888,6 +1883,7 @@
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
@@ -1900,20 +1896,16 @@
                                 ];
         
         
-         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            if (self.isSearchInstra) {
-                HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7 searchintra"];
-            }
-            else {
-                HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
-            }
+        if (self.isSearchInstra) {
+            HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7 searchintra"];
         }
-        //  HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"hfrplusiosversion" withString:@""];
-        
+        else {
+            HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
+        }
         
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
-        //NSLog(@"baseURL %@", baseURL);
+
         /*
         NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);

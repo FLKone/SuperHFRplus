@@ -69,7 +69,8 @@
     // Good site for debugging regex: https://regex101.com
     // Search for own quotes
     if (egoQuote == YES) {
-        NSString *regExQuoted = @"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">ezzz a écrit :<\\/a>)";
+        currentPseudo = [NSRegularExpression escapedPatternForString:currentPseudo];
+        NSString *regExQuoted = [NSString stringWithFormat:@"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">%@ a écrit :<\\/a>)", currentPseudo];
         myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
                                      withString:@"<table class=\"citation_me_quoted\">$1"];
     }

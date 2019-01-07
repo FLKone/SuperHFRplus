@@ -13,6 +13,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-message-mequoted-background:#FEE; /* Fond des messages dans lesquels je suis quoted */
     --color-message-mequoted-borderleft:#FEE;
     --color-message-mequoted-borderother:#FEE;
+    --color-separator-new-message:rgba(0,0,0,0.4);
     --color-background-bars:#F5F5F5;
     --color-text:#202020;
     --color-text2:#202020;
@@ -107,6 +108,9 @@ div.masque {
 	visibility:hidden;
 }
 
+.separator1 {
+    border-top: 1px dashed var(--color-separator-new-message);
+}
 
 .message {
 	overflow:hidden;
