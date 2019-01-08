@@ -16,7 +16,7 @@
 
 @implementation RehostCell
 @synthesize previewImage, rehostImage;
-@synthesize miniBtn, previewBtn, fullBtn, spinner;
+@synthesize miniBtn, previewBtn, mediumBtn, fullBtn, spinner;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -31,24 +31,21 @@
 {
     [super layoutSubviews];
     [self.miniBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.7]];
+    [self.mediumBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.7]];
     [self.previewBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.7]];
     [self.fullBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.7]];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        //
-    }
-    else
-    {
-        self.miniBtn.layer.cornerRadius = 5; // this value vary as per your desire
-        self.miniBtn.clipsToBounds = YES;
-        
-        self.previewBtn.layer.cornerRadius = 5; // this value vary as per your desire
-        self.previewBtn.clipsToBounds = YES;
-        
-        self.fullBtn.layer.cornerRadius = 5; // this value vary as per your desire
-        self.fullBtn.clipsToBounds = YES;
+    self.miniBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.miniBtn.clipsToBounds = YES;
+    
+    self.mediumBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.mediumBtn.clipsToBounds = YES;
 
-    }
+    self.previewBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.previewBtn.clipsToBounds = YES;
+
+    self.fullBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.fullBtn.clipsToBounds = YES;
         
     [self applyTheme];
 }
@@ -71,6 +68,7 @@
     self.rehostImage = image;
     
     [self.miniBtn setHidden:YES];
+    [self.mediumBtn setHidden:YES];
     [self.previewBtn setHidden:YES];
     [self.fullBtn setHidden:YES];
     [self.previewImage setHidden:YES];
@@ -93,6 +91,7 @@
             
             [self_.miniBtn setHidden:NO];
             [self_.previewBtn setHidden:NO];
+            [self_.mediumBtn setHidden:NO];
             [self_.fullBtn setHidden:NO];
             [self_.miniBtn setHidden:NO];
         }
@@ -104,6 +103,10 @@
 
 -(IBAction)copyFull {
     [self copyImage:bbcodeImageFull];
+}
+
+- (IBAction)copyMedium {
+    [self copyImage:bbcodeImageMedium];
 }
 
 -(IBAction)copyPreview {
@@ -155,9 +158,12 @@
 				case bbcodeImageFull:
 					pasteboard.string = rehostImage.link_full;
 					break;
-				case bbcodeImagePreview:
-					pasteboard.string = rehostImage.link_preview;
-					break;
+                case bbcodeImageMedium:
+                    pasteboard.string = rehostImage.link_medium;
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = rehostImage.link_preview;
+                    break;
 				case bbcodeImageMini:
 					pasteboard.string = rehostImage.link_miniature;
 					break;
@@ -169,6 +175,9 @@
 				case bbcodeImageFull:
 					pasteboard.string = rehostImage.nolink_full;
 					break;
+                case bbcodeImageMedium:
+                    pasteboard.string = rehostImage.nolink_medium;
+                    break;
 				case bbcodeImagePreview:
 					pasteboard.string = rehostImage.nolink_preview;
 					break;
@@ -183,9 +192,12 @@
 				case bbcodeImageFull:
 					pasteboard.string = [[rehostImage.nolink_full stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
 					break;
-				case bbcodeImagePreview:
-					pasteboard.string = [[rehostImage.nolink_preview stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
-					break;
+                case bbcodeImageMedium:
+                    pasteboard.string = [[rehostImage.nolink_medium stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = [[rehostImage.nolink_preview stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
+                    break;
 				case bbcodeImageMini:
 					pasteboard.string = [[rehostImage.nolink_miniature stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
 					break;

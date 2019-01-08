@@ -21,9 +21,11 @@
 @synthesize link_full;
 @synthesize link_miniature;
 @synthesize link_preview;
+@synthesize link_medium;
 @synthesize nolink_full;
 @synthesize nolink_miniature;
 @synthesize nolink_preview;
+@synthesize nolink_medium;
 @synthesize timeStamp;
 @synthesize deleted;
 
@@ -33,11 +35,13 @@
         self.link_full = [NSString string];
         self.link_miniature = [NSString string];
         self.link_preview = [NSString string];
-        
+        self.link_medium = [NSString string];
+
         self.nolink_full = [NSString string];
         self.nolink_miniature = [NSString string];
         self.nolink_preview = [NSString string];
-        
+        self.nolink_medium = [NSString string];
+
         self.timeStamp = [NSDate date];
         self.deleted = NO;
         self.version = 1;
@@ -52,11 +56,13 @@
     [encoder encodeObject:link_full forKey:@"link_full"];
     [encoder encodeObject:link_miniature forKey:@"link_miniature"];
     [encoder encodeObject:link_preview forKey:@"link_preview"];
+    [encoder encodeObject:link_medium forKey:@"link_preview"];
 
     [encoder encodeObject:nolink_full forKey:@"nolink_full"];
     [encoder encodeObject:nolink_miniature forKey:@"nolink_miniature"];
     [encoder encodeObject:nolink_preview forKey:@"nolink_preview"];
-    
+    [encoder encodeObject:nolink_medium forKey:@"nolink_preview"];
+
     [encoder encodeInt:version forKey:@"version"];
     [encoder encodeBool:deleted forKey:@"deleted"];
     
@@ -71,10 +77,12 @@
         link_full = [decoder decodeObjectForKey:@"link_full"];
         link_miniature = [decoder decodeObjectForKey:@"link_miniature"];
         link_preview = [decoder decodeObjectForKey:@"link_preview"];
+        link_medium = [decoder decodeObjectForKey:@"link_preview"];
 
         nolink_full = [decoder decodeObjectForKey:@"nolink_full"];
         nolink_miniature = [decoder decodeObjectForKey:@"nolink_miniature"];
         nolink_preview = [decoder decodeObjectForKey:@"nolink_preview"];
+        nolink_medium = [decoder decodeObjectForKey:@"nolink_preview"];
 
         version = [decoder decodeIntForKey:@"version"];
         deleted = [decoder decodeBoolForKey:@"deleted"];
@@ -90,10 +98,12 @@
     self.link_full = @"link_full";
     self.link_miniature = @"link_miniature";
     self.link_preview = @"link_preview";
-    
+    self.link_medium = @"link_medium";
+
     self.nolink_full = @"nolink_full";
     self.nolink_miniature = @"nolink_miniature";
     self.nolink_preview = @"nolink_preview";
+    self.nolink_medium = @"nolink_medium";
 }
 
 -(void)upload:(UIImage *)picture;
@@ -213,11 +223,13 @@
 
 		// If appropriate, configure the new managed object.
         self.link_full = [[codeArray objectAtIndex:0] allContents];
-        self.link_preview = [[codeArray objectAtIndex:1] allContents];
+        self.link_medium = [[codeArray objectAtIndex:1] allContents];
+        self.link_preview = [[codeArray objectAtIndex:2] allContents];
         self.link_miniature = [[codeArray objectAtIndex:3] allContents];
         
         self.nolink_full = [[codeArray objectAtIndex:4] allContents];
-        self.nolink_preview = [[codeArray objectAtIndex:5] allContents];
+        self.nolink_medium = [[codeArray objectAtIndex:5] allContents];
+        self.nolink_preview = [[codeArray objectAtIndex:6] allContents];
         self.nolink_miniature = [[codeArray objectAtIndex:7] allContents];
 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithFloat:2.0f], self, nil] forKeys:[NSArray arrayWithObjects:@"progress", @"rehostImage", nil]]];

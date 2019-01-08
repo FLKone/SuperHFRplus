@@ -14,9 +14,11 @@
     NSString *link_full;
     NSString *link_miniature;
     NSString *link_preview;
+    NSString *link_medium;
     NSString *nolink_full;
     NSString *nolink_miniature;
     NSString *nolink_preview;
+    NSString *nolink_medium;
     NSDate *timeStamp;
     BOOL deleted;
 }
@@ -24,10 +26,12 @@
 @property (nonatomic, strong) NSString *link_full;
 @property (nonatomic, strong) NSString *link_miniature;
 @property (nonatomic, strong) NSString *link_preview;
+@property (nonatomic, strong) NSString *link_medium;
 
 @property (nonatomic, strong) NSString *nolink_full;
 @property (nonatomic, strong) NSString *nolink_miniature;
 @property (nonatomic, strong) NSString *nolink_preview;
+@property (nonatomic, strong) NSString *nolink_medium;
 
 @property (nonatomic, strong) NSDate *timeStamp;
 
