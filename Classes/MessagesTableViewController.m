@@ -44,7 +44,7 @@
 @implementation MessagesTableViewController
 @synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser;
 @synthesize swipeLeftRecognizer, swipeRightRecognizer, overview, arrayActionsMessages, lastStringFlagTopic;
-@synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported;
+@synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported, isSeparatorNewMessages;
 
 @synthesize queue; //v3
 @synthesize stringFlagTopic;
@@ -642,6 +642,12 @@
 
 	}
 	return self;
+}
+
+// Overidden to add a separator in the webview for some cases
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages {
+    self.isSeparatorNewMessages = isSeparatorNewMessages;
+    return [self initWithNibName:nibNameOrNil bundle:nibBundleOrNil andUrl:theTopicUrl];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -1699,9 +1705,11 @@
                 int tmpFlagValue = [[[[self.arrayData objectAtIndex:i] postID] stringByTrimmingCharactersInSet:nonDigits] intValue];
 
                 if (tmpFlagValue == currentFlagValue) {
-                    // Add separator  (but not after last post of page)
-                    if (i < [self.arrayData count] - 1) {
-                        tmpHTML = [tmpHTML stringByAppendingString:@"<div class=\"separator1\"></div>"];
+                    if (self.isSeparatorNewMessages == YES) {
+                        // Add separator  (but not after last post of page)
+                        if (i < [self.arrayData count] - 1) {
+                            tmpHTML = [tmpHTML stringByAppendingString:@"<div class=\"separator1\"></div>"];
+                        }
                     }
                     ifCurrentFlag = YES;
                     closePostID = tmpFlagValue;

@@ -198,30 +198,6 @@
     
     [self.favoritesTableView.pullToRefreshView stopAnimating];
     [self.favoritesTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
-    
-    /*
-	[self.loadingView setHidden:YES];
-
-	switch (self.status) {
-		case kMaintenance:
-		case kNoResults:
-		case kNoAuth:
-            [self.maintenanceView setText:self.statusMessage];
-
-            [self.loadingView setHidden:YES];
-			[self.maintenanceView setHidden:NO];
-			[self.favoritesTableView setHidden:YES];
-			break;
-		default:
-            [self.favoritesTableView reloadData];
-
-            [self.loadingView setHidden:YES];
-            [self.maintenanceView setHidden:YES];
-			[self.favoritesTableView setHidden:NO];
-			break;
-	}
-	*/
-	//NSLog(@"fetchContentCompletefetchContentCompletefetchContentComplete");
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
@@ -235,11 +211,6 @@
 	
     [self.maintenanceView setText:@"oops :o"];
     
-    //[self.loadingView setHidden:YES];
-    //[self.maintenanceView setHidden:NO];
-    //[self.favoritesTableView setHidden:YES];
-	
-	//NSLog(@"theRequest.error %@", theRequest.error);
     [self.favoritesTableView.pullToRefreshView stopAnimating];
 
     // Popup retry
@@ -259,16 +230,9 @@
 #pragma mark - PullTableViewDelegate
 
 -(void)reset {
-	/*
-	[self fetchContent];
-	*/
 	[self.arrayData removeAllObjects];
 	
 	[self.favoritesTableView reloadData];
-	//[self.favoritesTableView setHidden:YES];
-	//[self.maintenanceView setHidden:YES];
-	//[self.loadingView setHidden:YES];
-	
 }
 //-- V2
 
@@ -1384,7 +1348,7 @@
     else {
         Topic *aTopic = [self getTopicAtIndexPath:indexPath];
             
-        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[aTopic aURL]];
+        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[aTopic aURL] displaySeparator:YES];
         self.messagesTableViewController = aView;
         
         //setup the URL

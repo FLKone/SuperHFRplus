@@ -106,6 +106,8 @@
     BOOL isSearchInstra;
     
     NSString* firstnumBackup;
+    
+    BOOL isSeparatorNewMessages;
 }
 
 
@@ -176,11 +178,13 @@
 @property (strong, nonatomic) IBOutlet UISwitch *searchFromFP;
 @property (nonatomic, strong) NSMutableDictionary *searchInputData;
 @property BOOL isSearchInstra;
+@property BOOL isSeparatorNewMessages;
 
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages;
 - (void)optionsTopic:(id)sender;
 - (void)answerTopic;
 - (void)quoteMessage:(NSString *)quoteUrl;

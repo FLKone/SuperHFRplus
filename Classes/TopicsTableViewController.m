@@ -1719,7 +1719,7 @@
 	//NSLog(@"url %@", [[arrayData objectAtIndex:self.pressedIndexPath.row] aURLOfFlag]);
 
 	//if (self.messagesTableViewController == nil) {
-	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row] aURLOfFlag]];
+	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row]  aURLOfFlag] displaySeparator:YES];
 	self.messagesTableViewController = aView;
 	//}
 	
