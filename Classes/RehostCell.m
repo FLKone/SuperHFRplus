@@ -102,56 +102,27 @@
 }
 
 -(IBAction)copyFull {
-    [self copyImage:bbcodeImageFull];
+    [self copyToPasteBoard:bbcodeImageFull];
 }
 
 - (IBAction)copyMedium {
-    [self copyImage:bbcodeImageMedium];
+    [self copyToPasteBoard:bbcodeImageMedium];
 }
 
 -(IBAction)copyPreview {
-    [self copyImage:bbcodeImagePreview];
+    [self copyToPasteBoard:bbcodeImagePreview];
 }
 
 -(IBAction)copyMini {
-    [self copyImage:bbcodeImageMini];
+    [self copyToPasteBoard:bbcodeImageMini];
 }
 
--(IBAction)copyImage:(bbcodeImageSizeType) bbcodeImageSize {
-
-    
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Copier le BBCode" message:@"Avec ou sans lien?"
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) { }];
-    UIAlertAction* actionAvec = [UIAlertAction actionWithTitle:@"Avec" style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) { [self copyToPasteBoard:bbcodeImageSize withLink:bbcodeImageWithLink]; }];
-    UIAlertAction* actionSans = [UIAlertAction actionWithTitle:@"Sans" style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) { [self copyToPasteBoard:bbcodeImageSize withLink:bbcodeImageNoLink]; }];
-    UIAlertAction* actionLink = [UIAlertAction actionWithTitle:@"Le lien seulement" style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) { [self copyToPasteBoard:bbcodeImageSize withLink:bbcodeLinkOnly]; }];
-    
-    [alert addAction:actionAvec];
-    [alert addAction:actionSans];
-    [alert addAction:actionLink];
-    [alert addAction:cancelAction];
-    
-    UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
-    // Adjustment for ipad as we get the UISplitViewController:
-    if ([activeVC isKindOfClass:[UISplitViewController class]]) {
-        activeVC = [activeVC.childViewControllers objectAtIndex:0];
-    }
-    [activeVC presentViewController:alert animated:YES completion:nil];
-    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-}
-
-- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType withLink:(bbcodeLinkType)linkType
+- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType
 {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = @"";
     
-    switch (linkType) {
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"]) {
 		case bbcodeImageWithLink:
 		{
 			switch (imageSizeType) {

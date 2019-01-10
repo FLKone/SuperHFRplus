@@ -248,42 +248,22 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)initData { //- (void)viewDidLoad {
-    //NSLog(@"viewDidLoad add");
-    
-    // [super viewDidLoad];
-    
-    
-    
-    // LOAD SMILEY HTML
-    
     NSString *path = [[NSBundle mainBundle] bundlePath];
     NSURL *baseURL = [NSURL fileURLWithPath:path];
-    
     NSString *tempHTML = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"smileybase" ofType:@"html"] encoding:NSUTF8StringEncoding error:NULL];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
-    }
-    else {
-        [self.smileView setBackgroundColor:[UIColor colorWithRed:46/255.f green:46/255.f blue:46/255.f alpha:1.00]];
-    }
+    tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
     
     [self.smileView hideGradientBackground];
-    
     [self.smileView loadHTMLString:[tempHTML stringByReplacingOccurrencesOfString:@"%SMILEYCUSTOM%"
                                                                        withString:[NSString stringWithFormat:@"<div id='smileperso'>%@</div>",
                                                                                    self.smileyCustom]] baseURL:baseURL];
     
     
-    //	[self.smileView loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"smileybase" ofType:@"html"] isDirectory:NO]]];
-    //==
-    
     self.formSubmit = [NSString stringWithFormat:@"%@/bddpost.php", [k ForumURL]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(smileyReceived:) name:@"smileyReceived" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadProgress:) name:@"uploadProgress" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageReceived:) name:@"imageReceived" object:nil];
     
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
@@ -291,10 +271,8 @@
     [self.commonTableView setTableFooterView:v];
     [self.rehostTableView setTableFooterView:v];
     
-    
-    
     float headerWidth = self.view.bounds.size.width;
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 50)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 55)];
     
     //    NSLog(@"mew cell %@", NSStringFromCGRect(self.view.frame));
     
@@ -303,66 +281,79 @@
     UIButton* newPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [newPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [newPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [newPhotoBtn setTitle:@"Nouvelle Photo" forState:UIControlStateNormal];
-    newPhotoBtn.frame = CGRectMake(0, 3, headerWidth/2, 50.0f);
+    [newPhotoBtn setTitle:@"  Caméra" forState:UIControlStateNormal];
+    newPhotoBtn.frame = CGRectMake(headerWidth*0/3, 3, headerWidth*1/3, 55);
     [newPhotoBtn addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     UIButton* oldPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [oldPhotoBtn setTitle:@"Photo existante" forState:UIControlStateNormal];
-    oldPhotoBtn.frame = CGRectMake(headerWidth/2, 3, headerWidth/2, 50.0f);
+    [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
+    oldPhotoBtn.frame = CGRectMake(headerWidth*1/3, 3, headerWidth*1/3, 55);
     [oldPhotoBtn addTarget:self action:@selector(uploadExistingPhoto:) forControlEvents:UIControlEventTouchUpInside];
     
-    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth/2, 0, 1, 50.0f)];
-    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 49.0f, headerWidth, 1.0f)];
-    UIView *borderT = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 1.0f)];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"rehost_use_link"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
+    }
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-        
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
+    UIButton* linkBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [linkBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
+    [linkBtn.titleLabel setFont:[UIFont systemFontOfSize:12.0f]];
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
+        [linkBtn setTitle:@"Image & lien" forState:UIControlStateNormal];
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) {
+        [linkBtn setTitle:@"Image sans lien" forState:UIControlStateNormal];
+    } else {
+        [linkBtn setTitle:@"Lien" forState:UIControlStateNormal];
     }
-    else
-    {
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Folder-32"] withTheme:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Camera-32"] withTheme:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-        
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-    }
+    linkBtn.frame = CGRectMake(headerWidth*2/3, 3, headerWidth*1/3, 55);
+    [linkBtn addTarget:self action:@selector(copyLinkOrImage:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 54, headerWidth, 1.0f)];
+    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*1/3, 0, 1, 55)];
+    UIView *borderSwitch = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*2/3, 0, 1, 55)];
+    UIView *borderT = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 1.0f)];
+
+    [linkBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"link_url"] withTheme:theme] forState:UIControlStateNormal];
+    [linkBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"link-url"] withTheme:theme] forState:UIControlStateHighlighted];
+
+    [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
+    [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
+
+    [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
+    [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
+    
+    [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
+    [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
+    
+    [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
+    [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
+
+    [linkBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
+    [linkBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
+
     
     newPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin);
     oldPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin);
+
     border.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
     borderB.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     borderT.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
+    borderSwitch.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     
     [headerView addSubview:newPhotoBtn];
     [headerView addSubview:oldPhotoBtn];
-    
+    [headerView addSubview:linkBtn];
+
     [border setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderB setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderT setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-    
+    [borderSwitch setBackgroundColor:[ThemeColors cellBorderColor:theme]];
+
     [headerView addSubview:border];
     [headerView addSubview:borderB];
     [headerView addSubview:borderT];
-    
+    [headerView addSubview:borderSwitch];
     
     UIView* progressView = [[UIView alloc] initWithFrame:CGRectZero];
     progressView.frame = CGRectMake(0, 0, headerWidth, 50.f);
@@ -375,14 +366,7 @@
     subProgressView.frame = CGRectMake(0, 0, 50.f, 50.f);
     
     subProgressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin);
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        subProgressView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
-    }
-    else {
-        subProgressView.backgroundColor = [UIColor colorWithRed:0.22 green:0.33 blue:0.53 alpha:1.0];
-        
-    }
-    
+    subProgressView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
     subProgressView.tag = 54321;
     
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -1481,10 +1465,6 @@
         
         //[self.commonTableView setTableFooterView:nil];
     }
-    
-    
-    
-    
 }
 
 #pragma mark -
@@ -1942,6 +1922,43 @@
     [self showImagePicker:UIImagePickerControllerSourceTypePhotoLibrary withSender:sender];
 }
 
+- (void)copyLinkOrImage:(id)sender {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Copier le BBCode" message:@"Avec ou sans lien?"
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    UIAlertAction* actionAvec = [UIAlertAction actionWithTitle:@"Image avec lien" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) { [self setCopyLinkIlmageOption:bbcodeImageWithLink withSender:sender]; }];
+    UIAlertAction* actionSans = [UIAlertAction actionWithTitle:@"Image sans lien" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) { [self setCopyLinkIlmageOption:bbcodeImageNoLink withSender:sender]; }];
+    UIAlertAction* actionLink = [UIAlertAction actionWithTitle:@"Lien uniquement" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) { [self setCopyLinkIlmageOption:bbcodeLinkOnly withSender:sender]; }];
+    
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) [actionAvec setValue:@true forKey:@"checked"];
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) [actionSans setValue:@true forKey:@"checked"];
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeLinkOnly) [actionLink setValue:@true forKey:@"checked"];
+
+    [alert addAction:actionAvec];
+    [alert addAction:actionSans];
+    [alert addAction:actionLink];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
+- (void)setCopyLinkIlmageOption:(bbcodeLinkType)linkType withSender:sender {
+    [[NSUserDefaults standardUserDefaults] setInteger:linkType forKey:@"rehost_use_link"];
+    UIButton *linkBtn = (UIButton *)sender;
+    if (linkType == bbcodeImageWithLink) {
+        [linkBtn setTitle:@"Image & lien" forState:UIControlStateNormal];
+    } else if (linkType == bbcodeImageNoLink) {
+        [linkBtn setTitle:@"Image sans lien" forState:UIControlStateNormal];
+    } else {
+        [linkBtn setTitle:@"Lien" forState:UIControlStateNormal];
+    }
+}
 
 - (void)showImagePicker:(UIImagePickerControllerSourceType)sourceType withSender:(UIButton *)sender
 {

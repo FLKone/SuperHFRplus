@@ -56,12 +56,12 @@
     [encoder encodeObject:link_full forKey:@"link_full"];
     [encoder encodeObject:link_miniature forKey:@"link_miniature"];
     [encoder encodeObject:link_preview forKey:@"link_preview"];
-    [encoder encodeObject:link_medium forKey:@"link_preview"];
+    [encoder encodeObject:link_medium forKey:link_medium];
 
     [encoder encodeObject:nolink_full forKey:@"nolink_full"];
     [encoder encodeObject:nolink_miniature forKey:@"nolink_miniature"];
     [encoder encodeObject:nolink_preview forKey:@"nolink_preview"];
-    [encoder encodeObject:nolink_medium forKey:@"nolink_preview"];
+    [encoder encodeObject:nolink_medium forKey:@"nolink_medium"];
 
     [encoder encodeInt:version forKey:@"version"];
     [encoder encodeBool:deleted forKey:@"deleted"];
@@ -77,12 +77,12 @@
         link_full = [decoder decodeObjectForKey:@"link_full"];
         link_miniature = [decoder decodeObjectForKey:@"link_miniature"];
         link_preview = [decoder decodeObjectForKey:@"link_preview"];
-        link_medium = [decoder decodeObjectForKey:@"link_preview"];
+        link_medium = [decoder decodeObjectForKey:@"link_medium"];
 
         nolink_full = [decoder decodeObjectForKey:@"nolink_full"];
         nolink_miniature = [decoder decodeObjectForKey:@"nolink_miniature"];
         nolink_preview = [decoder decodeObjectForKey:@"nolink_preview"];
-        nolink_medium = [decoder decodeObjectForKey:@"nolink_preview"];
+        nolink_medium = [decoder decodeObjectForKey:@"nolink_medium"];
 
         version = [decoder decodeIntForKey:@"version"];
         deleted = [decoder decodeBoolForKey:@"deleted"];
@@ -111,64 +111,19 @@
     [self performSelectorInBackground:@selector(loadData:) withObject:picture];
 }
 -(void)loadData:(UIImage *)picture {
-	
-	
 	@autoreleasepool {
-	
-	//UIImageOrientation    originalOrientation = picture.imageOrientation;
-    
-	//NSLog(@"image %f %f", picture.size.width, picture.size.height);
-    /*
-     switch (originalOrientation) {
-     case UIImageOrientationUp:      //EXIF 1
-     NSLog(@"EXIF 1 UIImageOrientationUp");
-     break;
-     
-     case UIImageOrientationDown:    //EXIF 3
-     NSLog(@"EXIF 3 UIImageOrientationDown");
-     picture = [picture imageRotatedByDegrees:180];
-     
-     break;
-     
-     case UIImageOrientationLeft:    //EXIF 6
-     NSLog(@"EXIF 6 UIImageOrientationLeft");
-     //picture = [picture imageRotatedByDegrees:-90];
-     break;
-     
-     case UIImageOrientationRight:   //EXIF 8
-     NSLog(@"EXIF 8 UIImageOrientationRight");
-     //picture = [picture imageRotatedByDegrees:90];
-     break;
-     
-     default:
-     NSLog(@"EXIF DEF");
-     
-     break;
-     }
-     */
-    
         picture = [picture scaleAndRotateImage:picture];
         
-        //NSLog(@"image %f %f", picture.size.width, picture.size.height);
-        
-	NSData* jpegImageData = UIImageJPEGRepresentation(picture, 1);
+        NSData* jpegImageData = UIImageJPEGRepresentation(picture, 1);
 	
         [self performSelectorOnMainThread:@selector(loadData2:) withObject:jpegImageData waitUntilDone:NO];
-    
     }
-	
-    
 }
 
 -(void)loadData2:(NSData *)jpegImageData {
-    
-    
-	
 	ASIFormDataRequest* request = [ASIFormDataRequest requestWithURL:
                                [NSURL URLWithString:@"https://reho.st/upload"]];
     //[NSURL URLWithString:@"http://apps.flkone.com/hfrplus/api/upload.processor.php"]];
-	
-    
 	
 	NSString* filename = [NSString stringWithFormat:@"snapshot_%d.jpg", rand()];
 	
@@ -185,7 +140,6 @@
 	[request setDidStartSelector:@selector(fetchContentStarted:)];
 	[request setDidFinishSelector:@selector(fetchContentComplete:)];
 	[request setDidFailSelector:@selector(fetchContentFailed:)];
-	
 	
 	[request startAsynchronous];
 }
