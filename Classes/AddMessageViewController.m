@@ -272,9 +272,7 @@
     [self.rehostTableView setTableFooterView:v];
     
     float headerWidth = self.view.bounds.size.width;
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 55)];
-    
-    //    NSLog(@"mew cell %@", NSStringFromCGRect(self.view.frame));
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90)];
     
     Theme theme = [[ThemeManager sharedManager] theme];
     
@@ -282,40 +280,47 @@
     [newPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [newPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
     [newPhotoBtn setTitle:@"  Caméra" forState:UIControlStateNormal];
-    newPhotoBtn.frame = CGRectMake(headerWidth*0/3, 3, headerWidth*1/3, 55);
+    newPhotoBtn.frame = CGRectMake(headerWidth*0/2, 3, headerWidth*1/2, 50);
     [newPhotoBtn addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
 
     UIButton* oldPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
     [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
-    oldPhotoBtn.frame = CGRectMake(headerWidth*1/3, 3, headerWidth*1/3, 55);
+    oldPhotoBtn.frame = CGRectMake(headerWidth*1/2, 3, headerWidth*1/2, 50);
     [oldPhotoBtn addTarget:self action:@selector(uploadExistingPhoto:) forControlEvents:UIControlEventTouchUpInside];
     
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"rehost_use_link"] == nil) {
         [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
     }
-    
-    UIButton* linkBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [linkBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
-    [linkBtn.titleLabel setFont:[UIFont systemFontOfSize:12.0f]];
-    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
-        [linkBtn setTitle:@"Image & lien" forState:UIControlStateNormal];
-    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) {
-        [linkBtn setTitle:@"Image sans lien" forState:UIControlStateNormal];
-    } else {
-        [linkBtn setTitle:@"Lien" forState:UIControlStateNormal];
-    }
-    linkBtn.frame = CGRectMake(headerWidth*2/3, 3, headerWidth*1/3, 55);
-    [linkBtn addTarget:self action:@selector(copyLinkOrImage:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 54, headerWidth, 1.0f)];
-    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*1/3, 0, 1, 55)];
-    UIView *borderSwitch = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*2/3, 0, 1, 55)];
-    UIView *borderT = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 1.0f)];
 
-    [linkBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"link_url"] withTheme:theme] forState:UIControlStateNormal];
-    [linkBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"link-url"] withTheme:theme] forState:UIControlStateHighlighted];
+    // Segmented control for BBCode url type
+    NSArray *itemArray = [NSArray arrayWithObjects: @"Image et lien", @"Image sans lien", @"Lien seul", nil];
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    //segmentedControl.frame = CGRectMake(headerWidth*1/4, 56, headerWidth*3/4-3, 30);
+    segmentedControl.frame = CGRectMake(3, 56, headerWidth-6, 29);
+    [segmentedControl addTarget:self action:@selector(segmentedControlValueDidChange:) forControlEvents:UIControlEventValueChanged];
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
+        segmentedControl.selectedSegmentIndex = 0;
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) {
+        segmentedControl.selectedSegmentIndex = 1;
+    } else {
+        segmentedControl.selectedSegmentIndex = 2;
+    }
+
+    // Label
+    UILabel *bbcodeLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 56, headerWidth*1/4, 30)];
+    bbcodeLabel.text = @"Copier le lien";
+    bbcodeLabel.font = [UIFont systemFontOfSize:14.0f];
+    bbcodeLabel.numberOfLines = 1;
+    bbcodeLabel.backgroundColor = [UIColor clearColor];
+    bbcodeLabel.textColor = [ThemeColors tintColor:theme];
+
+    
+    UIView *borderT = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 1.0f)];
+    UIView *borderM = [[UIView alloc] initWithFrame:CGRectMake(0, 50, headerWidth, 1.0f)];
+    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 90, headerWidth, 1.0f)];
+    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*1/2, 0, 1, 50)];
 
     [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
     [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
@@ -329,31 +334,28 @@
     [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
     [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
 
-    [linkBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-    [linkBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-
-    
     newPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin);
     oldPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin);
 
     border.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
     borderB.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     borderT.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-    borderSwitch.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
+    borderM.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     
     [headerView addSubview:newPhotoBtn];
     [headerView addSubview:oldPhotoBtn];
-    [headerView addSubview:linkBtn];
+    [headerView addSubview:segmentedControl];
+    //[headerView addSubview:bbcodeLabel];
 
     [border setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderB setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderT setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-    [borderSwitch setBackgroundColor:[ThemeColors cellBorderColor:theme]];
+    [borderM setBackgroundColor:[ThemeColors cellBorderColor:theme]];
 
     [headerView addSubview:border];
     [headerView addSubview:borderB];
     [headerView addSubview:borderT];
-    [headerView addSubview:borderSwitch];
+    [headerView addSubview:borderM];
     
     UIView* progressView = [[UIView alloc] initWithFrame:CGRectZero];
     progressView.frame = CGRectMake(0, 0, headerWidth, 50.f);
@@ -1922,41 +1924,17 @@
     [self showImagePicker:UIImagePickerControllerSourceTypePhotoLibrary withSender:sender];
 }
 
-- (void)copyLinkOrImage:(id)sender {
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Copier le BBCode" message:@"Avec ou sans lien?"
-                                                            preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) { }];
-    UIAlertAction* actionAvec = [UIAlertAction actionWithTitle:@"Image avec lien" style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) { [self setCopyLinkIlmageOption:bbcodeImageWithLink withSender:sender]; }];
-    UIAlertAction* actionSans = [UIAlertAction actionWithTitle:@"Image sans lien" style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) { [self setCopyLinkIlmageOption:bbcodeImageNoLink withSender:sender]; }];
-    UIAlertAction* actionLink = [UIAlertAction actionWithTitle:@"Lien uniquement" style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) { [self setCopyLinkIlmageOption:bbcodeLinkOnly withSender:sender]; }];
-    
-    if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) [actionAvec setValue:@true forKey:@"checked"];
-    if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) [actionSans setValue:@true forKey:@"checked"];
-    if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeLinkOnly) [actionLink setValue:@true forKey:@"checked"];
-
-    [alert addAction:actionAvec];
-    [alert addAction:actionSans];
-    [alert addAction:actionLink];
-    [alert addAction:cancelAction];
-    
-    [self presentViewController:alert animated:YES completion:nil];
-    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-}
-
-- (void)setCopyLinkIlmageOption:(bbcodeLinkType)linkType withSender:sender {
-    [[NSUserDefaults standardUserDefaults] setInteger:linkType forKey:@"rehost_use_link"];
-    UIButton *linkBtn = (UIButton *)sender;
-    if (linkType == bbcodeImageWithLink) {
-        [linkBtn setTitle:@"Image & lien" forState:UIControlStateNormal];
-    } else if (linkType == bbcodeImageNoLink) {
-        [linkBtn setTitle:@"Image sans lien" forState:UIControlStateNormal];
-    } else {
-        [linkBtn setTitle:@"Lien" forState:UIControlStateNormal];
+-(void)segmentedControlValueDidChange:(UISegmentedControl *)segment {
+    switch (segment.selectedSegmentIndex) {
+        case 0:{
+            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
+            break;}
+        case 1:{
+            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageNoLink forKey:@"rehost_use_link"];
+            break;}
+        case 2:{
+            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeLinkOnly forKey:@"rehost_use_link"];
+            break;}
     }
 }
 

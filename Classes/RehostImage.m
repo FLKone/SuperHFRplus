@@ -56,7 +56,7 @@
     [encoder encodeObject:link_full forKey:@"link_full"];
     [encoder encodeObject:link_miniature forKey:@"link_miniature"];
     [encoder encodeObject:link_preview forKey:@"link_preview"];
-    [encoder encodeObject:link_medium forKey:link_medium];
+    [encoder encodeObject:link_medium forKey:@"link_medium"];
 
     [encoder encodeObject:nolink_full forKey:@"nolink_full"];
     [encoder encodeObject:nolink_miniature forKey:@"nolink_miniature"];
@@ -88,9 +88,8 @@
         deleted = [decoder decodeBoolForKey:@"deleted"];
 
         timeStamp = [decoder decodeObjectForKey:@"timeStamp"];
-
-        //NSLog(@"initWithCoder %@", self);
     }
+    
     return self;
 }
 
