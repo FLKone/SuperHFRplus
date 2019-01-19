@@ -391,7 +391,8 @@
         }
         else if ([[trNode className] rangeOfString:@"ligne_booleen"].location != NSNotFound) {
             //NSLog(@"TOPIC // ROW");
-            
+            //NSLog(@"Topic node %@", rawContentsOfNode([trNode _node], [myParser _doc]));
+
             [aFavorite addTopicWithNode:trNode];
         }
         else {
@@ -1154,10 +1155,6 @@
             
             
             [(UILabel *)[cell.contentView viewWithTag:999] setAttributedText:finalString];
-
-            
-            
-            
         }
         else {
             [(UILabel *)[cell.contentView viewWithTag:999] setText:[tmpTopic aTitle]];
@@ -1178,16 +1175,20 @@
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSInteger vos_sujets = [defaults integerForKey:@"vos_sujets"];
-        
+        UILabel* labelPages = (UILabel *)[cell.contentView viewWithTag:998];
+        NSString* sPoll = @"";
+        if (tmpTopic.isPoll) {
+            sPoll = @" \U00002263";
+        }
         switch (vos_sujets) {
             case 0:
-                [(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"⚑ %d/%d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [labelPages setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
             case 1:
-                [(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"★ %d/%d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [labelPages setText:[NSString stringWithFormat:@"★%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
             default:
-                [(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"⚑ %d/%d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [labelPages setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
         }
         
@@ -1475,14 +1476,10 @@
         [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
         
         self.navigationItem.backBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                         style: UIBarButtonItemStyleBordered
+        [[UIBarButtonItem alloc] initWithTitle:@" "
+                                         style: UIBarButtonItemStylePlain
                                         target:nil
                                         action:nil];
-        
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            self.navigationItem.backBarButtonItem.title = @" ";
-        }
         
         [self.navigationController pushViewController:messagesTableViewController animated:YES];
     }

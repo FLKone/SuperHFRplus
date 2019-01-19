@@ -42,7 +42,7 @@
 #import "ThemeColors.h"
 
 @implementation MessagesTableViewController
-@synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser;
+@synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
 @synthesize swipeLeftRecognizer, swipeRightRecognizer, overview, arrayActionsMessages, lastStringFlagTopic;
 @synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported, isSeparatorNewMessages;
 
@@ -493,6 +493,7 @@
 -(void)setupPoll:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
     self.pollNode = nil;
     self.pollParser = nil;
+    self.isNewPoll = NO;
     
 	HTMLNode * tmpPollNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"sondage" allowPartial:NO];
 	if(tmpPollNode)
@@ -500,6 +501,12 @@
         //NSLog(@"Raw Poll %@", rawContentsOfNode([tmpPollNode _node], [myParser _doc]));
         [self setPollNode:tmpPollNode];
         [self setPollParser:myParser];
+        
+        // Adapt action button of navigation bar
+        HTMLNode * tmpPollNodeInput = [tmpPollNode findChildTag:@"input"];
+        if (tmpPollNodeInput) {
+            self.isNewPoll = YES;
+        }
     }
 }
 
@@ -779,7 +786,6 @@
 
 - (void)viewDidLoad {
 	//NSLog(@"viewDidLoad %@", self.topicName);
-
     [super viewDidLoad];
 	self.isAnimating = NO;
 
@@ -899,9 +905,6 @@
 
 	[(ShakeView*)self.view setShakeDelegate:self];
 	
-    
-    
-    
 	self.arrayAction = [[NSMutableArray alloc] init];
 	self.arrayActionsMessages = [[NSMutableArray alloc] init];
     
@@ -1001,7 +1004,13 @@
 
     
     for( NSDictionary *dico in arrayActionsMessages) {
-        [styleAlert addAction:[UIAlertAction actionWithTitle:[dico valueForKey:@"title"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString* sActionTitle = [dico valueForKey:@"title"];
+        UIAlertActionStyle styleAction = UIAlertActionStyleDefault;
+        if (self.isNewPoll && [sActionTitle isEqualToString:@"Sondage"]) {
+            styleAction = UIAlertActionStyleDestructive;
+        }
+        
+        [styleAlert addAction:[UIAlertAction actionWithTitle:sActionTitle style:styleAction handler:^(UIAlertAction *action) {
             if ([self respondsToSelector:NSSelectorFromString([dico valueForKey:@"code"])])
             {
                 //[self performSelector:];
@@ -1031,6 +1040,10 @@
     // Apply theme to UIAlertController
     [self presentViewController:styleAlert animated:YES completion:nil];    
     [[ThemeManager sharedManager] applyThemeToAlertController:styleAlert];
+}
+
+-(void)showPoll:(id)sender {
+    [self showPoll];
 }
 
 -(void)showPoll {
@@ -1278,24 +1291,15 @@
 			 self.detailViewController = aView;
 		 }
 		 
-		 
-		 // ...
-		 // Pass the selected object to the new view controller.
-		 self.navigationItem.backBarButtonItem =
-		 [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-		 style: UIBarButtonItemStyleBordered
-		 target:nil
-		 action:nil];
-		
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            self.navigationItem.backBarButtonItem.title = @" ";
-        }
-        
-		///===
+        // Pass the selected object to the new view controller.
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@" "
+            style: UIBarButtonItemStylePlain
+            target:nil
+            action:nil];
+
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         
         label.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
-        //label.frame = CGRectMake(0, 0, 500, self.navigationBar.frame.size.height - 4);
         
         label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight; // 
         
@@ -1737,9 +1741,17 @@
         
         NSLog(@"NEW %@", self.stringFlagTopic);
 
+        // On ajoute le bouton de notif de sondage
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
+            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
+            self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
+        } else {
+            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
+        }
         
         NSString *refreshBtn = @"";
-        
         //on ajoute le bouton actualiser si besoin
         if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
             //NSLog(@"premiere et unique ou dernier");
@@ -1926,12 +1938,8 @@
         
         [self.messagesWebView setUserInteractionEnabled:YES];
     }
- 
-
-	//[HTMLString release];
-	//[tmpHTML release];
-
 }
+
 - (void)handleLoadedParser:(HTMLParser *)myParser
 {
 	[self loadDataInTableView:myParser];
@@ -2067,31 +2075,21 @@
 		else if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
             
             if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
-                //NSLog(@"pas la meme page / topic");
-                
-                //NSLog(@"did Select row Topics table views: %d", indexPath.row);
-                
-                //if (self.messagesTableViewController == nil) {
+
                 MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
                 self.messagesTableViewController = aView;
-                //}
                 
                 //setup the URL
                 self.messagesTableViewController.topicName = @"";
                 self.messagesTableViewController.isViewed = YES;	
-                
+
                 self.navigationItem.backBarButtonItem =
-                [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                                 style: UIBarButtonItemStyleBordered
+                [[UIBarButtonItem alloc] initWithTitle:[self backBarButtonTitle]
+                                                 style: UIBarButtonItemStylePlain
                                                 target:nil
                                                 action:nil];
                 
-                if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-                    self.navigationItem.backBarButtonItem.title = @" ";
-                }
-                
-                //NSLog(@"push message liste");
-                [self.navigationController pushViewController:messagesTableViewController animated:YES];  
+                [self.navigationController pushViewController:messagesTableViewController animated:YES];
             }
             
 
@@ -2113,16 +2111,12 @@
             //setup the URL
             self.messagesTableViewController.topicName = @"";
             self.messagesTableViewController.isViewed = YES;
-            
+
             self.navigationItem.backBarButtonItem =
-            [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                             style: UIBarButtonItemStyleBordered
+            [[UIBarButtonItem alloc] initWithTitle:[self backBarButtonTitle]
+                                             style: UIBarButtonItemStylePlain
                                             target:nil
                                             action:nil];
-            
-            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-                self.navigationItem.backBarButtonItem.title = @" ";
-            }
             
             [self.navigationController pushViewController:messagesTableViewController animated:YES];
 
@@ -2199,6 +2193,11 @@
     }
     
 	return YES;
+}
+
+-(NSString*) backBarButtonTitle {
+    NSArray *array = [self.navigationController viewControllers];
+    return [NSString stringWithFormat: @"%ld", (long)(array.count - 1)];
 }
 
 -(void) showMenuCon:(NSNumber *)curMsgN andPos:(NSNumber *)posN {
@@ -3097,14 +3096,10 @@
         [self.messagesTableViewController setSearchInputData:[NSMutableDictionary dictionaryWithDictionary:self.searchInputData]];
         
         self.navigationItem.backBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                         style: UIBarButtonItemStyleBordered
+        [[UIBarButtonItem alloc] initWithTitle:[self backBarButtonTitle]
+                                         style: UIBarButtonItemStylePlain
                                         target:nil
                                         action:nil];
-        
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            self.navigationItem.backBarButtonItem.title = @" ";
-        }
         
         [self.navigationController pushViewController:messagesTableViewController animated:YES];
     }

@@ -17,17 +17,17 @@
 @synthesize msgLabel;
 @synthesize timeLabel;
 
-
 - (void)awakeFromNib {
     
     [super awakeFromNib];
     
+    /*
     if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         [titleLabel setHighlightedTextColor:[UIColor whiteColor]];
         [msgLabel setHighlightedTextColor:[UIColor whiteColor]];
         [timeLabel setHighlightedTextColor:[UIColor whiteColor]];
     }
-    
+    */
 }
 
 -(void)layoutSubviews {
@@ -63,11 +63,6 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-    
-//    UIView * selectedBackgroundView = [[UIView alloc] init];
-//    [selectedBackgroundView setBackgroundColor:[ThemeColors cellHighlightBackgroundColor:[[ThemeManager sharedManager] theme]]]; // set color here
-//    [self setSelectedBackgroundView:selectedBackgroundView];
-
 }
 
 

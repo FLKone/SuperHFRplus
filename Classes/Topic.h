@@ -36,6 +36,7 @@
 	int postID;
 	int catID;
     
+    bool isPoll;
     bool isSticky;
     bool isClosed;
     bool isSuperFavorite;
@@ -67,6 +68,7 @@
 @property int postID;
 @property int catID;
 
+@property bool isPoll;
 @property bool isSticky;
 @property bool isSuperFavorite;
 @property bool isClosed;

@@ -87,6 +87,7 @@
     
     //Poll
     HTMLNode *pollNode;
+    BOOL isNewPoll;
     HTMLParser *pollParser;
     
     //Search
@@ -161,6 +162,7 @@
 @property BOOL isAnimating;
 
 @property (nonatomic, strong) HTMLNode *pollNode;
+@property BOOL isNewPoll;
 @property (nonatomic, strong) HTMLParser *pollParser;
 @property (nonatomic, strong) NSString *firstnumBackup;
 

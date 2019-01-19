@@ -412,6 +412,16 @@
 				<string>internal</string>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <true/>
+            <key>Key</key>
+            <string>notify_poll_not_answered</string>
+            <key>Title</key>
+            <string>Notifier un sondage non répondu</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Maintenance</string>
