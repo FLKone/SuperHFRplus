@@ -594,8 +594,8 @@
 			//Title & URL
 			HTMLNode * topicTitleNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase3" allowPartial:NO];
 
-        NSString *aTopicAffix = [NSString string];
-        NSString *aTopicSuffix = [NSString string];
+            NSString *aTopicAffix = [NSString string];
+            NSString *aTopicSuffix = [NSString string];
 
 			
 			if ([[topicNode className] rangeOfString:@"ligne_sticky"].location != NSNotFound) {
@@ -611,10 +611,8 @@
 				aTopicAffix = [aTopicAffix stringByAppendingString:@" "];
 			}
 
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             aTopicAffix = @"";
-        }
-        
+
 			NSString *aTopicTitle = [[NSString alloc] initWithFormat:@"%@%@%@", aTopicAffix, [[topicTitleNode allContents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]], aTopicSuffix];
 			[aTopic setATitle:aTopicTitle];
 
@@ -625,6 +623,10 @@
 			HTMLNode * numRepNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase7" allowPartial:NO];
 			[aTopic setARepCount:[[numRepNode contents] intValue]];
 
+            HTMLNode * pollImage = [topicNode findChildWithAttribute:@"src" matchingName:@"https://forum-images.hardware.fr/themes_static/images/defaut/sondage.gif" allowPartial:NO];
+            if (pollImage != nil) {
+                aTopic.isPoll = YES;
+            }
 
 			//Setup of Flag		
 			HTMLNode * topicFlagNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase5" allowPartial:NO];
@@ -1642,12 +1644,17 @@
             [[cell titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
         }
     }
-	 
+    
+    NSString* sPoll = @"";
+    if (aTopic.isPoll) {
+        sPoll = @" \U00002263";
+    }
+    
 	if (aTopic.aRepCount == 0) {
-	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺ %d", (aTopic.aRepCount + 1)]];
+	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺%@ %d", sPoll, (aTopic.aRepCount + 1)]];
 	}
 	else {
-	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺ %d", (aTopic.aRepCount + 1)]];
+	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺%@ %d", sPoll, (aTopic.aRepCount + 1)]];
 	}
 	
 	[cell.timeLabel setText:[NSString stringWithFormat:@"%@ - %@", [aTopic aAuthorOfLastPost], [aTopic aDateOfLastPost]]];

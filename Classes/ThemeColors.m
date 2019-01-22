@@ -202,9 +202,12 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 }
 
 + (UIColor *)messageHeaderMeBackgroundColor:(Theme)theme{
+    UIColor* c;
     switch (theme) {
         case ThemeLight: return [UIColor colorWithRed:220/255.0 green:220/255.0 blue:235/255.0 alpha:1.0];
-        case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:54/255.0 green:44/255.0 blue:34/255.0 alpha:1.0] withMin:20.0];
+        case ThemeDark:
+            c = [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:54/255.0 green:44/255.0 blue:34/255.0 alpha:1.0] withMin:20.0];
+            return [self changeHue:c withValue:fDarkColor2];
         case ThemeOLED:  return [UIColor colorWithRed:36/255.0 green:20.0/255.0 blue:4/255.0 alpha:1.0];
         default:         return [UIColor whiteColor];
     }
