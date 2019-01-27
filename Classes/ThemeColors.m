@@ -805,6 +805,7 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
             case 1:return @"favorites_on";
             case 2:return @"mp_on";
             case 3:return @"dots_on";
+            case 4:return @"dots_on";
         }
     }
     else {
@@ -826,6 +827,7 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
             case 1:return @"favorites";
             case 2:return @"mp";
             case 3:return @"dots";
+            case 4:return @"dots";
         }
     }
     else {

@@ -94,7 +94,7 @@
                     <viewControllers>
                         <tableViewController title="Réglages" automaticallyAdjustsScrollViewInsets="NO" id="GVX-YK-j2V" customClass="SettingsViewController">
                             <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="uDi-uo-5iE">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
@@ -105,6 +105,18 @@
                             <extendedEdge key="edgesForExtendedLayout"/>
                             <navigationItem key="navigationItem" title="Réglages" id="WB3-fg-zCe"/>
                         </tableViewController>
+                    </viewControllers>
+                </navigationController>
+                <navigationController id="TdA-PO-9Hb" userLabel="Plus Nav Controller" customClass="HFRNavigationController">
+                    <tabBarItem key="tabBarItem" title="Item" id="xTA-t9-eIS" userLabel="Plus"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oYT-9w-Hqa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <viewControllers>
+                        <viewController id="wKd-bj-8DK" customClass="PlusTableViewController">
+                            <navigationItem key="navigationItem" title="Item" id="tg3-P9-1K7"/>
+                        </viewController>
                     </viewControllers>
                 </navigationController>
             </viewControllers>

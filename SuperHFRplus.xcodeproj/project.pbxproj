@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1503755021FCFF6800A5F7E1 /* PlusTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */; };
 		15141AA321E7ADE800811E5A /* link_url.png in Resources */ = {isa = PBXBuildFile; fileRef = 15141AA221E7ADE800811E5A /* link_url.png */; };
 		156246D8218230DC00F5B8DC /* plus.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D7218230DC00F5B8DC /* plus.svg */; };
 		156246DD2182310000F5B8DC /* arrowend.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D92182310000F5B8DC /* arrowend.svg */; };
@@ -722,6 +723,8 @@
 		01BF8B6F121DAEF3007624B6 /* Topic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Topic.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		01BF8C4A121DBB09007624B6 /* UIAlertViewURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = UIAlertViewURL.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		01BF8C4B121DBB09007624B6 /* UIAlertViewURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = UIAlertViewURL.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlusTableViewController.h; sourceTree = "<group>"; };
+		1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusTableViewController.m; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15141AA421E7ADF000811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
@@ -1618,6 +1621,8 @@
 		01BF8A0C121D7450007624B6 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */,
+				1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */,
 				1D3623240D0F684500981E51 /* HFRplusAppDelegate.h */,
 				1D3623250D0F684500981E51 /* HFRplusAppDelegate.m */,
 				01BF8C4A121DBB09007624B6 /* UIAlertViewURL.h */,
@@ -3489,6 +3494,7 @@
 				D8835E9C1E5F13C70073398C /* UIImage+WebP.m in Sources */,
 				4C3903611BCACEC200FD6F1F /* PSTCollectionViewFlowLayout.m in Sources */,
 				D80DBD781E55BE730051B751 /* ASINetworkQueue.m in Sources */,
+				1503755021FCFF6800A5F7E1 /* PlusTableViewController.m in Sources */,
 				D8835EA01E5F13C70073398C /* UIImageView+WebCache.m in Sources */,
 				D8F5CBAE1DF45C1100B029FC /* Reachability.m in Sources */,
 				4C265D4E1BAE511800B1A244 /* HFRWebView.m in Sources */,
