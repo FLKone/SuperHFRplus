@@ -8,12 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		1503755021FCFF6800A5F7E1 /* PlusTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */; };
+		1503755321FDF8D700A5F7E1 /* PlusTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755221FDF8D700A5F7E1 /* PlusTableView.xib */; };
+		1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755421FE249300A5F7E1 /* PlusCellView.xib */; };
+		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
 		15141AA321E7ADE800811E5A /* link_url.png in Resources */ = {isa = PBXBuildFile; fileRef = 15141AA221E7ADE800811E5A /* link_url.png */; };
 		156246D8218230DC00F5B8DC /* plus.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D7218230DC00F5B8DC /* plus.svg */; };
 		156246DD2182310000F5B8DC /* arrowend.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D92182310000F5B8DC /* arrowend.svg */; };
 		156246DE2182310000F5B8DC /* arrowforward.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DA2182310000F5B8DC /* arrowforward.svg */; };
 		156246DF2182310000F5B8DC /* arrowbegin.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DB2182310000F5B8DC /* arrowbegin.svg */; };
 		156246E02182310000F5B8DC /* arrowback.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DC2182310000F5B8DC /* arrowback.svg */; };
+		15EBFD0522021B8400A37CED /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD0422021B8400A37CED /* SettingsView.xib */; };
+		15EBFD0822022A7500A37CED /* PlusSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */; };
 		4C0031241BD01CE700F87F13 /* HFRTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C0031221BD01CE700F87F13 /* HFRTabBar.m */; };
 		4C00313E1BD0404500F87F13 /* UIWebView+FLUIWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00313A1BD0404500F87F13 /* UIWebView+FLUIWebView.m */; };
 		4C0031401BD0404500F87F13 /* WKWebView+FLWKWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00313C1BD0404500F87F13 /* WKWebView+FLWKWebView.m */; };
@@ -725,6 +730,10 @@
 		01BF8C4B121DBB09007624B6 /* UIAlertViewURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = UIAlertViewURL.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlusTableViewController.h; sourceTree = "<group>"; };
 		1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusTableViewController.m; sourceTree = "<group>"; };
+		1503755221FDF8D700A5F7E1 /* PlusTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlusTableView.xib; sourceTree = "<group>"; };
+		1503755421FE249300A5F7E1 /* PlusCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlusCellView.xib; sourceTree = "<group>"; };
+		1503755621FE26C900A5F7E1 /* PlusCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlusCellView.h; sourceTree = "<group>"; };
+		1503755721FF794200A5F7E1 /* PlusCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusCellView.m; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15141AA421E7ADF000811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
@@ -732,6 +741,9 @@
 		156246DA2182310000F5B8DC /* arrowforward.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowforward.svg; sourceTree = "<group>"; };
 		156246DB2182310000F5B8DC /* arrowbegin.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowbegin.svg; sourceTree = "<group>"; };
 		156246DC2182310000F5B8DC /* arrowback.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowback.svg; sourceTree = "<group>"; };
+		15EBFD0422021B8400A37CED /* SettingsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
+		15EBFD0622022A5700A37CED /* PlusSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlusSettingsViewController.h; sourceTree = "<group>"; };
+		15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlusSettingsViewController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HFRplusAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRplusAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* HFRplusAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HFRplusAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -1621,8 +1633,6 @@
 		01BF8A0C121D7450007624B6 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */,
-				1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */,
 				1D3623240D0F684500981E51 /* HFRplusAppDelegate.h */,
 				1D3623250D0F684500981E51 /* HFRplusAppDelegate.m */,
 				01BF8C4A121DBB09007624B6 /* UIAlertViewURL.h */,
@@ -1646,6 +1656,7 @@
 				CA77D0F41261424D00271D62 /* PageViewController.m */,
 				CA1070C715A5F406002E6C19 /* SettingsViewController.h */,
 				CA1070C815A5F407002E6C19 /* SettingsViewController.m */,
+				15EBFD0422021B8400A37CED /* SettingsView.xib */,
 				CAC4966715B77357009128BC /* HFRNavigationController.h */,
 				CAC4966815B77357009128BC /* HFRNavigationController.m */,
 				CAF5DB5619328EB4000B5215 /* PullToRefreshErrorViewController.h */,
@@ -1702,6 +1713,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1503755121FDF89F00A5F7E1 /* Plus */,
 				CA26861C13ADD94100AC5511 /* webBrowser */,
 				01BF8A0C121D7450007624B6 /* Common */,
 				01BF8A0F121D7469007624B6 /* Forums */,
@@ -1712,6 +1724,21 @@
 				01BF8775121C4407007624B6 /* Infos */,
 			);
 			path = Classes;
+			sourceTree = "<group>";
+		};
+		1503755121FDF89F00A5F7E1 /* Plus */ = {
+			isa = PBXGroup;
+			children = (
+				15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */,
+				15EBFD0622022A5700A37CED /* PlusSettingsViewController.h */,
+				1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */,
+				1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */,
+				1503755221FDF8D700A5F7E1 /* PlusTableView.xib */,
+				1503755421FE249300A5F7E1 /* PlusCellView.xib */,
+				1503755621FE26C900A5F7E1 /* PlusCellView.h */,
+				1503755721FF794200A5F7E1 /* PlusCellView.m */,
+			);
+			name = Plus;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -3115,6 +3142,7 @@
 				CA7C7046185EF50E00B348BA /* endhover.png in Resources */,
 				4C052E1B1BA86C9400B61952 /* Flat-RedFlag-25.png in Resources */,
 				CA7C7047185EF50E00B348BA /* upsmall@2x.png in Resources */,
+				1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */,
 				CA7C7048185EF50E00B348BA /* buttonendon@2x.png in Resources */,
 				4C0B8DB31BA4522900D329BA /* DesignFilled-40@2x.png in Resources */,
 				4C9C2B221BAE66EB00511853 /* ThorHammerBlack-20.png in Resources */,
@@ -3187,6 +3215,7 @@
 				4C21E95A1BA5C70400691D65 /* CutFilled-20.png in Resources */,
 				CA7C706E185EF50E00B348BA /* image.png in Resources */,
 				4C0B8DC31BA4522900D329BA /* GraduationCapFilled-40@2x.png in Resources */,
+				1503755321FDF8D700A5F7E1 /* PlusTableView.xib in Resources */,
 				CA7C706F185EF50E00B348BA /* frown.gif in Resources */,
 				CA7C7070185EF50E00B348BA /* wahoo.gif in Resources */,
 				4C21E9521BA5C70400691D65 /* CopyFilled-20.png in Resources */,
@@ -3261,6 +3290,7 @@
 				4C1991981FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@2x.png in Resources */,
 				4C0B8DA51BA4522900D329BA /* ShieldFilled-40.png in Resources */,
 				4CD6B8B41B97ACA8007FC29E /* Camera-32@2x.png in Resources */,
+				15EBFD0522021B8400A37CED /* SettingsView.xib in Resources */,
 				CA7C709A185EF50E00B348BA /* README.md in Resources */,
 				4C0B8DF11BA4522900D329BA /* cat-apple.png in Resources */,
 				4CB132DF1B909C7C0081B44D /* QuoteFilled-20@2x.png in Resources */,
@@ -3464,6 +3494,7 @@
 				CACADFDA19217CCA0071D2DA /* UIScrollView+SVPullToRefresh.m in Sources */,
 				CACADFD819217CCA0071D2DA /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				CA7C710C185EF50E00B348BA /* ShakeView.m in Sources */,
+				15EBFD0822022A7500A37CED /* PlusSettingsViewController.m in Sources */,
 				CA7C70C8185EF50E00B348BA /* MBProgressHUD.m in Sources */,
 				CA7C70CF185EF50E00B348BA /* HTMLNode.m in Sources */,
 				D80DBD6A1E55BE730051B751 /* ASIAuthenticationDialog.m in Sources */,
@@ -3482,6 +3513,7 @@
 				4C0031241BD01CE700F87F13 /* HFRTabBar.m in Sources */,
 				4CC814FE1BAC86ED00F8BB81 /* UIColor+Extension.m in Sources */,
 				4C3903671BCACEC200FD6F1F /* PSTCollectionViewUpdateItem.m in Sources */,
+				1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */,
 				4C00313E1BD0404500F87F13 /* UIWebView+FLUIWebView.m in Sources */,
 				4C3903591BCACEC200FD6F1F /* PSTCollectionView.m in Sources */,
 				4C39036F1BCACEC200FD6F1F /* PSTGridLayoutSection.m in Sources */,

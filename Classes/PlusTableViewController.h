@@ -1,22 +1,27 @@
 //
-//  PlusViewController.h
+//  PlusTableViewController.h
 //  SuperHFRplus
 //
 //  Created by Bruno ARENE on 26/01/2019.
 //
 
-#ifndef PlusViewController_h
-#define PlusViewController_h
+#ifndef PlusTableViewController_h
+#define PlusTableViewController_h
 
 #import <UIKit/UIKit.h>
+#import "PlusSettingsViewController.h"
+#import "CompteViewController.h"
 
 @interface PlusTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate> {
     IBOutlet UITableView *plusTableView;
+    PlusSettingsViewController *settingsViewController;
+    CompteViewController *compteViewController;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *plusTableView;
+@property (nonatomic, strong) PlusSettingsViewController *settingsViewController;
+@property (nonatomic, strong) CompteViewController *compteViewController;
 
 @end
 
-
-#endif /* PlusViewController_h */
+#endif /* PlusTableViewController_h */

@@ -386,7 +386,7 @@
                 }
             }
             
-            NSLog(@"Favorite order: aID=%@, order=%@", aFavorite.forum.aID, aFavorite.order);
+            //NSLog(@"Favorite order: aID=%@, order=%@", aFavorite.forum.aID, aFavorite.order);
             first = NO;
         }
         else if ([[trNode className] rangeOfString:@"ligne_booleen"].location != NSNotFound) {
