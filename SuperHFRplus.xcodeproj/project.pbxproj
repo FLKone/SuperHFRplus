@@ -19,6 +19,10 @@
 		156246E02182310000F5B8DC /* arrowback.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DC2182310000F5B8DC /* arrowback.svg */; };
 		15EBFD0522021B8400A37CED /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD0422021B8400A37CED /* SettingsView.xib */; };
 		15EBFD0822022A7500A37CED /* PlusSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */; };
+		15EBFD0E22061F7300A37CED /* AQTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD0D22061F7300A37CED /* AQTableViewController.m */; };
+		15EBFD112206207B00A37CED /* AQCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD102206207B00A37CED /* AQCellView.m */; };
+		15EBFD132206210000A37CED /* AQTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD122206210000A37CED /* AQTableView.xib */; };
+		15EBFD152206211500A37CED /* AQCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD142206211500A37CED /* AQCellView.xib */; };
 		4C0031241BD01CE700F87F13 /* HFRTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C0031221BD01CE700F87F13 /* HFRTabBar.m */; };
 		4C00313E1BD0404500F87F13 /* UIWebView+FLUIWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00313A1BD0404500F87F13 /* UIWebView+FLUIWebView.m */; };
 		4C0031401BD0404500F87F13 /* WKWebView+FLWKWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00313C1BD0404500F87F13 /* WKWebView+FLWKWebView.m */; };
@@ -744,6 +748,12 @@
 		15EBFD0422021B8400A37CED /* SettingsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
 		15EBFD0622022A5700A37CED /* PlusSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlusSettingsViewController.h; sourceTree = "<group>"; };
 		15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlusSettingsViewController.m; sourceTree = "<group>"; };
+		15EBFD0C22061F6200A37CED /* AQTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AQTableViewController.h; sourceTree = "<group>"; };
+		15EBFD0D22061F7300A37CED /* AQTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AQTableViewController.m; sourceTree = "<group>"; };
+		15EBFD0F2206206E00A37CED /* AQCellCView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AQCellCView.h; sourceTree = "<group>"; };
+		15EBFD102206207B00A37CED /* AQCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AQCellView.m; sourceTree = "<group>"; };
+		15EBFD122206210000A37CED /* AQTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AQTableView.xib; sourceTree = "<group>"; };
+		15EBFD142206211500A37CED /* AQCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AQCellView.xib; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* HFRplusAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRplusAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* HFRplusAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HFRplusAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -1713,6 +1723,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				15EBFD0922061ECD00A37CED /* AlertesQualitay */,
 				1503755121FDF89F00A5F7E1 /* Plus */,
 				CA26861C13ADD94100AC5511 /* webBrowser */,
 				01BF8A0C121D7450007624B6 /* Common */,
@@ -1729,8 +1740,8 @@
 		1503755121FDF89F00A5F7E1 /* Plus */ = {
 			isa = PBXGroup;
 			children = (
-				15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */,
 				15EBFD0622022A5700A37CED /* PlusSettingsViewController.h */,
+				15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */,
 				1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */,
 				1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */,
 				1503755221FDF8D700A5F7E1 /* PlusTableView.xib */,
@@ -1739,6 +1750,19 @@
 				1503755721FF794200A5F7E1 /* PlusCellView.m */,
 			);
 			name = Plus;
+			sourceTree = "<group>";
+		};
+		15EBFD0922061ECD00A37CED /* AlertesQualitay */ = {
+			isa = PBXGroup;
+			children = (
+				15EBFD0C22061F6200A37CED /* AQTableViewController.h */,
+				15EBFD0D22061F7300A37CED /* AQTableViewController.m */,
+				15EBFD0F2206206E00A37CED /* AQCellCView.h */,
+				15EBFD102206207B00A37CED /* AQCellView.m */,
+				15EBFD122206210000A37CED /* AQTableView.xib */,
+				15EBFD142206211500A37CED /* AQCellView.xib */,
+			);
+			name = AlertesQualitay;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -3029,6 +3053,7 @@
 				CA7C7003185EF50E00B348BA /* loadinfo.net.gif in Resources */,
 				CA7C7004185EF50E00B348BA /* ToolBarPlay_on.png in Resources */,
 				CA7C7005185EF50E00B348BA /* 28-star@2x.png in Resources */,
+				15EBFD132206210000A37CED /* AQTableView.xib in Resources */,
 				CA7C7006185EF50E00B348BA /* hello.gif in Resources */,
 				CA7C7007185EF50E00B348BA /* AddMessageViewController.xib in Resources */,
 				CA7C7008185EF50E00B348BA /* buttonnexton.png in Resources */,
@@ -3297,6 +3322,7 @@
 				CA7C709B185EF50E00B348BA /* biggrin.gif in Resources */,
 				4CB132BB1B9097110081B44D /* RemoveUserFilled-20.png in Resources */,
 				4C21E96E1BA5C70400691D65 /* QuoteEFilled-20.png in Resources */,
+				15EBFD152206211500A37CED /* AQCellView.xib in Resources */,
 				CA7C709C185EF50E00B348BA /* buttonbeginon.png in Resources */,
 				CA7C709D185EF50E00B348BA /* plus.png in Resources */,
 				CA7C709E185EF50E00B348BA /* downsmall.png in Resources */,
@@ -3403,6 +3429,7 @@
 				CA7C70C3185EF50E00B348BA /* CompteViewController.m in Sources */,
 				D8835E861E5F13C70073398C /* NSData+ImageContentType.m in Sources */,
 				4C3903691BCACEC200FD6F1F /* PSTGridLayoutInfo.m in Sources */,
+				15EBFD0E22061F7300A37CED /* AQTableViewController.m in Sources */,
 				CA7C70C4185EF50E00B348BA /* TopicsCell.m in Sources */,
 				CA7C70BE185EF50E00B348BA /* HFRplusAppDelegate.m in Sources */,
 				CA7C70C5185EF50E00B348BA /* ForumsTableViewController.m in Sources */,
@@ -3478,6 +3505,7 @@
 				CA7C70D3185EF50E00B348BA /* UIImage+Resize.m in Sources */,
 				D8835E941E5F13C70073398C /* SDWebImagePrefetcher.m in Sources */,
 				CA7C70F2185EF50E00B348BA /* RangeOfCharacters.m in Sources */,
+				15EBFD112206207B00A37CED /* AQCellView.m in Sources */,
 				D8835E8E1E5F13C70073398C /* SDWebImageDownloader.m in Sources */,
 				4C39038B1BCAD0C700FD6F1F /* MWPhoto.m in Sources */,
 				CA7C70F9185EF50E00B348BA /* NSData+Base64.m in Sources */,
