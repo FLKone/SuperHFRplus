@@ -13,11 +13,20 @@
 #import "PlusSettingsViewController.h"
 #import "CompteViewController.h"
 
-@interface AQTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate> {
+@class ASIHTTPRequest;
+
+@interface AQTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate, NSXMLParserDelegate> {
     IBOutlet UITableView *aqTableView;
+    
+    ASIHTTPRequest *request;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *aqTableView;
+@property (strong, nonatomic) ASIHTTPRequest *request;
+@property (nonatomic, strong) NSMutableDictionary *dictData;
+@property (nonatomic,strong) NSMutableArray *marrXMLData;
+@property (nonatomic,strong) NSMutableString *mstrXMLString;
+@property (nonatomic,strong) NSMutableDictionary *mdictXMLPart;
 
 @end
 

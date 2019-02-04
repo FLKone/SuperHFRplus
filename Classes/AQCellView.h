@@ -13,7 +13,7 @@
     IBOutlet UILabel *titleTime;
 }
 
-@property (nonatomic, strong) IBOutlet  *titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UILabel *titleTime;
 
 @end

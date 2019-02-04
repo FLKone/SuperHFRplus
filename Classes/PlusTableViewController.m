@@ -9,10 +9,11 @@
 #import "PlusTableViewController.h"
 #import "PlusSettingsViewController.h"
 #import "CompteViewController.h"
+#import "AQTableViewController.h"
 #import "PlusCellView.h"
 
 @implementation PlusTableViewController;
-@synthesize plusTableView, settingsViewController, compteViewController;
+@synthesize plusTableView, settingsViewController, compteViewController, aqTableViewController;
 ;
 
 
@@ -33,6 +34,8 @@
             [self.navigationController pushViewController:self.compteViewController animated:YES];
             break;
         case 1:
+            self.aqTableViewController = [[AQTableViewController alloc] initWithNibName:@"AQTableView" bundle:nil];
+            [self.navigationController pushViewController:self.aqTableViewController animated:YES];
             break;
         case 2: {
             self.settingsViewController = [[PlusSettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];

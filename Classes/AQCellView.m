@@ -14,7 +14,7 @@
 @implementation AQCellView
 
 @synthesize titleLabel;
-@synthesize titleDate;
+@synthesize titleTime;
 
 -(void)layoutSubviews {
     [super layoutSubviews];
