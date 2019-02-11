@@ -28,6 +28,10 @@ int nightDelay;
     return sharedThemeManager;
 }
 
++ (Theme) currentTheme {
+    return [[ThemeManager sharedManager] theme];
+}
+
 - (id)init {
     if (self = [super init]) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

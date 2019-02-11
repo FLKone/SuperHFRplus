@@ -11,6 +11,7 @@
 #import "CompteViewController.h"
 #import "AQTableViewController.h"
 #import "PlusCellView.h"
+#import "ThemeColors.h"
 
 @implementation PlusTableViewController;
 @synthesize plusTableView, settingsViewController, compteViewController, aqTableViewController;
@@ -25,6 +26,13 @@
 
     self.title = @"Plus";
     self.navigationController.navigationBar.translucent = NO;
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.view.backgroundColor = self.plusTableView.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.plusTableView.separatorColor = [ThemeColors cellBorderColor];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -96,7 +96,7 @@
     
     //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&subcat=525&post=5145&page=87&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t540188";
     
-    //NSLog(@"URL %@", [self currentUrl]);
+    NSLog(@"URL %@", [self currentUrl]);
     
     //NSLog(@"[self currentUrl] %@", [self currentUrl]);
     //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
@@ -2103,7 +2103,10 @@
 		}
 		else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
             
-            //NSLog(@"%@", aRequest.URL);
+            NSLog(@"%@", aRequest.URL);
+            NSString *sUrl = [[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
+            NSLog(@"%@", sUrl);
+
             
             MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
             self.messagesTableViewController = aView;

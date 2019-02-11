@@ -11,10 +11,12 @@
 @interface AQCellView : UITableViewCell {
     IBOutlet UILabel *titleLabel;
     IBOutlet UILabel *titleTime;
+    IBOutlet UILabel *titleInitiator;
 }
 
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UILabel *titleTime;
+@property (strong, nonatomic) IBOutlet UILabel *titleInitiator;
 
 @end
 

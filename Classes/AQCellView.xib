@@ -17,33 +17,45 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="58.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sIk-RB-3nB">
-                        <rect key="frame" x="16" y="11" width="283" height="37"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sIk-RB-3nB">
+                        <rect key="frame" x="6" y="11" width="353" height="17"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Il y a 24 jours" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pnj-Eq-1eU">
-                        <rect key="frame" x="294" y="36" width="65" height="12"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <rect key="frame" x="186" y="34" width="183" height="14"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" red="0.0" green="0.60881678136398554" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hH6-1r-QMf">
+                        <rect key="frame" x="6" y="32" width="180" height="16"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="180" id="Juq-qd-POE"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Pnj-Eq-1eU" firstAttribute="bottom" secondItem="ouz-Xk-lTv" secondAttribute="bottomMargin" id="6Z7-un-FWF"/>
-                    <constraint firstItem="Pnj-Eq-1eU" firstAttribute="trailing" secondItem="ouz-Xk-lTv" secondAttribute="trailingMargin" id="DZg-jA-pGY"/>
-                    <constraint firstItem="sIk-RB-3nB" firstAttribute="bottom" secondItem="ouz-Xk-lTv" secondAttribute="bottomMargin" id="NQb-f3-4Vq"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="sIk-RB-3nB" secondAttribute="trailing" constant="60" id="RwV-mQ-fZk"/>
+                    <constraint firstItem="Pnj-Eq-1eU" firstAttribute="trailing" secondItem="ouz-Xk-lTv" secondAttribute="trailingMargin" constant="10" id="DZg-jA-pGY"/>
+                    <constraint firstItem="hH6-1r-QMf" firstAttribute="bottom" secondItem="ouz-Xk-lTv" secondAttribute="bottomMargin" id="QXX-pE-1Hw"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="sIk-RB-3nB" secondAttribute="trailing" id="RwV-mQ-fZk"/>
                     <constraint firstItem="sIk-RB-3nB" firstAttribute="top" secondItem="ouz-Xk-lTv" secondAttribute="topMargin" id="SQ1-OY-WaV"/>
-                    <constraint firstItem="sIk-RB-3nB" firstAttribute="leading" secondItem="ouz-Xk-lTv" secondAttribute="leadingMargin" id="rhh-r1-QU1"/>
+                    <constraint firstItem="Pnj-Eq-1eU" firstAttribute="leading" secondItem="hH6-1r-QMf" secondAttribute="trailing" id="Zmd-ab-4Ja"/>
+                    <constraint firstItem="hH6-1r-QMf" firstAttribute="leading" secondItem="ouz-Xk-lTv" secondAttribute="leadingMargin" constant="-10" id="qWC-LH-8Kd"/>
+                    <constraint firstItem="sIk-RB-3nB" firstAttribute="leading" secondItem="ouz-Xk-lTv" secondAttribute="leadingMargin" constant="-10" id="rhh-r1-QU1"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="titleInitiator" destination="hH6-1r-QMf" id="VRV-4c-sQG"/>
                 <outlet property="titleLabel" destination="sIk-RB-3nB" id="8bi-mF-nki"/>
                 <outlet property="titleTime" destination="Pnj-Eq-1eU" id="63h-Cz-Tcu"/>
             </connections>
-            <point key="canvasLocation" x="647.20000000000005" y="113.79310344827587"/>
+            <point key="canvasLocation" x="581.60000000000002" y="66.11694152923539"/>
         </tableViewCell>
     </objects>
 </document>

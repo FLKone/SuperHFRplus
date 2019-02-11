@@ -15,6 +15,7 @@
 
 @synthesize titleLabel;
 @synthesize titleTime;
+@synthesize titleInitiator;
 
 -(void)layoutSubviews {
     [super layoutSubviews];

@@ -12,12 +12,15 @@
 #import <UIKit/UIKit.h>
 #import "PlusSettingsViewController.h"
 #import "CompteViewController.h"
+#import "MessagesTableViewController.h"
 
 @class ASIHTTPRequest;
 
 @interface AQTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate, NSXMLParserDelegate> {
     IBOutlet UITableView *aqTableView;
-    
+
+    MessagesTableViewController *messagesTableViewController;
+
     ASIHTTPRequest *request;
 }
 
@@ -27,6 +30,7 @@
 @property (nonatomic,strong) NSMutableArray *marrXMLData;
 @property (nonatomic,strong) NSMutableString *mstrXMLString;
 @property (nonatomic,strong) NSMutableDictionary *mdictXMLPart;
+@property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
 
 @end
 
