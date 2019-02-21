@@ -20,9 +20,10 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ktT-bI-cvP">
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ktT-bI-cvP">
                     <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="SyN-ac-aUU"/>
                         <outlet property="delegate" destination="-1" id="cvu-4u-Prj"/>
@@ -32,7 +33,6 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="ktT-bI-cvP" secondAttribute="bottom" id="7Br-Zj-bGA"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="ktT-bI-cvP" secondAttribute="bottom" constant="36" id="HaC-Db-Jfb"/>
                 <constraint firstItem="ktT-bI-cvP" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="X8L-4F-jbK"/>
                 <constraint firstItem="ktT-bI-cvP" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="fjG-cb-swO"/>
                 <constraint firstItem="ktT-bI-cvP" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="nBc-UV-Zbv"/>

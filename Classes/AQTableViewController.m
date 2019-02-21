@@ -28,7 +28,8 @@
     
     self.title = @"Alertes Qualitay";
     self.navigationController.navigationBar.translucent = NO;
-    
+    //Supprime les lignes vides à la fin de la liste
+    self.aqTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self fetchContent];
 }
 
@@ -50,9 +51,8 @@
     NSString *sTopicTitle = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"topic_title"];
     NSString *sAqPubDate = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"pubDate"];
     NSString *sInitiator = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"initiator"];
-    NSString *sComment = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"comment"];
-    cell.titleLabel.text = sTopicTitle;
-    
+    NSString *sAqNom = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"title"];
+
     NSDate *dNow = [[NSDate alloc] init];
     NSDateFormatter * df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"E, d MMM yy HH:mm:ss Z"];
@@ -62,26 +62,23 @@
     int numberMonths = numberDays / 31;
     NSString* sAqFormatedPubDate = @"";
     if (numberDays == 0) {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"Signalée par %@ aujourd'hui", sInitiator];
+        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ aujourd'hui", sInitiator];
     } else if (numberDays <= 30) {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"Signalée par %@ il y a %d jours", sInitiator, numberDays];
+        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ il y a %d jours", sInitiator, numberDays];
     } else if (numberMonths <= 12) {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"Signalée par %@ il y a %d mois", sInitiator, numberMonths];
+        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ il y a %d mois", sInitiator, numberMonths];
     } else {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"Signalée par %@ il y a plus d'un an", sInitiator];
+        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ il y a plus d'un an", sInitiator ];
     }
+
+    cell.labelTitleTopic.text = sTopicTitle;
+    cell.labelTitleAQ.text = sAqNom;
+    cell.labelTime.text = sAqFormatedPubDate;
     
-    cell.titleTime.text = sAqFormatedPubDate;
-    if ([sComment isEqualToString:@"(pas de commentaire)"]) {
-        cell.titleInitiator.text = @"";
-    } else {
-        cell.titleInitiator.text = sComment;
-    }
-    
-    [cell.titleTime setTextColor:[ThemeColors textColor]];
-    [cell.titleInitiator setTextColor:[ThemeColors topicMsgTextColor]];
-    [cell.titleTime setTextColor:[ThemeColors tintColor]];
-    
+    [cell.labelTitleTopic setTextColor:[ThemeColors textColor]];
+    [cell.labelTitleAQ setTextColor:[ThemeColors topicMsgTextColor]];
+    [cell.labelTime setTextColor:[ThemeColors tintColor]];
+
     return cell;
 }
 /*
@@ -110,7 +107,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 55;
+    return 70;
 }
 
 - (void)fetchContent
@@ -218,6 +215,9 @@
     [super viewWillAppear:animated];
     self.view.backgroundColor = self.aqTableView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.aqTableView.separatorColor = [ThemeColors cellBorderColor];
+    if (self.aqTableView.indexPathForSelectedRow) {
+        [self.aqTableView deselectRowAtIndexPath:self.aqTableView.indexPathForSelectedRow animated:NO];
+    }
 }
 
 /*

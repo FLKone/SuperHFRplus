@@ -13,9 +13,9 @@
 
 @implementation AQCellView
 
-@synthesize titleLabel;
-@synthesize titleTime;
-@synthesize titleInitiator;
+@synthesize labelTitleTopic;
+@synthesize labelTitleAQ;
+@synthesize labelTime;
 
 -(void)layoutSubviews {
     [super layoutSubviews];
@@ -29,7 +29,11 @@
     Theme theme = [[ThemeManager sharedManager] theme];
     self.backgroundColor = [ThemeColors cellBackgroundColor:theme];
     self.contentView.superview.backgroundColor =[ThemeColors cellBackgroundColor:theme];
-    [titleLabel setTextColor:[ThemeColors textColor:theme]];
+    
+    [labelTitleTopic setTextColor:[ThemeColors textColor]];
+    [labelTitleAQ setTextColor:[ThemeColors topicMsgTextColor]];
+    [labelTime setTextColor:[ThemeColors tintColor]];
+    
     self.selectionStyle = [ThemeColors cellSelectionStyle:theme];
 }
 

@@ -26,6 +26,7 @@
 
     self.title = @"Plus";
     self.navigationController.navigationBar.translucent = NO;
+    self.plusTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -33,6 +34,9 @@
     [super viewWillAppear:animated];
     self.view.backgroundColor = self.plusTableView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.plusTableView.separatorColor = [ThemeColors cellBorderColor];
+    if (self.plusTableView.indexPathForSelectedRow) {
+        [self.plusTableView deselectRowAtIndexPath:self.plusTableView.indexPathForSelectedRow animated:NO];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -84,6 +88,7 @@
     }
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }

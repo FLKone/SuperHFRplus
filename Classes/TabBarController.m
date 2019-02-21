@@ -24,7 +24,7 @@
 	//NSLog(@"TBC viewDidLoad %@", self.tabBar);
     self.title = @"Menu";
 
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<4; i++) {
         UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
         tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i]]
                                     imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
@@ -34,8 +34,7 @@
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
             case 2: tabBarItem.title = @"Messages"; break;
-            case 3: tabBarItem.title = @"Réglages"; break;
-            case 4: tabBarItem.title = @"Plus"; break;
+            case 3: tabBarItem.title = @"Plus"; break;
         }
     }
     
