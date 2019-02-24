@@ -12,6 +12,7 @@
 #import "AQTableViewController.h"
 #import "PlusCellView.h"
 #import "ThemeColors.h"
+#import "ThemeManager.h"
 
 @implementation PlusTableViewController;
 @synthesize plusTableView, settingsViewController, compteViewController, aqTableViewController;
@@ -89,7 +90,9 @@
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
+
+    [[ThemeManager sharedManager] applyThemeToCell:cell];
+
     return cell;
 }
 

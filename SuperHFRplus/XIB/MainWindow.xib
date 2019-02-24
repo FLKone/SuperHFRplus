@@ -97,29 +97,6 @@
                         </viewController>
                     </viewControllers>
                 </navigationController>
-                <navigationController id="EgT-mU-RFn" customClass="HFRNavigationController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Réglages" image="20-gear2.png" id="74A-e7-Gdm"/>
-                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" id="yZU-Qs-sTq">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <viewControllers>
-                        <tableViewController title="Réglages" automaticallyAdjustsScrollViewInsets="NO" id="GVX-YK-j2V" customClass="SettingsViewController">
-                            <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="uDi-uo-5iE">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="623"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="GVX-YK-j2V" id="Ssx-lA-TfJ"/>
-                                    <outlet property="delegate" destination="GVX-YK-j2V" id="hjX-kw-Iyy"/>
-                                </connections>
-                            </tableView>
-                            <extendedEdge key="edgesForExtendedLayout"/>
-                            <navigationItem key="navigationItem" title="Réglages" id="WB3-fg-zCe"/>
-                        </tableViewController>
-                    </viewControllers>
-                </navigationController>
             </viewControllers>
             <connections>
                 <outlet property="delegate" destination="112" id="113"/>

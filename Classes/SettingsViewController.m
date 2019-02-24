@@ -5,6 +5,8 @@
 //  Created by FLK on 05/07/12.
 //
 
+/*
+
 #import "SettingsViewController.h"
 #import "HFRplusAppDelegate.h"
 #import "ThemeColors.h"
@@ -29,8 +31,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
     
-     IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
-    settingsVC.neverShowPrivacySettings = YES;
+     self.neverShowPrivacySettings = YES;
     NSLog(@"awakeFromNib");
     
     self.delegate = self;
@@ -84,6 +85,7 @@
         [self hideCell:@"theme_noel_disabled"];
     }
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
+    //[self.tableView reloadData];
 }
 
 #pragma mark kIASKAppSettingChanged notification
@@ -203,37 +205,26 @@
         //Post it to the default notification center
         [[NSNotificationCenter defaultCenter] postNotification:myNotification];
     }
-    /*
-    if UIApplication.shared.alternateIconName == nil {
-        UIApplication.shared.setAlternateIconName("Icon-RED")
-    } else if UIApplication.shared.alternateIconName == "Icon-RED" {
-        UIApplication.shared.setAlternateIconName("Icon-Original")
-    } else if UIApplication.shared.alternateIconName == "Icon-Original" {
-        UIApplication.shared.setAlternateIconName(nil)
-    }
-     */
+
     [self.tableView reloadData];
 }
 
 -(void)hideCell:(NSString *)cell{
-    IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
-    NSMutableSet *hiddenKeys = settingsVC.hiddenKeys ? [NSMutableSet setWithSet:settingsVC.hiddenKeys] : [NSMutableSet set];
+    NSMutableSet *hiddenKeys = self.hiddenKeys ? [NSMutableSet setWithSet:self.hiddenKeys] : [NSMutableSet set];
     if([hiddenKeys containsObject:cell]){
         return;
     }
     
     [hiddenKeys addObject:cell];
-    settingsVC.hiddenKeys = hiddenKeys;
-
+    self.hiddenKeys = hiddenKeys;
 }
 
 -(void)showCell:(NSString *)cell{
-    IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
-    NSMutableSet *hiddenKeys = settingsVC.hiddenKeys ? [NSMutableSet setWithSet:settingsVC.hiddenKeys] : [NSMutableSet set];
+    NSMutableSet *hiddenKeys = self.hiddenKeys ? [NSMutableSet setWithSet:self.hiddenKeys] : [NSMutableSet set];
     if([hiddenKeys containsObject:cell]){
         [hiddenKeys removeObject:cell];
     }
-    settingsVC.hiddenKeys = hiddenKeys;
+    self.hiddenKeys = hiddenKeys;
 }
 
 
@@ -341,4 +332,4 @@
 
 @end
 
-
+*/

@@ -1664,8 +1664,6 @@
 				4C0031221BD01CE700F87F13 /* HFRTabBar.m */,
 				CA77D0F31261424D00271D62 /* PageViewController.h */,
 				CA77D0F41261424D00271D62 /* PageViewController.m */,
-				CA1070C715A5F406002E6C19 /* SettingsViewController.h */,
-				CA1070C815A5F407002E6C19 /* SettingsViewController.m */,
 				CAC4966715B77357009128BC /* HFRNavigationController.h */,
 				CAC4966815B77357009128BC /* HFRNavigationController.m */,
 				CAF5DB5619328EB4000B5215 /* PullToRefreshErrorViewController.h */,
@@ -1741,13 +1739,15 @@
 			children = (
 				15EBFD0622022A5700A37CED /* PlusSettingsViewController.h */,
 				15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */,
-				15EBFD0422021B8400A37CED /* SettingsView.xib */,
+				CA1070C715A5F406002E6C19 /* SettingsViewController.h */,
+				CA1070C815A5F407002E6C19 /* SettingsViewController.m */,
 				1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */,
 				1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */,
-				1503755221FDF8D700A5F7E1 /* PlusTableView.xib */,
-				1503755421FE249300A5F7E1 /* PlusCellView.xib */,
 				1503755621FE26C900A5F7E1 /* PlusCellView.h */,
 				1503755721FF794200A5F7E1 /* PlusCellView.m */,
+				15EBFD0422021B8400A37CED /* SettingsView.xib */,
+				1503755221FDF8D700A5F7E1 /* PlusTableView.xib */,
+				1503755421FE249300A5F7E1 /* PlusCellView.xib */,
 			);
 			name = Plus;
 			sourceTree = "<group>";

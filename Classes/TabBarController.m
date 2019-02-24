@@ -142,7 +142,7 @@
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
             case 2: tabBarItem.title = @"Messages"; break;
-            case 3: tabBarItem.title = @"Réglages"; break;
+            case 3: tabBarItem.title = @"Plus"; break;
         }
     }
 }
