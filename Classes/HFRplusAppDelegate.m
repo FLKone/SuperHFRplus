@@ -411,6 +411,13 @@
      */
     
     //NSLog(@"applicationDidBecomeActive");
+    // TODO BAE : TO REMOVE, ONLY FOR TEST
+    NSDateFormatter * df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"E, d MMM yy HH:mm:ss Z"];
+    NSDate* dLastCheckAQ = [df dateFromString:@"Tue, 1 JAN 2019 00:00:00 Z"];
+    [[NSUserDefaults standardUserDefaults] setObject:dLastCheckAQ forKey:@"last_check_aq"];
+    // TODO BAE : TO REMOVE, ONLY FOR TEST
+
     
     // Noel
     NSDate * now = [NSDate date];
@@ -472,18 +479,30 @@
 
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
 {
-	//NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
-    dispatch_async(dispatch_get_main_queue(), 
-                  ^{  	
-        if ([badgeValue intValue] > 0) {
-            [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:badgeValue];
-        }
-        else {
-            [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:nil];
-            
-        }
-                  });
+    //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
+    dispatch_async(dispatch_get_main_queue(),
+                   ^{
+                       if ([badgeValue intValue] > 0) {
+                           [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:badgeValue];
+                       }
+                       else {
+                           [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:nil];
+                           
+                       }
+                   });
 }
+
+- (void)updatePlusBadgeWithString:(NSString *)badgeValue;
+{
+    dispatch_async(dispatch_get_main_queue(),
+                   ^{ if ([badgeValue intValue] > 0) {
+                           [[[[[self rootController] tabBar] items] objectAtIndex:3] setBadgeValue:badgeValue];
+                       }
+                       else {
+                           [[[[[self rootController] tabBar] items] objectAtIndex:3] setBadgeValue:nil];
+                       }});
+}
+
 
 - (void)readMPBadge;
 {

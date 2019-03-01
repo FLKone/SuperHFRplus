@@ -7,18 +7,24 @@
 
 #import <Foundation/Foundation.h>
 #import "AQTableViewController.h"
+#import "PlusTableViewController.h"
 #import "MessagesTableViewController.h"
 #import "AQCellView.h"
 #import "ASIHTTPRequest.h"
 #import "Constants.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
+#import "UIScrollView+SVPullToRefresh.h"
+#import "PullToRefreshErrorViewController.h"
 
 @implementation AQTableViewController;
 @synthesize aqTableView; //, arrayData;
 @synthesize marrXMLData;
 @synthesize mstrXMLString;
 @synthesize mdictXMLPart;
+
+#pragma mark -
+#pragma mark Data lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -30,7 +36,21 @@
     self.navigationController.navigationBar.translucent = NO;
     //Supprime les lignes vides à la fin de la liste
     self.aqTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self fetchContent];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];;
+
+    // Add PullToRefresh function to tableview
+    __weak AQTableViewController *self_ = self;
+    [self.aqTableView addPullToRefreshWithActionHandler:^{
+        [self_ fetchContent];
+    }];
+    
+    [self.aqTableView triggerPullToRefresh];
+}
+
+-(void)reload
+{
+    [self.aqTableView triggerPullToRefresh];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -52,54 +72,23 @@
     NSString *sAqPubDate = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"pubDate"];
     NSString *sInitiator = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"initiator"];
     NSString *sAqNom = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"title"];
-
-    NSDate *dNow = [[NSDate alloc] init];
-    NSDateFormatter * df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"E, d MMM yy HH:mm:ss Z"];
-    NSDate* dAQ = [df dateFromString:sAqPubDate];
-    NSTimeInterval secondsBetween = [dNow timeIntervalSinceDate:dAQ];
-    int numberDays = secondsBetween / 24 / 3600;
-    int numberMonths = numberDays / 31;
-    NSString* sAqFormatedPubDate = @"";
-    if (numberDays == 0) {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ aujourd'hui", sInitiator];
-    } else if (numberDays <= 30) {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ il y a %d jours", sInitiator, numberDays];
-    } else if (numberMonths <= 12) {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ il y a %d mois", sInitiator, numberMonths];
-    } else {
-        sAqFormatedPubDate = [NSString stringWithFormat:@"par %@ il y a plus d'un an", sInitiator ];
-    }
+    BOOL bIsNew = [[[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"is_new"] boolValue];
 
     cell.labelTitleTopic.text = sTopicTitle;
     cell.labelTitleAQ.text = sAqNom;
-    cell.labelTime.text = sAqFormatedPubDate;
+    cell.labelTime.text = [NSString stringWithFormat:@"par %@ %@", sInitiator, sAqPubDate];;
     
     [cell.labelTitleTopic setTextColor:[ThemeColors textColor]];
+    if (bIsNew) {
+        [cell.labelTitleTopic setFont:[UIFont boldSystemFontOfSize:13.0f]];
+    } else {
+        [cell.labelTitleTopic setFont:[UIFont systemFontOfSize:13.0f]];
+    }
     [cell.labelTitleAQ setTextColor:[ThemeColors topicMsgTextColor]];
     [cell.labelTime setTextColor:[ThemeColors tintColor]];
 
     return cell;
 }
-/*
--(void)applyTheme {
-    Theme theme = [[ThemeManager sharedManager] theme];
-    self.backgroundColor = [ThemeColors cellBackgroundColor:theme];
-    // Background color of topic cells in favorite list
-    if (self.isSuperFavorite)
-    {
-        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColorSuperFavorite:theme];
-    }
-    else
-    {
-        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColor:theme];
-    }
-    [self.labelTitle setTextColor:[ThemeColors textColor:theme]];
-    [self.labelMsg setTextColor:[ThemeColors topicMsgTextColor:theme]];
-    [self.labelDate setTextColor:[ThemeColors cellTintColor:theme]];
-    self.selectionStyle = [ThemeColors cellSelectionStyle:theme];
-}
-*/
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 0;
@@ -113,6 +102,7 @@
 - (void)fetchContent
 {
     [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMini];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelFetchContent)];;
     
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://alerte-qualitay.toyonos.info/"]];
     
@@ -125,26 +115,70 @@
     [request startAsynchronous];
 }
 
+// This method is used outside the controller in order to get some content regarding the AQs without any impact on the current AQTable HMI
+- (void)fetchContentForNewAQ
+{
+    [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMini];
+    
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://alerte-qualitay.toyonos.info/"]];
+    
+    [request setDelegate:self];
+    
+    //[request setDidStartSelector:@selector(fetchContentStarted:)];
+    [request setDidFinishSelector:@selector(fetchContentCompleteForNewAQs:)];
+    //[request setDidFailSelector:@selector(fetchContentFailed:)];
+    
+    [request startAsynchronous];
+}
+
+- (void)fetchContentCompleteForNewAQs:(ASIHTTPRequest *)theRequest
+{
+    NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:[theRequest responseData]];
+
+    iNumberNewAQ = 0;
+
+    [xmlparser setDelegate:self];
+    [xmlparser parse];
+    
+    [self setBadgePlusTableView];
+}
+
+- (void) setBadgePlusTableView {
+    // Set new AQ number into Plus tab
+    PlusTableViewController* plusVC = ((PlusTableViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
+    plusVC.iAQBadgeNumer = (int)iNumberNewAQ;
+    [plusVC.plusTableView reloadData];
+}
+
 - (void)fetchContentStarted:(ASIHTTPRequest *)theRequest
 {
-    NSLog(@"fetchContentStarted");
     
 }
 
 - (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
 {
-    NSLog(@"fetchContentComplete");
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];;
+    
     NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:[theRequest responseData]];
+    
+    iNumberNewAQ = 0;
+    
     [xmlparser setDelegate:self];
     [xmlparser parse];
     
+    // Set current date as last check time for AQ
+    [[NSUserDefaults standardUserDefaults] setObject:[[NSDate alloc] init] forKey:@"last_check_aq"];
+    
     [self.aqTableView reloadData];
+    
+    [self.aqTableView.pullToRefreshView stopAnimating];
+    [self.aqTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
 }
      
  - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
-    NSLog(@"fetchContentFailed");
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
+    [self.aqTableView.pullToRefreshView stopAnimating];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString     *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict;
@@ -156,6 +190,14 @@
         mdictXMLPart = [[NSMutableDictionary alloc] init];
     }
 }
+
+- (void)cancelFetchContent
+{
+    [request cancel];
+}
+
+#pragma mark -
+#pragma mark RSS xml parsing
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string;
 {
@@ -170,7 +212,6 @@
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName;
 {
     if ([elementName isEqualToString:@"title"]
-        || [elementName isEqualToString:@"pubDate"]
         || [elementName isEqualToString:@"link"]) {
         NSString *value = [mstrXMLString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         [mdictXMLPart setObject:value forKey:elementName];
@@ -187,6 +228,49 @@
         [mdictXMLPart setObject:sTopicTitle forKey:@"topic_title"];
         [mdictXMLPart setObject:sInitiator forKey:@"initiator"];
         [mdictXMLPart setObject:sComment forKey:@"comment"];
+    } else if ([elementName isEqualToString:@"pubDate"]) {
+        NSString *value = [mstrXMLString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSDateFormatter * df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"E, d MMM yy HH:mm:ss Z"];
+        NSDate *dNow = [[NSDate alloc] init];
+        NSDate* dAQ = [df dateFromString:value];
+        NSTimeInterval secondsBetween = [dNow timeIntervalSinceDate:dAQ];
+        int numberDays = secondsBetween / 24 / 3600;
+        int numberMonths = numberDays / 31;
+        int numberYears = numberMonths / 365;
+
+        NSDate *dLastCheckAQ = [[NSUserDefaults standardUserDefaults] objectForKey:@"last_check_aq"];
+        if (!dLastCheckAQ) {
+            // Default latest AQ date
+            dLastCheckAQ = [df dateFromString:@"Tue, 1 JAN 2019 00:00:00 Z"];
+        }
+        
+        if ([dAQ earlierDate:dLastCheckAQ] == dLastCheckAQ) {
+            [mdictXMLPart setObject:[NSNumber numberWithBool:YES] forKey:@"is_new"];
+            iNumberNewAQ++;
+        } else {
+            [mdictXMLPart setObject:[NSNumber numberWithBool:NO] forKey:@"is_new"];
+        }
+
+        
+        NSString* sDateAQ = @"";
+        if (numberDays == 0) {
+            sDateAQ = @"aujourd'hui";
+        } else if (numberDays <= 1) {
+            sDateAQ = @"hier";
+        } else if (numberDays <= 30) {
+            sDateAQ = [NSString stringWithFormat:@"il y a %d jours", numberDays];
+        } else if (numberMonths <= 12) {
+            sDateAQ = [NSString stringWithFormat:@"il y a %d mois", numberMonths];
+        } else {
+            if (numberYears <= 1) {
+                sDateAQ = @"il y a 1 an";
+            } else{
+                sDateAQ = [NSString stringWithFormat:@"il y a %d ans", numberYears ];
+            }
+        }
+        
+        [mdictXMLPart setObject:sDateAQ forKey:elementName];
     }
     if ([elementName isEqualToString:@"item"]) {
         [marrXMLData addObject:mdictXMLPart];
@@ -213,13 +297,22 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.view.backgroundColor = self.aqTableView.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.view.backgroundColor = self.aqTableView.backgroundColor = self.aqTableView.pullToRefreshView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.aqTableView.separatorColor = [ThemeColors cellBorderColor];
     if (self.aqTableView.indexPathForSelectedRow) {
         [self.aqTableView deselectRowAtIndexPath:self.aqTableView.indexPathForSelectedRow animated:NO];
     }
+    
+    self.aqTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
+    self.aqTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
+    self.aqTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+    iNumberNewAQ = 0;
+    [self setBadgePlusTableView];
+}
 /*
  https://forum.hardware.fr/forum2.php?post=78667&cat=13&config=hfr.inc&cache=&page=1&sondage=0&owntopic=0&word=&spseudo=stukka&firstnum=55696838&currentnum=0&filter=1
  

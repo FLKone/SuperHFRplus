@@ -1242,7 +1242,7 @@
     
     Theme theme = [[ThemeManager sharedManager] theme];
     self.view.backgroundColor = self.messagesTableViewController.view.backgroundColor = self.messagesWebView.backgroundColor = self.loadingView.backgroundColor = self.loadingViewLabel.backgroundColor = self.loadingViewIndicator.backgroundColor = self.searchBox.backgroundColor = [ThemeColors greyBackgroundColor:theme];
-    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
+    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:theme];
     self.loadingViewLabel.shadowColor = nil;
     [[ThemeManager sharedManager] applyThemeToTextField:self.searchPseudo];

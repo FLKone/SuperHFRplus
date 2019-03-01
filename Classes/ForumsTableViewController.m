@@ -957,7 +957,7 @@
     self.forumsTableView.separatorColor = [ThemeColors cellBorderColor:theme];
     self.forumsTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.forumsTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
-    self.forumsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
+    self.forumsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
 
     [self.forumsTableView reloadData];
 }

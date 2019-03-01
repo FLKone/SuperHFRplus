@@ -15,9 +15,17 @@
 #import "ThemeManager.h"
 
 @implementation PlusTableViewController;
-@synthesize plusTableView, settingsViewController, compteViewController, aqTableViewController;
+@synthesize plusTableView, iAQBadgeNumer, settingsViewController, compteViewController, aqTableViewController;
 ;
 
+
+- (id)init {
+    self = [super init];
+    if (self) {
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,6 +36,11 @@
     self.title = @"Plus";
     self.navigationController.navigationBar.translucent = NO;
     self.plusTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
+    self.compteViewController = [[CompteViewController alloc] initWithNibName:@"CompteViewController" bundle:nil];
+    self.settingsViewController = [[PlusSettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
+    self.aqTableViewController = [[AQTableViewController alloc] initWithNibName:@"AQTableView" bundle:nil];
+    iAQBadgeNumer = 0;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -38,20 +51,18 @@
     if (self.plusTableView.indexPathForSelectedRow) {
         [self.plusTableView deselectRowAtIndexPath:self.plusTableView.indexPathForSelectedRow animated:NO];
     }
+    [self.aqTableViewController fetchContentForNewAQ];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.row) {
         case 0:
-            self.compteViewController = [[CompteViewController alloc] initWithNibName:@"CompteViewController" bundle:nil];
             [self.navigationController pushViewController:self.compteViewController animated:YES];
             break;
         case 1:
-            self.aqTableViewController = [[AQTableViewController alloc] initWithNibName:@"AQTableView" bundle:nil];
             [self.navigationController pushViewController:self.aqTableViewController animated:YES];
             break;
         case 2: {
-            self.settingsViewController = [[PlusSettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
             [self.navigationController pushViewController:self.settingsViewController animated:YES];
             break;
         }
@@ -77,14 +88,29 @@
         case 0:
             cell.titleLabel.text = @"Compte(s)";
             cell.titleImage.image = [UIImage imageNamed:@"CircledUserMaleFilled-40"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 1:
             cell.titleLabel.text = @"Alertes Qualitay";
             cell.titleImage.image = [UIImage imageNamed:@"08-chat"];
+            cell.badgeLabel.clipsToBounds = YES;
+            cell.badgeLabel.layer.cornerRadius = 20 * 1.2 / 2;
+            if (iAQBadgeNumer > 0) {
+                cell.badgeLabel.backgroundColor = [UIColor grayColor];
+                cell.badgeLabel.textColor = [UIColor whiteColor];
+                cell.badgeLabel.text = [NSString stringWithFormat:@"%d", iAQBadgeNumer];
+            } else {
+                cell.badgeLabel.backgroundColor = [UIColor clearColor];
+                cell.badgeLabel.textColor = [UIColor clearColor];
+                cell.badgeLabel.text = @"";
+            }
             break;
         case 2:
             cell.titleLabel.text = @"Réglages";
             cell.titleImage.image = [UIImage imageNamed:@"20-gear2"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
     }
     

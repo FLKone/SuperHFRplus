@@ -682,7 +682,7 @@
     self.favoritesTableView.separatorColor = [ThemeColors cellBorderColor:theme];
     self.favoritesTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.favoritesTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
-    self.favoritesTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
+    self.favoritesTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     
     UIButton *btn = (UIButton *)[self.navigationController.navigationBar viewWithTag:237];
     UIButton *btn2 = (UIButton *)[self.navigationController.navigationBar viewWithTag:238];

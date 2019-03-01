@@ -10,11 +10,13 @@
 
 @interface PlusCellView : UITableViewCell {
     IBOutlet UILabel *titleLabel;
+    IBOutlet UILabel *badgeLabel;
     IBOutlet UIImageView *titleImage;
 }
 
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *titleImage;
+@property (strong, nonatomic) IBOutlet UILabel *badgeLabel;
 
 @end
 

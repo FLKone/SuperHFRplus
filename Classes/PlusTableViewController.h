@@ -15,12 +15,14 @@
 
 @interface PlusTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate> {
     IBOutlet UITableView *plusTableView;
+    int iAQBadgeNumer;
     PlusSettingsViewController *settingsViewController;
     CompteViewController *compteViewController;
     AQTableViewController *aqTableViewController;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *plusTableView;
+@property int iAQBadgeNumer;
 @property (nonatomic, strong) PlusSettingsViewController *settingsViewController;
 @property (nonatomic, strong) CompteViewController *compteViewController;
 @property (nonatomic, strong) AQTableViewController *aqTableViewController;

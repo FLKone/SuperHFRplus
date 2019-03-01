@@ -14,6 +14,7 @@
 @implementation PlusCellView
 
 @synthesize titleLabel;
+@synthesize badgeLabel;
 @synthesize titleImage;
 
 

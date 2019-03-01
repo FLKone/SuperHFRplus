@@ -528,7 +528,7 @@
     self.view.backgroundColor = self.loadingView.backgroundColor = self.accessoryView.backgroundColor = self.textView.backgroundColor = self.commonTableView.backgroundColor = self.rehostTableView.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
-    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:[[ThemeManager sharedManager] theme]];
+    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
 
     [self.rehostTableView reloadData];

@@ -37,6 +37,7 @@
 + (UITableViewCellSelectionStyle)cellSelectionStyle:(Theme)theme;
 + (UIColor *)cellIconColor:(Theme)theme;
 + (UIColor *)cellTextColor:(Theme)theme;
++ (UIColor *)cellTextColor;
 + (UIColor *)cellDisabledTextColor:(Theme)theme;
 + (UIColor *)cellBorderColor;
 + (UIColor *)cellBorderColor:(Theme)theme;
@@ -79,7 +80,7 @@
 + (UIImage *)avatar:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withTheme:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
-+ (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
++ (UIActivityIndicatorViewStyle)activityIndicatorViewStyle;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 + (NSString *) hexFromUIColor:(UIColor *)color;
 + (NSString *) rgbaFromUIColor:(UIColor *)color;
