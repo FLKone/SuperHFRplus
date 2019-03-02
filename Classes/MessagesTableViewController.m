@@ -96,7 +96,7 @@
     
     //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&subcat=525&post=5145&page=87&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t540188";
     
-    //NSLog(@"URL %@", [self currentUrl]);
+    NSLog(@"URL %@", [self currentUrl]);
     
     //NSLog(@"[self currentUrl] %@", [self currentUrl]);
     //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
@@ -1242,7 +1242,7 @@
     
     Theme theme = [[ThemeManager sharedManager] theme];
     self.view.backgroundColor = self.messagesTableViewController.view.backgroundColor = self.messagesWebView.backgroundColor = self.loadingView.backgroundColor = self.loadingViewLabel.backgroundColor = self.loadingViewIndicator.backgroundColor = self.searchBox.backgroundColor = [ThemeColors greyBackgroundColor:theme];
-    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
+    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:theme];
     self.loadingViewLabel.shadowColor = nil;
     [[ThemeManager sharedManager] applyThemeToTextField:self.searchPseudo];
@@ -2103,7 +2103,10 @@
 		}
 		else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
             
-            //NSLog(@"%@", aRequest.URL);
+            NSLog(@"%@", aRequest.URL);
+            NSString *sUrl = [[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
+            NSLog(@"%@", sUrl);
+
             
             MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
             self.messagesTableViewController = aView;
@@ -2802,35 +2805,56 @@
 }
 
 - (NSString *) userThemeDidChange {
-    
     Theme theme = [[ThemeManager sharedManager] theme];
-    NSString *script = @"";
-    if (theme == ThemeLight) {
-        script = @"\
-        document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = true;\
-        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = false;\
-        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = true;";
+
+    NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
+    NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
+    NSString* sBorderHeader = @"none";
+    
+    // Modified in theme Dark or OLED
+    if (theme == ThemeDark || theme == ThemeOLED) {
+        sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
+        sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
     }
-    else  if (theme == ThemeDark) {
-        script = @"\
-        document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = false;\
-        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;\
-        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = true;";
-    } else {
-        script = @"\
-        document.getElementById('light-styles').rel = document.getElementById('light-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('dark-styles').rel = document.getElementById('dark-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('oled-styles').rel = document.getElementById('oled-styles-retina').rel  = 'stylesheet';\
-        document.getElementById('dark-styles').disabled = document.getElementById('dark-styles-retina').disabled = true;\
-        document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;\
-        document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = false;";
-    }
+    
+    NSString *script = [NSString stringWithFormat:@"\
+                    document.documentElement.style.setProperty('--color-action', '%@');\
+                    document.documentElement.style.setProperty('--color-action-disabled', '%@');\
+                    document.documentElement.style.setProperty('--color-message-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-modo-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-header-me-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
+                    document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                    document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
+                    document.documentElement.style.setProperty('--color-text', '%@');\
+                    document.documentElement.style.setProperty('--color-text2', '%@');\
+                    document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                    document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+                    document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                    document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+                    document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+                    document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                    document.documentElement.style.setProperty('--border-header', '%@');",
+                        [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                        [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
+                        [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
+                        [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
+                        [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
+                        [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
+                        [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
+                        [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
+                        [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                        sAvatarImageFile,
+                        sLoadInfoImageFile,
+                        [ThemeColors getColorBorderQuotation:theme],
+                        [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
+                        [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                        sBorderHeader];
+
     [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
     
     return @"";

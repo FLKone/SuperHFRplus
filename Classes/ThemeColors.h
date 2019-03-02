@@ -23,6 +23,7 @@
 
 + (UIColor *)tabBackgroundColor:(Theme)theme;
 + (UIColor *)navBackgroundColor:(Theme)theme;
++ (UIColor *)greyBackgroundColor;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
 + (UIColor *)messageBackgroundColor:(Theme)theme;
 + (UIColor *)messageModoBackgroundColor:(Theme)theme;
@@ -36,13 +37,16 @@
 + (UITableViewCellSelectionStyle)cellSelectionStyle:(Theme)theme;
 + (UIColor *)cellIconColor:(Theme)theme;
 + (UIColor *)cellTextColor:(Theme)theme;
++ (UIColor *)cellTextColor;
 + (UIColor *)cellDisabledTextColor:(Theme)theme;
++ (UIColor *)cellBorderColor;
 + (UIColor *)cellBorderColor:(Theme)theme;
 + (UIColor *)cellTintColor:(Theme)theme;
 + (UIColor *)placeholderColor:(Theme)theme;
 + (UIColor *)headSectionBackgroundColor:(Theme)theme;
 + (UIColor *)headSectionTextColor:(Theme)theme;
 + (UIColor *)textColor:(Theme)theme;
++ (UIColor *)textColor;
 + (UIColor *)textColor2:(Theme)theme;
 + (UIColor *)textColorPseudo:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
@@ -50,7 +54,9 @@
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
 + (UIColor *)lightTextColor:(Theme)theme;
 + (UIColor *)topicMsgTextColor:(Theme)theme;
++ (UIColor *)topicMsgTextColor;
 + (UIColor *)tintColor:(Theme)theme;
++ (UIColor *)tintColor;
 + (UIColor *)tintLightColor:(Theme)theme;
 + (UIColor *)tintWhiteColor:(Theme)theme;
 + (UIColor *)tintColorDisabled:(Theme)theme;
@@ -74,7 +80,7 @@
 + (UIImage *)avatar:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withTheme:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
-+ (UIActivityIndicatorViewStyle)activityIndicatorViewStyle:(Theme)theme;
++ (UIActivityIndicatorViewStyle)activityIndicatorViewStyle;
 + (UIScrollViewIndicatorStyle)scrollViewIndicatorStyle:(Theme)theme;
 + (NSString *) hexFromUIColor:(UIColor *)color;
 + (NSString *) rgbaFromUIColor:(UIColor *)color;

@@ -24,30 +24,17 @@
 	//NSLog(@"TBC viewDidLoad %@", self.tabBar);
     self.title = @"Menu";
 
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        UITabBarItem *tabBarItem1 = [self.tabBar.items objectAtIndex:0];
-        UITabBarItem *tabBarItem2 = [self.tabBar.items objectAtIndex:1];
-        UITabBarItem *tabBarItem3 = [self.tabBar.items objectAtIndex:2];
-        UITabBarItem *tabBarItem4 = [self.tabBar.items objectAtIndex:3];
-        
-        [tabBarItem1 setImage:[UIImage imageNamed:@"44-shoebox"]];
-        [tabBarItem2 setImage:[UIImage imageNamed:@"28-star"]];
-        [tabBarItem3 setImage:[UIImage imageNamed:@"18-envelope.png"]];
-        [tabBarItem4 setImage:[UIImage imageNamed:@"19-gear.png"]];
-        
-    } else {
-        for (int i=0; i<4; i++) {
-            UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
-            tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i]]
-                                        imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
-            tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i]]
-                                imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
-            switch (i) {
-                case 0: tabBarItem.title = @"Catégories"; break;
-                case 1: tabBarItem.title = @"Favoris"; break;
-                case 2: tabBarItem.title = @"Messages"; break;
-                case 3: tabBarItem.title = @"Réglages"; break;
-            }
+    for (int i=0; i<4; i++) {
+        UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
+        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i]]
+                                    imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
+        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i]]
+                            imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
+        switch (i) {
+            case 0: tabBarItem.title = @"Catégories"; break;
+            case 1: tabBarItem.title = @"Favoris"; break;
+            case 2: tabBarItem.title = @"Messages"; break;
+            case 3: tabBarItem.title = @"Plus"; break;
         }
     }
     
@@ -155,7 +142,7 @@
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
             case 2: tabBarItem.title = @"Messages"; break;
-            case 3: tabBarItem.title = @"Réglages"; break;
+            case 3: tabBarItem.title = @"Plus"; break;
         }
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -29,6 +29,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="136" y="144"/>
         </window>
         <tabBarController id="10" customClass="TabBarController">
             <extendedEdge key="edgesForExtendedLayout"/>
@@ -84,27 +85,16 @@
                         </viewController>
                     </viewControllers>
                 </navigationController>
-                <navigationController id="EgT-mU-RFn" customClass="HFRNavigationController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Réglages" image="20-gear2.png" id="74A-e7-Gdm"/>
-                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" id="yZU-Qs-sTq">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <navigationController id="TdA-PO-9Hb" userLabel="Plus Nav Controller" customClass="HFRNavigationController">
+                    <tabBarItem key="tabBarItem" title="Item" id="xTA-t9-eIS" userLabel="Plus"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oYT-9w-Hqa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <viewControllers>
-                        <tableViewController title="Réglages" automaticallyAdjustsScrollViewInsets="NO" id="GVX-YK-j2V" customClass="SettingsViewController">
-                            <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="uDi-uo-5iE">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="GVX-YK-j2V" id="Ssx-lA-TfJ"/>
-                                    <outlet property="delegate" destination="GVX-YK-j2V" id="hjX-kw-Iyy"/>
-                                </connections>
-                            </tableView>
-                            <extendedEdge key="edgesForExtendedLayout"/>
-                            <navigationItem key="navigationItem" title="Réglages" id="WB3-fg-zCe"/>
-                        </tableViewController>
+                        <viewController id="wKd-bj-8DK" customClass="PlusTableViewController">
+                            <navigationItem key="navigationItem" title="Item" id="tg3-P9-1K7"/>
+                        </viewController>
                     </viewControllers>
                 </navigationController>
             </viewControllers>

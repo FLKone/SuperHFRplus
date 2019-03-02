@@ -17,23 +17,23 @@
 
 @interface HFRplusAppDelegate : NSObject {
     UIWindow *window;
-	TabBarController *rootController;	
-	SplitViewController *splitViewController;
-	DetailNavigationViewController *detailNavigationController;
+    TabBarController *rootController;    
+    SplitViewController *splitViewController;
+    DetailNavigationViewController *detailNavigationController;
 
-	UINavigationController *forumsNavController;
-	UINavigationController *favoritesNavController;
-	UINavigationController *messagesNavController;
+    UINavigationController *forumsNavController;
+    UINavigationController *favoritesNavController;
+    UINavigationController *messagesNavController;
     UINavigationController *searchNavController;
     
-	BOOL isLoggedIn;
-	BOOL statusChanged;	
-	
+    BOOL isLoggedIn;
+    BOOL statusChanged;    
+    
    // NSOperationQueue *ioQueue;
     NSTimer *periodicMaintenanceTimer;
-    //NSOperation *periodicMaintenanceOperation;	
-	
-	NSString *hash_check;
+    //NSOperation *periodicMaintenanceOperation;    
+    
+    NSString *hash_check;
     
     Reachability* internetReach;
 
@@ -62,6 +62,7 @@
 - (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
+- (void)updatePlusBadgeWithString:(NSString *)badgeValue;
 - (void)readMPBadge;
 - (void)openURL:(NSString *)stringUrl;
 

@@ -1249,12 +1249,8 @@
     [super viewWillAppear:animated];
 	[self.view becomeFirstResponder];
     Theme theme = [[ThemeManager sharedManager] theme];
-    self.view.backgroundColor = self.topicsTableView.backgroundColor = self.maintenanceView.backgroundColor = self.loadingView.backgroundColor = self.topicsTableView.pullToRefreshView.backgroundColor = [ThemeColors greyBackgroundColor:theme];
+    self.view.backgroundColor = self.topicsTableView.backgroundColor = self.maintenanceView.backgroundColor = self.loadingView.backgroundColor = [ThemeColors greyBackgroundColor:theme];
     self.topicsTableView.separatorColor = [ThemeColors cellBorderColor:theme];
-    self.topicsTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
-    self.topicsTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
-    self.topicsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
-    
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loadSubCat) name:@"SubCatSelected" object:nil];
