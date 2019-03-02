@@ -45,7 +45,29 @@
         [self_ fetchContent];
     }];
     
-    [self.aqTableView triggerPullToRefresh];
+    //[self.aqTableView triggerPullToRefresh];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.view.backgroundColor = self.aqTableView.backgroundColor = self.aqTableView.pullToRefreshView.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.aqTableView.separatorColor = [ThemeColors cellBorderColor];
+    if (self.aqTableView.indexPathForSelectedRow) {
+        [self.aqTableView deselectRowAtIndexPath:self.aqTableView.indexPathForSelectedRow animated:NO];
+    }
+    
+    self.aqTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
+    self.aqTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
+    self.aqTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
+    
+    [self.aqTableView reloadData];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    iNumberNewAQ = 0;
+    [self setBadgePlusTableView];
 }
 
 -(void)reload
@@ -90,6 +112,66 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *sTopicUrl = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"link"];
+    NSString *sFormattedUrl = [[sTopicUrl stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
+
+    // set AQ as no more new
+    [[marrXMLData objectAtIndex:indexPath.row] setObject:[NSNumber numberWithBool:NO] forKey:@"is_new"];
+
+    self.messagesTableViewController = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:sFormattedUrl displaySeparator:YES];;
+
+    // Open topic
+    // Sur iPhone
+    if (([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
+        [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ||
+        [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
+
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"AQ" style: UIBarButtonItemStylePlain target:nil action:nil];
+        [self.navigationController pushViewController:self.messagesTableViewController animated:YES];
+    } else { //iPad
+        [[[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] viewControllers] objectAtIndex:1] popToRootViewControllerAnimated:NO];
+        
+        [[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] setViewControllers:[NSMutableArray arrayWithObjects:self.messagesTableViewController, nil] animated:YES];
+        
+        if ([messagesTableViewController.splitViewController respondsToSelector:@selector(displayModeButtonItem)]) {
+            NSLog(@"PUSH ADD BTN");
+            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftBarButtonItem = messagesTableViewController.splitViewController.displayModeButtonItem;
+            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftItemsSupplementBackButton = YES;
+        }
+    }
+    
+}
+
+- (void)pushTopic {
+    
+    if (([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
+        [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ||
+        [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
+        
+        self.navigationItem.backBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:@" "
+                                         style: UIBarButtonItemStylePlain
+                                        target:nil
+                                        action:nil];
+        
+        [self.navigationController pushViewController:messagesTableViewController animated:YES];
+    }
+    else {
+        [[[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] viewControllers] objectAtIndex:1] popToRootViewControllerAnimated:NO];
+        
+        [[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] setViewControllers:[NSMutableArray arrayWithObjects:messagesTableViewController, nil] animated:YES];
+        
+        if ([messagesTableViewController.splitViewController respondsToSelector:@selector(displayModeButtonItem)]) {
+            NSLog(@"PUSH ADD BTN");
+            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftBarButtonItem = messagesTableViewController.splitViewController.displayModeButtonItem;
+            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftItemsSupplementBackButton = YES;
+        }
+        
+    }
+}
+
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 0;
 }
@@ -98,6 +180,9 @@
 {
     return 70;
 }
+
+#pragma mark -
+#pragma mark RSS xml parsing
 
 - (void)fetchContent
 {
@@ -139,7 +224,10 @@
 
     [xmlparser setDelegate:self];
     [xmlparser parse];
-    
+
+    // Set current date as last check time for AQ
+    [[NSUserDefaults standardUserDefaults] setObject:[[NSDate alloc] init] forKey:@"last_check_aq"];
+
     [self setBadgePlusTableView];
 }
 
@@ -196,8 +284,6 @@
     [request cancel];
 }
 
-#pragma mark -
-#pragma mark RSS xml parsing
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string;
 {
@@ -278,41 +364,6 @@
     mstrXMLString = nil;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *sTopicUrl = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"link"];
-    NSString *sFormattedUrl = [[sTopicUrl stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
-    
-    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:sFormattedUrl displaySeparator:YES];
-    self.messagesTableViewController = aView;
-    
-    self.navigationItem.backBarButtonItem =
-    [[UIBarButtonItem alloc] initWithTitle:@"AQ"
-                                     style: UIBarButtonItemStylePlain
-                                    target:nil
-                                    action:nil];
-
-    [self.navigationController pushViewController:self.messagesTableViewController animated:YES];
-}
-
-- (void) viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    self.view.backgroundColor = self.aqTableView.backgroundColor = self.aqTableView.pullToRefreshView.backgroundColor = [ThemeColors greyBackgroundColor];
-    self.aqTableView.separatorColor = [ThemeColors cellBorderColor];
-    if (self.aqTableView.indexPathForSelectedRow) {
-        [self.aqTableView deselectRowAtIndexPath:self.aqTableView.indexPathForSelectedRow animated:NO];
-    }
-    
-    self.aqTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
-    self.aqTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
-    self.aqTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
-}
-
-- (void) viewDidAppear:(BOOL)animated
-{
-    iNumberNewAQ = 0;
-    [self setBadgePlusTableView];
-}
 /*
  https://forum.hardware.fr/forum2.php?post=78667&cat=13&config=hfr.inc&cache=&page=1&sondage=0&owntopic=0&word=&spseudo=stukka&firstnum=55696838&currentnum=0&filter=1
  

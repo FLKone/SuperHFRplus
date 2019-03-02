@@ -9,13 +9,14 @@
 #import "PlusTableViewController.h"
 #import "PlusSettingsViewController.h"
 #import "CompteViewController.h"
+#import "CreditsViewController.h"
 #import "AQTableViewController.h"
 #import "PlusCellView.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 
 @implementation PlusTableViewController;
-@synthesize plusTableView, iAQBadgeNumer, settingsViewController, compteViewController, aqTableViewController;
+@synthesize plusTableView, iAQBadgeNumer, settingsViewController, compteViewController, aqTableViewController, creditsViewController;
 ;
 
 
@@ -40,6 +41,8 @@
     self.compteViewController = [[CompteViewController alloc] initWithNibName:@"CompteViewController" bundle:nil];
     self.settingsViewController = [[PlusSettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
     self.aqTableViewController = [[AQTableViewController alloc] initWithNibName:@"AQTableView" bundle:nil];
+    self.creditsViewController = [[CreditsViewController alloc] initWithNibName:@"CreditsViewController" bundle:nil];
+    
     iAQBadgeNumer = 0;
 }
 
@@ -62,10 +65,12 @@
         case 1:
             [self.navigationController pushViewController:self.aqTableViewController animated:YES];
             break;
-        case 2: {
+        case 2:
             [self.navigationController pushViewController:self.settingsViewController animated:YES];
             break;
-        }
+        case 3:
+            [self.navigationController pushViewController:self.creditsViewController animated:YES];
+            break;
     }
 }
 
@@ -79,7 +84,7 @@
     return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -97,7 +102,7 @@
             cell.badgeLabel.clipsToBounds = YES;
             cell.badgeLabel.layer.cornerRadius = 20 * 1.2 / 2;
             if (iAQBadgeNumer > 0) {
-                cell.badgeLabel.backgroundColor = [UIColor grayColor];
+                cell.badgeLabel.backgroundColor =  [ThemeColors tintColor];
                 cell.badgeLabel.textColor = [UIColor whiteColor];
                 cell.badgeLabel.text = [NSString stringWithFormat:@"%d", iAQBadgeNumer];
             } else {
@@ -109,6 +114,12 @@
         case 2:
             cell.titleLabel.text = @"Réglages";
             cell.titleImage.image = [UIImage imageNamed:@"20-gear2"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
+            break;
+        case 3:
+            cell.titleLabel.text = @"Crédits";
+            cell.titleImage.image = [UIImage imageNamed:@"AboutFilled-25"];
             cell.badgeLabel.text = @"";
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
