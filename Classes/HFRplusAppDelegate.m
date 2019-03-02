@@ -117,7 +117,7 @@
 
     // Start up window
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { 
-        [splitViewController view].backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bgbigiPad"]];
+        [splitViewController view].backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bgbigipad3.jpg"]];
 
         splitViewController.delegate = splitViewController;
         [window setRootViewController:splitViewController];

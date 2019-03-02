@@ -41,8 +41,15 @@
                         <color key="textColor" red="0.0" green="0.60881678136398554" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ezl-5b-dOI">
+                        <rect key="frame" x="6" y="50" width="33" height="16"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="Ezl-5b-dOI" firstAttribute="top" secondItem="qeK-e8-EHU" secondAttribute="bottom" id="2Sk-Wp-aOj"/>
                     <constraint firstItem="Pnj-Eq-1eU" firstAttribute="top" secondItem="sIk-RB-3nB" secondAttribute="bottom" constant="20" id="9T6-r6-lPH"/>
                     <constraint firstItem="qeK-e8-EHU" firstAttribute="leading" secondItem="ouz-Xk-lTv" secondAttribute="leading" constant="6" id="MHm-mk-YG7"/>
                     <constraint firstAttribute="trailingMargin" secondItem="sIk-RB-3nB" secondAttribute="trailing" id="RwV-mQ-fZk"/>
@@ -50,10 +57,12 @@
                     <constraint firstItem="qeK-e8-EHU" firstAttribute="top" secondItem="sIk-RB-3nB" secondAttribute="bottom" constant="2" id="Sgo-27-3PV"/>
                     <constraint firstItem="Pnj-Eq-1eU" firstAttribute="leading" secondItem="ouz-Xk-lTv" secondAttribute="leading" constant="6" id="kBt-CN-NVU"/>
                     <constraint firstItem="sIk-RB-3nB" firstAttribute="leading" secondItem="ouz-Xk-lTv" secondAttribute="leading" constant="6" id="khU-Iv-tCX"/>
+                    <constraint firstItem="Ezl-5b-dOI" firstAttribute="leading" secondItem="ouz-Xk-lTv" secondAttribute="leading" constant="6" id="t5E-7t-C5m"/>
                     <constraint firstAttribute="trailing" secondItem="Pnj-Eq-1eU" secondAttribute="trailing" constant="6" id="y3N-J3-3QD"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="labelCommentAQ" destination="Ezl-5b-dOI" id="OEF-aL-ouU"/>
                 <outlet property="labelTime" destination="Pnj-Eq-1eU" id="SX8-E3-UoW"/>
                 <outlet property="labelTitleAQ" destination="qeK-e8-EHU" id="2UO-bz-jom"/>
                 <outlet property="labelTitleTopic" destination="sIk-RB-3nB" id="EMU-xD-EL9"/>

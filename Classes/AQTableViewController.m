@@ -57,6 +57,10 @@
         [self.aqTableView deselectRowAtIndexPath:self.aqTableView.indexPathForSelectedRow animated:NO];
     }
     
+    // Set current date as last check time for AQ
+    [[NSUserDefaults standardUserDefaults] setObject:[[NSDate alloc] init] forKey:@"last_check_aq"];
+
+    
     self.aqTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
     self.aqTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
     self.aqTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
@@ -94,10 +98,13 @@
     NSString *sAqPubDate = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"pubDate"];
     NSString *sInitiator = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"initiator"];
     NSString *sAqNom = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"title"];
+    NSString *sAqComment = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"comment"];
     BOOL bIsNew = [[[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"is_new"] boolValue];
 
     cell.labelTitleTopic.text = sTopicTitle;
     cell.labelTitleAQ.text = sAqNom;
+    cell.labelCommentAQ.text = sAqComment;
+    
     cell.labelTime.text = [NSString stringWithFormat:@"par %@ %@", sInitiator, sAqPubDate];;
     
     [cell.labelTitleTopic setTextColor:[ThemeColors textColor]];
@@ -109,6 +116,8 @@
     [cell.labelTitleAQ setTextColor:[ThemeColors topicMsgTextColor]];
     [cell.labelTime setTextColor:[ThemeColors tintColor]];
 
+    
+    
     return cell;
 }
 
@@ -135,7 +144,6 @@
         [[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] setViewControllers:[NSMutableArray arrayWithObjects:self.messagesTableViewController, nil] animated:YES];
         
         if ([messagesTableViewController.splitViewController respondsToSelector:@selector(displayModeButtonItem)]) {
-            NSLog(@"PUSH ADD BTN");
             [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftBarButtonItem = messagesTableViewController.splitViewController.displayModeButtonItem;
             [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftItemsSupplementBackButton = YES;
         }
@@ -224,9 +232,6 @@
 
     [xmlparser setDelegate:self];
     [xmlparser parse];
-
-    // Set current date as last check time for AQ
-    [[NSUserDefaults standardUserDefaults] setObject:[[NSDate alloc] init] forKey:@"last_check_aq"];
 
     [self setBadgePlusTableView];
 }
@@ -321,6 +326,7 @@
         NSDate *dNow = [[NSDate alloc] init];
         NSDate* dAQ = [df dateFromString:value];
         NSTimeInterval secondsBetween = [dNow timeIntervalSinceDate:dAQ];
+        int numberHours = secondsBetween / 3600;
         int numberDays = secondsBetween / 24 / 3600;
         int numberMonths = numberDays / 31;
         int numberYears = numberMonths / 365;
@@ -340,12 +346,12 @@
 
         
         NSString* sDateAQ = @"";
-        if (numberDays == 0) {
-            sDateAQ = @"aujourd'hui";
-        } else if (numberDays <= 1) {
-            sDateAQ = @"hier";
+        if (numberHours == 0) {
+            sDateAQ = @"il y a 1 h";
+        } else if (numberHours <= 23) {
+            sDateAQ = [NSString stringWithFormat:@"il y a %d h", numberHours];
         } else if (numberDays <= 30) {
-            sDateAQ = [NSString stringWithFormat:@"il y a %d jours", numberDays];
+            sDateAQ = [NSString stringWithFormat:@"il y a %d j", numberDays];
         } else if (numberMonths <= 12) {
             sDateAQ = [NSString stringWithFormat:@"il y a %d mois", numberMonths];
         } else {

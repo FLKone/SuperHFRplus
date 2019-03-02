@@ -11,12 +11,14 @@
 @interface AQCellView : UITableViewCell {
     IBOutlet UILabel *labelTitleTopic;
     IBOutlet UILabel *labelTitleAQ;
+    IBOutlet UILabel *labelCommentAQ;
     IBOutlet UILabel *labelTime;
 }
 
 @property (nonatomic, strong) IBOutlet UILabel *labelTitleTopic;
 @property (strong, nonatomic) IBOutlet UILabel *labelTitleAQ;
 @property (strong, nonatomic) IBOutlet UILabel *labelTime;
+@property (strong, nonatomic) IBOutlet UILabel *labelCommentAQ;
 
 @end
 

@@ -16,6 +16,7 @@
 @synthesize labelTitleTopic;
 @synthesize labelTitleAQ;
 @synthesize labelTime;
+@synthesize labelCommentAQ;
 
 -(void)layoutSubviews {
     [super layoutSubviews];
@@ -32,6 +33,7 @@
     
     [labelTitleTopic setTextColor:[ThemeColors textColor]];
     [labelTitleAQ setTextColor:[ThemeColors topicMsgTextColor]];
+    [labelCommentAQ setTextColor:[ThemeColors topicMsgTextColor]];
     [labelTime setTextColor:[ThemeColors tintColor]];
     
     self.selectionStyle = [ThemeColors cellSelectionStyle:theme];
