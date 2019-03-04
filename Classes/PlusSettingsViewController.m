@@ -43,6 +43,7 @@
     [super viewDidLoad];
     self.showCreditsFooter = NO;
     [self.tableView setDelegate:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated   {
@@ -83,13 +84,12 @@
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
     
     self.neverShowPrivacySettings = YES;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
 
     self.navigationItem.rightBarButtonItem = nil;
 
 //    [self.tableView reloadData];
 
-    //[self.tableView reloadData];
+    [self.tableView reloadData];
 }
 
 #pragma mark kIASKAppSettingChanged notification
@@ -193,7 +193,7 @@
         [[NSNotificationCenter defaultCenter] postNotification:myNotification];
     }
 
-    //[self.tableView reloadData];
+    [self.tableView reloadData];
 }
 
 -(void)hideCell:(NSString *)cell{
@@ -203,9 +203,7 @@
     }
     
     [hiddenKeys addObject:cell];
-    //self.hiddenKeys = hiddenKeys;
-    [self setHiddenKeys:hiddenKeys animated:NO];
-
+    self.hiddenKeys = hiddenKeys;
 }
 
 -(void)showCell:(NSString *)cell{
@@ -213,8 +211,7 @@
     if([hiddenKeys containsObject:cell]){
         [hiddenKeys removeObject:cell];
     }
-    //self.hiddenKeys = hiddenKeys;
-    [self setHiddenKeys:hiddenKeys animated:NO];
+    self.hiddenKeys = hiddenKeys;
 }
 
 
