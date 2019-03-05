@@ -42,6 +42,7 @@
     //NSLog(@"viewDidLoadviewDidLoadviewDidLoadviewDidLoad");
     [super viewDidLoad];
     self.showCreditsFooter = NO;
+    self.neverShowPrivacySettings = YES;
     [self.tableView setDelegate:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
 }
@@ -82,14 +83,8 @@
         [self hideCell:@"theme_noel_disabled"];
     }
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
-    
-    self.neverShowPrivacySettings = YES;
 
     self.navigationItem.rightBarButtonItem = nil;
-
-//    [self.tableView reloadData];
-
-    [self.tableView reloadData];
 }
 
 #pragma mark kIASKAppSettingChanged notification
