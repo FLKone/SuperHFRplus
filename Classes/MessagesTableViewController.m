@@ -2503,7 +2503,7 @@
     NSLog("commentaire: %@", sComment);
     NSLog("commentaire: %@", sComment);
 
-    NSString *sUrlCreateAQ = [NSString stringWithFormat:@"http://alerte-qualitay.toyonos.info/api/addAlerte.php5?alerte_qualitay_id=-1&nom=%@&topic_id=%@&topic_titre=%@&pseudo=%@&post_id=%@&post_url=%@&commentaire=%@",
+    NSString *sParametersCreateAQ = [NSString stringWithFormat:@"alerte_qualitay_id=-1&nom=%@&topic_id=%@&topic_titre=%@&pseudo=%@&post_id=%@&post_url=%@&commentaire=%@",
                              [self addPercentEncodingURL:sTitle],
                              [self addPercentEncodingURL:self.arrayInputData[@"post"]],
                              [self addPercentEncodingURL:self.topicName],
@@ -2512,10 +2512,10 @@
                              [self addPercentEncodingURL:sURL],
                              [self addPercentEncodingURL:sComment]];
 
-
+    
 
     NSLog("====================================== Req AQ ===================================");
-    NSLog("url_post: %@", sUrlCreateAQ);
+    NSLog("parameters: %@", sParametersCreateAQ);
     NSLog("====================================== /AQ ======================================");
 
     /*alerte_qualitay_id: -1 <- l'id d'une aq existante (pour signaler plusieurs fois le même message) ou -1 pour une nouvelle aq (le premier champ de la popup de création dans le script)
@@ -2547,45 +2547,31 @@
      
     */
     
+    NSData *postData = [sParametersCreateAQ dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    NSString *postLength = [NSString stringWithFormat:@"%ld",[postData length]];
+    NSURL *url = [NSURL URLWithString:@"http://alerte-qualitay.toyonos.info/api/addAlerte.php5"];
     
-    /*
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                              cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                          timeoutInterval:5];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:postData];
+    NSError *error;
+    NSURLResponse *response;
+    NSHTTPURLResponse* urlResponse = nil;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request
+                                                 returningResponse:&urlResponse
+                                                             error:&error];
     
-    ASIFormDataRequest  *arequest = [[ASIFormDataRequest  alloc]  initWithURL:[NSURL URLWithString:sUrlCreateAQ]];
-
-    [arequest startSynchronous];
-    if (arequest) {
-        if ([arequest error]) {
-            // Popup erreur
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Erreur à la création de l'AQ !"  message:[[arequest error] localizedDescription]
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Retour" style:UIAlertActionStyleCancel
-                                                                 handler:^(UIAlertAction * action) { }];
-            [alert addAction:actionCancel];
-            [self presentViewController:alert animated:YES completion:nil];
-            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        }
-        else if ([arequest responseString])
-        {
-            NSLog(@"Response AQ creation: [%@]", [arequest responseString]);
-            
-            NSError * error = nil;
-            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
-            HTMLNode * bodyNode = [myParser body]; //Find the body tag
-            HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
-            
-            
-            if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
-                UIAlertView *alertKKO = [[UIAlertView alloc] initWithTitle:nil message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [alertKKO show];
-            }
-            else {
-                UIAlertView *alertOK = [[UIAlertView alloc] initWithTitle:@"Hooray !" message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                 delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-                [alertOK show];
-            }
-        }
-    }*/
+    NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
+    
+    BOOL retVal = NO;
+    if([responseString isEqualToString:@"1"])
+    {
+        retVal = YES;
+    }
 }
 
  - (NSString*)addPercentEncodingURL:(NSString*) sURL {
