@@ -324,7 +324,6 @@
     
     if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
         vos_sujets == 0) {
-        NSLog(@"à droite");
         
         switch (type) {
             case kNewTopic:

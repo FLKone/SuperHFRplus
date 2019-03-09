@@ -334,7 +334,7 @@
         NSDate *dLastCheckAQ = [[NSUserDefaults standardUserDefaults] objectForKey:@"last_check_aq"];
         if (!dLastCheckAQ) {
             // Default latest AQ date
-            dLastCheckAQ = [df dateFromString:@"Tue, 1 JAN 2019 00:00:00 Z"];
+            dLastCheckAQ = [df dateFromString:@"Tue, 1 JAN 2010 00:00:00 Z"];
         }
         
         if ([dAQ earlierDate:dLastCheckAQ] == dLastCheckAQ) {
@@ -383,6 +383,24 @@
  topic_titre= titre du topic
  postid=55696
  https://forum.hardware.fr/forum2.php?post=78667&cat=13&config=hfr.inc&cache=&page=1&sondage=0&owntopic=0&word=&spseudo=stukka&firstnum=55696…"
+ 
+ Code d'erreur:
+ case "1":
+ newP.innerHTML = "Ce post a été signalé avec succès !";
+ break;
+ case "-2":
+ newP.innerHTML = "L'alerte spécifiée est inexistante !";
+ break;
+ case "-3":
+ newP.innerHTML = "Un ou plusieurs paramètres d'appel sont manquants !";
+ break;
+ case "-4":
+ newP.innerHTML = "Vous avez déjà signalé cette qualitaÿ !";
+ break;
+ default:
+ newP.innerHTML = "Une erreur imprévue est survenue durant la signalisation de ce post !";
+ 
+http://alerte-qualitay.toyonos.info/api/addAlerte.php5?alerte_qualitay_id=-1&nom=test1&topic_id=61999&topic_titre=BashHFr&pseudo=roger21&post_id=55767559&post_url=https%3A%2F%2Fforum.hardware.fr%2Fforum2.php%3Fconfig%3Dhfr.inc%26cat%3D13%26subcat%3D432%26post%3D61999%26page%3D2681%26p%3D1%26sondage%3D0%26owntopic%3D1%26trash%3D0%26trash_post%3D0%26print%3D0%26numreponse%3D0%26quote_only%3D0%26new%3D0%26nojs%3D0%23t55767559&commentaire=test2
  */
 
 @end

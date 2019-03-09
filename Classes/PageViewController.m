@@ -56,64 +56,38 @@
 }
 
 -(void)choosePage {
-	//NSLog(@"choosePage");
-	
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Aller à la page"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleAlert];
     
     
-    if ([UIAlertController class]) {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Aller à la page"
-                                                                       message:nil
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        
-        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = [NSString stringWithFormat:@"(numéro entre %d et %d)", [self firstPageNumber], [self lastPageNumber]];
-            textField.textAlignment = NSTextAlignmentCenter;
-            [textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-            textField.keyboardAppearance = UIKeyboardAppearanceDefault;
-            textField.keyboardType = UIKeyboardTypeNumberPad;
-            textField.delegate = self;
-        }];
-        
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                             handler:^(UIAlertAction * action) {
-                                                                 
-                                                             }];
-        
-        [alert addAction:cancelAction];
-        
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) {
-                                                                  [self gotoPageNumber:[[alert.textFields[0] text] intValue]];
-                                                              }];
-        
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:^{
-            
-        }];
-        
-        
-        
-    } else {
-    
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Aller à la page" message:nil
-                                                       delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"OK", nil];
-        
-        alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-        
-        UITextField *textField = [alert textFieldAtIndex:0];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = [NSString stringWithFormat:@"(numéro entre %d et %d)", [self firstPageNumber], [self lastPageNumber]];
         textField.textAlignment = NSTextAlignmentCenter;
-        textField.delegate = self;
         [textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
         textField.keyboardAppearance = UIKeyboardAppearanceDefault;
         textField.keyboardType = UIKeyboardTypeNumberPad;
-        
-        [alert setTag:668];
-        [alert show];
-
-    }
+        textField.delegate = self;
+        [[ThemeManager sharedManager] applyThemeToTextField:textField];
+        textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    }];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {
+                                                             
+                                                         }];
+    
+    [alert addAction:cancelAction];
+    
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self gotoPageNumber:[[alert.textFields[0] text] intValue]];
+                                                          }];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 

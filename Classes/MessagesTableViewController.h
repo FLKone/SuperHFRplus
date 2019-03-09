@@ -109,7 +109,9 @@
     NSString* firstnumBackup;
     
     BOOL isSeparatorNewMessages;
+    UIAlertAction* actionCreateAQ;
 }
+
 
 
 @property (nonatomic, strong) IBOutlet UIWebView *messagesWebView;
@@ -181,6 +183,7 @@
 @property (nonatomic, strong) NSMutableDictionary *searchInputData;
 @property BOOL isSearchInstra;
 @property BOOL isSeparatorNewMessages;
+@property UIAlertAction* actionCreateAQ;
 
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
