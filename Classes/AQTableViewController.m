@@ -334,7 +334,7 @@
         NSDate *dLastCheckAQ = [[NSUserDefaults standardUserDefaults] objectForKey:@"last_check_aq"];
         if (!dLastCheckAQ) {
             // Default latest AQ date
-            dLastCheckAQ = [df dateFromString:@"Tue, 1 JAN 2019 00:00:00 Z"];
+            dLastCheckAQ = [df dateFromString:@"Tue, 1 JAN 2010 00:00:00 Z"];
         }
         
         if ([dAQ earlierDate:dLastCheckAQ] == dLastCheckAQ) {

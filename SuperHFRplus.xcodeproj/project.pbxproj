@@ -11,6 +11,7 @@
 		1503755321FDF8D700A5F7E1 /* PlusTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755221FDF8D700A5F7E1 /* PlusTableView.xib */; };
 		1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755421FE249300A5F7E1 /* PlusCellView.xib */; };
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
+		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
 		15141AA321E7ADE800811E5A /* link_url.png in Resources */ = {isa = PBXBuildFile; fileRef = 15141AA221E7ADE800811E5A /* link_url.png */; };
 		156246D8218230DC00F5B8DC /* plus.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D7218230DC00F5B8DC /* plus.svg */; };
 		156246DD2182310000F5B8DC /* arrowend.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D92182310000F5B8DC /* arrowend.svg */; };
@@ -18,6 +19,7 @@
 		156246DF2182310000F5B8DC /* arrowbegin.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DB2182310000F5B8DC /* arrowbegin.svg */; };
 		156246E02182310000F5B8DC /* arrowback.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DC2182310000F5B8DC /* arrowback.svg */; };
 		15AEFFED222AB07C003A2E5F /* bgbigipad3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 15AEFFEC222AB07C003A2E5F /* bgbigipad3.jpg */; };
+		15E25D68223047EF00474562 /* HFRAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E25D67223047EF00474562 /* HFRAlertView.m */; };
 		15EBFD0522021B8400A37CED /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD0422021B8400A37CED /* SettingsView.xib */; };
 		15EBFD0822022A7500A37CED /* PlusSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */; };
 		15EBFD0E22061F7300A37CED /* AQTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD0D22061F7300A37CED /* AQTableViewController.m */; };
@@ -739,6 +741,7 @@
 		1503755421FE249300A5F7E1 /* PlusCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlusCellView.xib; sourceTree = "<group>"; };
 		1503755621FE26C900A5F7E1 /* PlusCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlusCellView.h; sourceTree = "<group>"; };
 		1503755721FF794200A5F7E1 /* PlusCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusCellView.m; sourceTree = "<group>"; };
+		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15141AA421E7ADF000811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
@@ -747,6 +750,8 @@
 		156246DB2182310000F5B8DC /* arrowbegin.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowbegin.svg; sourceTree = "<group>"; };
 		156246DC2182310000F5B8DC /* arrowback.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowback.svg; sourceTree = "<group>"; };
 		15AEFFEC222AB07C003A2E5F /* bgbigipad3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bgbigipad3.jpg; sourceTree = "<group>"; };
+		15E25D66223046BD00474562 /* HFRAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HFRAlertView.h; sourceTree = "<group>"; };
+		15E25D67223047EF00474562 /* HFRAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HFRAlertView.m; sourceTree = "<group>"; };
 		15EBFD0422021B8400A37CED /* SettingsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
 		15EBFD0622022A5700A37CED /* PlusSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlusSettingsViewController.h; sourceTree = "<group>"; };
 		15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlusSettingsViewController.m; sourceTree = "<group>"; };
@@ -1676,6 +1681,8 @@
 				D826903E1E5856A5006971C3 /* HFRUIImagePickerController.m */,
 				D86ED58620447D1200A2D541 /* LuminosityHandler.h */,
 				D86ED58720447D1200A2D541 /* LuminosityHandler.m */,
+				15E25D66223046BD00474562 /* HFRAlertView.h */,
+				15E25D67223047EF00474562 /* HFRAlertView.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -2400,6 +2407,7 @@
 				CA00C5A417C30C370067B457 /* 06-magnify@2x.png */,
 				CA00C5A517C30C370067B457 /* 06-magnifying-glass.png */,
 				CA00C5A617C30C370067B457 /* 08-chat.png */,
+				1512A7922232F6C8000C9B1D /* 08-chat-20.png */,
 				CA00C5A717C30C370067B457 /* 08-chat@2x.png */,
 				CA00C5A817C30C370067B457 /* 111-user.png */,
 				CA00C5A917C30C370067B457 /* 111-user@2x.png */,
@@ -3342,6 +3350,7 @@
 				CA7C70A4185EF50E00B348BA /* arrowend.png in Resources */,
 				4C19919C1FA9EC8E00A07A8A /* Icon-BETA-IPAD@2x.png in Resources */,
 				4C0B8E071BA45B0100D329BA /* ForumCellView.xib in Resources */,
+				1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */,
 				CAF5DB671932BA58000B5215 /* error@2x.png in Resources */,
 				D8DDF2AD1E58810A002F1484 /* ToolBarFastRewind_on_tinted.png in Resources */,
 				CA7C70A5185EF50E00B348BA /* 06-magnifying-glass.png in Resources */,
@@ -3538,6 +3547,7 @@
 				D8C6A6E4216224F1003C6D59 /* MultisManager.m in Sources */,
 				CA7C70E7185EF50E00B348BA /* MKStoreManager.m in Sources */,
 				D80DBD741E55BE730051B751 /* ASIHTTPRequest.m in Sources */,
+				15E25D68223047EF00474562 /* HFRAlertView.m in Sources */,
 				D8F5CBB21DF462F100B029FC /* ThemeColors.m in Sources */,
 				CA7C70E9185EF50E00B348BA /* HTMLParser.m in Sources */,
 				4C39035B1BCACEC200FD6F1F /* PSTCollectionViewCell.m in Sources */,

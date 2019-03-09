@@ -410,15 +410,6 @@
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
     
-    //NSLog(@"applicationDidBecomeActive");
-    // TODO BAE : TO REMOVE, ONLY FOR TEST
-    NSDateFormatter * df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"E, d MMM yy HH:mm:ss Z"];
-    NSDate* dLastCheckAQ = [df dateFromString:@"Tue, 1 JAN 2019 00:00:00 Z"];
-    [[NSUserDefaults standardUserDefaults] setObject:dLastCheckAQ forKey:@"last_check_aq"];
-    // TODO BAE : TO REMOVE, ONLY FOR TEST
-
-    
     // Noel
     NSDate * now = [NSDate date];
     NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];

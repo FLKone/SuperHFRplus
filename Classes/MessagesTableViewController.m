@@ -41,6 +41,7 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "MultisManager.h"
+#import "HFRAlertView.h"
 
 @implementation MessagesTableViewController
 @synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
@@ -2165,9 +2166,11 @@
 		}
 		else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdopopup"]) {
 			//NSLog(@"oijlkajsdoihjlkjasdopopup");
-			int ypos = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:1] intValue];
+            NSArray<NSString *> *pathComponents = [[aRequest.URL absoluteString] pathComponents];
+            int xpos = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:0] intValue];
+            int ypos = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:1] intValue];
 			int curMsg = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:2] intValue];
-			//NSLog(@"%d %d", ypos, curMsg);
+			NSLog(@"%d %d %d", xpos, ypos, curMsg);
 
 			[self performSelector:@selector(showMenuCon:andPos:) withObject:[NSNumber numberWithInt:curMsg]  withObject:[NSNumber numberWithInt:ypos]];
 			return NO;
@@ -2244,7 +2247,7 @@
 
     UIImage *menuImgDelete = [UIImage imageNamed:@"DeleteColumnFilled-20"];
     UIImage *menuImgAlerte = [UIImage imageNamed:@"HighPriorityFilled-20"];
-    UIImage *menuImgAQ = [UIImage imageNamed:@"08-chat"];
+    UIImage *menuImgAQ = [UIImage imageNamed:@"08-chat-20"];
 
 	if([[arrayData objectAtIndex:curMsg] urlEdit]){
 		//NSLog(@"urlEdit");
@@ -2309,9 +2312,6 @@
     // AQ
     [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"AQ", @"actionAQ", menuImgAQ, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
 
-    //[self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"AQ", @"actionAQ", menuImgAlerte, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
-    
-
 	self.curPostID = curMsg;
 	
 	UIMenuController *menuController = [UIMenuController sharedMenuController];
@@ -2350,27 +2350,13 @@
 	[menuController setMenuVisible:YES animated:YES];
 }
 
-/*
-- (void)actionSheet:(UIActionSheet *)modalView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	NSLog(@"MTV clickedButtonAtIndex %d %d", buttonIndex, curPostID);
-	if (buttonIndex < [self.arrayAction count]) {
-		
-		
-		[self performSelector:NSSelectorFromString([[self.arrayAction objectAtIndex:buttonIndex] objectForKey:@"code"]) withObject:[NSNumber numberWithInt:curPostID]];
-	}
-	
-}
-*/
 #pragma mark -
 #pragma mark sharedMenuController management
 
 
 -(void)actionFavoris:(NSNumber *)curMsgN {
 	int curMsg = [curMsgN intValue];
-
-	//NSLog(@"actionFavoris %@", [[arrayData objectAtIndex:curMsg] addFlagUrl]);
-	
+    
 	ASIHTTPRequest  *aRequest =  
 	[[ASIHTTPRequest  alloc]  initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[arrayData objectAtIndex:curMsg] addFlagUrl]]]];
     
@@ -2440,12 +2426,44 @@
     [self presentModalViewController:nc animated:YES];
 }
 
--(void)actionAQ:(NSNumber *)curMsgN {
+- (void)actionAQ:(NSNumber *)curMsgN {
+    NSString* sTPostID = [[arrayData objectAtIndex:[curMsgN intValue]] postID];
+    NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
+    NSString* sTopicId = self.arrayInputData[@"post"];
+    NSString *sRequest = [NSString stringWithFormat:@"http://alerte-qualitay.toyonos.info/api/getAlertesByTopic.php5?topic_id=%@", sTopicId];
+    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:sRequest]
+                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                       timeoutInterval:2];
+
+    NSURLResponse * response = nil;
+    NSError * error = nil;
+    NSData * dataReq = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
+    
+    if (error != nil) {
+        [HFRAlertView DisplayAlertViewWithTitle:@"Erreur réseau" andMessage:@"Création d'AQ impossible" forDuration:1];
+        return;
+    }
+    
+    // Parse data
+    //TODO
+    //http://alerte-qualitay.toyonos.info/api/getAlertesByTopic.php5?topic_id=25135
+    /*
+     <alertes>
+     <alerte id="13331" nom="Test" pseudoInitiateur="ezzz" date="05-03-2019" postsIds="5934515"/>
+     <alerte id="13330" nom="Best of photos 2018" pseudoInitiateur="ezzz" date="04-03-2019" postsIds="5934515"/>
+     </alertes>
+     */
+    NSString* sData = [[NSString alloc] initWithData:dataReq encoding:NSUTF8StringEncoding];
+    if ([sData containsString:sPostId]) {
+        [HFRAlertView DisplayAlertViewWithTitle:@"Post déjà signalé" andMessage:nil forDuration:1];
+        return;
+    }
+    
     int curMsg = [curMsgN intValue];
     NSLog("AQ link URL = %@%@#%@", [k ForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]);
     
     NSString* sAuthor = [[arrayData objectAtIndex:curMsg] name];
-    NSString* sMessage = [NSString stringWithFormat:@"Voulez-vous créer une Alerte Qualitay sur le post de %@", sAuthor];
+    NSString* sMessage = [NSString stringWithFormat:@"Créer une Alerte Qualitay sur le post de %@", sAuthor];
     // Popup retry
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Alerte Qualitay ?" message:sMessage
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -2453,8 +2471,12 @@
         textField.placeholder = @"Ajoutez un titre";
         textField.clearButtonMode = UITextFieldViewModeWhileEditing;
         [textField addTarget:self action:@selector(textDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [[ThemeManager sharedManager] applyThemeToTextField:textField];
+        textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+        textField.borderStyle = UITextBorderStyleNone;
     }];
-    
+
+
     UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) { }];
     self.actionCreateAQ = [UIAlertAction actionWithTitle:@"Créer" style:UIAlertActionStyleDefault
@@ -2464,8 +2486,17 @@
     [alert addAction:actionCancel];
     [alert addAction:self.actionCreateAQ];
     [self.actionCreateAQ setEnabled:false];
-    
+    for (UIView* textfield in alert.textFields) {
+        UIView *container = textfield.superview;
+        UIView *effectView = container.superview.subviews[0];
+        
+        if (effectView && [effectView class] == [UIVisualEffectView class]){
+            container.backgroundColor = [UIColor clearColor];
+            [effectView removeFromSuperview];
+        }
+    }
     [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 -(void)textDidChange:(UITextField *)textField {
@@ -2487,20 +2518,12 @@
     NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
 
     NSLog("====================================== AQ =======================================");
-    //NSLog("URL: %@", [sURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-"]]);
-    NSLog("nom (titre AQ): %@", sTitle);
     NSLog("nom (titre AQ): %@", sTitle);
     NSLog("topic_id: %@", self.arrayInputData[@"post"]);
-    NSLog("topic_id: %@", self.arrayInputData[@"post"]);
-    NSLog("topic_titre: %@", self.topicName);
     NSLog("topic_titre: %@", self.topicName);
     NSLog("pseudo: %@", sCurrentPseudo);
-    NSLog("pseudo: %@", sCurrentPseudo);
-    NSLog("post_id: %@", sPostId);
     NSLog("post_id: %@", sPostId);
     NSLog("post_url: %@", sURL);
-    NSLog("post_url: %@", sURL);
-    NSLog("commentaire: %@", sComment);
     NSLog("commentaire: %@", sComment);
 
     NSString *sParametersCreateAQ = [NSString stringWithFormat:@"alerte_qualitay_id=-1&nom=%@&topic_id=%@&topic_titre=%@&pseudo=%@&post_id=%@&post_url=%@&commentaire=%@",
@@ -2516,7 +2539,7 @@
 
     NSLog("====================================== Req AQ ===================================");
     NSLog("parameters: %@", sParametersCreateAQ);
-    NSLog("====================================== /AQ ======================================");
+    NSLog("====================================== Post AQ ==================================");
 
     /*alerte_qualitay_id: -1 <- l'id d'une aq existante (pour signaler plusieurs fois le même message) ou -1 pour une nouvelle aq (le premier champ de la popup de création dans le script)
      nom: test1 <- le titre de l'aq à créer (le deuxième champ de la popup de création) texte libre
@@ -2527,24 +2550,17 @@
      post_url: https%3A%2F%2Fforum.hardware.fr%2Fforum2.php%3Fconfig%3Dhfr.inc%26cat%3D13%26subcat%3D432%26post%3D61999%26page%3D2681%26p%3D1%26sondage%3D0%26owntopic%3D1%26trash%3D0%26trash_post%3D0%26print%3D0%26numreponse%3D0%26quote_only%3D0%26new%3D0%26nojs%3D0%23t55767559 <- l'url complète du message à aq (tout bien encodée là)
      commentaire: test2 <- le commentaire (le 3eme champ de la popup de création) texte libre aussi*/
     /*
-    http://alerte-qualitay.toyonos.info/api/addAlerte.php5?alerte_qualitay_id=-1&
-    nom=Best%20of%20photos%202018&
-    topic_id=25135&
-    topic_titre=%5BTU%5D%20Best%20of%202018&
-    pseudo=kapitain&
-    post_id=5934515&
-    post_url=https%3A%2F%2Fforum.hardware.fr%2Fhfr%2FPhotonumerique%2FPhotos%2Funique-best-2018-sujet_25135_1.htm%23t5934515&
-    commentaire=post%20de%20deniks
+     URL:http://alerte-qualitay.toyonos.info/api/addAlerte.php5?
     
-    exemple OK
-     alerte_qualitay_id=-1&
-     nom=NomAlerte&
-     topic_id=25135&
-     topic_titre=%5BTopic%20unique%5D%20Best%20of%202018&
-     pseudo=ezzz&
-     post_id=5934558&
-     post_url=https%3A%2F%2Fforum.hardware.fr%2Fhfr%2FPhotonumerique%2FPhotos%2Funique-best-2018-sujet_25135_1.htm%23t5934558
-     
+     Parameters example:
+        alerte_qualitay_id=-1&
+        nom=Best%20of%20photos%202018&
+        topic_id=25135&
+        topic_titre=%5BTU%5D%20Best%20of%202018&
+        pseudo=kapitain&
+        post_id=5934515&
+        post_url=https%3A%2F%2Fforum.hardware.fr%2Fhfr%2FPhotonumerique%2FPhotos%2Funique-best-2018-sujet_25135_1.htm%23t5934515&
+        commentaire=post%20de%20deniks
     */
     
     NSData *postData = [sParametersCreateAQ dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
@@ -2559,18 +2575,20 @@
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPBody:postData];
     NSError *error;
-    NSURLResponse *response;
     NSHTTPURLResponse* urlResponse = nil;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:request
                                                  returningResponse:&urlResponse
                                                              error:&error];
     
     NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
-    
-    BOOL retVal = NO;
-    if([responseString isEqualToString:@"1"])
-    {
-        retVal = YES;
+    NSLog("response: %@ (1=OK)", responseString);
+    NSLog("====================================== /AQ ======================================");
+
+    if ([responseString isEqualToString:@"1"]) {
+        [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:@"Alerte Qualitay créée." forDuration:(long)1];
+    } else {
+        NSString* sMessage = [NSString stringWithFormat:@"Code erreur %@", responseString];
+        [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:sMessage forDuration:(long)1];
     }
 }
 
