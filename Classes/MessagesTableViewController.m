@@ -2309,9 +2309,11 @@
         [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Blacklist", @"actionBL", menuImgBan, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
     }
     
-    // AQ
-    [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"AQ", @"actionAQ", menuImgAQ, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
-
+    // AQ (sauf dans les MPs)
+    if (![self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
+        [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"AQ", @"actionAQ", menuImgAQ, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
+    }
+    
 	self.curPostID = curMsg;
 	
 	UIMenuController *menuController = [UIMenuController sharedMenuController];
