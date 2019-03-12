@@ -1623,31 +1623,28 @@
         
     }];
 
-    if ([UIAlertController class]) {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Hooray !"
-                                                                       message:controller.statusMessage
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        // Check if user is teletubbiesed
-        __block BOOL isTT = [controller.statusMessage rangeOfString:@"télétubbies"].location != NSNotFound;
-        long dispatchTime = isTT ? dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)) : 250000;
-        
-        if(isTT){
-            alert.title = @"Tu es TT !";
-        }
-        
-        [self presentViewController:alert animated:YES completion:^{
-            dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
-                [alert dismissViewControllerAnimated:YES completion:^{
-                    if (isTT) {
-                        [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
-                    }
-                }];
-            });
-        }];
-        
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Hooray !"
+                                                                   message:controller.statusMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    // Check if user is teletubbiesed
+    __block BOOL isTT = [controller.statusMessage rangeOfString:@"télétubbies"].location != NSNotFound;
+    long dispatchTime = isTT ? dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)) : 250000;
+    
+    if(isTT){
+        alert.title = @"Tu es TT !";
     }
     
+    [self presentViewController:alert animated:YES completion:^{
+        dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
+            [alert dismissViewControllerAnimated:YES completion:^{
+                if (isTT) {
+                    [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
+                }
+            }];
+        });
+    }];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 #pragma mark -

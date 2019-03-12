@@ -552,7 +552,6 @@
 		CA7C7102185EF50E00B348BA /* DetailNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7E25F015A1F4AA00721F6D /* DetailNavigationViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		CA7C7104185EF50E00B348BA /* SubCatTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA7E260115A24A9A00721F6D /* SubCatTableViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		CA7C710C185EF50E00B348BA /* ShakeView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA00C45317C3000B0067B457 /* ShakeView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		CA7C710E185EF50E00B348BA /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA1070C815A5F407002E6C19 /* SettingsViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		CA7C7110185EF50E00B348BA /* HFRNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAC4966815B77357009128BC /* HFRNavigationController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		CA7C7111185EF50E00B348BA /* HFRDebugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD004115B9B665003CA3FC /* HFRDebugViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		CA7C7112185EF50E00B348BA /* Favorite.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8A79B115BB404700D8E9E7 /* Favorite.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -1266,8 +1265,6 @@
 		CA1070B315A4CEFD002E6C19 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		CA1070C015A4DA1E002E6C19 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CA1070C215A4DA2B002E6C19 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		CA1070C715A5F406002E6C19 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		CA1070C815A5F407002E6C19 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		CA18B160126245AB008B8466 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		CA20FA3212F15CA700EC1771 /* TopicSearchCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicSearchCellView.h; sourceTree = "<group>"; };
 		CA20FA3312F15CA700EC1771 /* TopicSearchCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TopicSearchCellView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -1748,8 +1745,6 @@
 			children = (
 				15EBFD0622022A5700A37CED /* PlusSettingsViewController.h */,
 				15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */,
-				CA1070C715A5F406002E6C19 /* SettingsViewController.h */,
-				CA1070C815A5F407002E6C19 /* SettingsViewController.m */,
 				1503754E21FCFF3200A5F7E1 /* PlusTableViewController.h */,
 				1503754F21FCFF6800A5F7E1 /* PlusTableViewController.m */,
 				1503755621FE26C900A5F7E1 /* PlusCellView.h */,
@@ -3506,7 +3501,6 @@
 				D8835E921E5F13C70073398C /* SDWebImageManager.m in Sources */,
 				4CB133151B90E9530081B44D /* MessagesSearchTableViewController.m in Sources */,
 				4C21E9841BA5CC1200691D65 /* HFRTextView.m in Sources */,
-				CA7C710E185EF50E00B348BA /* SettingsViewController.m in Sources */,
 				4C25E3D71D82CECD0031A2F2 /* k.m in Sources */,
 				CA7C7110185EF50E00B348BA /* HFRNavigationController.m in Sources */,
 				CA7C7111185EF50E00B348BA /* HFRDebugViewController.m in Sources */,

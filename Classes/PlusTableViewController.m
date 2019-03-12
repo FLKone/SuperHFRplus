@@ -49,12 +49,15 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     self.view.backgroundColor = self.plusTableView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.plusTableView.separatorColor = [ThemeColors cellBorderColor];
     if (self.plusTableView.indexPathForSelectedRow) {
         [self.plusTableView deselectRowAtIndexPath:self.plusTableView.indexPathForSelectedRow animated:NO];
     }
     [self.aqTableViewController fetchContentForNewAQ];
+    
+    [self.plusTableView reloadData];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

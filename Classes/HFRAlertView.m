@@ -27,4 +27,21 @@
     [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
++ (void) DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage {
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:sTitle
+                                                                   message:sMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    
+    [alert addAction:defaultAction];
+    [activeVC presentViewController:alert animated:YES completion:nil];
+
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
 @end

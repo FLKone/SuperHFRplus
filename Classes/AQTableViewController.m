@@ -57,10 +57,6 @@
         [self.aqTableView deselectRowAtIndexPath:self.aqTableView.indexPathForSelectedRow animated:NO];
     }
     
-    // Set current date as last check time for AQ
-    [[NSUserDefaults standardUserDefaults] setObject:[[NSDate alloc] init] forKey:@"last_check_aq"];
-
-    
     self.aqTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
     self.aqTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
     self.aqTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
@@ -71,6 +67,8 @@
 - (void) viewDidAppear:(BOOL)animated
 {
     iNumberNewAQ = 0;
+    [[NSUserDefaults standardUserDefaults] setObject:[[NSDate alloc] init] forKey:@"last_check_aq"];
+    
     [self setBadgePlusTableView];
 }
 
@@ -259,7 +257,7 @@
     [xmlparser setDelegate:self];
     [xmlparser parse];
     
-    // Set current date as last check time for AQ
+    // Update current date as last check time for AQ
     [[NSUserDefaults standardUserDefaults] setObject:[[NSDate alloc] init] forKey:@"last_check_aq"];
     
     [self.aqTableView reloadData];

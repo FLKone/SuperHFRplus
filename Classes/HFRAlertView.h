@@ -12,6 +12,7 @@
 }
 
 + (void) DisplayAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage forDuration:(long)lDuration;
++ (void) DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage;
 
 @end
 

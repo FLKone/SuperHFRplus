@@ -21,7 +21,7 @@
 #import "ThemeColors.h"
 #import "HFRUIImagePickerController.h"
 #import "MultisManager.h"
-
+#import "HFRAlertView.h"
 
 #import "EditMessageViewController.h"
 
@@ -860,9 +860,7 @@
             
             
             if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
-                UIAlertView *alertKKO = [[UIAlertView alloc] initWithTitle:nil message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [alertKKO show];
+                [HFRAlertView DisplayOKAlertViewWithTitle:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] andMessage:nil];
             }
             else {
                 // On efface automatiquement le brouillon quand il a été utilisé et que le post du message est OK
@@ -889,9 +887,9 @@
                     [alertOK addSubview:indicator];
                 }
                 
-                //NSLog(@"responseString %@", [arequest responseString]);
                 [self setRefreshAnchor:@""];
                 NSArray * urlArray;
+
                 // On regarde si on doit pas positionner le scroll sur un topic
                 if ([self isDeleteMode]) {
                     //recup de l'ID du message supprimé pour positionner le scroll.
@@ -903,18 +901,12 @@
                     
                 }
                 
-                //NSLog(@"%d", urlArray.count);
                 if (urlArray.count > 0) {
-                    //NSLog(@"%@", [[urlArray objectAtIndex:0] objectAtIndex:0]);
-                    
                     if ([[[urlArray objectAtIndex:0] objectAtIndex:1] length] > 0) {
-                        //NSLog(@"On doit refresh sur #");
                         [self setRefreshAnchor:[[urlArray objectAtIndex:0] objectAtIndex:1]];
-                        //NSLog(@"refreshAnchor %@", self.refreshAnchor);
                     }
                 }
                 
-                NSLog(@"VisibilityChangedVisibilityChanged");
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
                 [self.delegate addMessageViewControllerDidFinishOK:self];
             }
@@ -923,11 +915,8 @@
 }
 
 -(void)segmentToWhite {
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7,0")) {
-        self.segmentControler.tintColor = [UIColor whiteColor];
-        self.segmentControlerPage.tintColor = [UIColor whiteColor];
-    }
-    
+    self.segmentControler.tintColor = [UIColor whiteColor];
+    self.segmentControlerPage.tintColor = [UIColor whiteColor];
 }
 
 -(void)segmentToBlue {
