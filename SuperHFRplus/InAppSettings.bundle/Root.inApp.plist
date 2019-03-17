@@ -102,7 +102,9 @@
 				<string>Classique</string>
 				<string>Super</string>
 				<string>REDFACE</string>
-				<string>Beta</string>
+                <string>Beta</string>
+                <string>Blue</string>
+                <string>White</string>
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
@@ -111,7 +113,9 @@
 				<string>classic</string>
 				<string>super</string>
 				<string>redface</string>
-				<string>beta</string>
+                <string>beta</string>
+                <string>blue</string>
+                <string>white</string>
 			</array>
 		</dict>
 		<dict>
@@ -330,7 +334,7 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>no</string>
+			<string>yes</string>
 			<key>Key</key>
 			<string>display_images</string>
 			<key>Title</key>
@@ -374,7 +378,7 @@
 			<key>DefaultValue</key>
 			<string>http</string>
 			<key>Key</key>
-			<string>default_web</string>
+			<string>internal</string>
 			<key>Title</key>
 			<string>Ouvrir les liens</string>
 			<key>Titles</key>

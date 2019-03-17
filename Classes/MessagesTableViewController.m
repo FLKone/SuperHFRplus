@@ -2201,8 +2201,18 @@
 }
 
 -(NSString*) backBarButtonTitle {
-    NSArray *array = [self.navigationController viewControllers];
-    return [NSString stringWithFormat: @"%ld", (long)(array.count - 1)];
+    int iCount = 0;
+    // Compte le nombre de controllers MessagesTableViewController en partant de la fin
+    for (UIViewController* vc in [[self.navigationController viewControllers] reverseObjectEnumerator])
+    {
+        if ([vc isKindOfClass:[MessagesTableViewController class]]) {
+            iCount++;
+        } else {
+            // Stop counting when different controller
+            break;
+        }
+    }
+    return [NSString stringWithFormat: @"%d", iCount];
 }
 
 -(void) showMenuCon:(NSNumber *)curMsgN andPos:(NSNumber *)posN {
@@ -3190,11 +3200,7 @@
     }
     
     if (!baseURL) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Aucune réponse n'a été trouvée"
-                                                       delegate:self cancelButtonTitle:@"Affiner" otherButtonTitles:nil, nil];
-        
-        [alert setTag:780];
-        [alert show];
+        [HFRAlertView DisplayAlertViewWithTitle:@"Aucune réponse n'a été trouvée" forDuration:1];
         return;
     }
     

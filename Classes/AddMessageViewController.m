@@ -1522,12 +1522,9 @@
     //NSLog(@"%@", self.smileyArray);
     
     if (self.smileyArray.count == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Aucun résultat !"
-                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        
         [self.textFieldSmileys becomeFirstResponder];
         [self.smileView stringByEvaluatingJavaScriptFromString:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');"];
+        [HFRAlertView DisplayOKAlertViewWithTitle:nil andMessage:@"Aucun résultat !"];
         return;
     }
     
@@ -1708,7 +1705,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == commonTableView) {
-        return 5.0f;
+        return 35.0f;
     }
     else {
         return 100.0f;

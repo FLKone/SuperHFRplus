@@ -342,7 +342,6 @@
             [mdictXMLPart setObject:[NSNumber numberWithBool:NO] forKey:@"is_new"];
         }
 
-        
         NSString* sDateAQ = @"";
         if (numberHours == 0) {
             sDateAQ = @"il y a 1 h";

@@ -9,6 +9,8 @@
 #import "HFRplusAppDelegate.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "HFRAlertView.h"
+
 @import InAppSettingsKit;
 
 @implementation PlusSettingsViewController
@@ -158,8 +160,6 @@
         if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)
             return;
 
-
-
         NSLog(@"icon %@", newIcon);
         if ([newIcon isEqualToString:@"super"]) {
             [[UIApplication sharedApplication] setAlternateIconName:nil completionHandler:nil];
@@ -175,6 +175,16 @@
                                                   }];
         } else if ([newIcon isEqualToString:@"redface"]) {
             [[UIApplication sharedApplication] setAlternateIconName:@"Icon-REDFACE"
+                                                  completionHandler:^(NSError * _Nullable error) {
+                                                      NSLog(@"%@", [error description]);
+                                                  }];
+        } else if ([newIcon isEqualToString:@"blue"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:@"Icon-BLUE"
+                                                  completionHandler:^(NSError * _Nullable error) {
+                                                      NSLog(@"%@", [error description]);
+                                                  }];
+        } else if ([newIcon isEqualToString:@"white"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:@"Icon-WHITE"
                                                   completionHandler:^(NSError * _Nullable error) {
                                                       NSLog(@"%@", [error description]);
                                                   }];
@@ -257,19 +267,14 @@
 
 #pragma mark -
 - (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForKey:(NSString*)key {
-    
-	if ([key isEqualToString:@"EmptyCacheButton"]) {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Vider le cache ?" message:@"Tous les onglets (Catégories, Favoris etc.) seront reinitialisés.\nAttention donc si vous êtes en train de lire un sujet intéressant :o" delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Oui !", nil];
-		[alert show];
+    if ([key isEqualToString:@"EmptyCacheButton"]) {
+        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Vider le cache ?"
+                                             andMessage:@"Tous les onglets (Catégories, Favoris etc.) seront reinitialisés.\nAttention donc si vous êtes en train de lire un sujet intéressant :o"
+                                              handlerOK:^(UIAlertAction * action) { [self emptyCache];}];
 	}
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == alertView.cancelButtonIndex) {
-        return;
-    }
-    
+- (void)emptyCache {
     [[HFRplusAppDelegate sharedAppDelegate] resetApp];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -278,18 +283,14 @@
     NSString *ImageCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"ImageCache"];
     NSString *SmileCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"SmileCache"];
     
-	if ([fileManager fileExistsAtPath:ImageCachePath])
-	{
-		[fileManager removeItemAtPath:ImageCachePath error:NULL];
-	}
+    if ([fileManager fileExistsAtPath:ImageCachePath]) {
+        [fileManager removeItemAtPath:ImageCachePath error:NULL];
+    }
     
-	if ([fileManager fileExistsAtPath:SmileCachePath])
-	{
-		[fileManager removeItemAtPath:SmileCachePath error:NULL];
-	}
+    if ([fileManager fileExistsAtPath:SmileCachePath]) {
+        [fileManager removeItemAtPath:SmileCachePath error:NULL];
+    }
 }
-
-
 
 #pragma mark -
 #pragma mark IASKAppSettingsViewControllerDelegate protocol
