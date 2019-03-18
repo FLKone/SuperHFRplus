@@ -225,7 +225,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // do work here
         if (self.arrayOptions.count) {
-            self.tableViewPoll.separatorColor = [UIColor lightGrayColor];
+            self.tableViewPoll.separatorColor = [ThemeColors cellBorderColor];
         }
         else {
             self.tableViewPoll.separatorColor = [UIColor clearColor];
@@ -359,7 +359,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // do work here
         if (self.arrayOptions.count) {
-            self.tableViewPoll.separatorColor = [UIColor lightGrayColor];
+            self.tableViewPoll.separatorColor = [ThemeColors cellBorderColor];
         }
         else {
              self.tableViewPoll.separatorColor = [UIColor clearColor];
@@ -382,11 +382,13 @@
     [self.navigationItem.rightBarButtonItem setEnabled:NO];
     
     [self setupHeaders];
-    
-    //NSLog(@"viewDidLoad");
-    
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 
+    self.view.backgroundColor = self.tableViewPoll.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.tableViewPoll.separatorColor = [ThemeColors cellBorderColor];
 }
 
 -(void)setupHeaders {
@@ -404,14 +406,14 @@
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, height)];
     v.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     v.backgroundColor = [UIColor clearColor];
-    
+
     UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, height)];
     [titleLabel setText:text];
+    [titleLabel setTextColor:[ThemeColors titleTextAttributesColor]];
     [titleLabel setNumberOfLines:0];
     [titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-
     [v addSubview:titleLabel];
     
     [self.tableViewPoll setTableFooterView:v];
@@ -426,17 +428,14 @@
     CGSize size2 = [text2 sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:constraint2 lineBreakMode:NSLineBreakByWordWrapping];
     // Get the height of our measurement, with a minimum of 44 (standard cell size)
     CGFloat height2 = MAX(size2.height, 25.0f) + 10;
-    // return the height, with a bit of extra padding in
-    //NSLog(@"height %f - %@", height, NSStringFromCGSize(constraint));
     
     UIView *v2 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, height2)];
-    v2.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:0.7];
-    
+    v2.backgroundColor = [ThemeColors headSectionBackgroundColor];
     v2.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    //    v2.backgroundColor = [UIColor clearColor];
-    
+
     UILabel* titleLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, height2)];
     [titleLabel2 setText:text2];
+    [titleLabel2 setTextColor:[ThemeColors titleTextAttributesColor]];
     [titleLabel2 setNumberOfLines:0];
     [titleLabel2 setFont:[UIFont boldSystemFontOfSize:13]];
     [titleLabel2 setBackgroundColor:[UIColor clearColor]];
@@ -445,9 +444,6 @@
     [v2 addSubview:titleLabel2];
     
     [self.tableViewPoll setTableHeaderView:v2];
-    //[self.tableView setTableHeaderView:v];
-    
-
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -657,7 +653,6 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-            [cell.textLabel setBackgroundColor:[UIColor redColor]];
             cell.textLabel.numberOfLines = 0;
         }
         
@@ -686,7 +681,6 @@
         
         // Configure the cell...
         [cell.labelLabel setText:[[arrayResults objectAtIndex:indexPath.row] valueForKey:@"labelVote"]];
-
         
         [cell.pcLabel setText:[NSString stringWithFormat:@"%@%%", [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"pcVote"]]];
         if ([[[arrayResults objectAtIndex:indexPath.row] valueForKey:@"nbVote"] intValue] > 1) {
@@ -695,13 +689,8 @@
         else
             [cell.nbLabel setText:[NSString stringWithFormat:@"%@ vote", [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"nbVote"]]];
         
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            cell.pcLabelView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
-        }
-        else {
-            [cell.pcLabelView setBackgroundColor:[UIColor colorWithRed:42/255.f green:116/255.f blue:217/255.f alpha:1.00]];
-            
-        }
+        cell.pcLabelView.backgroundColor = [ThemeColors tintColor];
+        cell.pcLabelBgView.backgroundColor = [ThemeColors tintLightColor];
         
         // Get the text so we can measure it
         NSString *text = [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"labelVote"];
@@ -732,9 +721,11 @@
 
         cell.nbLabel.frame = CGRectMake(cell.nbLabel.frame.origin.x, cell.nbLabel.frame.origin.y + heightDiff,
                                         cell.nbLabel.frame.size.width, cell.nbLabel.frame.size.height);
-        
-//        [cell.textLabel setText:[[arrayResults objectAtIndex:indexPath.row] valueForKey:@"labelVote"]];
-  //      [cell.detailTextLabel setText:[NSString stringWithFormat:@"%@ vote(s) - %@%%", [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"nbVote"], [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"pcVote"]]];
+
+        [cell.labelLabel setTextColor:[ThemeColors textColor]];
+        [cell.pcLabel setTextColor:[ThemeColors textColor]];
+        [cell.nbLabel setTextColor:[ThemeColors topicMsgTextColor]];
+
         return cell;
     }
 
@@ -751,6 +742,7 @@
 
     
     }
+    [[ThemeManager sharedManager] applyThemeToCell:cell];
 }
 
 #pragma mark - Table view delegate
@@ -821,6 +813,5 @@
     //NSLog(@"arraySelectedRows %@", self.arraySelectedRows);
 
 }
-
 
 @end

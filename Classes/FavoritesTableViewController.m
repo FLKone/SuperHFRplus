@@ -77,8 +77,8 @@
     else {
         self.showAll = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [self.navigationItem.rightBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.rightBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
             // Right button: Refresh -> Edit categories
 
             UIImage *buttonImage = [UIImage imageNamed:@"icon_list_bullets"];
@@ -691,7 +691,7 @@
         UIImage *img = btn.imageView.image;
         UIImage *bg = [UIImage imageNamed:@"lightBlue.png"];
         UIImage *timg = [ThemeColors tintImage:img withTheme:theme];
-        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor:theme]];
+        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor]];
 
         [btn setImage:timg forState:UIControlStateNormal];
         [btn setImage:timg forState:UIControlStateSelected];
@@ -704,7 +704,7 @@
         UIImage *img = btn2.imageView.image;
         UIImage *bg = [UIImage imageNamed:@"lightBlue.png"];
         UIImage *timg = [ThemeColors tintImage:img withTheme:theme];
-        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor:theme]];
+        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor]];
         
         [btn2 setImage:timg forState:UIControlStateNormal];
         [btn2 setImage:timg forState:UIControlStateSelected];
@@ -889,33 +889,17 @@
     
     //UIView globale
     UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-    Theme theme = [[ThemeManager sharedManager] theme];
-    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:theme];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
     customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 
     //UIImageView de fond
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
-        imageView.alpha = 0.9;
-        imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
-        [customView addSubview:imageView];
-    }
-    else {
-        //bordures/iOS7
-        UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView];
-        
-        UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView2];
-        
-    }
+    UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
+    
+    //[customView addSubview:borderView];
+    
+    UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
 
     //UIButton clickable pour accéder à la catégorie
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
@@ -924,22 +908,12 @@
     }
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
 
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitle:titleSection forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
-        button.translatesAutoresizingMaskIntoConstraints = NO;
-        [customView addSubview:button];
-    }
-    else
-    {
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [button setTitle:titleSection forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-    }
+    [button setTitleColor:[ThemeColors headSectionTextColor] forState:UIControlStateNormal];
+    [button setTitle:titleSection forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    [customView addSubview:button];
     
     if (!self.showAll && [[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) {
         [button addTarget:self action:@selector(loadCatForType:) forControlEvents:UIControlEventTouchUpInside];

@@ -388,7 +388,7 @@
 		textFieldTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         textFieldTitle.keyboardType = UIKeyboardTypeASCIICapable;
         textFieldTitle.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-
+        textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance];
 		//[textFieldTitle setText:[[fastAnswerNode findChildWithAttribute:@"name" matchingName:@"sujet" allowPartial:NO] getAttributeNamed:@"value"]];
 
 		originY += textFieldTitle.frame.size.height;

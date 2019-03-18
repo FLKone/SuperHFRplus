@@ -1251,7 +1251,8 @@
     [[ThemeManager sharedManager] applyThemeToTextField:self.searchPseudo];
     [[ThemeManager sharedManager] applyThemeToTextField:self.searchKeyword];
     self.searchPseudo.textColor = self.searchKeyword.textColor = [ThemeColors textColor:theme];
-    
+    self.searchPseudo.keyboardAppearance = [ThemeColors keyboardAppearance];
+    self.searchKeyword.keyboardAppearance = [ThemeColors keyboardAppearance];
     if ([self.searchToolbar respondsToSelector:@selector(setBarTintColor:)]) {
         self.searchToolbar.barTintColor = [ThemeColors toolbarColor:theme];
     }
@@ -2371,8 +2372,7 @@
     
     
     [aRequest setStartedBlock:^{
-        //alert = [[UIAlertView alloc] initWithTitle:nil message:@"Ajout aux favoris en cours..." delegate:nil cancelButtonTitle:nil otherButtonTitles: nil];
-        //[alert show];
+        // Ajout d'un favori en cours
     }];
     
     __weak ASIHTTPRequest*aRequest_ = aRequest;
@@ -2387,6 +2387,7 @@
         BOOL isRegExMsg = [regExErrorPredicate evaluateWithObject:responseString];
         
         if (isRegExMsg) {
+            /*
             //KO
             //NSLog(@"%@", [responseString stringByMatching:regExMsg capture:1L]);
   //          usleep(1000000);
@@ -2405,7 +2406,8 @@
             indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
             [indicator startAnimating];
             [alert addSubview:indicator];
-            NSLog(@"Show Alerte");
+            NSLog(@"Show Alerte");*/
+            [HFRAlertView DisplayAlertViewWithTitle:[[responseString stringByMatching:regExMsg capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:1];
         }
     }];
     
@@ -2482,7 +2484,7 @@
         [textField addTarget:self action:@selector(textDidChange:) forControlEvents:UIControlEventEditingChanged];
         [[ThemeManager sharedManager] applyThemeToTextField:textField];
         textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-        textField.borderStyle = UITextBorderStyleNone;
+        //ftextField.borderStyle = UITextBorderStyleNone;
     }];
 
 
@@ -2495,6 +2497,9 @@
     [alert addAction:actionCancel];
     [alert addAction:self.actionCreateAQ];
     [self.actionCreateAQ setEnabled:false];
+
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
     for (UIView* textfield in alert.textFields) {
         UIView *container = textfield.superview;
         UIView *effectView = container.superview.subviews[0];
@@ -2504,8 +2509,6 @@
             [effectView removeFromSuperview];
         }
     }
-    [self presentViewController:alert animated:YES completion:nil];
-    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 -(void)textDidChange:(UITextField *)textField {

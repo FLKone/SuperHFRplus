@@ -22,6 +22,7 @@
 + (CGFloat)fDarkColor2;
 
 + (UIColor *)tabBackgroundColor:(Theme)theme;
++ (UIColor *)navBackgroundColor;
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
@@ -43,13 +44,14 @@
 + (UIColor *)cellBorderColor:(Theme)theme;
 + (UIColor *)cellTintColor:(Theme)theme;
 + (UIColor *)placeholderColor:(Theme)theme;
-+ (UIColor *)headSectionBackgroundColor:(Theme)theme;
-+ (UIColor *)headSectionTextColor:(Theme)theme;
++ (UIColor *)headSectionBackgroundColor;
++ (UIColor *)headSectionTextColor;
 + (UIColor *)textColor:(Theme)theme;
 + (UIColor *)textColor;
 + (UIColor *)textColor2:(Theme)theme;
 + (UIColor *)textColorPseudo:(Theme)theme;
 + (UIColor *)navItemTextColor:(Theme)theme;
++ (UIColor *)titleTextAttributesColor;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
 + (UIColor *)lightTextColor:(Theme)theme;
@@ -57,7 +59,7 @@
 + (UIColor *)topicMsgTextColor;
 + (UIColor *)tintColor:(Theme)theme;
 + (UIColor *)tintColor;
-+ (UIColor *)tintLightColor:(Theme)theme;
++ (UIColor *)tintLightColor;
 + (UIColor *)tintWhiteColor:(Theme)theme;
 + (UIColor *)tintColorDisabled:(Theme)theme;
 + (UIColor *)overlayColor:(Theme)theme;
@@ -76,6 +78,7 @@
 + (UIBarStyle)barStyle:(Theme)theme;
 + (UIStatusBarStyle)statusBarStyle:(Theme)theme;
 + (UIKeyboardAppearance)keyboardAppearance:(Theme)theme;
++ (UIKeyboardAppearance)keyboardAppearance;
 + (UIImage *)thorHammer:(Theme)theme;
 + (UIImage *)avatar:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withTheme:(Theme)theme;

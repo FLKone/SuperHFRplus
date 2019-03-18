@@ -1350,8 +1350,7 @@
     
     //UIView globale
 	UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-    Theme theme = [[ThemeManager sharedManager] theme];
-    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:theme];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
     customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
 	//UIImageView de fond
@@ -1384,27 +1383,15 @@
 
     NSString *title = [self tableView:tableView titleForHeaderInSection:section];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button.titleLabel setMinimumFontSize:10];
-        button.titleLabel.adjustsFontSizeToFitWidth = YES;
-        [button.titleLabel setNumberOfLines:1];
+    [button setTitleColor:[ThemeColors headSectionTextColor] forState:UIControlStateNormal];
+    [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [button.titleLabel setMinimumFontSize:10];
+    button.titleLabel.adjustsFontSizeToFitWidth = YES;
+    [button.titleLabel setNumberOfLines:1];
 
 
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
-    }
-    else
-    {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [button setTitle:title forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-    }
-
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
 
     button.translatesAutoresizingMaskIntoConstraints = NO;
     UILayoutGuide *guide = customView.safeAreaLayoutGuide;

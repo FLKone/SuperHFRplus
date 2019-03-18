@@ -404,57 +404,30 @@
     
     //UIView globale
 	UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:[[ThemeManager sharedManager] theme]];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
 	customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
 	//UIImageView de fond
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
-        imageView.alpha = 0.9;
-        imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
-        [customView addSubview:imageView];
-    }
-    else {
-        //bordures/iOS7
-        UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView];
-        
-        UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView2];
-        
-    }
+    UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
+    imageView.alpha = 0.9;
+    imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    [customView addSubview:imageView];
     
     //UIButton clickable pour accéder à la catégorie
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [button setTitleColor:[ThemeColors headSectionTextColor:[[ThemeManager sharedManager] theme]] forState:UIControlStateNormal];
-        [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 16, 0, 0)];
-    }
-    else
-    {
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [button setTitle:title forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-    }
+    [button setTitleColor:[ThemeColors headSectionTextColor] forState:UIControlStateNormal];
+    [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 16, 0, 0)];
     
     [customView addSubview:button];
 
-	
 	return customView;
-	
 }
 
 
