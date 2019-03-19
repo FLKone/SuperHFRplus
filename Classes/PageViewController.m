@@ -87,6 +87,16 @@
     
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
+    for (UIView* textfield in alert.textFields) {
+        UIView *container = textfield.superview;
+        UIView *effectView = container.superview.subviews[0];
+        
+        if (effectView && [effectView class] == [UIVisualEffectView class]){
+            container.backgroundColor = [UIColor clearColor];
+            [effectView removeFromSuperview];
+        }
+    }
+
     [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
