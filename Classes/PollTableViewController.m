@@ -18,6 +18,7 @@
 #import "MessagesTableViewController.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
+#import "HFRAlertView.h"
 
 @interface PollTableViewController ()
 
@@ -497,53 +498,19 @@
         }
         else if ([arequest responseString])
         {
-            //NSLog(@"resp %@", [arequest responseString]);
-            
             NSError * error = nil;
             HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
-            
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
-            
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
             
-            
             if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
-                UIAlertView *alertKKO = [[UIAlertView alloc] initWithTitle:nil message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [alertKKO show];
+                [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:(long)1];
             }
             else {
-                UIAlertView *alertOK = [[UIAlertView alloc] initWithTitle:@"Hooray !" message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                 delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-                [alertOK setTag:kAlertSondageOK];
-                [alertOK show];
+                [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:(long)1];
 
-                
-                
-                //NSLog(@"responseString %@", [arequest responseString]);
-                
-                // On regarde si on doit pas positionner le scroll sur un topic
-                NSArray * urlArray = [[arequest responseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"[^#]+([^\"]*)\" />"];
-                
-                
-                //NSLog(@"%d", urlArray.count);
-                if (urlArray.count > 0) {
-                    NSLog(@"%@", [[urlArray objectAtIndex:0] objectAtIndex:0]);
-                    
-                    if ([[[urlArray objectAtIndex:0] objectAtIndex:1] length] > 0) {
-                        //NSLog(@"On doit refresh sur #");
-                        //[self setRefreshAnchor:[[urlArray objectAtIndex:0] objectAtIndex:1]];
-                        //NSLog(@"refreshAnchor %@", self.refreshAnchor);
-                    }
-                    
-                }
-                
-                //[[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-                //[self.delegate addMessageViewControllerDidFinishOK:self];
                 [self fetchContent];
             }
-            
-            
         }
     }
 }

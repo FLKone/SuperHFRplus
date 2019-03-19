@@ -1605,47 +1605,34 @@
             NSString *components = [[[self.arrayData objectAtIndex:0] quoteJS] substringFromIndex:7];
             components = [components stringByReplacingOccurrencesOfString:@"); return false;" withString:@""];
             components = [components stringByReplacingOccurrencesOfString:@"'" withString:@""];
-            
             NSArray *quoteComponents = [components componentsSeparatedByString:@","];
-            
             NSString *nameCookie = [NSString stringWithFormat:@"quotes%@-%@-%@", [quoteComponents objectAtIndex:0], [quoteComponents objectAtIndex:1], [quoteComponents objectAtIndex:2]];
-            
             [self EffaceCookie:nameCookie];
         }
         
         self.curPostID = -1;
-        
         [self setStringFlagTopic:[[controller refreshAnchor] copy]];
-        
         NSLog(@"addMessageViewControllerDidFinishOK stringFlagTopic %@", self.stringFlagTopic);
-        
-        
         [self searchNewMessages:kNewMessageFromEditor];
-        
     }];
 
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Hooray !"
-                                                                   message:controller.statusMessage
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
     // Check if user is teletubbiesed
-    __block BOOL isTT = [controller.statusMessage rangeOfString:@"télétubbies"].location != NSNotFound;
-    long dispatchTime = isTT ? dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)) : 250000;
-    
-    if(isTT){
-        alert.title = @"Tu es TT !";
+    NSLog(@"TT test? response is :%@", controller.statusMessage);
+    if (controller.statusMessage != nil && [controller.statusMessage rangeOfString:@"télétubbies"].location != NSNotFound) {
+        [HFRAlertView DisplayAlertViewWithTitle:@"Tu es TT !" andMessage:controller.statusMessage forDuration:2 completion:^{
+                [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];}];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Hooray !"
+                                                                       message:controller.statusMessage
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:alert animated:YES completion:^{
+            dispatch_after(250000, dispatch_get_main_queue(), ^{
+                [alert dismissViewControllerAnimated:YES completion:nil];
+            });
+        }];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+
     }
-    
-    [self presentViewController:alert animated:YES completion:^{
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
-            [alert dismissViewControllerAnimated:YES completion:^{
-                if (isTT) {
-                    [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
-                }
-            }];
-        });
-    }];
-    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 #pragma mark -
@@ -1887,6 +1874,7 @@
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
                                 document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                                document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
                                 document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
                                 document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
                                 document.documentElement.style.setProperty('--color-border-quotation', '%@');\
@@ -1908,6 +1896,7 @@
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                                 [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.9], //--color-searchintra-nextresults
                                 sAvatarImageFile,
                                 sLoadInfoImageFile,
                                 [ThemeColors getColorBorderQuotation:theme],
@@ -2938,6 +2927,7 @@
                     document.documentElement.style.setProperty('--color-text', '%@');\
                     document.documentElement.style.setProperty('--color-text2', '%@');\
                     document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                    document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
                     document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
                     document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
                     document.documentElement.style.setProperty('--color-border-quotation', '%@');\
@@ -2956,6 +2946,7 @@
                         [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                         [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                         [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.9], //--color-searchintra-nextresults
                         sAvatarImageFile,
                         sLoadInfoImageFile,
                         [ThemeColors getColorBorderQuotation:theme],

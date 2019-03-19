@@ -15,6 +15,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-message-mequoted-borderother:#FEE;
     --color-separator-new-message:rgba(0,0,0,0.4);
     --color-background-bars:#F5F5F5;
+    --color-searchintra-nextresults:rgba(240,240,240,0.9);
     --color-text:#202020;
     --color-text2:#202020;
     --color-text-pseudo:#202020;
@@ -222,7 +223,7 @@ background:-webkit-gradient(
     width: 30px;
     float: right;
     font-size: 28px !important;
-    color: var(--color-action);
+    color:--color-action
     margin-top: 0px !important;
     font-family: blisslight !important;
     font-weight: bold;
@@ -563,8 +564,11 @@ a#searchintra_nextbutton {
 }
 
 .ios7 a#searchintra_nextbutton {
+    /*
     color: rgba(109, 109, 114, 1);
-    background: rgba(239, 239, 244, 0.9);
+    background: rgba(239, 239, 244, 0.9);*/
+    color: var(--color-action);
+    background: var(--color-searchintra-nextresults);
     border-top: 1px solid rgba(109, 109, 114, 0.1);
 }
 

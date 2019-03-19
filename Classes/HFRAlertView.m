@@ -16,7 +16,10 @@
 }
 
 + (void) DisplayAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage forDuration:(long)lDuration {
-        
+    [HFRAlertView DisplayAlertViewWithTitle:sTitle andMessage:sMessage forDuration:lDuration completion:nil];
+}
+
++ (void) DisplayAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage forDuration:(long)lDuration completion:(void (^)(void))completion {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:sTitle
                                                                    message:sMessage
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -24,15 +27,11 @@
     UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
     [activeVC presentViewController:alert animated:YES completion:^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, lDuration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [alert dismissViewControllerAnimated:YES completion:nil];
+            [alert dismissViewControllerAnimated:YES completion:completion];
         });
     }];
-
+    
     [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-}
-
-+ (void) DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage {
-    [HFRAlertView DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage completion:nil];
 }
 
 + (void) DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage completion:(void (^)(void))completion {
@@ -51,6 +50,11 @@
     
     [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
+
++ (void) DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage {
+    [HFRAlertView DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage completion:nil];
+}
+
 
 + (void) DisplayOKCancelAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage handlerOK:(void (^ __nullable)(UIAlertAction *action))handlerOK {
     

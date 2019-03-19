@@ -869,24 +869,7 @@
                 }
                 
                 [self resignAll];
-                
-                if ([UIAlertController class]) {
-                    self.statusMessage = [[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                }
-                else {
-                    UIAlertView *alertOK = [[UIAlertView alloc] initWithTitle:@"Hooray !" message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                     delegate:self.delegate cancelButtonTitle:nil otherButtonTitles: nil];
-                    [alertOK setTag:666];
-                    [alertOK show];
-                    
-                    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-                    
-                    // Adjust the indicator so it is up a few pixels from the bottom of the alert
-                    indicator.center = CGPointMake(alertOK.bounds.size.width / 2, alertOK.bounds.size.height - 50);
-                    [indicator startAnimating];
-                    [alertOK addSubview:indicator];
-                }
-                
+                self.statusMessage = [[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 [self setRefreshAnchor:@""];
                 NSArray * urlArray;
 
