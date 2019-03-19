@@ -69,9 +69,10 @@
     // Good site for debugging regex: https://regex101.com
     // Search for own quotes
     if (egoQuote == YES) {
-        currentPseudo = [NSRegularExpression escapedPatternForString:currentPseudo];
-        NSString *regExQuoted = [NSString stringWithFormat:@"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">%@ a écrit :<\\/a>)", currentPseudo];
-        myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
+        currentPseudo = [[NSRegularExpression escapedPatternForString:currentPseudo] lowercaseString];
+        NSString *regExQuoted = [NSString stringWithFormat:@"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"topic\">%@ a écrit :<\\/a>)", currentPseudo];
+        NSString* lower = [myRawContent lowercaseString];
+        myRawContent = [lower stringByReplacingOccurrencesOfRegex:regExQuoted
                                      withString:@"<table class=\"citation_me_quoted\">$1"];
     }
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
