@@ -407,15 +407,15 @@
     customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
 	customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
-	//UIImageView de fond
-    UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
-    imageView.alpha = 0.9;
-    imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    //bordures/iOS7
+    UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
     
-    [customView addSubview:imageView];
+    //[customView addSubview:borderView];
     
+    UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
+
     //UIButton clickable pour accéder à la catégorie
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];

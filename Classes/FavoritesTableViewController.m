@@ -288,6 +288,7 @@
 	//MP
 	
 	//v1
+    /*
     NSArray *temporaryTopicsArray = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"sujet ligne_booleen" allowPartial:YES]; //Get topics for cat
     
 	if (temporaryTopicsArray.count == 0) {
@@ -299,7 +300,7 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
 
-	}
+	}*/
 	
 	//hash_check
 	HTMLNode *hash_check = [bodyNode findChildWithAttribute:@"name" matchingName:@"hash_check" allowPartial:NO];
@@ -440,6 +441,15 @@
     NSSortDescriptor *sortDescriptorDate = [[NSSortDescriptor alloc] initWithKey: @"dDateOfLastPost" ascending:NO selector:@selector(compare:)];
     self.arrayTopics = (NSMutableArray *)[tmpTopics sortedArrayUsingDescriptors: [NSMutableArray arrayWithObject:sortDescriptorDate]];
     
+    
+    if (([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"] && self.arrayNewData.count == 0) || // Mode classique avec catégories
+         self.arrayTopics.count == 0) // Mode sans les categories
+    {
+        NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kNoResults], @"status",
+                               @"Aucun nouveau message", @"message", nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
+    }
+
     if (self.status != kNoResults) {
         
         NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kComplete], @"status", nil];
