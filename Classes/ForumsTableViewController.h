@@ -10,6 +10,7 @@
 @class TopicsTableViewController;
 @class ASIHTTPRequest;
 @class ForumCellView;
+@class PullToRefreshErrorViewController;
 
 @interface ForumsTableViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate> {
 	IBOutlet UITableView *forumsTableView;
@@ -21,7 +22,8 @@
 	ASIHTTPRequest *request;
 	
 	TopicsTableViewController *topicsTableViewController;
-	
+	PullToRefreshErrorViewController *errorVC;
+    
     bool reloadOnAppear;
 	STATUS status;
 	NSString *statusMessage;
@@ -41,6 +43,7 @@
 @property (nonatomic, strong) NSMutableArray *arrayData;
 @property (nonatomic, strong) NSMutableArray *arrayNewData;
 @property (nonatomic, strong) TopicsTableViewController *topicsTableViewController;
+@property (nonatomic, strong) PullToRefreshErrorViewController *errorVC;
 
 @property (strong, nonatomic) ASIHTTPRequest *request;
 

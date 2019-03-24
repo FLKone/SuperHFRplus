@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 
 @class MessagesTableViewController;
+@class PullToRefreshErrorViewController;
 @class ASIHTTPRequest;
 
 @interface FavoritesTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate> {
@@ -24,7 +25,8 @@
     NSMutableArray *idPostSuperFavorites;
     
 	MessagesTableViewController *messagesTableViewController;
-
+    PullToRefreshErrorViewController *errorVC;
+    
 	NSIndexPath *pressedIndexPath;
 
 	ASIHTTPRequest *request;
@@ -55,6 +57,7 @@
 @property (nonatomic, strong) NSMutableArray *idPostSuperFavorites;
 
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
+@property (nonatomic, strong) PullToRefreshErrorViewController *errorVC;
 
 @property BOOL showAll;
 @property BOOL editCategoriesList;

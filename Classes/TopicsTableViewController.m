@@ -32,7 +32,7 @@
 
 @implementation TopicsTableViewController
 @synthesize forumNewTopicUrl, forumName, loadingView, topicsTableView, arrayData, arrayNewData;
-@synthesize messagesTableViewController;
+@synthesize messagesTableViewController, errorVC;
 
 @synthesize swipeLeftRecognizer, swipeRightRecognizer;
 
@@ -889,15 +889,14 @@
         //NSLog(@"COMPLETE %d", self.childViewControllers.count);
         
     }
-    else
-    {
-        PullToRefreshErrorViewController *ErrorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
-        [self addChildViewController:ErrorVC];
+    else {
+        self.errorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
+        [self addChildViewController:self.errorVC];
         
-        self.topicsTableView.tableHeaderView = ErrorVC.view;
-        [ErrorVC sizeToFit];
+        self.topicsTableView.tableHeaderView = self.errorVC.view;
+        [self.errorVC sizeToFit];
+        [self.errorVC applyTheme];
     }
-    
 }
 
 - (void)viewDidLoad {
@@ -1254,7 +1253,10 @@
     self.topicsTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.topicsTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
     self.topicsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
-    
+    if (self.errorVC) {
+        [self.errorVC applyTheme];
+    }
+
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loadSubCat) name:@"SubCatSelected" object:nil];
