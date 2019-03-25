@@ -21,6 +21,15 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>Icon-BLUE</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>Icon-BLUE</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>Icon-CLASSIC</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -39,24 +48,15 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
-            <key>Icon-WHITE</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>Icon-WHITE</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <true/>
-            </dict>
-            <key>Icon-BLUE</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>Icon-BLUE</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <true/>
-            </dict>
+			<key>Icon-WHITE</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>Icon-WHITE</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 		</dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
@@ -81,6 +81,15 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>Icon-BLUE</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>Icon-BLUE-IPAD</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>Icon-CLASSIC</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -99,25 +108,15 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
-            <key>Icon-WHITE</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>Icon-WHITE-IPAD</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <true/>
-            </dict>
-            <key>Icon-BLUE</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>Icon-BLUE-IPAD</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <true/>
-            </dict>
-
+			<key>Icon-WHITE</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>Icon-WHITE-IPAD</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 		</dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
@@ -153,7 +152,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>50</string>
+	<string>53</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
