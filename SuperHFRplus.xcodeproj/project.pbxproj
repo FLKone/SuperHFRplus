@@ -12,7 +12,6 @@
 		1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755421FE249300A5F7E1 /* PlusCellView.xib */; };
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
 		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
-		15141AA321E7ADE800811E5A /* link_url.png in Resources */ = {isa = PBXBuildFile; fileRef = 15141AA221E7ADE800811E5A /* link_url.png */; };
 		156246D8218230DC00F5B8DC /* plus.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D7218230DC00F5B8DC /* plus.svg */; };
 		156246DD2182310000F5B8DC /* arrowend.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D92182310000F5B8DC /* arrowend.svg */; };
 		156246DE2182310000F5B8DC /* arrowforward.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DA2182310000F5B8DC /* arrowforward.svg */; };
@@ -684,6 +683,9 @@
 		D8EFB1911E59FCA5000E45A2 /* 121-landscapebig-white.png in Resources */ = {isa = PBXBuildFile; fileRef = D8EFB18F1E59FCA5000E45A2 /* 121-landscapebig-white.png */; };
 		D8F5CBAE1DF45C1100B029FC /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F5CBAC1DF45C1100B029FC /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D8F5CBB21DF462F100B029FC /* ThemeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F5CBB01DF462F100B029FC /* ThemeColors.m */; };
+		D8FEA7E7224542540096602D /* WebP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8FEA7E0224542540096602D /* WebP.framework */; };
+		D8FEA7EB2245459C0096602D /* WEBPURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = D8FEA7E92245459C0096602D /* WEBPURLProtocol.m */; };
+		D8FEA7EE224545F00096602D /* WEBPDemoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = D8FEA7ED224545F00096602D /* WEBPDemoDecoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -751,7 +753,6 @@
 		1503755721FF794200A5F7E1 /* PlusCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusCellView.m; sourceTree = "<group>"; };
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
-		15141AA421E7ADF000811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
 		156246D92182310000F5B8DC /* arrowend.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowend.svg; sourceTree = "<group>"; };
 		156246DA2182310000F5B8DC /* arrowforward.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowforward.svg; sourceTree = "<group>"; };
@@ -1528,6 +1529,11 @@
 		D8F5CBAC1DF45C1100B029FC /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		D8F5CBAF1DF462F100B029FC /* ThemeColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeColors.h; sourceTree = "<group>"; };
 		D8F5CBB01DF462F100B029FC /* ThemeColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeColors.m; sourceTree = "<group>"; };
+		D8FEA7E0224542540096602D /* WebP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebP.framework; sourceTree = "<group>"; };
+		D8FEA7E92245459C0096602D /* WEBPURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEBPURLProtocol.m; sourceTree = "<group>"; };
+		D8FEA7EA2245459C0096602D /* WEBPURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEBPURLProtocol.h; sourceTree = "<group>"; };
+		D8FEA7EC224545F00096602D /* WEBPDemoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEBPDemoDecoder.h; sourceTree = "<group>"; };
+		D8FEA7ED224545F00096602D /* WEBPDemoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEBPDemoDecoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1535,6 +1541,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8FEA7E7224542540096602D /* WebP.framework in Frameworks */,
 				4CD6B8811B977E0E007FC29E /* SafariServices.framework in Frameworks */,
 				D8672D35203F0AD00045785C /* InAppSettingsKit.framework in Frameworks */,
 				CA2E6DE619DB08D50089B5CF /* WebKit.framework in Frameworks */,
@@ -2141,6 +2148,7 @@
 		CA00C35717C2FC620067B457 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				D8FEA7DD224542540096602D /* WebP */,
 				D8835E611E5F13C70073398C /* SDWebImage */,
 				D80DBD521E55BE730051B751 /* ASIHTTPRequest */,
 				D8F5CBAA1DF45C1100B029FC /* Reachability */,
@@ -2415,7 +2423,6 @@
 				CA7472D317E14D4500B45E15 /* iOS7 */,
 				4C0B8D4F1BA4521000D329BA /* CatIcons */,
 				4C21E9321BA5C5E200691D65 /* Editor */,
-				15141AA421E7ADF000811E5A /* link_url.png */,
 				4CD6B8B51B97AEF5007FC29E /* 6-Folder-32@2x.png */,
 				4CD6B8B61B97AEF5007FC29E /* 6-Folder-32.png */,
 				4CD6B8B71B97AEF5007FC29E /* 6-Camera-32@2x.png */,
@@ -2848,6 +2855,18 @@
 			path = Reachability;
 			sourceTree = "<group>";
 		};
+		D8FEA7DD224542540096602D /* WebP */ = {
+			isa = PBXGroup;
+			children = (
+				D8FEA7EC224545F00096602D /* WEBPDemoDecoder.h */,
+				D8FEA7ED224545F00096602D /* WEBPDemoDecoder.m */,
+				D8FEA7EA2245459C0096602D /* WEBPURLProtocol.h */,
+				D8FEA7E92245459C0096602D /* WEBPURLProtocol.m */,
+				D8FEA7E0224542540096602D /* WebP.framework */,
+			);
+			path = WebP;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2879,9 +2898,9 @@
 				LastUpgradeCheck = 0900;
 				TargetAttributes = {
 					CA7C6FA3185EF50E00B348BA = {
-						DevelopmentTeam = QMG83DG7YP;
+						DevelopmentTeam = NCJNK4ZZ54;
 						LastSwiftMigration = 0910;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -3210,7 +3229,6 @@
 				4C9C2B221BAE66EB00511853 /* ThorHammerBlack-20.png in Resources */,
 				CA7C7049185EF50E00B348BA /* 44-shoebox@2x.png in Resources */,
 				4C0B8D951BA4522900D329BA /* AboutFilled-40.png in Resources */,
-				15141AA321E7ADE800811E5A /* link_url.png in Resources */,
 				CAC7FCD3190DBD450083BB4E /* PollResultTableViewCell.xib in Resources */,
 				4CD6B8AB1B97AC81007FC29E /* Camera-32.png in Resources */,
 				CA7C704A185EF50E00B348BA /* 06-magnify@2x.png in Resources */,
@@ -3467,6 +3485,7 @@
 				4C0B8DFD1BA455BF00D329BA /* InfoTableViewCell.m in Sources */,
 				CA7C70C1185EF50E00B348BA /* CreditsViewController.m in Sources */,
 				D8835E8C1E5F13C70073398C /* SDWebImageDecoder.m in Sources */,
+				D8FEA7EB2245459C0096602D /* WEBPURLProtocol.m in Sources */,
 				D89AB2E11FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m in Sources */,
 				4C39035D1BCACEC200FD6F1F /* PSTCollectionViewController.m in Sources */,
 				CA7C70C2185EF50E00B348BA /* IdentificationViewController.m in Sources */,
@@ -3525,6 +3544,7 @@
 				4C39035F1BCACEC200FD6F1F /* PSTCollectionViewData.m in Sources */,
 				CA7C70FB185EF50E00B348BA /* PayViewController.m in Sources */,
 				CA7C70FD185EF50E00B348BA /* TopicSearchCellView.m in Sources */,
+				D8FEA7EE224545F00096602D /* WEBPDemoDecoder.m in Sources */,
 				CA7C7100185EF50E00B348BA /* BrowserViewController.m in Sources */,
 				4C0031401BD0404500F87F13 /* WKWebView+FLWKWebView.m in Sources */,
 				D8835E9A1E5F13C70073398C /* UIImage+MultiFormat.m in Sources */,
@@ -3722,21 +3742,25 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Benjamin Schmitt (NCJNK4ZZ54)";
+				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = QMG83DG7YP;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/SuperHFRplus/Vendor/WebP",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SuperHFRplus_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "CONFIGURATION_$(CONFIGURATION)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"CONFIGURATION_$(CONFIGURATION)",
+					"SD_WEBP=1",
+				);
 				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
 				INFOPLIST_FILE = "SuperHFRplus-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -3747,9 +3771,9 @@
 					"$(PROJECT_DIR)/**",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.beta.ezzz2;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus App Store";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -3764,19 +3788,23 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Benjamin Schmitt (NCJNK4ZZ54)";
+				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = QMG83DG7YP;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/SuperHFRplus/Vendor/WebP",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SuperHFRplus_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "CONFIGURATION_$(CONFIGURATION)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"CONFIGURATION_$(CONFIGURATION)",
+					"SD_WEBP=1",
+				);
 				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
 				INFOPLIST_FILE = "SuperHFRplus-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -3787,9 +3815,9 @@
 					"$(PROJECT_DIR)/**",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super.beta.ezzz2;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus App Store";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

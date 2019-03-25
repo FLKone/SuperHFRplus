@@ -21,6 +21,9 @@
 
 #import "MultisManager.h"
 
+#import "WEBPURLProtocol.h"
+#import "WEBPDemoDecoder.h"
+
 #import <SafariServices/SafariServices.h>
 
 @implementation HFRplusAppDelegate
@@ -58,7 +61,9 @@
 
     NSLog(@"didFinishLaunchingWithOptions");
 
-        
+    
+    [WEBPURLProtocol registerWebP:[WEBPDemoDecoder new]];
+
     //self.hash_check = [[NSString alloc] init];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:YES];
