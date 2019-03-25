@@ -71,7 +71,7 @@
     [bgView addSubview:self.label];
     
     self.view = bgView;
-    
+    //[self.view addSubview:bgView];
     //NSLog(@"END");
 }
 
@@ -206,6 +206,10 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self applyTheme];
+}
+
+- (void)applyTheme {
     Theme theme = [[ThemeManager sharedManager] theme];
     self.view.backgroundColor = [ThemeColors addMessageBackgroundColor:theme];
     UIImage *tintedImage = [ThemeColors tintImage:self.image.image withColor:[ThemeColors cellTextColor:theme]];

@@ -752,13 +752,13 @@
         //NSLog(@"COMPLETE %d", self.childViewControllers.count);
         
     }
-    else
-    {
-        PullToRefreshErrorViewController *ErrorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
-        [self addChildViewController:ErrorVC];
+    else {
+        self.errorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
+        [self addChildViewController:self.errorVC];
         
-        self.forumsTableView.tableHeaderView = ErrorVC.view;
-        [ErrorVC sizeToFit];
+        self.forumsTableView.tableHeaderView = self.errorVC.view;
+        [self.errorVC sizeToFit];
+        [self.errorVC applyTheme];
     }
     
 }
@@ -958,6 +958,9 @@
     self.forumsTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.forumsTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
     self.forumsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
+    if (self.errorVC) {
+        [self.errorVC applyTheme];
+    }
 
     [self.forumsTableView reloadData];
 }

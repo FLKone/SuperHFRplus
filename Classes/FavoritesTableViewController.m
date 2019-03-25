@@ -32,7 +32,6 @@
 
 #import "UIScrollView+SVPullToRefresh.h"
 #import "PullToRefreshErrorViewController.h"
-
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 
@@ -43,7 +42,7 @@
 @implementation FavoritesTableViewController
 @synthesize pressedIndexPath, favoritesTableView, loadingView, showAll;
 @synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
-@synthesize messagesTableViewController;
+@synthesize messagesTableViewController, errorVC;
 @synthesize idPostSuperFavorites;
 
 @synthesize request;
@@ -108,10 +107,10 @@
     }
     else  // Activable que si au moins 1 catégories
     {
-        if (self.arrayCategories.count >= 1)
-        {
+        //if (self.arrayCategories.count >= 1)
+        //{
             self.editCategoriesList = YES;
-        }
+        //}
         // Sinon on reste non éditable
     }
     [self.favoritesTableView setEditing:self.editCategoriesList animated:YES];
@@ -288,6 +287,7 @@
 	//MP
 	
 	//v1
+    /*
     NSArray *temporaryTopicsArray = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"sujet ligne_booleen" allowPartial:YES]; //Get topics for cat
     
 	if (temporaryTopicsArray.count == 0) {
@@ -299,7 +299,7 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
 
-	}
+	}*/
 	
 	//hash_check
 	HTMLNode *hash_check = [bodyNode findChildWithAttribute:@"name" matchingName:@"hash_check" allowPartial:NO];
@@ -440,6 +440,15 @@
     NSSortDescriptor *sortDescriptorDate = [[NSSortDescriptor alloc] initWithKey: @"dDateOfLastPost" ascending:NO selector:@selector(compare:)];
     self.arrayTopics = (NSMutableArray *)[tmpTopics sortedArrayUsingDescriptors: [NSMutableArray arrayWithObject:sortDescriptorDate]];
     
+    
+    if (([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"] && self.arrayNewData.count == 0) || // Mode classique avec catégories
+         self.arrayTopics.count == 0) // Mode sans les categories
+    {
+        NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kNoResults], @"status",
+                               @"Aucun nouveau message", @"message", nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
+    }
+
     if (self.status != kNoResults) {
         
         NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kComplete], @"status", nil];
@@ -553,30 +562,19 @@
         //NSLog(@"COMPLETE %d", self.childViewControllers.count);
 
     }
-    else
-    {
-        PullToRefreshErrorViewController *ErrorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
-        [self addChildViewController:ErrorVC];
+    else {
+        self.errorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
+        [self addChildViewController:self.errorVC];
         
-        self.favoritesTableView.tableHeaderView = ErrorVC.view;
-        [ErrorVC sizeToFit];
+        self.favoritesTableView.tableHeaderView = self.errorVC.view;
+        [self.errorVC sizeToFit];
+        [self.errorVC applyTheme];
     }
-    
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    NSLog(@"initWithNibName");
-    
-    
-    self = [super initWithCoder:aDecoder];
-    if (self)
-    {
-        
-
-    }
-    
-    return self;
+    return [super initWithCoder:aDecoder];
 }
 
 - (void)viewDidLoad {
@@ -679,6 +677,9 @@
     
     Theme theme = [[ThemeManager sharedManager] theme];
     self.view.backgroundColor = self.favoritesTableView.backgroundColor = self.maintenanceView.backgroundColor = self.loadingView.backgroundColor = self.favoritesTableView.pullToRefreshView.backgroundColor = [ThemeColors greyBackgroundColor:theme];
+    if (self.errorVC) {
+        [self.errorVC applyTheme];
+    }
     self.favoritesTableView.separatorColor = [ThemeColors cellBorderColor:theme];
     self.favoritesTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.favoritesTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
@@ -713,6 +714,10 @@
         [btn2 setBackgroundImage:tbg forState:UIControlStateHighlighted];
     }
 
+    if (self.showAll) {
+        [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    }
+    
 	if (self.messagesTableViewController) {
 		//NSLog(@"viewWillAppear Favorites Table View Dealloc MTV");
 		
@@ -783,8 +788,6 @@
     
     TopicsTableViewController *aView;
     
-    //NSLog(@"aURL %@", [[[arrayNewData objectAtIndex:section] forum] aURL]);
-    
     switch (vos_sujets) {
         case 0:
             aView = [[TopicsTableViewController alloc] initWithNibName:@"TopicsTableViewController" bundle:nil flag:2];
@@ -801,7 +804,6 @@
     }
     
 	aView.forumName = [[[arrayCategories objectAtIndex:section] forum] aTitle];
-	//aView.pickerViewArray = [[arrayNewData objectAtIndex:section] forum] subCats];
     
     self.navigationItem.backBarButtonItem =
     [[UIBarButtonItem alloc] initWithTitle:@"Retour"
@@ -809,11 +811,8 @@
                                     target:nil
                                     action:nil];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        self.navigationItem.backBarButtonItem.title = @" ";
-    }
-    
-	[self.navigationController pushViewController:aView animated:YES];
+    self.navigationItem.backBarButtonItem.title = @" ";
+    [self.navigationController pushViewController:aView animated:YES];
 }
 
 - (void)loadCatForType:(id)sender {

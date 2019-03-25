@@ -15,10 +15,9 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "UIScrollView+SVPullToRefresh.h"
-#import "PullToRefreshErrorViewController.h"
 
 @implementation AQTableViewController;
-@synthesize aqTableView; //, arrayData;
+@synthesize aqTableView;
 @synthesize marrXMLData;
 @synthesize mstrXMLString;
 @synthesize mdictXMLPart;

@@ -223,7 +223,7 @@ background:-webkit-gradient(
     width: 30px;
     float: right;
     font-size: 28px !important;
-    color:--color-action
+    color: var(--color-action);
     margin-top: 0px !important;
     font-family: blisslight !important;
     font-weight: bold;
