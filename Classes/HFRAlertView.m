@@ -55,6 +55,20 @@
     [HFRAlertView DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage completion:nil];
 }
 
++ (void) DisplayOKAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage handlerOK:(void (^ __nullable)(UIAlertAction *action))handlerOK {
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:sTitle
+                                                                   message:sMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:handlerOK];
+    [alert addAction:defaultAction];
+    [activeVC presentViewController:alert animated:YES completion:nil];
+    
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
 
 + (void) DisplayOKCancelAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage handlerOK:(void (^ __nullable)(UIAlertAction *action))handlerOK {
     

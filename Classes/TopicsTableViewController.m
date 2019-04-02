@@ -70,8 +70,7 @@
 
 - (void)fetchContentTrigger
 {
-
-	//NSLog(@"fetchContent %@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
+	NSLog(@"fetchContent %@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
 	self.status = kIdle;
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMini];
 

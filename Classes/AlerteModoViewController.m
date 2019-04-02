@@ -103,11 +103,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     
     //Bouton Annuler
     UIBarButtonItem *cancelBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Annuler" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
@@ -125,7 +122,8 @@
     [self.textView setPlaceholder:@"Attention : le message que vous écrivez ici sera envoyé directement chez les modérateurs via message privé ou e-mail.\n\nCe formulaire est destiné UNIQUEMENT à demander aux modérateurs de venir sur le sujet lorsqu'il y a un problème.\n\nIl ne sert pas à appeler à l'aide parce que personne ne répond à vos questions.\nIl ne sert pas non plus à ajouter un message sur le sujet, pour cela il y a le menu 'Répondre' (s'il est absent c'est que le sujet a été cloturé)."];
     self.textView.placeholderColor = [UIColor lightGrayColor]; // optional
     [self.textView setText:@""];
-    
+    self.textView.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.textView.textColor = [ThemeColors cellTextColor];
     self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     [self.navigationController.navigationBar setTranslucent:NO];
 
@@ -150,11 +148,11 @@
     HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
     
     if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
-        UIAlertView *alertKKO = [[UIAlertView alloc] initWithTitle:nil message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                          delegate:self cancelButtonTitle:@"Génial !" otherButtonTitles: nil];
-        
-        [alertKKO setTag:990];
-        [alertKKO show];
+        // Post déjà alerté
+        [HFRAlertView  DisplayOKAlertViewWithTitle:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] andMessage:nil handlerOK:^(UIAlertAction * action) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+            [self.delegate alertModoViewControllerDidFinish:self];
+        }];
     }
     else {
         HTMLNode * fastAnswerNode = [bodyNode findChildWithAttribute:@"action" matchingName:@"modo.php" allowPartial:YES];
@@ -178,10 +176,10 @@
 
 - (IBAction)cancel {
     if ([self.textView text].length > 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention !" message:@"Vous allez perdre le contenu de votre alerte"
-                                                       delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Confirmer", nil];
-        [alert setTag:666];
-        [alert show];
+        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Attention !" andMessage:@"Vous allez perdre le contenu de votre alerte" handlerOK: ^(UIAlertAction * action){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+            [self.delegate alertModoViewControllerDidFinish:self];
+        }];
     }
     else {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
@@ -206,7 +204,6 @@
     txtTW = [txtTW stringByReplacingOccurrencesOfString:@"\n" withString:@"\r\n"];
     
     [arequest setPostValue:txtTW forKey:@"raison"];
-
     [arequest startSynchronous];
     
     if (arequest) {
@@ -227,10 +224,10 @@
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
             
-            [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:(long)1];
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-            [self.delegate alertModoViewControllerDidFinishOK:self];
+            [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:(long)1 completion:^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+                [self.delegate alertModoViewControllerDidFinishOK:self];
+            }];
         }
     }
 }
