@@ -319,6 +319,7 @@
     } else if ([elementName isEqualToString:@"pubDate"]) {
         NSString *value = [mstrXMLString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSDateFormatter * df = [[NSDateFormatter alloc] init];
+        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier: @"en"]];
         [df setDateFormat:@"E, d MMM yy HH:mm:ss Z"];
         NSDate *dNow = [[NSDate alloc] init];
         NSDate* dAQ = [df dateFromString:value];
