@@ -26,8 +26,8 @@
     // Get current own pseudo
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
-    NSString *currentPseudo = [mainCompte objectForKey:PSEUDO_KEY];
-    NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_KEY] lowercaseString];
+    NSString *currentPseudo = [mainCompte objectForKey:PSEUDO_DISPLAY_KEY];
+    NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
 
     
 	NSString *tempHTML = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"templatev2" ofType:@"htm"] encoding:NSUTF8StringEncoding error:NULL];

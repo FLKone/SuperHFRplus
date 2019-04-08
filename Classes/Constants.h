@@ -110,6 +110,7 @@ typedef enum Theme : int {
 #define PSEUDO_KEY @"PSEUDO"
 #define COOKIES_KEY @"COOKIES"
 #define AVATAR_KEY @"AVATAR"
+#define PSEUDO_DISPLAY_KEY @"PSEUDO_DISPLAY"
 #define HASH_KEY @"HASH"
 #define MAIN_KEY @"MAIN"
 

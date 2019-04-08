@@ -2515,7 +2515,7 @@
     NSString* sURL = [NSString stringWithFormat:@"%@%@#%@", [k ForumURL], self.currentUrl, sTPostID];
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
-    NSString *sCurrentPseudo = [[mainCompte objectForKey:PSEUDO_KEY] lowercaseString];
+    NSString *sCurrentPseudo = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
     NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
 
     NSLog("====================================== AQ =======================================");

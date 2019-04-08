@@ -141,7 +141,7 @@ NSArray* comptes;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSDictionary *compte = [comptes objectAtIndex:indexPath.row];
-    NSString *pseudo = [compte objectForKey:PSEUDO_KEY];
+    NSString *pseudo = [compte objectForKey:PSEUDO_DISPLAY_KEY];
     [cell.pseudoLabel setText:pseudo];
     NSString *avatarURL = [compte objectForKey:AVATAR_KEY];
     [cell setAvatar:avatarURL];

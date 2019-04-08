@@ -790,7 +790,7 @@
             }
         }
         else if ([key isEqualToString:@"pseudo"]) {
-                [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_KEY] forKey:@"pseudo"];
+                [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_DISPLAY_KEY] forKey:@"pseudo"];
         }else if ([key isEqualToString:@"hash_check"]) {
             if([selectedCompte objectForKey:HASH_KEY]){
                 [arequest setPostValue:[selectedCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
@@ -1984,7 +1984,7 @@
     NSArray *comptes = [[MultisManager sharedManager] getComtpes];
     for (int j =0 ; j<comptes.count; j++)
     {
-        NSString *titleString = [comptes[j] objectForKey:PSEUDO_KEY];
+        NSString *titleString = [comptes[j] objectForKey:PSEUDO_DISPLAY_KEY];
         UIAlertAction * action = [UIAlertAction actionWithTitle:titleString style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             [self onSelectCompte:j];
         }];
