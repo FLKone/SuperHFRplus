@@ -9,11 +9,11 @@
 #define FavoriteCellView_h
 
 @interface FavoriteCellView : UITableViewCell {
-    IBOutlet UILabel *titleLabel;
 }
 
 - (void)applyTheme;
 
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *labelBadgeWidth;
 @property (strong, nonatomic) IBOutlet UILabel *labelTitle;
 @property (strong, nonatomic) IBOutlet UILabel *labelMessageNumber;
 @property (strong, nonatomic) IBOutlet UILabel *labelDate;

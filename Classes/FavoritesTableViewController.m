@@ -1079,6 +1079,10 @@
     }
     else {
         FavoriteCellView *cell = (FavoriteCellView *)[tableView dequeueReusableCellWithIdentifier:@"FavoriteCellID"];
+        
+        UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
+                                                             initWithTarget:self action:@selector(handleLongPress:)];
+        [cell addGestureRecognizer:longPressRecognizer];
 
         Topic *tmpTopic = nil;
         if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
@@ -1135,27 +1139,31 @@
         int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
         if (iPageNumber == 0) {
             cell.labelBadge.clipsToBounds = YES;
-            cell.labelBadge.layer.cornerRadius = 10 * 1.2 / 2;
+            cell.labelBadge.layer.cornerRadius = 20 / 2;
             [cell.labelBadge setText:@""];
             cell.labelBadge.backgroundColor = [UIColor clearColor];
+            cell.labelBadgeWidth.constant = 0;
         } else {
-            int iWidth = 13;
+            int iWidth = 16;
             if (iPageNumber < 10) {
-                iWidth = 13;
+                iWidth = 16;
             } else if (iPageNumber < 100) {
-                iWidth = 20;
+                iWidth = 23;
             } else if (iPageNumber < 1000) {
-                iWidth = 27;
+                iWidth = 30;
             } if (iPageNumber > 9999) {
                 iPageNumber = 9999;
-                iWidth = 34;
+                iWidth = 38;
             }
             cell.labelBadge.clipsToBounds = YES;
-            cell.labelBadge.layer.cornerRadius = 10 * 1.2 / 2;
+            cell.labelBadge.layer.cornerRadius = 16 / 2;
             [cell.labelBadge setText:[NSString stringWithFormat:@"%d", iPageNumber]];
+            cell.labelBadgeWidth.constant = iWidth;
+            /*
             [cell.labelBadge sizeToFit];
+             labelBadgeWidth
             // Width constraint
-            [cell.labelBadge constraints];
+            NSArray* constraints1 = [cell.labelBadge constraints];
             [cell.labelBadge addConstraint:[NSLayoutConstraint constraintWithItem:cell.labelBadge
                                                               attribute:NSLayoutAttributeWidth
                                                               relatedBy:NSLayoutRelationEqual
@@ -1163,6 +1171,8 @@
                                                               attribute: NSLayoutAttributeNotAnAttribute
                                                              multiplier:1
                                                                constant:iWidth]];
+            NSArray* constraints2 = [cell.labelBadge constraints];
+            NSLog(@"Constraints b/a:%d/%d", constraints1.count, constraints2.count);*/
             cell.labelBadge.backgroundColor = [ThemeColors tintColor];
         }
         

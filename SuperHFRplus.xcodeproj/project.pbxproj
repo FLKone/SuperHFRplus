@@ -28,7 +28,6 @@
 		15AEFA0B223E9435005E6739 /* Icon-WHITE-IPAD@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AEFA07223E9435005E6739 /* Icon-WHITE-IPAD@2x.png */; };
 		15AEFFED222AB07C003A2E5F /* bgbigipad3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 15AEFFEC222AB07C003A2E5F /* bgbigipad3.jpg */; };
 		15C673CC22552B6900B9E0BE /* FavoriteCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15C673CB22552B6900B9E0BE /* FavoriteCellView.xib */; };
-		15C673CE22552CCE00B9E0BE /* badge.png in Resources */ = {isa = PBXBuildFile; fileRef = 15C673CD22552CCE00B9E0BE /* badge.png */; };
 		15C673D122567A7300B9E0BE /* FavoriteCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15C673D022567A7300B9E0BE /* FavoriteCellView.m */; };
 		15E25D68223047EF00474562 /* HFRAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E25D67223047EF00474562 /* HFRAlertView.m */; };
 		15EBFD0522021B8400A37CED /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD0422021B8400A37CED /* SettingsView.xib */; };
@@ -772,7 +771,6 @@
 		15AEFA07223E9435005E6739 /* Icon-WHITE-IPAD@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-WHITE-IPAD@2x.png"; sourceTree = "<group>"; };
 		15AEFFEC222AB07C003A2E5F /* bgbigipad3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bgbigipad3.jpg; sourceTree = "<group>"; };
 		15C673CB22552B6900B9E0BE /* FavoriteCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FavoriteCellView.xib; sourceTree = "<group>"; };
-		15C673CD22552CCE00B9E0BE /* badge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = badge.png; sourceTree = SOURCE_ROOT; };
 		15C673CF22567A3C00B9E0BE /* FavoriteCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoriteCellView.h; sourceTree = "<group>"; };
 		15C673D022567A7300B9E0BE /* FavoriteCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoriteCellView.m; sourceTree = "<group>"; };
 		15E25D66223046BD00474562 /* HFRAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HFRAlertView.h; sourceTree = "<group>"; };
@@ -2309,7 +2307,6 @@
 		CA00C53D17C30C360067B457 /* HFR */ = {
 			isa = PBXGroup;
 			children = (
-				15C673CD22552CCE00B9E0BE /* badge.png */,
 				CA00C53E17C30C360067B457 /* global.gif */,
 				CA00C53F17C30C360067B457 /* multiplefavoris.gif */,
 				CA00C54017C30C360067B457 /* multipleflag0.gif */,
@@ -3091,7 +3088,6 @@
 				4C19919B1FA9EC8E00A07A8A /* Icon-CLASSIC-IPAD@2x.png in Resources */,
 				CA7C6FF6185EF50E00B348BA /* arrowbegin@2x.png in Resources */,
 				CA7C6FF7185EF50E00B348BA /* 18-envelope@2x.png in Resources */,
-				15C673CE22552CCE00B9E0BE /* badge.png in Resources */,
 				CA7C6FF8185EF50E00B348BA /* buttonnexthover@2x.png in Resources */,
 				D8B4EDEC21C184970042C392 /* snow15.png in Resources */,
 				4C0B8DC71BA4522900D329BA /* Debian-40.png in Resources */,

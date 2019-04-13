@@ -31,11 +31,11 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1234" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xon-TW-tys">
-                        <rect key="frame" x="329" y="9" width="35" height="13"/>
+                        <rect key="frame" x="329" y="8" width="35" height="15"/>
                         <color key="backgroundColor" red="0.0" green="0.60881678139999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="35" id="2Cf-aY-b1I"/>
-                            <constraint firstAttribute="height" constant="13" id="87X-5G-yoS"/>
+                            <constraint firstAttribute="height" constant="15" id="87X-5G-yoS"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -54,7 +54,7 @@
                     <constraint firstItem="2gK-LE-xSK" firstAttribute="leading" secondItem="VPc-4c-Iov" secondAttribute="leading" constant="8" id="Exa-Pq-gpZ"/>
                     <constraint firstAttribute="trailing" secondItem="xon-TW-tys" secondAttribute="trailing" constant="11" id="Lkk-Dr-bbc"/>
                     <constraint firstItem="cOe-Y8-VQd" firstAttribute="leading" secondItem="VPc-4c-Iov" secondAttribute="leading" constant="8" id="Mvi-B0-U1Y"/>
-                    <constraint firstItem="xon-TW-tys" firstAttribute="top" secondItem="VPc-4c-Iov" secondAttribute="top" constant="9" id="Prs-Iw-STu"/>
+                    <constraint firstItem="xon-TW-tys" firstAttribute="top" secondItem="VPc-4c-Iov" secondAttribute="top" constant="8" id="Prs-Iw-STu"/>
                     <constraint firstAttribute="trailing" secondItem="n7y-Ez-75M" secondAttribute="trailing" constant="11" id="YaY-by-jnA"/>
                     <constraint firstItem="n7y-Ez-75M" firstAttribute="top" secondItem="cOe-Y8-VQd" secondAttribute="bottom" constant="6" id="ahB-LL-UuZ"/>
                     <constraint firstItem="n7y-Ez-75M" firstAttribute="leading" secondItem="2gK-LE-xSK" secondAttribute="trailing" constant="8" id="kSm-c3-puK"/>
@@ -63,6 +63,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="labelBadge" destination="xon-TW-tys" id="GaU-k3-NEv"/>
+                <outlet property="labelBadgeWidth" destination="2Cf-aY-b1I" id="JCi-5U-g7m"/>
                 <outlet property="labelDate" destination="n7y-Ez-75M" id="45B-l2-UM9"/>
                 <outlet property="labelMessageNumber" destination="2gK-LE-xSK" id="RrL-da-PG6"/>
                 <outlet property="labelTitle" destination="cOe-Y8-VQd" id="Gdp-HB-2Uo"/>
