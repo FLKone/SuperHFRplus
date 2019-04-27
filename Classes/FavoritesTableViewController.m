@@ -21,6 +21,7 @@
 #import "Forum.h"
 #import "Catcounter.h"
 #import "FavoriteCell.h"
+#import "FavoriteCellView.h"
 
 #import "Favorite.h"
 #import "UIImage+Resize.h"
@@ -587,7 +588,9 @@
     
     UINib *nib = [UINib nibWithNibName:@"ForumCellView" bundle:nil];
     [self.favoritesTableView registerNib:nib forCellReuseIdentifier:@"ForumCellID"];
-    
+    UINib *nib2 = [UINib nibWithNibName:@"FavoriteCellView" bundle:nil];
+    [self.favoritesTableView registerNib:nib2 forCellReuseIdentifier:@"FavoriteCellID"];
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(OrientationChanged)
                                                  name:UIApplicationDidChangeStatusBarOrientationNotification
@@ -1075,17 +1078,12 @@
         return cell;
     }
     else {
-        static NSString *CellIdentifier = @"FavoriteCell";
-        FavoriteCell *cell = (FavoriteCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        FavoriteCellView *cell = (FavoriteCellView *)[tableView dequeueReusableCellWithIdentifier:@"FavoriteCellID"];
         
-        if (cell == nil) {
-            cell = [[FavoriteCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-            
-            UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
-                                                                 initWithTarget:self action:@selector(handleLongPress:)];
-            [cell addGestureRecognizer:longPressRecognizer];
-        }
-    	
+        UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
+                                                             initWithTarget:self action:@selector(handleLongPress:)];
+        [cell addGestureRecognizer:longPressRecognizer];
+
         Topic *tmpTopic = nil;
         if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
         {
@@ -1098,77 +1096,92 @@
         }
             
         // Configure the cell...
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
-            if ([tmpTopic isViewed]) {
-                font1 = [UIFont systemFontOfSize:13.0f];
-            }
-            NSDictionary *arialDict = [NSDictionary dictionaryWithObject: font1 forKey:NSFontAttributeName];
-            NSMutableAttributedString *aAttrString1 = [[NSMutableAttributedString alloc] initWithString:[tmpTopic aTitle] attributes: arialDict];
-            
-            UIFont *font2 = [UIFont fontWithName:@"fontello" size:15];
-            
-            NSMutableAttributedString *finalString = [[NSMutableAttributedString alloc]initWithString:@""];
-            
-            if (tmpTopic.isClosed) {
-                //            UIColor *fontcC = [UIColor orangeColor];
-                UIColor *fontcC = [UIColor colorWithHex:@"#4A4A4A" alpha:1.0];
-                
-                
-                NSDictionary *arialDict2c = [NSDictionary dictionaryWithObjectsAndKeys:font2, NSFontAttributeName, fontcC, NSForegroundColorAttributeName, nil];
-                NSMutableAttributedString *aAttrString2C = [[NSMutableAttributedString alloc] initWithString:@" " attributes: arialDict2c];
-                
-                [finalString appendAttributedString:aAttrString2C];
-                //NSLog(@"finalString1 %@", finalString);
-            }
-            
-            [finalString appendAttributedString:aAttrString1];
-            //NSLog(@"finalString3 %@", finalString);
-            
-            
-            
-            [(UILabel *)[cell.contentView viewWithTag:999] setAttributedText:finalString];
+        UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
+        if ([tmpTopic isViewed]) {
+            font1 = [UIFont systemFontOfSize:13.0f];
         }
-        else {
-            [(UILabel *)[cell.contentView viewWithTag:999] setText:[tmpTopic aTitle]];
-            
-            if ([tmpTopic isViewed]) {
-                [(UILabel *)[cell.contentView viewWithTag:999] setFont:[UIFont systemFontOfSize:13]];
-            }
-            else {
-                [(UILabel *)[cell.contentView viewWithTag:999] setFont:[UIFont boldSystemFontOfSize:13]];
-                
-            }
+        NSDictionary *arialDict = [NSDictionary dictionaryWithObject: font1 forKey:NSFontAttributeName];
+        NSMutableAttributedString *aAttrString1 = [[NSMutableAttributedString alloc] initWithString:[tmpTopic aTitle] attributes: arialDict];
+        
+        UIFont *font2 = [UIFont fontWithName:@"fontello" size:15];
+        
+        NSMutableAttributedString *finalString = [[NSMutableAttributedString alloc]initWithString:@""];
+        
+        if (tmpTopic.isClosed) {
+            UIColor *fontcC = [UIColor colorWithHex:@"#4A4A4A" alpha:1.0];
+            NSDictionary *arialDict2c = [NSDictionary dictionaryWithObjectsAndKeys:font2, NSFontAttributeName, fontcC, NSForegroundColorAttributeName, nil];
+            NSMutableAttributedString *aAttrString2C = [[NSMutableAttributedString alloc] initWithString:@" " attributes: arialDict2c];
+            [finalString appendAttributedString:aAttrString2C];
         }
         
-        
-        
-        
-        //[(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"%d messages", ([[arrayData objectAtIndex:theRow] aRepCount] + 1)]];
-        
+        [finalString appendAttributedString:aAttrString1];
+        [cell.labelTitle setAttributedText:finalString];
+
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSInteger vos_sujets = [defaults integerForKey:@"vos_sujets"];
-        UILabel* labelPages = (UILabel *)[cell.contentView viewWithTag:998];
         NSString* sPoll = @"";
         if (tmpTopic.isPoll) {
             sPoll = @" \U00002263";
         }
         switch (vos_sujets) {
             case 0:
-                [labelPages setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
             case 1:
-                [labelPages setText:[NSString stringWithFormat:@"★%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"★%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
             default:
-                [labelPages setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
         }
-        
-        [(UILabel *)[cell.contentView viewWithTag:997] setText:[NSString stringWithFormat:@"%@ - %@", [tmpTopic aAuthorOfLastPost], [tmpTopic aDateOfLastPost]]];
-        
 
+        // Badge
+        int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
+        if (iPageNumber == 0) {
+            cell.labelBadge.clipsToBounds = YES;
+            cell.labelBadge.layer.cornerRadius = 20 / 2;
+            [cell.labelBadge setText:@""];
+            cell.labelBadge.backgroundColor = [UIColor clearColor];
+            cell.labelBadgeWidth.constant = 0;
+        } else {
+            int iWidth = 16;
+            if (iPageNumber < 10) {
+                iWidth = 16;
+            } else if (iPageNumber < 100) {
+                iWidth = 23;
+            } else if (iPageNumber < 1000) {
+                iWidth = 30;
+            } if (iPageNumber > 9999) {
+                iPageNumber = 9999;
+                iWidth = 38;
+            }
+            cell.labelBadge.clipsToBounds = YES;
+            cell.labelBadge.layer.cornerRadius = 16 / 2;
+            [cell.labelBadge setText:[NSString stringWithFormat:@"%d", iPageNumber]];
+            cell.labelBadgeWidth.constant = iWidth;
+            /*
+            [cell.labelBadge sizeToFit];
+             labelBadgeWidth
+            // Width constraint
+            NSArray* constraints1 = [cell.labelBadge constraints];
+            [cell.labelBadge addConstraint:[NSLayoutConstraint constraintWithItem:cell.labelBadge
+                                                              attribute:NSLayoutAttributeWidth
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:nil
+                                                              attribute: NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1
+                                                               constant:iWidth]];
+            NSArray* constraints2 = [cell.labelBadge constraints];
+            NSLog(@"Constraints b/a:%d/%d", constraints1.count, constraints2.count);*/
+            cell.labelBadge.backgroundColor = [ThemeColors tintColor];
+        }
+        
         [cell setShowsReorderControl:NO];
+        
+        // Posteur + date
+        [cell.labelDate setText:[NSString stringWithFormat:@"%@ - %@", [tmpTopic aAuthorOfLastPost], [tmpTopic aDateOfLastPost]]];
+
+        [cell applyTheme];
         
         return cell;
     }
