@@ -70,6 +70,11 @@
 
 - (void)fetchContentTrigger
 {
+    if(![self currentUrl]){
+        [self cancelFetchContent];
+         [self.topicsTableView.pullToRefreshView stopAnimating];
+        return;
+    }
 	NSLog(@"fetchContent %@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
 	self.status = kIdle;
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMini];
