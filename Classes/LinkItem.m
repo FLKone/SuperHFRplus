@@ -43,10 +43,6 @@
 	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
     }
-    
-    if([self isBL]){
-        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message hfrbl"];
-    }
 
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%AUTEUR_PSEUDO%%" withString:[self name]];
     tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%POSTID%%" withString:[self postID]];
@@ -66,7 +62,28 @@
 	}
 
     NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-     
+    NSLog(@"=BEFORE===============================================");
+    NSLog(@"myRawContent:%@", myRawContent);
+    NSLog(@"======================================================");
+    
+    /*
+    if([self isBL]){
+        NSArray *dataIdPara = [myRawContent componentsSeparatedByString:@"\""];
+
+        NSString *show_hide = [NSString stringWithFormat:@"var x = document.getElementById('%@');if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", @"bl1"];//bl1, dataIdPara[1]];
+        //tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message hfrbl"];
+        //myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_message\"><div class=\"blacklist_showhide\"><a target=\"_blank\" onclick=\"%@\">Afficher/masquer le post</a></div><div class=\"blacklist_message2\" id=\"bl1\">%@</div></div>", show_hide, myRawContent];
+        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">Afficher/masquer le post</a></div><div class=\"blacklist_content\" id=\"bl1\">%@</div></div></div>", show_hide, myRawContent];
+    }*/
+    if (index == 2) {
+        NSString *show_hide = [NSString stringWithFormat:@"var x = document.getElementById('%@');if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", @"bl1"];
+        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">Afficher/masquer le post</a></div><div class=\"blacklist_content\" id=\"bl1\" style=\"display: none;\">%@</div></div></div>", show_hide, myRawContent];
+    }
+
+    NSLog(@"=AFTER================================================");
+    NSLog(@"myRawContent:%@", myRawContent);
+    NSLog(@"======================================================");
+
     // Good site for debugging regex: https://regex101.com
     // Search for own quotes
     if (egoQuote == YES) {
@@ -232,7 +249,14 @@
 
 	
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
-	//NSLog(@"%@", tempHTML);
+	//
+    if (index == 2) {
+        tempHTML = [tempHTML stringByAppendingString:@"</div></div>"];
+    }
+    
+    NSLog(@"----------------> OUTPUT  <---------------------");
+    NSLog(@"%@", tempHTML);
+    NSLog(@"----------------> /OUTPUT <---------------------");
 
 	return tempHTML;
 }
