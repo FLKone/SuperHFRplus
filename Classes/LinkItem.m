@@ -11,6 +11,7 @@
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 #import "MultisManager.h"
+#import "BlackList.h"
 
 @implementation LinkItem
 
@@ -22,7 +23,11 @@
 -(NSString *)toHTML:(int)index egoQuote:(BOOL)egoQuote
 {
     //NSLog(@"toHTML index %d", index);
-
+    BOOL bIsBL = NO;
+    if ([[BlackList shared] isBL:[self name]]) {
+        bIsBL = YES;
+    }
+    
     // Get current own pseudo
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
@@ -42,6 +47,8 @@
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode "];
 	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
+    } else if (bIsBL) {
+        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message blacklist"];
     }
 
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%AUTEUR_PSEUDO%%" withString:[self name]];
@@ -62,27 +69,14 @@
 	}
 
     NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSLog(@"=BEFORE===============================================");
-    NSLog(@"myRawContent:%@", myRawContent);
-    NSLog(@"======================================================");
-    
-    /*
-    if([self isBL]){
-        NSArray *dataIdPara = [myRawContent componentsSeparatedByString:@"\""];
 
-        NSString *show_hide = [NSString stringWithFormat:@"var x = document.getElementById('%@');if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", @"bl1"];//bl1, dataIdPara[1]];
-        //tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message hfrbl"];
-        //myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_message\"><div class=\"blacklist_showhide\"><a target=\"_blank\" onclick=\"%@\">Afficher/masquer le post</a></div><div class=\"blacklist_message2\" id=\"bl1\">%@</div></div>", show_hide, myRawContent];
-        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">Afficher/masquer le post</a></div><div class=\"blacklist_content\" id=\"bl1\">%@</div></div></div>", show_hide, myRawContent];
-    }*/
-    if (index == 2) {
-        NSString *show_hide = [NSString stringWithFormat:@"var x = document.getElementById('%@');if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", @"bl1"];
-        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">Afficher/masquer le post</a></div><div class=\"blacklist_content\" id=\"bl1\" style=\"display: none;\">%@</div></div></div>", show_hide, myRawContent];
-    }
-
-    NSLog(@"=AFTER================================================");
-    NSLog(@"myRawContent:%@", myRawContent);
-    NSLog(@"======================================================");
+    /* V1
+    if ([[BlackList shared] isBL:[self name]]) {
+        NSLog(@"BL index >>>>>>>>>>>> %d <<<",index);
+        
+        NSString *show_hide = [NSString stringWithFormat:@"var x = document.getElementById('bl_%d');if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", index];
+        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">                                       Afficher le post</a></div><div class=\"blacklist_content\" id=\"bl%d\" style=\"display: none;\">%@</div></div></div>", show_hide, index, myRawContent];
+    } */
 
     // Good site for debugging regex: https://regex101.com
     // Search for own quotes
@@ -249,10 +243,11 @@
 
 	
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
-	//
-    if (index == 2) {
+	
+    /* VA à améliorer
+    if ([self isBL]) {
         tempHTML = [tempHTML stringByAppendingString:@"</div></div>"];
-    }
+    } */
     
     NSLog(@"----------------> OUTPUT  <---------------------");
     NSLog(@"%@", tempHTML);

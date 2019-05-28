@@ -599,6 +599,15 @@ body.ios7 {
     border-left: 2px solid var(--color-message-mequoted-borderleft);
 }
 
+.ios7 .message.blacklist .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: rgba(109, 109, 114, 0.3);
+    border:none;
+}
+
+
 .ios7 .message .header .left {
     color: var(--color-text-pseudo);  /*texte nom pseudo*/
     text-shadow:none;
