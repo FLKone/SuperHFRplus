@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 @import InAppSettingsKit;
 
-@interface SettingsViewController : IASKAppSettingsViewController <IASKSettingsDelegate, UIAlertViewDelegate, UITableViewDelegate> {
+@interface PlusSettingsViewController : IASKAppSettingsViewController <IASKSettingsDelegate, UIAlertViewDelegate, UITableViewDelegate> {
     
 }
 

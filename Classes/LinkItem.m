@@ -10,6 +10,7 @@
 #import "HFRplusAppDelegate.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "MultisManager.h"
 
 @implementation LinkItem
 
@@ -18,9 +19,16 @@
 
 @synthesize quotedNB, quotedLINK, editedTime;
 
--(NSString *)toHTML:(int)index
+-(NSString *)toHTML:(int)index egoQuote:(BOOL)egoQuote
 {
     //NSLog(@"toHTML index %d", index);
+
+    // Get current own pseudo
+    MultisManager *manager = [MultisManager sharedManager];
+    NSDictionary *mainCompte = [manager getMainCompte];
+    NSString *currentPseudo = [mainCompte objectForKey:PSEUDO_DISPLAY_KEY];
+    NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
+
     
 	NSString *tempHTML = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"templatev2" ofType:@"htm"] encoding:NSUTF8StringEncoding error:NULL];
 
@@ -32,7 +40,9 @@
 
 	if ([[self name] isEqualToString:@"Modération"]) {
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode "];
-	}
+	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
+        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
+    }
     
     if([self isBL]){
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message hfrbl"];
@@ -55,14 +65,21 @@
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%no_avatar_class%%" withString:@"noavatar"];
 	}
 
-	NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-	//NSString *regExQuoteTitle = @"<a href=\"[^\"]+\" class=\"Topic\">([^<]+)</a>";			
-	//myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoteTitle
-	//													  withString:@"$1"];
-	
+    NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+     
+    // Good site for debugging regex: https://regex101.com
+    // Search for own quotes
+    if (egoQuote == YES) {
+        currentPseudo = [NSRegularExpression escapedPatternForString:currentPseudo];
+        myRawContent = [myRawContent stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :<\\/a>", currentPseudoLowercase] withString:[NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :</a>", currentPseudoLowercase] options:NSCaseInsensitiveSearch range:NSMakeRange(0, [myRawContent length])];
+        NSString* pseudoWrote = [NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :</a>", currentPseudoLowercase];
+        myRawContent = [myRawContent stringByReplacingOccurrencesOfString:pseudoWrote withString:pseudoWrote options:NSCaseInsensitiveSearch range:NSMakeRange(0, [myRawContent length])];
+        NSString *regExQuoted = [NSString stringWithFormat:@"<table class=\"citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">)(%@)( a écrit :<\\/a>)", currentPseudoLowercase];
+        myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
+                                     withString:[NSString stringWithFormat:@"<table class=\"citation_me_quoted\">$1%@$3", currentPseudo]];
+    }
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
-
+    
     
     
 	
@@ -105,7 +122,6 @@
     //NSLog(@"display %@", display);
     
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"hfr-rehost.net" withString:@"reho.st"]; // changement de domaine hfr-rehost
-    
     NSString *landscape = [ThemeColors landscapePath:[[ThemeManager sharedManager] theme]];
     
 	if ([display isEqualToString:@"no"]) {

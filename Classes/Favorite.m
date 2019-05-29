@@ -48,7 +48,6 @@
 
 -(id)addTopicWithNode:(HTMLNode *)node;
 {
-
 	NSDate *nowTopic = [[NSDate alloc] init];
 	NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
 	[dateFormat setDateFormat:@"dd-MM-yyyy"];
@@ -66,6 +65,13 @@
     HTMLNode * postIDNode = [topicNode findChildWithAttribute:@"name" matchingName:@"topic" allowPartial:YES];
     [aTopic setPostID:[[postIDNode getAttributeNamed:@"value"] intValue]];
     
+    // Poll
+    //<img src="https://forum-images.hardware.fr/themes_static/images/defaut/sondage.gif" alt="">
+    HTMLNode * pollImage = [topicNode findChildWithAttribute:@"src" matchingName:@"https://forum-images.hardware.fr/themes_static/images/defaut/sondage.gif" allowPartial:NO];
+    if (pollImage != nil) {
+        aTopic.isPoll = YES;
+    }
+
     //Title
     HTMLNode * topicTitleNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase3" allowPartial:NO];
     NSString *aTopicAffix = [NSString string];

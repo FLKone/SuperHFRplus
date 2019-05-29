@@ -5,13 +5,15 @@
 //  Created by FLK on 05/07/12.
 //
 
-#import "SettingsViewController.h"
+#import "PlusSettingsViewController.h"
 #import "HFRplusAppDelegate.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "HFRAlertView.h"
+
 @import InAppSettingsKit;
 
-@implementation SettingsViewController
+@implementation PlusSettingsViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -24,6 +26,7 @@
     return self;
 }
 
+/* UNUSED ? TODELETE?
 - (void)awakeFromNib {
     [super awakeFromNib];
 
@@ -35,21 +38,19 @@
     
     self.delegate = self;
 }
+*/
 
 -(void)viewDidLoad {
     //NSLog(@"viewDidLoadviewDidLoadviewDidLoadviewDidLoad");
     [super viewDidLoad];
     self.showCreditsFooter = NO;
+    self.neverShowPrivacySettings = YES;
     [self.tableView setDelegate:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated   {
     [super viewWillAppear:animated];
-    
-    // Désactivation de la configuration du thème pour iOS 5-6
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-         [self hideCell:@"theme"];
-    }
     
     BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
     if (!enabled) {
@@ -84,6 +85,8 @@
         [self hideCell:@"theme_noel_disabled"];
     }
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
+
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 #pragma mark kIASKAppSettingChanged notification
@@ -91,29 +94,14 @@
     NSLog(@"settingDidChange %@", notification);
 
     if ([notification.userInfo objectForKey:@"menu_debug"]) {
-        //IASKAppSettingsViewController *activeController = self;
-
-        // Désactivation de la configuration du thème pour iOS 5-6
-        if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            [self hideCell:@"theme"];
-        }
-        
         BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"menu_debug"];
-    
-        //((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]).hiddenKeys = enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
         
         if (!enabled) {
             [self hideCell:@"menu_debug_entry"];
         }else{
            [self showCell:@"menu_debug_entry"];
         }
-        
-       //enabled ? nil : [NSSet setWithObjects:@"menu_debug_entry", nil];
-        
-        //[activeController setHiddenKeys:enabled ? nil : [NSSet setWithObjects:@"AutoConnectTest", nil] animated:YES];
-        
     } else if([notification.userInfo objectForKey:@"theme"]) {
-
         Theme theme = (Theme)[[notification.userInfo objectForKey:@"theme"] intValue];
         [[ThemeManager sharedManager] setTheme:theme];
         [self setThemeColors:theme];
@@ -132,8 +120,7 @@
             [self hideCell:@"auto_theme_day"];
             [self hideCell:@"auto_theme_night"];
         }
-    } else if([notification.userInfo objectForKey:@"theme_dark_adjust"])
-    {
+    } else if([notification.userInfo objectForKey:@"theme_dark_adjust"]) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"]) {
             [self showCell:@"theme_dark_color1"];
             [self showCell:@"theme_dark_color2"];
@@ -150,7 +137,6 @@
             [ThemeColors setDarkColor1:100];
             [ThemeColors setDarkColor2:33];
             [[ThemeManager sharedManager] refreshTheme];
-            
         }
     }
     else if([notification.userInfo objectForKey:@"theme_noel_disabled"]) {
@@ -174,8 +160,6 @@
         if ([[UIApplication sharedApplication] supportsAlternateIcons] == NO)
             return;
 
-
-
         NSLog(@"icon %@", newIcon);
         if ([newIcon isEqualToString:@"super"]) {
             [[UIApplication sharedApplication] setAlternateIconName:nil completionHandler:nil];
@@ -194,6 +178,16 @@
                                                   completionHandler:^(NSError * _Nullable error) {
                                                       NSLog(@"%@", [error description]);
                                                   }];
+        } else if ([newIcon isEqualToString:@"blue"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:@"Icon-BLUE"
+                                                  completionHandler:^(NSError * _Nullable error) {
+                                                      NSLog(@"%@", [error description]);
+                                                  }];
+        } else if ([newIcon isEqualToString:@"white"]) {
+            [[UIApplication sharedApplication] setAlternateIconName:@"Icon-WHITE"
+                                                  completionHandler:^(NSError * _Nullable error) {
+                                                      NSLog(@"%@", [error description]);
+                                                  }];
         }
     }  else if([notification.userInfo objectForKey:@"size_smileys"]) {
         NSNotification *myNotification = [NSNotification notificationWithName:kSmileysSizeChangedNotification
@@ -203,52 +197,39 @@
         //Post it to the default notification center
         [[NSNotificationCenter defaultCenter] postNotification:myNotification];
     }
-    /*
-    if UIApplication.shared.alternateIconName == nil {
-        UIApplication.shared.setAlternateIconName("Icon-RED")
-    } else if UIApplication.shared.alternateIconName == "Icon-RED" {
-        UIApplication.shared.setAlternateIconName("Icon-Original")
-    } else if UIApplication.shared.alternateIconName == "Icon-Original" {
-        UIApplication.shared.setAlternateIconName(nil)
-    }
-     */
+
     [self.tableView reloadData];
 }
 
 -(void)hideCell:(NSString *)cell{
-    IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
-    NSMutableSet *hiddenKeys = settingsVC.hiddenKeys ? [NSMutableSet setWithSet:settingsVC.hiddenKeys] : [NSMutableSet set];
+    NSMutableSet *hiddenKeys = self.hiddenKeys ? [NSMutableSet setWithSet:self.hiddenKeys] : [NSMutableSet set];
     if([hiddenKeys containsObject:cell]){
         return;
     }
     
     [hiddenKeys addObject:cell];
-    settingsVC.hiddenKeys = hiddenKeys;
-
+    self.hiddenKeys = hiddenKeys;
 }
 
 -(void)showCell:(NSString *)cell{
-    IASKAppSettingsViewController *settingsVC = ((IASKAppSettingsViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
-    NSMutableSet *hiddenKeys = settingsVC.hiddenKeys ? [NSMutableSet setWithSet:settingsVC.hiddenKeys] : [NSMutableSet set];
+    NSMutableSet *hiddenKeys = self.hiddenKeys ? [NSMutableSet setWithSet:self.hiddenKeys] : [NSMutableSet set];
     if([hiddenKeys containsObject:cell]){
         [hiddenKeys removeObject:cell];
     }
-    settingsVC.hiddenKeys = hiddenKeys;
+    self.hiddenKeys = hiddenKeys;
 }
 
 
--(void)setThemeColors:(Theme)theme{
-    
+-(void)setThemeColors:(Theme)theme {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
         [self.navigationController.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
-    }else{
+    } else {
         UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
                          resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
         
         [self.navigationController.navigationBar setBackgroundImage:navBG forBarMetrics:UIBarMetricsDefault];
     }
     
-
      [self.navigationController.navigationBar setBarTintColor:[ThemeColors navBackgroundColor:theme]];
     
     if ([self.navigationController.navigationBar respondsToSelector:@selector(setTintColor:)]) {
@@ -258,23 +239,21 @@
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [ThemeColors titleTextAttributesColor:theme]}];
     [self.navigationController.navigationBar setNeedsDisplay];
     
-    
     self.view.backgroundColor = [ThemeColors greyBackgroundColor:theme];
     self.tableView.separatorColor = [ThemeColors cellBorderColor:theme];
 
     [self.tableView reloadData];
-
 }
 
 
 -(void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section{
     UITableViewHeaderFooterView *hv = (UITableViewHeaderFooterView *)view;
-    hv.textLabel.textColor = [ThemeColors headSectionTextColor:[[ThemeManager sharedManager] theme]];
+    hv.textLabel.textColor = [ThemeColors headSectionTextColor];
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section{
     UITableViewHeaderFooterView *hv = (UITableViewHeaderFooterView *)view;
-    hv.textLabel.textColor = [ThemeColors headSectionTextColor:[[ThemeManager sharedManager] theme]];
+    hv.textLabel.textColor = [ThemeColors headSectionTextColor];
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -288,28 +267,14 @@
 
 #pragma mark -
 - (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForKey:(NSString*)key {
-    //NSLog(@"settingsViewController");
-    
-    
-    
-	if ([key isEqualToString:@"EmptyCacheButton"]) {
-
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Vider le cache ?" message:@"Tous les onglets (Catégories, Favoris etc.) seront reinitialisés.\nAttention donc si vous êtes en train de lire un sujet intéressant :o" delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Oui !", nil];
-		[alert show];
+    if ([key isEqualToString:@"EmptyCacheButton"]) {
+        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Vider le cache ?"
+                                             andMessage:@"Tous les onglets (Catégories, Favoris etc.) seront reinitialisés.\nAttention donc si vous êtes en train de lire un sujet intéressant :o"
+                                              handlerOK:^(UIAlertAction * action) { [self emptyCache];}];
 	}
-    else if ([key isEqualToString:@"SetCheckpoint"]) {
-
-        //[TestFlight passCheckpoint:@"DEBUG"];
-        
-    }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == alertView.cancelButtonIndex) {
-        return;
-    }
-    
+- (void)emptyCache {
     [[HFRplusAppDelegate sharedAppDelegate] resetApp];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -318,18 +283,14 @@
     NSString *ImageCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"ImageCache"];
     NSString *SmileCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"SmileCache"];
     
-	if ([fileManager fileExistsAtPath:ImageCachePath])
-	{
-		[fileManager removeItemAtPath:ImageCachePath error:NULL];
-	}
+    if ([fileManager fileExistsAtPath:ImageCachePath]) {
+        [fileManager removeItemAtPath:ImageCachePath error:NULL];
+    }
     
-	if ([fileManager fileExistsAtPath:SmileCachePath])
-	{
-		[fileManager removeItemAtPath:SmileCachePath error:NULL];
-	}
+    if ([fileManager fileExistsAtPath:SmileCachePath]) {
+        [fileManager removeItemAtPath:SmileCachePath error:NULL];
+    }
 }
-
-
 
 #pragma mark -
 #pragma mark IASKAppSettingsViewControllerDelegate protocol

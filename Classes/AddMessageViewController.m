@@ -21,7 +21,7 @@
 #import "ThemeColors.h"
 #import "HFRUIImagePickerController.h"
 #import "MultisManager.h"
-
+#import "HFRAlertView.h"
 
 #import "EditMessageViewController.h"
 
@@ -248,42 +248,22 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)initData { //- (void)viewDidLoad {
-    //NSLog(@"viewDidLoad add");
-    
-    // [super viewDidLoad];
-    
-    
-    
-    // LOAD SMILEY HTML
-    
     NSString *path = [[NSBundle mainBundle] bundlePath];
     NSURL *baseURL = [NSURL fileURLWithPath:path];
-    
     NSString *tempHTML = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"smileybase" ofType:@"html"] encoding:NSUTF8StringEncoding error:NULL];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
-    }
-    else {
-        [self.smileView setBackgroundColor:[UIColor colorWithRed:46/255.f green:46/255.f blue:46/255.f alpha:1.00]];
-    }
+    tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
     
     [self.smileView hideGradientBackground];
-    
     [self.smileView loadHTMLString:[tempHTML stringByReplacingOccurrencesOfString:@"%SMILEYCUSTOM%"
                                                                        withString:[NSString stringWithFormat:@"<div id='smileperso'>%@</div>",
                                                                                    self.smileyCustom]] baseURL:baseURL];
     
     
-    //	[self.smileView loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"smileybase" ofType:@"html"] isDirectory:NO]]];
-    //==
-    
     self.formSubmit = [NSString stringWithFormat:@"%@/bddpost.php", [k ForumURL]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(smileyReceived:) name:@"smileyReceived" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadProgress:) name:@"uploadProgress" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageReceived:) name:@"imageReceived" object:nil];
     
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
@@ -291,78 +271,91 @@
     [self.commonTableView setTableFooterView:v];
     [self.rehostTableView setTableFooterView:v];
     
-    
-    
     float headerWidth = self.view.bounds.size.width;
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 50)];
-    
-    //    NSLog(@"mew cell %@", NSStringFromCGRect(self.view.frame));
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90)];
     
     Theme theme = [[ThemeManager sharedManager] theme];
     
     UIButton* newPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [newPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [newPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [newPhotoBtn setTitle:@"Nouvelle Photo" forState:UIControlStateNormal];
-    newPhotoBtn.frame = CGRectMake(0, 3, headerWidth/2, 50.0f);
+    [newPhotoBtn setTitle:@"  Caméra" forState:UIControlStateNormal];
+    newPhotoBtn.frame = CGRectMake(headerWidth*0/2, 3, headerWidth*1/2, 50);
     [newPhotoBtn addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     UIButton* oldPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [oldPhotoBtn setTitle:@"Photo existante" forState:UIControlStateNormal];
-    oldPhotoBtn.frame = CGRectMake(headerWidth/2, 3, headerWidth/2, 50.0f);
+    [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
+    oldPhotoBtn.frame = CGRectMake(headerWidth*1/2, 3, headerWidth*1/2, 50);
     [oldPhotoBtn addTarget:self action:@selector(uploadExistingPhoto:) forControlEvents:UIControlEventTouchUpInside];
     
-    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth/2, 0, 1, 50.0f)];
-    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 49.0f, headerWidth, 1.0f)];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"rehost_use_link"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
+    }
+
+    // Segmented control for BBCode url type
+    NSArray *itemArray = [NSArray arrayWithObjects: @"Image et lien", @"Image sans lien", @"Lien seul", nil];
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    //segmentedControl.frame = CGRectMake(headerWidth*1/4, 56, headerWidth*3/4-3, 30);
+    segmentedControl.frame = CGRectMake(3, 56, headerWidth-6, 29);
+    [segmentedControl addTarget:self action:@selector(segmentedControlValueDidChange:) forControlEvents:UIControlEventValueChanged];
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
+        segmentedControl.selectedSegmentIndex = 0;
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) {
+        segmentedControl.selectedSegmentIndex = 1;
+    } else {
+        segmentedControl.selectedSegmentIndex = 2;
+    }
+
+    // Label
+    UILabel *bbcodeLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 56, headerWidth*1/4, 30)];
+    bbcodeLabel.text = @"Copier le lien";
+    bbcodeLabel.font = [UIFont systemFontOfSize:14.0f];
+    bbcodeLabel.numberOfLines = 1;
+    bbcodeLabel.backgroundColor = [UIColor clearColor];
+    bbcodeLabel.textColor = [ThemeColors tintColor:theme];
+
+    
     UIView *borderT = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 1.0f)];
+    UIView *borderM = [[UIView alloc] initWithFrame:CGRectMake(0, 50, headerWidth, 1.0f)];
+    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 90, headerWidth, 1.0f)];
+    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*1/2, 0, 1, 50)];
+
+    [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
+    [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
+
+    [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
+    [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-        
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-    }
-    else
-    {
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Folder-32"] withTheme:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Camera-32"] withTheme:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"6-Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
-        
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-        
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-        [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-    }
+    [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
+    [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
     
+    [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
+    [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
+
     newPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin);
     oldPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin);
+
     border.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
     borderB.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     borderT.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
+    borderM.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     
     [headerView addSubview:newPhotoBtn];
     [headerView addSubview:oldPhotoBtn];
-    
+    [headerView addSubview:segmentedControl];
+    //[headerView addSubview:bbcodeLabel];
+
     [border setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderB setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderT setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-    
+    [borderM setBackgroundColor:[ThemeColors cellBorderColor:theme]];
+
     [headerView addSubview:border];
     [headerView addSubview:borderB];
     [headerView addSubview:borderT];
-    
+    [headerView addSubview:borderM];
     
     UIView* progressView = [[UIView alloc] initWithFrame:CGRectZero];
     progressView.frame = CGRectMake(0, 0, headerWidth, 50.f);
@@ -375,14 +368,7 @@
     subProgressView.frame = CGRectMake(0, 0, 50.f, 50.f);
     
     subProgressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin);
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        subProgressView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
-    }
-    else {
-        subProgressView.backgroundColor = [UIColor colorWithRed:0.22 green:0.33 blue:0.53 alpha:1.0];
-        
-    }
-    
+    subProgressView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
     subProgressView.tag = 54321;
     
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -542,7 +528,7 @@
     self.view.backgroundColor = self.loadingView.backgroundColor = self.accessoryView.backgroundColor = self.textView.backgroundColor = self.commonTableView.backgroundColor = self.rehostTableView.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
-    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:[[ThemeManager sharedManager] theme]];
+    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
 
     [self.rehostTableView reloadData];
@@ -804,7 +790,7 @@
             }
         }
         else if ([key isEqualToString:@"pseudo"]) {
-                [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_KEY] forKey:@"pseudo"];
+                [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_DISPLAY_KEY] forKey:@"pseudo"];
         }else if ([key isEqualToString:@"hash_check"]) {
             if([selectedCompte objectForKey:HASH_KEY]){
                 [arequest setPostValue:[selectedCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
@@ -874,9 +860,7 @@
             
             
             if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
-                UIAlertView *alertKKO = [[UIAlertView alloc] initWithTitle:nil message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [alertKKO show];
+                [HFRAlertView DisplayOKAlertViewWithTitle:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] andMessage:nil];
             }
             else {
                 // On efface automatiquement le brouillon quand il a été utilisé et que le post du message est OK
@@ -885,27 +869,10 @@
                 }
                 
                 [self resignAll];
-                
-                if ([UIAlertController class]) {
-                    self.statusMessage = [[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                }
-                else {
-                    UIAlertView *alertOK = [[UIAlertView alloc] initWithTitle:@"Hooray !" message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                     delegate:self.delegate cancelButtonTitle:nil otherButtonTitles: nil];
-                    [alertOK setTag:666];
-                    [alertOK show];
-                    
-                    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-                    
-                    // Adjust the indicator so it is up a few pixels from the bottom of the alert
-                    indicator.center = CGPointMake(alertOK.bounds.size.width / 2, alertOK.bounds.size.height - 50);
-                    [indicator startAnimating];
-                    [alertOK addSubview:indicator];
-                }
-                
-                //NSLog(@"responseString %@", [arequest responseString]);
+                self.statusMessage = [[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 [self setRefreshAnchor:@""];
                 NSArray * urlArray;
+
                 // On regarde si on doit pas positionner le scroll sur un topic
                 if ([self isDeleteMode]) {
                     //recup de l'ID du message supprimé pour positionner le scroll.
@@ -917,18 +884,12 @@
                     
                 }
                 
-                //NSLog(@"%d", urlArray.count);
                 if (urlArray.count > 0) {
-                    //NSLog(@"%@", [[urlArray objectAtIndex:0] objectAtIndex:0]);
-                    
                     if ([[[urlArray objectAtIndex:0] objectAtIndex:1] length] > 0) {
-                        //NSLog(@"On doit refresh sur #");
                         [self setRefreshAnchor:[[urlArray objectAtIndex:0] objectAtIndex:1]];
-                        //NSLog(@"refreshAnchor %@", self.refreshAnchor);
                     }
                 }
                 
-                NSLog(@"VisibilityChangedVisibilityChanged");
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
                 [self.delegate addMessageViewControllerDidFinishOK:self];
             }
@@ -937,11 +898,8 @@
 }
 
 -(void)segmentToWhite {
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7,0")) {
-        self.segmentControler.tintColor = [UIColor whiteColor];
-        self.segmentControlerPage.tintColor = [UIColor whiteColor];
-    }
-    
+    self.segmentControler.tintColor = [UIColor whiteColor];
+    self.segmentControlerPage.tintColor = [UIColor whiteColor];
 }
 
 -(void)segmentToBlue {
@@ -1481,10 +1439,6 @@
         
         //[self.commonTableView setTableFooterView:nil];
     }
-    
-    
-    
-    
 }
 
 #pragma mark -
@@ -1551,12 +1505,9 @@
     //NSLog(@"%@", self.smileyArray);
     
     if (self.smileyArray.count == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Aucun résultat !"
-                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        
         [self.textFieldSmileys becomeFirstResponder];
         [self.smileView stringByEvaluatingJavaScriptFromString:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');"];
+        [HFRAlertView DisplayOKAlertViewWithTitle:nil andMessage:@"Aucun résultat !"];
         return;
     }
     
@@ -1740,7 +1691,7 @@
         return 35.0f;
     }
     else {
-        return 80.0f;
+        return 100.0f;
     }
     
 }
@@ -1942,6 +1893,19 @@
     [self showImagePicker:UIImagePickerControllerSourceTypePhotoLibrary withSender:sender];
 }
 
+-(void)segmentedControlValueDidChange:(UISegmentedControl *)segment {
+    switch (segment.selectedSegmentIndex) {
+        case 0:{
+            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
+            break;}
+        case 1:{
+            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageNoLink forKey:@"rehost_use_link"];
+            break;}
+        case 2:{
+            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeLinkOnly forKey:@"rehost_use_link"];
+            break;}
+    }
+}
 
 - (void)showImagePicker:(UIImagePickerControllerSourceType)sourceType withSender:(UIButton *)sender
 {
@@ -2020,7 +1984,7 @@
     NSArray *comptes = [[MultisManager sharedManager] getComtpes];
     for (int j =0 ; j<comptes.count; j++)
     {
-        NSString *titleString = [comptes[j] objectForKey:PSEUDO_KEY];
+        NSString *titleString = [comptes[j] objectForKey:PSEUDO_DISPLAY_KEY];
         UIAlertAction * action = [UIAlertAction actionWithTitle:titleString style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             [self onSelectCompte:j];
         }];

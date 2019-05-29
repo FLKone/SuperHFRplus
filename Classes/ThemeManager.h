@@ -19,6 +19,7 @@
 @property LuminosityHandler *luminosityHandler;
     
 + (id)sharedManager;
++ (Theme)currentTheme;
 - (void)applyThemeToCell:(UITableViewCell *)cell;
 - (void)applyThemeToTextField:(UITextField *)textfield;
 - (void)applyThemeToAlertController:(UIAlertController *)alert;

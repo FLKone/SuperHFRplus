@@ -87,6 +87,7 @@
     
     //Poll
     HTMLNode *pollNode;
+    BOOL isNewPoll;
     HTMLParser *pollParser;
     
     //Search
@@ -106,7 +107,11 @@
     BOOL isSearchInstra;
     
     NSString* firstnumBackup;
+    
+    BOOL isSeparatorNewMessages;
+    UIAlertAction* actionCreateAQ;
 }
+
 
 
 @property (nonatomic, strong) IBOutlet UIWebView *messagesWebView;
@@ -159,6 +164,7 @@
 @property BOOL isAnimating;
 
 @property (nonatomic, strong) HTMLNode *pollNode;
+@property BOOL isNewPoll;
 @property (nonatomic, strong) HTMLParser *pollParser;
 @property (nonatomic, strong) NSString *firstnumBackup;
 
@@ -176,11 +182,14 @@
 @property (strong, nonatomic) IBOutlet UISwitch *searchFromFP;
 @property (nonatomic, strong) NSMutableDictionary *searchInputData;
 @property BOOL isSearchInstra;
+@property BOOL isSeparatorNewMessages;
+@property UIAlertAction* actionCreateAQ;
 
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages;
 - (void)optionsTopic:(id)sender;
 - (void)answerTopic;
 - (void)quoteMessage:(NSString *)quoteUrl;

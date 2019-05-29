@@ -32,7 +32,7 @@
 
 @implementation TopicsTableViewController
 @synthesize forumNewTopicUrl, forumName, loadingView, topicsTableView, arrayData, arrayNewData;
-@synthesize messagesTableViewController;
+@synthesize messagesTableViewController, errorVC;
 
 @synthesize swipeLeftRecognizer, swipeRightRecognizer;
 
@@ -70,8 +70,12 @@
 
 - (void)fetchContentTrigger
 {
-
-	//NSLog(@"fetchContent %@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
+    if(![self currentUrl]){
+        [self cancelFetchContent];
+         [self.topicsTableView.pullToRefreshView stopAnimating];
+        return;
+    }
+	NSLog(@"fetchContent %@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
 	self.status = kIdle;
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMini];
 
@@ -594,8 +598,8 @@
 			//Title & URL
 			HTMLNode * topicTitleNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase3" allowPartial:NO];
 
-        NSString *aTopicAffix = [NSString string];
-        NSString *aTopicSuffix = [NSString string];
+            NSString *aTopicAffix = [NSString string];
+            NSString *aTopicSuffix = [NSString string];
 
 			
 			if ([[topicNode className] rangeOfString:@"ligne_sticky"].location != NSNotFound) {
@@ -611,10 +615,8 @@
 				aTopicAffix = [aTopicAffix stringByAppendingString:@" "];
 			}
 
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             aTopicAffix = @"";
-        }
-        
+
 			NSString *aTopicTitle = [[NSString alloc] initWithFormat:@"%@%@%@", aTopicAffix, [[topicTitleNode allContents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]], aTopicSuffix];
 			[aTopic setATitle:aTopicTitle];
 
@@ -625,6 +627,10 @@
 			HTMLNode * numRepNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase7" allowPartial:NO];
 			[aTopic setARepCount:[[numRepNode contents] intValue]];
 
+            HTMLNode * pollImage = [topicNode findChildWithAttribute:@"src" matchingName:@"https://forum-images.hardware.fr/themes_static/images/defaut/sondage.gif" allowPartial:NO];
+            if (pollImage != nil) {
+                aTopic.isPoll = YES;
+            }
 
 			//Setup of Flag		
 			HTMLNode * topicFlagNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase5" allowPartial:NO];
@@ -887,15 +893,14 @@
         //NSLog(@"COMPLETE %d", self.childViewControllers.count);
         
     }
-    else
-    {
-        PullToRefreshErrorViewController *ErrorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
-        [self addChildViewController:ErrorVC];
+    else {
+        self.errorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
+        [self addChildViewController:self.errorVC];
         
-        self.topicsTableView.tableHeaderView = ErrorVC.view;
-        [ErrorVC sizeToFit];
+        self.topicsTableView.tableHeaderView = self.errorVC.view;
+        [self.errorVC sizeToFit];
+        [self.errorVC applyTheme];
     }
-    
 }
 
 - (void)viewDidLoad {
@@ -1251,8 +1256,11 @@
     self.topicsTableView.separatorColor = [ThemeColors cellBorderColor:theme];
     self.topicsTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.topicsTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
-    self.topicsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
-    
+    self.topicsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
+    if (self.errorVC) {
+        [self.errorVC applyTheme];
+    }
+
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loadSubCat) name:@"SubCatSelected" object:nil];
@@ -1348,8 +1356,7 @@
     
     //UIView globale
 	UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-    Theme theme = [[ThemeManager sharedManager] theme];
-    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:theme];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
     customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
 	//UIImageView de fond
@@ -1382,27 +1389,15 @@
 
     NSString *title = [self tableView:tableView titleForHeaderInSection:section];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button.titleLabel setMinimumFontSize:10];
-        button.titleLabel.adjustsFontSizeToFitWidth = YES;
-        [button.titleLabel setNumberOfLines:1];
+    [button setTitleColor:[ThemeColors headSectionTextColor] forState:UIControlStateNormal];
+    [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [button.titleLabel setMinimumFontSize:10];
+    button.titleLabel.adjustsFontSizeToFitWidth = YES;
+    [button.titleLabel setNumberOfLines:1];
 
 
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
-    }
-    else
-    {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [button setTitle:title forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-    }
-
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
 
     button.translatesAutoresizingMaskIntoConstraints = NO;
     UILayoutGuide *guide = customView.safeAreaLayoutGuide;
@@ -1642,12 +1637,17 @@
             [[cell titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
         }
     }
-	 
+    
+    NSString* sPoll = @"";
+    if (aTopic.isPoll) {
+        sPoll = @" \U00002263";
+    }
+    
 	if (aTopic.aRepCount == 0) {
-	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺ %d", (aTopic.aRepCount + 1)]];
+	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺%@ %d", sPoll, (aTopic.aRepCount + 1)]];
 	}
 	else {
-	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺ %d", (aTopic.aRepCount + 1)]];
+	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺%@ %d", sPoll, (aTopic.aRepCount + 1)]];
 	}
 	
 	[cell.timeLabel setText:[NSString stringWithFormat:@"%@ - %@", [aTopic aAuthorOfLastPost], [aTopic aDateOfLastPost]]];
@@ -1719,7 +1719,7 @@
 	//NSLog(@"url %@", [[arrayData objectAtIndex:self.pressedIndexPath.row] aURLOfFlag]);
 
 	//if (self.messagesTableViewController == nil) {
-	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row] aURLOfFlag]];
+	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row]  aURLOfFlag] displaySeparator:YES];
 	self.messagesTableViewController = aView;
 	//}
 	

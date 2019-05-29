@@ -21,6 +21,7 @@
 #import "Forum.h"
 #import "Catcounter.h"
 #import "FavoriteCell.h"
+#import "FavoriteCellView.h"
 
 #import "Favorite.h"
 #import "UIImage+Resize.h"
@@ -32,7 +33,6 @@
 
 #import "UIScrollView+SVPullToRefresh.h"
 #import "PullToRefreshErrorViewController.h"
-
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 
@@ -43,7 +43,7 @@
 @implementation FavoritesTableViewController
 @synthesize pressedIndexPath, favoritesTableView, loadingView, showAll;
 @synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
-@synthesize messagesTableViewController;
+@synthesize messagesTableViewController, errorVC;
 @synthesize idPostSuperFavorites;
 
 @synthesize request;
@@ -77,8 +77,8 @@
     else {
         self.showAll = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [self.navigationItem.rightBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor:[[ThemeManager sharedManager] theme]]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [self.navigationItem.rightBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
             // Right button: Refresh -> Edit categories
 
             UIImage *buttonImage = [UIImage imageNamed:@"icon_list_bullets"];
@@ -108,10 +108,10 @@
     }
     else  // Activable que si au moins 1 catégories
     {
-        if (self.arrayCategories.count >= 1)
-        {
+        //if (self.arrayCategories.count >= 1)
+        //{
             self.editCategoriesList = YES;
-        }
+        //}
         // Sinon on reste non éditable
     }
     [self.favoritesTableView setEditing:self.editCategoriesList animated:YES];
@@ -198,30 +198,6 @@
     
     [self.favoritesTableView.pullToRefreshView stopAnimating];
     [self.favoritesTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
-    
-    /*
-	[self.loadingView setHidden:YES];
-
-	switch (self.status) {
-		case kMaintenance:
-		case kNoResults:
-		case kNoAuth:
-            [self.maintenanceView setText:self.statusMessage];
-
-            [self.loadingView setHidden:YES];
-			[self.maintenanceView setHidden:NO];
-			[self.favoritesTableView setHidden:YES];
-			break;
-		default:
-            [self.favoritesTableView reloadData];
-
-            [self.loadingView setHidden:YES];
-            [self.maintenanceView setHidden:YES];
-			[self.favoritesTableView setHidden:NO];
-			break;
-	}
-	*/
-	//NSLog(@"fetchContentCompletefetchContentCompletefetchContentComplete");
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
@@ -235,11 +211,6 @@
 	
     [self.maintenanceView setText:@"oops :o"];
     
-    //[self.loadingView setHidden:YES];
-    //[self.maintenanceView setHidden:NO];
-    //[self.favoritesTableView setHidden:YES];
-	
-	//NSLog(@"theRequest.error %@", theRequest.error);
     [self.favoritesTableView.pullToRefreshView stopAnimating];
 
     // Popup retry
@@ -259,16 +230,9 @@
 #pragma mark - PullTableViewDelegate
 
 -(void)reset {
-	/*
-	[self fetchContent];
-	*/
 	[self.arrayData removeAllObjects];
 	
 	[self.favoritesTableView reloadData];
-	//[self.favoritesTableView setHidden:YES];
-	//[self.maintenanceView setHidden:YES];
-	//[self.loadingView setHidden:YES];
-	
 }
 //-- V2
 
@@ -324,6 +288,7 @@
 	//MP
 	
 	//v1
+    /*
     NSArray *temporaryTopicsArray = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"sujet ligne_booleen" allowPartial:YES]; //Get topics for cat
     
 	if (temporaryTopicsArray.count == 0) {
@@ -335,7 +300,7 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
 
-	}
+	}*/
 	
 	//hash_check
 	HTMLNode *hash_check = [bodyNode findChildWithAttribute:@"name" matchingName:@"hash_check" allowPartial:NO];
@@ -422,12 +387,13 @@
                 }
             }
             
-            NSLog(@"Favorite order: aID=%@, order=%@", aFavorite.forum.aID, aFavorite.order);
+            //NSLog(@"Favorite order: aID=%@, order=%@", aFavorite.forum.aID, aFavorite.order);
             first = NO;
         }
         else if ([[trNode className] rangeOfString:@"ligne_booleen"].location != NSNotFound) {
             //NSLog(@"TOPIC // ROW");
-            
+            //NSLog(@"Topic node %@", rawContentsOfNode([trNode _node], [myParser _doc]));
+
             [aFavorite addTopicWithNode:trNode];
         }
         else {
@@ -475,6 +441,15 @@
     NSSortDescriptor *sortDescriptorDate = [[NSSortDescriptor alloc] initWithKey: @"dDateOfLastPost" ascending:NO selector:@selector(compare:)];
     self.arrayTopics = (NSMutableArray *)[tmpTopics sortedArrayUsingDescriptors: [NSMutableArray arrayWithObject:sortDescriptorDate]];
     
+    
+    if (([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"] && self.arrayNewData.count == 0) || // Mode classique avec catégories
+         self.arrayTopics.count == 0) // Mode sans les categories
+    {
+        NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kNoResults], @"status",
+                               @"Aucun nouveau message", @"message", nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kStatusChangedNotification object:self userInfo:notif];
+    }
+
     if (self.status != kNoResults) {
         
         NSDictionary *notif = [NSDictionary dictionaryWithObjectsAndKeys:   [NSNumber numberWithInt:kComplete], @"status", nil];
@@ -588,30 +563,19 @@
         //NSLog(@"COMPLETE %d", self.childViewControllers.count);
 
     }
-    else
-    {
-        PullToRefreshErrorViewController *ErrorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
-        [self addChildViewController:ErrorVC];
+    else {
+        self.errorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
+        [self addChildViewController:self.errorVC];
         
-        self.favoritesTableView.tableHeaderView = ErrorVC.view;
-        [ErrorVC sizeToFit];
+        self.favoritesTableView.tableHeaderView = self.errorVC.view;
+        [self.errorVC sizeToFit];
+        [self.errorVC applyTheme];
     }
-    
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    NSLog(@"initWithNibName");
-    
-    
-    self = [super initWithCoder:aDecoder];
-    if (self)
-    {
-        
-
-    }
-    
-    return self;
+    return [super initWithCoder:aDecoder];
 }
 
 - (void)viewDidLoad {
@@ -624,7 +588,9 @@
     
     UINib *nib = [UINib nibWithNibName:@"ForumCellView" bundle:nil];
     [self.favoritesTableView registerNib:nib forCellReuseIdentifier:@"ForumCellID"];
-    
+    UINib *nib2 = [UINib nibWithNibName:@"FavoriteCellView" bundle:nil];
+    [self.favoritesTableView registerNib:nib2 forCellReuseIdentifier:@"FavoriteCellID"];
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(OrientationChanged)
                                                  name:UIApplicationDidChangeStatusBarOrientationNotification
@@ -714,10 +680,13 @@
     
     Theme theme = [[ThemeManager sharedManager] theme];
     self.view.backgroundColor = self.favoritesTableView.backgroundColor = self.maintenanceView.backgroundColor = self.loadingView.backgroundColor = self.favoritesTableView.pullToRefreshView.backgroundColor = [ThemeColors greyBackgroundColor:theme];
+    if (self.errorVC) {
+        [self.errorVC applyTheme];
+    }
     self.favoritesTableView.separatorColor = [ThemeColors cellBorderColor:theme];
     self.favoritesTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.favoritesTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
-    self.favoritesTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
+    self.favoritesTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     
     UIButton *btn = (UIButton *)[self.navigationController.navigationBar viewWithTag:237];
     UIButton *btn2 = (UIButton *)[self.navigationController.navigationBar viewWithTag:238];
@@ -726,7 +695,7 @@
         UIImage *img = btn.imageView.image;
         UIImage *bg = [UIImage imageNamed:@"lightBlue.png"];
         UIImage *timg = [ThemeColors tintImage:img withTheme:theme];
-        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor:theme]];
+        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor]];
 
         [btn setImage:timg forState:UIControlStateNormal];
         [btn setImage:timg forState:UIControlStateSelected];
@@ -739,7 +708,7 @@
         UIImage *img = btn2.imageView.image;
         UIImage *bg = [UIImage imageNamed:@"lightBlue.png"];
         UIImage *timg = [ThemeColors tintImage:img withTheme:theme];
-        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor:theme]];
+        UIImage *tbg = [ThemeColors tintImage:bg withColor:[ThemeColors tintLightColor]];
         
         [btn2 setImage:timg forState:UIControlStateNormal];
         [btn2 setImage:timg forState:UIControlStateSelected];
@@ -748,6 +717,10 @@
         [btn2 setBackgroundImage:tbg forState:UIControlStateHighlighted];
     }
 
+    if (self.showAll) {
+        [self.navigationItem.leftBarButtonItem setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors tintLightColor]] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    }
+    
 	if (self.messagesTableViewController) {
 		//NSLog(@"viewWillAppear Favorites Table View Dealloc MTV");
 		
@@ -818,8 +791,6 @@
     
     TopicsTableViewController *aView;
     
-    //NSLog(@"aURL %@", [[[arrayNewData objectAtIndex:section] forum] aURL]);
-    
     switch (vos_sujets) {
         case 0:
             aView = [[TopicsTableViewController alloc] initWithNibName:@"TopicsTableViewController" bundle:nil flag:2];
@@ -836,7 +807,6 @@
     }
     
 	aView.forumName = [[[arrayCategories objectAtIndex:section] forum] aTitle];
-	//aView.pickerViewArray = [[arrayNewData objectAtIndex:section] forum] subCats];
     
     self.navigationItem.backBarButtonItem =
     [[UIBarButtonItem alloc] initWithTitle:@"Retour"
@@ -844,11 +814,8 @@
                                     target:nil
                                     action:nil];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        self.navigationItem.backBarButtonItem.title = @" ";
-    }
-    
-	[self.navigationController pushViewController:aView animated:YES];
+    self.navigationItem.backBarButtonItem.title = @" ";
+    [self.navigationController pushViewController:aView animated:YES];
 }
 
 - (void)loadCatForType:(id)sender {
@@ -924,33 +891,17 @@
     
     //UIView globale
     UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-    Theme theme = [[ThemeManager sharedManager] theme];
-    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:theme];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
     customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 
     //UIImageView de fond
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
-        imageView.alpha = 0.9;
-        imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
-        [customView addSubview:imageView];
-    }
-    else {
-        //bordures/iOS7
-        UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView];
-        
-        UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView2];
-        
-    }
+    UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
+    
+    //[customView addSubview:borderView];
+    
+    UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
 
     //UIButton clickable pour accéder à la catégorie
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
@@ -959,22 +910,12 @@
     }
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
 
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitle:titleSection forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
-        button.translatesAutoresizingMaskIntoConstraints = NO;
-        [customView addSubview:button];
-    }
-    else
-    {
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [button setTitle:titleSection forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-    }
+    [button setTitleColor:[ThemeColors headSectionTextColor] forState:UIControlStateNormal];
+    [button setTitle:titleSection forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    [customView addSubview:button];
     
     if (!self.showAll && [[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) {
         [button addTarget:self action:@selector(loadCatForType:) forControlEvents:UIControlEventTouchUpInside];
@@ -1137,17 +1078,12 @@
         return cell;
     }
     else {
-        static NSString *CellIdentifier = @"FavoriteCell";
-        FavoriteCell *cell = (FavoriteCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        FavoriteCellView *cell = (FavoriteCellView *)[tableView dequeueReusableCellWithIdentifier:@"FavoriteCellID"];
         
-        if (cell == nil) {
-            cell = [[FavoriteCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-            
-            UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
-                                                                 initWithTarget:self action:@selector(handleLongPress:)];
-            [cell addGestureRecognizer:longPressRecognizer];
-        }
-    	
+        UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
+                                                             initWithTarget:self action:@selector(handleLongPress:)];
+        [cell addGestureRecognizer:longPressRecognizer];
+
         Topic *tmpTopic = nil;
         if ([[NSUserDefaults standardUserDefaults] boolForKey :@"sujets_avec_cat"]) // Mode classique avec catégories
         {
@@ -1160,77 +1096,92 @@
         }
             
         // Configure the cell...
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
-            if ([tmpTopic isViewed]) {
-                font1 = [UIFont systemFontOfSize:13.0f];
-            }
-            NSDictionary *arialDict = [NSDictionary dictionaryWithObject: font1 forKey:NSFontAttributeName];
-            NSMutableAttributedString *aAttrString1 = [[NSMutableAttributedString alloc] initWithString:[tmpTopic aTitle] attributes: arialDict];
-            
-            UIFont *font2 = [UIFont fontWithName:@"fontello" size:15];
-            
-            NSMutableAttributedString *finalString = [[NSMutableAttributedString alloc]initWithString:@""];
-            
-            if (tmpTopic.isClosed) {
-                //            UIColor *fontcC = [UIColor orangeColor];
-                UIColor *fontcC = [UIColor colorWithHex:@"#4A4A4A" alpha:1.0];
-                
-                
-                NSDictionary *arialDict2c = [NSDictionary dictionaryWithObjectsAndKeys:font2, NSFontAttributeName, fontcC, NSForegroundColorAttributeName, nil];
-                NSMutableAttributedString *aAttrString2C = [[NSMutableAttributedString alloc] initWithString:@" " attributes: arialDict2c];
-                
-                [finalString appendAttributedString:aAttrString2C];
-                //NSLog(@"finalString1 %@", finalString);
-            }
-            
-            [finalString appendAttributedString:aAttrString1];
-            //NSLog(@"finalString3 %@", finalString);
-            
-            
-            
-            [(UILabel *)[cell.contentView viewWithTag:999] setAttributedText:finalString];
+        UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
+        if ([tmpTopic isViewed]) {
+            font1 = [UIFont systemFontOfSize:13.0f];
+        }
+        NSDictionary *arialDict = [NSDictionary dictionaryWithObject: font1 forKey:NSFontAttributeName];
+        NSMutableAttributedString *aAttrString1 = [[NSMutableAttributedString alloc] initWithString:[tmpTopic aTitle] attributes: arialDict];
+        
+        UIFont *font2 = [UIFont fontWithName:@"fontello" size:15];
+        
+        NSMutableAttributedString *finalString = [[NSMutableAttributedString alloc]initWithString:@""];
+        
+        if (tmpTopic.isClosed) {
+            UIColor *fontcC = [UIColor colorWithHex:@"#4A4A4A" alpha:1.0];
+            NSDictionary *arialDict2c = [NSDictionary dictionaryWithObjectsAndKeys:font2, NSFontAttributeName, fontcC, NSForegroundColorAttributeName, nil];
+            NSMutableAttributedString *aAttrString2C = [[NSMutableAttributedString alloc] initWithString:@" " attributes: arialDict2c];
+            [finalString appendAttributedString:aAttrString2C];
+        }
+        
+        [finalString appendAttributedString:aAttrString1];
+        [cell.labelTitle setAttributedText:finalString];
 
-            
-            
-            
-        }
-        else {
-            [(UILabel *)[cell.contentView viewWithTag:999] setText:[tmpTopic aTitle]];
-            
-            if ([tmpTopic isViewed]) {
-                [(UILabel *)[cell.contentView viewWithTag:999] setFont:[UIFont systemFontOfSize:13]];
-            }
-            else {
-                [(UILabel *)[cell.contentView viewWithTag:999] setFont:[UIFont boldSystemFontOfSize:13]];
-                
-            }
-        }
-        
-        
-        
-        
-        //[(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"%d messages", ([[arrayData objectAtIndex:theRow] aRepCount] + 1)]];
-        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSInteger vos_sujets = [defaults integerForKey:@"vos_sujets"];
-        
+        NSString* sPoll = @"";
+        if (tmpTopic.isPoll) {
+            sPoll = @" \U00002263";
+        }
         switch (vos_sujets) {
             case 0:
-                [(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"⚑ %d/%d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
             case 1:
-                [(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"★ %d/%d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"★%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
             default:
-                [(UILabel *)[cell.contentView viewWithTag:998] setText:[NSString stringWithFormat:@"⚑ %d/%d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
         }
-        
-        [(UILabel *)[cell.contentView viewWithTag:997] setText:[NSString stringWithFormat:@"%@ - %@", [tmpTopic aAuthorOfLastPost], [tmpTopic aDateOfLastPost]]];
-        
 
+        // Badge
+        int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
+        if (iPageNumber == 0) {
+            cell.labelBadge.clipsToBounds = YES;
+            cell.labelBadge.layer.cornerRadius = 20 / 2;
+            [cell.labelBadge setText:@""];
+            cell.labelBadge.backgroundColor = [UIColor clearColor];
+            cell.labelBadgeWidth.constant = 0;
+        } else {
+            int iWidth = 16;
+            if (iPageNumber < 10) {
+                iWidth = 16;
+            } else if (iPageNumber < 100) {
+                iWidth = 23;
+            } else if (iPageNumber < 1000) {
+                iWidth = 30;
+            } if (iPageNumber > 9999) {
+                iPageNumber = 9999;
+                iWidth = 38;
+            }
+            cell.labelBadge.clipsToBounds = YES;
+            cell.labelBadge.layer.cornerRadius = 16 / 2;
+            [cell.labelBadge setText:[NSString stringWithFormat:@"%d", iPageNumber]];
+            cell.labelBadgeWidth.constant = iWidth;
+            /*
+            [cell.labelBadge sizeToFit];
+             labelBadgeWidth
+            // Width constraint
+            NSArray* constraints1 = [cell.labelBadge constraints];
+            [cell.labelBadge addConstraint:[NSLayoutConstraint constraintWithItem:cell.labelBadge
+                                                              attribute:NSLayoutAttributeWidth
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:nil
+                                                              attribute: NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1
+                                                               constant:iWidth]];
+            NSArray* constraints2 = [cell.labelBadge constraints];
+            NSLog(@"Constraints b/a:%d/%d", constraints1.count, constraints2.count);*/
+            cell.labelBadge.backgroundColor = [ThemeColors tintColor];
+        }
+        
         [cell setShowsReorderControl:NO];
+        
+        // Posteur + date
+        [cell.labelDate setText:[NSString stringWithFormat:@"%@ - %@", [tmpTopic aAuthorOfLastPost], [tmpTopic aDateOfLastPost]]];
+
+        [cell applyTheme];
         
         return cell;
     }
@@ -1384,7 +1335,7 @@
     else {
         Topic *aTopic = [self getTopicAtIndexPath:indexPath];
             
-        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[aTopic aURL]];
+        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[aTopic aURL] displaySeparator:YES];
         self.messagesTableViewController = aView;
         
         //setup the URL
@@ -1511,14 +1462,10 @@
         [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
         
         self.navigationItem.backBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                         style: UIBarButtonItemStyleBordered
+        [[UIBarButtonItem alloc] initWithTitle:@" "
+                                         style: UIBarButtonItemStylePlain
                                         target:nil
                                         action:nil];
-        
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            self.navigationItem.backBarButtonItem.title = @" ";
-        }
         
         [self.navigationController pushViewController:messagesTableViewController animated:YES];
     }

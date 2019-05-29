@@ -55,17 +55,14 @@
 		
 		[self.contentView insertSubview:self.labelMsg atIndex:2];
 		
-		self.labelDate = [[UILabel alloc] initWithFrame:CGRectMake(140, 27, 170, 18)];
+		self.labelDate = [[UILabel alloc] initWithFrame:CGRectMake(120, 27, 190, 18)];
 		self.labelDate.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		
 		[self.labelDate setFont:[UIFont systemFontOfSize:11.0]];
 		[self.labelDate setAdjustsFontSizeToFitWidth:NO];
 		[self.labelDate setLineBreakMode:NSLineBreakByTruncatingTail];
-		//[labelDate setBackgroundColor:[UIColor redColor]];
 		[self.labelDate setTextAlignment:NSTextAlignmentRight];
-        if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            [self.labelDate setHighlightedTextColor:[UIColor whiteColor]];
-        }
+        [self.labelDate setHighlightedTextColor:[UIColor whiteColor]];
 		[self.labelDate setTag:997];
 		[self.labelDate setTextColor:[UIColor colorWithRed:42/255.f green:116/255.f blue:217/255.f alpha:1.00]];
 		[self.labelDate setNumberOfLines:0];

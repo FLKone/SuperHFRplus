@@ -9,7 +9,13 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-url: #2470d8; /* Couleur des url dans les messages ET ?? */
     --color-message-background:white; /* Fond des messages */
     --color-message-modo-background:#FEE; /* Fond des messages de modération */
+    --color-message-header-me-background:#FEE; /* Fond du header de mes messages*/
+    --color-message-mequoted-background:#FEE; /* Fond des messages dans lesquels je suis quoted */
+    --color-message-mequoted-borderleft:#FEE;
+    --color-message-mequoted-borderother:#FEE;
+    --color-separator-new-message:rgba(0,0,0,0.4);
     --color-background-bars:#F5F5F5;
+    --color-searchintra-nextresults:rgba(240,240,240,0.9);
     --color-text:#202020;
     --color-text2:#202020;
     --color-text-pseudo:#202020;
@@ -103,6 +109,9 @@ div.masque {
 	visibility:hidden;
 }
 
+.separator1 {
+    border-top: 1px dashed var(--color-separator-new-message);
+}
 
 .message {
 	overflow:hidden;
@@ -303,6 +312,16 @@ table.code, table.fixed, table.quote, table.citation, table.oldcitation {
     table-layout:fixed;
     border: none;
     border-left: 2px solid var(--color-border-quotation);
+}
+
+table.citation_me_quoted {
+    table-layout:fixed;
+    border-left: 2px solid var(--color-action);
+    background: var(--color-message-mequoted-background);
+    border-left: 2px solid var(--color-message-mequoted-borderleft);
+    border-right: 1px solid var(--color-message-mequoted-borderother);
+    border-bottom: 1px solid var(--color-message-mequoted-borderother);
+    border-top: 1px solid var(--color-message-mequoted-borderother);
 }
 
 hr {
@@ -545,8 +564,11 @@ a#searchintra_nextbutton {
 }
 
 .ios7 a#searchintra_nextbutton {
+    /*
     color: rgba(109, 109, 114, 1);
-    background: rgba(239, 239, 244, 0.9);
+    background: rgba(239, 239, 244, 0.9);*/
+    color: var(--color-action);
+    background: var(--color-searchintra-nextresults);
     border-top: 1px solid rgba(109, 109, 114, 0.1);
 }
 
@@ -567,6 +589,14 @@ body.ios7 {
     border:none;
     border-top: var(--border-header);
     border-bottom: var(--border-header);
+}
+
+.ios7 .message.me .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: var(--color-message-header-me-background);
+    border-left: 2px solid var(--color-message-mequoted-borderleft);
 }
 
 .ios7 .message .header .left {

@@ -49,9 +49,15 @@
       "scale" : "3x"
     },
     {
+      "idiom" : "ios-marketing",
+      "size" : "1024x1024",
+      "scale" : "1x"
+    },
+    {
       "size" : "1024x1024",
       "idiom" : "ios-marketing",
       "filename" : "Icon-BLUE_1024.png",
+      "unassigned" : true,
       "scale" : "1x"
     }
   ],

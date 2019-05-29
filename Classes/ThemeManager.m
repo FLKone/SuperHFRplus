@@ -9,6 +9,7 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "AvatarTableViewCell.h"
+#import "PlusCellView.h"
 
 @implementation ThemeManager
 
@@ -26,6 +27,10 @@ int nightDelay;
         sharedThemeManager = [[self alloc] init];
     });
     return sharedThemeManager;
+}
+
++ (Theme) currentTheme {
+    return [[ThemeManager sharedManager] theme];
 }
 
 - (id)init {
@@ -126,6 +131,14 @@ int nightDelay;
             cell.imageView.tintColor = [ThemeColors cellIconColor:theme];
         }
     }
+    
+    if([cell isKindOfClass:[PlusCellView class]]){
+        PlusCellView* plusCellView = (PlusCellView*)cell;
+        UIImage *img =[plusCellView.titleImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        plusCellView.titleImage.image = img;
+        plusCellView.titleImage.tintColor = [ThemeColors cellIconColor:theme];
+    }
+    
     cell.selectionStyle = [ThemeColors cellSelectionStyle:theme];
 }
 
