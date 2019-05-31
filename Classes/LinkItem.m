@@ -84,7 +84,7 @@
         myRawContent = [myRawContent stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :<\\/a>", currentPseudoLowercase] withString:[NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :</a>", currentPseudoLowercase] options:NSCaseInsensitiveSearch range:NSMakeRange(0, [myRawContent length])];
         NSString* pseudoWrote = [NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :</a>", currentPseudoLowercase];
         myRawContent = [myRawContent stringByReplacingOccurrencesOfString:pseudoWrote withString:pseudoWrote options:NSCaseInsensitiveSearch range:NSMakeRange(0, [myRawContent length])];
-        NSString *regExQuoted = [NSString stringWithFormat:@"<table class=\"[old]+citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">)(%@)( a écrit :<\\/a>)", currentPseudoLowercase];
+        NSString *regExQuoted = [NSString stringWithFormat:@"<table class=\"[old]*citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">)(%@)( a écrit :<\\/a>)", currentPseudoLowercase];
         myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
                                      withString:[NSString stringWithFormat:@"<table class=\"citation_me_quoted\">$1%@$3", currentPseudo]];
     }
