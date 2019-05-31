@@ -228,11 +228,12 @@ background:-webkit-gradient(
     font-family: blisslight !important;
     font-weight: bold;
     
-    
-    
-
-	
 }
+
+.message.blacklist .header .right {
+    display: none;
+}
+
 
 .message .header .right a.small.awesome, .message .header .right a.small.awesome:visited {
 	font-size: 13px !important;
@@ -603,11 +604,17 @@ body.ios7 {
     margin-top:0 !important;
     padding-top: 5px !important;
     padding-bottom: 0px !important;
-    background: rgba(109, 109, 114, 0.3);
+    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
     border:none;
 }
 
 
+.ios7 .message.blacklist .header .left {
+    display: none;
+}
+.ios7 .message.blacklist .header .leftdate {
+    display: none;
+}
 .ios7 .message .header .left {
     color: var(--color-text-pseudo);  /*texte nom pseudo*/
     text-shadow:none;
@@ -617,6 +624,17 @@ body.ios7 {
     color: var(--color-text-pseudo); /*text date message ;*/
     text-shadow:none;
 }
+
+.ios7 .message.blacklist .header .left {
+    color: rgba(1,1,1,0);  /*texte nom pseudo*/
+    text-shadow:none;
+}
+
+.ios7 .message.blacklist .header .leftdate {
+    color: rgba(1,1,1,0); /*text date message ;*/
+    text-shadow:none;
+}
+
 
 .ios7 .message .header .leftdate {
     font-weight:normal
@@ -644,16 +662,17 @@ body.ios7 {
 }
 
 .ios7 .blacklist_showhidetext {
-    margin-left:7px !important;
-    padding:10px !important;
+    margin-right:10px !important;
+    padding:5px !important;
+    text-align: right;
 }
 
 .ios7 .blacklist_group {
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    background: #FFF; /*repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );*/
 }
 .ios7 .blacklist_content {
+    display: none;
 }
-
 
 .ios7 #toolbarpage {
     background:var(--color-background-bars); /* barre de navigation bas de page */
