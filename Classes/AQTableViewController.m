@@ -310,7 +310,13 @@
         NSString* sInitiator = [mstrXMLString stringByMatching:@".*\\>([a-zA-Z\\s\\d]+) \\(initiateur\\).*" capture:1L];
         NSString* sComment = [mstrXMLString stringByMatching:@".*\\(initiateur\\)\\<\\/b\\>\\s:\\s([^<\\/>]+).*" capture:1L];
         if (sInitiator == nil || sComment == nil) {
-            sInitiator = @"Parse error";
+            sInitiator = @"(sans auteur)";
+        }
+        if (sTopicTitle == nil) {
+            sTopicTitle = @"(sans titre)";
+        }
+        if (sNumber == nil) {
+            sNumber = @"0";
         }
         [mdictXMLPart setObject:sNumber forKey:@"number"];
         [mdictXMLPart setObject:sTopicTitle forKey:@"topic_title"];
