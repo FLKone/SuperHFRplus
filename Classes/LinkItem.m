@@ -48,7 +48,7 @@
 	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
     } else if (bIsPostBL) {
-        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message blacklist"];
+        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message blacklist\" style=\"display:none;"];
     }
 
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%AUTEUR_PSEUDO%%" withString:[self name]];
@@ -70,37 +70,26 @@
 
     NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
+    /*
     if (bIsPostBL) {
-        NSLog(@"BL index >>>>>>>>>>>> %d <<<",index);
-        
         NSString *show_hide = [NSString stringWithFormat:@"var x = document.getElementById('bl_%d');if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", index];
-        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">Afficher</a></div><div class=\"blacklist_content\" id=\"bl_%d\">%@", show_hide, index, myRawContent];
-    }
+        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">&#9661;</a></div><div class=\"blacklist_content\" id=\"bl_%d\">%@", show_hide, index, myRawContent];
+    }*/
 
-    // Good site for debugging regex: https://regex101.com
-    // Search for own quotes
-    if (egoQuote == YES) {
-        currentPseudo = [NSRegularExpression escapedPatternForString:currentPseudo];
-        myRawContent = [myRawContent stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :<\\/a>", currentPseudoLowercase] withString:[NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :</a>", currentPseudoLowercase] options:NSCaseInsensitiveSearch range:NSMakeRange(0, [myRawContent length])];
-        NSString* pseudoWrote = [NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :</a>", currentPseudoLowercase];
-        myRawContent = [myRawContent stringByReplacingOccurrencesOfString:pseudoWrote withString:pseudoWrote options:NSCaseInsensitiveSearch range:NSMakeRange(0, [myRawContent length])];
-        NSString *regExQuoted = [NSString stringWithFormat:@"<table class=\"[old]*citation\">(<tr class=\"[^\"]+\">[^\"]+<b class=\"[^\"]+\"><a href=\"[^\"]+\" class=\"Topic\">)(%@)( a écrit :<\\/a>)", currentPseudoLowercase];
-        myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExQuoted
-                                     withString:[NSString stringWithFormat:@"<table class=\"citation_me_quoted\">$1%@$3", currentPseudo]];
-    }
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
     
     // For each BL pseudo, add the HTML div to replace classic quote
-    NSLog(@"----------------> BEFORE  <---------------------");
+    NSLog(@"----------------> BEFORE (%d) <-----------------", index);
     NSLog(@"%@", myRawContent);
-    NSLog(@"----------------> /BEFORE <---------------------");
+    NSLog(@"----------------> /BEFORE (%d) <-----------------", index);
 
-    NSString *show_quote = @"<div class=\"bl_quote_left\" style=\"float: right;\"><b>citation masquée</b></div><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">Afficher</a></div>";
-    myRawContent = [myRawContent stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"class=\"Topic\">%@ a écrit :<\\/a>", @"Zamblabla"] withString:[NSString stringWithFormat:@"class=\"Topic\" style=\"display:none;\">%@ a écrit :</a>%@", currentPseudoLowercase, show_quote] options:NSCaseInsensitiveSearch range:NSMakeRange(0, [myRawContent length])];
+    NSString *show_quote = @"<table class=\"bl_quote_group\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>citation masquée</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9661;</a></div></div></td></tr></table>";
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"<table class=\"citation_blacklist\""
+                                                           withString:[NSString stringWithFormat:@"%@<table class=\"citation_blacklist\"",show_quote]];
     
-    NSLog(@"----------------> AFTER  <---------------------");
+    NSLog(@"----------------> AFTER (%d) <-----------------", index);
     NSLog(@"%@", myRawContent);
-    NSLog(@"----------------> /AFTER <---------------------");
+    NSLog(@"----------------> /AFTER (%d) <-----------------", index);
 
 	
 	//Custom Internal Images
@@ -201,20 +190,12 @@
                 break;
             }
         }
-
-        
     }
-	
-	
-
-	
-	
 	
 	//Replace Internal Images with Bundle://
 	NSString *regEx4 = @"\\|NATIVE-([^-]+)-98787687687697\\|";			
 	myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx4
 														  withString:@"<img src='$1' />"];
-	
 	
     //Check signature//
     NSString *display_sig = [defaults stringForKey:@"display_sig"];
@@ -231,10 +212,8 @@
             myRawContent = [myRawContent stringByAppendingString:@"</div>"];
         }
     }
-    
-    
-    
-	//NSLog(@"--------------\n%@", myRawContent);
+
+    //NSLog(@"--------------\n%@", myRawContent);
 	
     if (self.quotedNB) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<a class=\"quotedhfrlink\" href=\"%@\">%@</a>", self.quotedLINK, self.quotedNB]];
@@ -254,7 +233,10 @@
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
 	
     if (bIsPostBL) {
-        tempHTML = [tempHTML stringByAppendingString:@"</div></div>"];
+        //NSString* sShowHide = [NSString stringWithFormat:@"var x = document.getElementById(%d);if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", index];
+        NSString* sShowHide = [NSString stringWithFormat:@"document.getElementById(%d).style.display = 'block'; document.getElementById(10%d).style.display = 'none';", index, index];
+        NSString* sMessageBL = [NSString stringWithFormat: @"<div class=\"message headerblacklist\" id=\"10%d\" style=\"display='block'\"><div class=\"left\"></div><div class=\"right\"><a target=\"_blank\" onclick=\"%@\"> &#9661; </a></div></div><div class=\"message separator\"></div>", index, sShowHide];
+        tempHTML = [sMessageBL stringByAppendingString:tempHTML];
     }
     
     NSLog(@"----------------> OUTPUT  <---------------------");

@@ -17,6 +17,8 @@
 
 #import "ASIHTTPRequest.h"
 #import "BlackList.h"
+#import "MultisManager.h"
+
 
 @interface ParseMessagesOperation ()
 @property (nonatomic, weak) id <ParseMessagesOperationDelegate> delegate;
@@ -155,9 +157,7 @@
 			}
 
 			
-			
 			fasTest.postID = [[[messageNode firstChild] firstChild] getAttributeNamed:@"name"];
-			
 			fasTest.name = [authorNode allContents];
 			fasTest.name = [fasTest.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			//fasTest.name = [[fasTest.name componentsSeparatedByCharactersInSet:[[NSCharacterSet letterCharacterSet] invertedSet]] componentsJoinedByString:@""];
@@ -167,23 +167,42 @@
 				continue;
 			}
             
-            if ([[BlackList shared] isBL:fasTest.name]) {
-                [fasTest setIsBL:YES];
-            }
-            
 			HTMLNode * avatarNode = [messageNode findChildWithAttribute:@"class" matchingName:@"avatar_center" allowPartial:NO];
 			HTMLNode * contentNode = [messageNode findChildWithAttribute:@"id" matchingName:@"para" allowPartial:YES];
-            fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
             
-            if (![fasTest isBL]) {
-                for (NSDictionary *dic in [[BlackList shared] getAll]) {
-                    if ([fasTest.dicoHTML rangeOfString:[dic objectForKey:@"word"] options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                        [fasTest setIsBL:YES];
-                        break;
-                    }
+
+            // Find "Citations"
+            // Get current own pseudo
+            MultisManager *manager = [MultisManager sharedManager];
+            NSDictionary *mainCompte = [manager getMainCompte];
+            NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
+
+            // For class oldcitation to citation
+            NSArray *oldquoteArray = [messageNode findChildrenWithAttribute:@"class" matchingName:@"oldcitation" allowPartial:NO];
+            for (HTMLNode * quoteNode in oldquoteArray) {
+                [quoteNode setAttributeNamed:@"class" withValue:@"citation"];
+            }
+            
+            NSArray *quoteArray = [messageNode findChildrenWithAttribute:@"class" matchingName:@"citation" allowPartial:NO];
+            for (HTMLNode * quoteNode in quoteArray) {
+                HTMLNode *subQuoteNode = [quoteNode findChildWithAttribute:@"class" matchingName:@"Topic" allowPartial:NO];
+                NSString* sFullTextAuthor = [subQuoteNode allContents];
+                NSString* sQuoteAuthor = [sFullTextAuthor substringToIndex:[sFullTextAuthor length]-10];
+                [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
+                NSLog(@"=======================================> QUOTE : %@", sFullTextAuthor);
+                // Check for own post
+                if ([sQuoteAuthor isEqualToString:currentPseudoLowercase]) {
+                    [quoteNode setAttributeNamed:@"class" withValue:@"citation_me_quoted"];
+                    NSLog(@"===========================================> QUOTE ME");
+                } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
+                    [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
+                    [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
+                    NSLog(@"===========================================> QUOTE BL");
                 }
             }
             
+            fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
+            NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", fasTest.dicoHTML);
             
             //recherche
             NSArray * nodesInMsg = [[messageNode findChildOfClass:@"messCase2"] children];
@@ -191,18 +210,6 @@
                 fasTest.dicoHTML = [rawContentsOfNode([[nodesInMsg objectAtIndex:1] _node], [myParser _doc]) stringByAppendingString:fasTest.dicoHTML];
             }
             
-			//NSDate *then1 = [NSDate date]; // Create a current date
-
-			/* OLD SLOW
-			HTMLNode * quoteNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"answer" allowPartial:NO] parent];
-			NSString *linkQuoteUnCrypted = [[quoteNode className] decodeSpanUrlFromString];
-			
-			HTMLNode * editNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"edit" allowPartial:NO] parent];
-			NSString *linkEditUnCrypted = [[editNode className] decodeSpanUrlFromString];
-
-			fasTest.urlQuote = linkQuoteUnCrypted;
-			fasTest.urlEdit = linkEditUnCrypted;
-			*/
 			// NEW FAST
 			HTMLNode * quoteNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"answer" allowPartial:NO] parent];
 			fasTest.urlQuote = [quoteNode className];

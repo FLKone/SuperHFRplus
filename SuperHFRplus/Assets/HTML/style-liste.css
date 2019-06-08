@@ -9,10 +9,10 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-url: #2470d8; /* Couleur des url dans les messages ET ?? */
     --color-message-background:white; /* Fond des messages */
     --color-message-modo-background:#FEE; /* Fond des messages de modération */
-    --color-message-header-me-background:#FEE; /* Fond du header de mes messages*/
-    --color-message-mequoted-background:#FEE; /* Fond des messages dans lesquels je suis quoted */
-    --color-message-mequoted-borderleft:#FEE;
-    --color-message-mequoted-borderother:#FEE;
+    --color-message-header-me-background:#EEE; /* Fond du header de mes messages*/
+    --color-message-mequoted-background:#EEE; /* Fond des messages dans lesquels je suis quoted */
+    --color-message-mequoted-borderleft:#EEE;
+    --color-message-mequoted-borderother:#EEE;
     --color-separator-new-message:rgba(0,0,0,0.4);
     --color-background-bars:#F5F5F5;
     --color-searchintra-nextresults:rgba(240,240,240,0.9);
@@ -309,7 +309,7 @@ background:-webkit-gradient(
 	font-size:0.8em !important;
 }
 
-table.code, table.fixed, table.quote, table.citation, table.oldcitation {
+table.code, table.fixed, table.quote, table.citation, table.oldcitation, table.citation_blacklist {
     table-layout:fixed;
     border: none;
     border-left: 2px solid var(--color-border-quotation);
@@ -608,10 +608,57 @@ body.ios7 {
     border:none;
 }
 
+.ios7 .message.headerblacklist {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    padding-left: 10px !important;
+    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    border:none;
+}
+.ios7 .message.headerblacklist .left{
+    text-align:left;
+    float:left;
+    width:56px; /* Largeur et hauteur d'avatar */
+    height:30px;
+    margin-top:1px !important;
+    
+    border:1px solid var(--color-border-avatar); /* Bordure d'avatar */ /* Dark :#222222;*/
+    
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position:center;
+    background-image:var(--imagefile-avatar); /*Clair 'avatar_male_gray_on_light_48x48.png' */ /* Dark url('avatar_male_gray_on_dark_48x48.png'); */
+}
+.ios7 .message.headerblacklist .right{
+    height: 32px;
+    width: 25px;
+    float: right;
+}
+
+.message.separator {
+    height: 10px !important;
+    background:white;
+}
 
 .ios7 .message.blacklist .header .left {
     display: none;
 }
+
+.ios7 .message .bl_quote_left {
+    text-align: left;
+    color:var(--color-message-header);
+}
+
+.ios7 .message .bl_quote_right {
+    float: right;
+    color:var(--color-action);
+}
+
+.ios7 .message .bl_quote_group {
+    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F0F0F0 10px, #F0F0F0 20px );
+}
+
 .ios7 .message.blacklist .header .leftdate {
     display: none;
 }

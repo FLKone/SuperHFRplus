@@ -1862,6 +1862,9 @@
                                 function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
                                 $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
                                 function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
+                                function showhide(id) { var x = document.getElementById(id);if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';};\
+                                function showdiv(id) { var x = document.getElementById(id);if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';};\
+                                function hidediv(id) { var x = document.getElementById(id);if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';};\
                                 document.documentElement.style.setProperty('--color-action', '%@');\
                                 document.documentElement.style.setProperty('--color-action-disabled', '%@');\
                                 document.documentElement.style.setProperty('--color-message-background', '%@');\
@@ -2671,15 +2674,15 @@
     
     int curMsg = [curMsgN intValue];
     
-    NSString *username = [[arrayData objectAtIndex:curMsg] name];
+    NSString *username_lowercase = [[[arrayData objectAtIndex:curMsg] name] lowercaseString];
     NSString *promptMsg = @"";
     
-    if ([[BlackList shared] removeWord:username]) {
-        promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", username];
+    if ([[BlackList shared] removeWord:username_lowercase]) {
+        promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", username_lowercase];
     }
     else {
-        [[BlackList shared] add:username];
-        promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", username];
+        [[BlackList shared] add:username_lowercase];
+        promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", username_lowercase];
     }
     
     
