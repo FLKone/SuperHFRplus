@@ -33,7 +33,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 	padding:0 !important;
 
 	font-family:-apple-system !important;
-    color:var(--color-text);
+/*    color:var(--color-text); */
 	-webkit-text-size-adjust: none;
 }
 
@@ -41,6 +41,9 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     padding-bottom:54px !important;
 }
 
+.s1 .bl_quote_left {
+    color: gray;
+}
 
 .clear {
 	clear:both;
@@ -230,10 +233,15 @@ background:-webkit-gradient(
     
 }
 
-.message.blacklist .header .right {
-    display: none;
+.message .hidepost {
+    font-size: 20px !important;
+    color: var(--color-action);
+    font-family: blisslight !important;
+    font-weight: bold;
+    float:right;
+    margin-top: 5px !important;
+    margin-right: 18px !important;
 }
-
 
 .message .header .right a.small.awesome, .message .header .right a.small.awesome:visited {
 	font-size: 13px !important;
@@ -309,10 +317,17 @@ background:-webkit-gradient(
 	font-size:0.8em !important;
 }
 
-table.code, table.fixed, table.quote, table.citation, table.oldcitation, table.citation_blacklist {
+table.code, table.fixed, table.quote, table.citation, table.oldcitation {
     table-layout:fixed;
     border: none;
     border-left: 2px solid var(--color-border-quotation);
+}
+
+table.citation_blacklist {
+    table-layout:fixed;
+    border: none;
+    border-left: 2px solid var(--color-border-quotation);
+    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
 }
 
 table.citation_me_quoted {
@@ -592,6 +607,19 @@ body.ios7 {
     border-bottom: var(--border-header);
 }
 
+
+.ios7 .message .header.bl {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    color: rgba(109, 109, 114, 1);/* ?? */
+    border:none;
+    border-top: var(--border-header);
+    border-bottom: var(--border-header);
+}
+
+
 .ios7 .message.me .header {
     margin-top:0 !important;
     padding-top: 5px !important;
@@ -616,97 +644,128 @@ body.ios7 {
     background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
     border:none;
 }
-.ios7 .message.headerblacklist .left{
+.ios7 .message.headerblacklist .left {
+    /*
+    text-align: center;
+    float: center;
+    width: 100%;
+    height: 15px;
+    margin-top: 1px !important;
+    color: rgba(1,1,1,0.3);
+    font-style: italic;
+    font-size: smaller;*/
+    /* Vertsion avec avatar*/
     text-align:left;
+    
     float:left;
-    width:56px; /* Largeur et hauteur d'avatar */
+    width:56px;
     height:30px;
     margin-top:1px !important;
     
-    border:1px solid var(--color-border-avatar); /* Bordure d'avatar */ /* Dark :#222222;*/
-    
+    border:1px solid var(--color-border-avatar);
     background-size: cover;
     background-repeat: no-repeat;
     background-position:center;
-    background-image:var(--imagefile-avatar); /*Clair 'avatar_male_gray_on_light_48x48.png' */ /* Dark url('avatar_male_gray_on_dark_48x48.png'); */
+    background-image:var(--imagefile-avatar);
 }
+
 .ios7 .message.headerblacklist .right{
-    height: 32px;
-    width: 25px;
+    height: 10px;
+    width: 10px;
     float: right;
+    margin-right: 26px !important;
+    font-size: 1.2em;
+    margin-top: 8px !important;
+}
+
+.ios7 .message.headerblacklist .left .a {
+    color:var(--color-action);
+}
+
+.message.headerblacklist .right .a {
+    color:var(--color-action);
+}
+
+.buttonshow {
+    color:var(--color-action);
+}
+
+.buttonhide {
+    color:var(--color-action);
 }
 
 .message.separator {
     height: 10px !important;
     background:white;
 }
-
+/*
 .ios7 .message.blacklist .header .left {
     display: none;
-}
+}*/
 
 .ios7 .message .bl_quote_left {
     text-align: left;
-    color:var(--color-message-header);
+    color:var(--color-border-quotation);
 }
 
 .ios7 .message .bl_quote_right {
     float: right;
     color:var(--color-action);
+    margin-top: 2px !important;
+    margin-right: 9px !important;
 }
 
-.ios7 .message .bl_quote_group {
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F0F0F0 10px, #F0F0F0 20px );
+.ios7 .message .bl_quote_show {
+    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    border: none;
+    border-left: 2px solid var(--color-border-quotation);
 }
 
+.ios7 .message .bl_quote_hide {
+    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    border: none;
+    border-left: 2px solid var(--color-border-quotation);
+}
+
+
+/*
 .ios7 .message.blacklist .header .leftdate {
     display: none;
-}
-.ios7 .message .header .left {
+}*/
+.ios7 .message .header .left, .ios7 .message .header.bl .left {
     color: var(--color-text-pseudo);  /*texte nom pseudo*/
     text-shadow:none;
 }
 
-.ios7 .message .header .leftdate {
+.ios7 .message .header .leftdate, .ios7 .message .header.bl .leftdate {
     color: var(--color-text-pseudo); /*text date message ;*/
     text-shadow:none;
 }
 
-.ios7 .message.blacklist .header .left {
-    color: rgba(1,1,1,0);  /*texte nom pseudo*/
-    text-shadow:none;
-}
-
-.ios7 .message.blacklist .header .leftdate {
-    color: rgba(1,1,1,0); /*text date message ;*/
-    text-shadow:none;
-}
-
-
-.ios7 .message .header .leftdate {
+.ios7 .message .header .leftdate, .ios7 .message .header.bl .leftdate {
     font-weight:normal
 }
 
-.ios7 .message .header .right { /* bouton/texte plus */
+.ios7 .message .header .right, .ios7 .message .header.bl .right { /* bouton/texte plus */
     height: 32px;
     width: 25px;
     float: right;
 }
 
-.ios7 .message .header .right a.awesome {
+.ios7 .message .header .right a.awesome, .ios7 .message .header.bl .right a.awesome {
     display:none;
 }
-
+/*
 .ios7 .message .header {
     margin-top:0 !important;
     padding-top: 5px !important;
     padding-bottom: 0px !important;
     background: var(--color-background-bars);
-    color: rgba(109, 109, 114, 1);/* ?? */
+    color: rgba(109, 109, 114, 1);
     border:none;
     border-top: var(--border-header);
     border-bottom: var(--border-header);
-}
+}*/
 
 .ios7 .blacklist_showhidetext {
     margin-right:10px !important;
@@ -715,7 +774,7 @@ body.ios7 {
 }
 
 .ios7 .blacklist_group {
-    background: #FFF; /*repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );*/
+    background: #FFF;
 }
 .ios7 .blacklist_content {
     display: none;

@@ -131,7 +131,7 @@
 	NSArray * messagesNodes = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messagetable" allowPartial:NO]; //Get all the <img alt="" />
 
 	//NSLog(@"%f message %d", [thenT timeIntervalSinceNow] * -1000.0, [messagesNodes count]);
-	
+    int indexNode = 0;
 	for (HTMLNode * messageNode2 in messagesNodes) { //Loop through all the tags
 		
 		//NSAutoreleasePool * pool2 = [[NSAutoreleasePool alloc] init];
@@ -184,11 +184,12 @@
             }
             
             NSArray *quoteArray = [messageNode findChildrenWithAttribute:@"class" matchingName:@"citation" allowPartial:NO];
+            
+            int quoteIndex = 1;
             for (HTMLNode * quoteNode in quoteArray) {
                 HTMLNode *subQuoteNode = [quoteNode findChildWithAttribute:@"class" matchingName:@"Topic" allowPartial:NO];
                 NSString* sFullTextAuthor = [subQuoteNode allContents];
                 NSString* sQuoteAuthor = [sFullTextAuthor substringToIndex:[sFullTextAuthor length]-10];
-                [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
                 NSLog(@"=======================================> QUOTE : %@", sFullTextAuthor);
                 // Check for own post
                 if ([sQuoteAuthor isEqualToString:currentPseudoLowercase]) {
@@ -196,9 +197,17 @@
                     NSLog(@"===========================================> QUOTE ME");
                 } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
                     [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
+                    NSString* sPostId = [fasTest.postID substringFromIndex:1];
+                    [quoteNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
+                    [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
                     [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
+                    
+                    HTMLNode *pNode = [quoteNode findChildTag:@"p"];
+                    [pNode addAttributeNamed:@"class" withValue:@"pbl"];
+                    [pNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
                     NSLog(@"===========================================> QUOTE BL");
                 }
+                quoteIndex++;
             }
             
             fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
@@ -352,6 +361,7 @@
 		//[pool2 drain];
 		
 		//break;
+        indexNode++;
 	}
 
 	//NSDate *nowT = [NSDate date]; // Create a current date
