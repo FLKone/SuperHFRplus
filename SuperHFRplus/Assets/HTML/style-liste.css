@@ -665,6 +665,8 @@ body.ios7 {
     color: var(--color-text-pseudo);  /*texte nom pseudo*/
     font-weight: bolder;
     font-size: 13px !important;
+    margin-top: 1px !important;
+    margin-left: 10px !important;
 }
 
 
