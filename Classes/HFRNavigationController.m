@@ -46,7 +46,7 @@
         tapRecon.numberOfTapsRequired = 1;
         tapRecon.numberOfTouchesRequired = 2;
         [self.navigationBar addGestureRecognizer:tapRecon];
-
+        self.navigationBar.barStyle = [ThemeColors barStyle:[[ThemeManager sharedManager] theme]];
     }
 
 
