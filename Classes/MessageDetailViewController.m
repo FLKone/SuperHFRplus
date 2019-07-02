@@ -180,9 +180,6 @@
         function loadedML() { document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded'; };\
         function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}} $('img').error(function(){\
         $(this).attr('src', 'photoDefaultfailmini.png');});\
-        function showhide(id) { var x = document.getElementById(id);if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';};\
-        function showdiv(id) { var x = document.getElementById(id);if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';};\
-        function hidediv(id) { var x = document.getElementById(id);if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';};\
         document.documentElement.style.setProperty('--color-action', '%@');\
         document.documentElement.style.setProperty('--color-action-disabled', '%@');\
         document.documentElement.style.setProperty('--color-message-background', '%@');\

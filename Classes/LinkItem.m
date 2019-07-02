@@ -88,7 +88,7 @@
                                                            withString:[NSString stringWithFormat:@"%@<table class=\"citation_blacklist\"",show_quote]];
     */
     NSString* sShowQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = ''; document.getElementById(1$1).style.display = 'none'; document.getElementById(1$1).style.display = 'none'; document.getElementById(3$1).style.display = '';"];
-    NSString *sShowQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_show\" id=\"1$1\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit :</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9661;</a></div></div></td></tr></table>", sShowQuoteJS];
+    NSString *sShowQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_show\" id=\"1$1\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit :</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\">&#9660;</a></div></div></td></tr></table>", sShowQuoteJS];
     /*
     NSString* sHideQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = 'none'; document.getElementById(1$1).style.display = ''; document.getElementById(1$1).style.display = ''; document.getElementById(3$1).style.display = 'none';"];
     NSString *sHideQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_hide\" id=\"3$1\" style=\"display: none;\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit:</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9667;</a></div></div></td></tr></table>", sHideQuoteJS];
@@ -103,11 +103,11 @@
 
     // Add "Hide quote" button
     NSString* sHideQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = 'none'; document.getElementById(1$1).style.display = ''; document.getElementById(1$1).style.display = ''; document.getElementById(3$1).style.display = 'none';"];
-    NSString *sHideQuote = [NSString stringWithFormat:@"</td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9651;</a></div></tr><tr><td>", sHideQuoteJS];
+    NSString *sHideQuote = [NSString stringWithFormat:@"</td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonhide\" target=\"_blank\" onclick=\"%@\">&#9650;</a></div></tr><tr><td>", sHideQuoteJS];
                             //table class=\"bl_quote_hide\" id=\"3$1\" style=\"display: none;\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit:</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9667;</a></div></div></td></tr></table>", sHideQuoteJS];
 
 
-    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<p class=\"pbl\" id=\"([0-9]+)\""
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<br><p class=\"pbl\" id=\"([0-9]+)\""
                                                            withString:[NSString stringWithFormat:@"%@<p class=\"pbl\"", sHideQuote]];
 
     
@@ -258,12 +258,11 @@
 	
     if (bIsPostBL) {
         NSString* sHidePostJS = [NSString stringWithFormat:@"document.getElementById(%d).style.display = 'none'; document.getElementById(10%d).style.display = 'block'; document.getElementById(20%d).style.display = 'block';", index, index, index];
-        NSString* sHidePostDiv = [NSString stringWithFormat: @"<div class=\"hidepost\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\"> &#9651; </a></div><div class=\"content\">", sHidePostJS];
-        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"<div class=\"content\">" withString:sHidePostDiv];
-        tempHTML = [tempHTML stringByAppendingString:@"</div>"];
+        NSString* sHidePostDiv = [NSString stringWithFormat: @"<div class=\"hidepost\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\"> &#9650; </a></div>", sHidePostJS];
+        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"<div class=\"right\"> + </div>" withString:sHidePostDiv];
         
         NSString* sShowPostJS = [NSString stringWithFormat:@"document.getElementById(%d).style.display = 'block'; document.getElementById(10%d).style.display = 'none'; document.getElementById(20%d).style.display = 'none';", index, index, index];
-        NSString* sShowPostDiv = [NSString stringWithFormat: @"<div class=\"message headerblacklist\" id=\"10%d\" style=\"display='block'\"><div class=\"blavatar\"></div><div class=\"blpseudo\">%@</div><div class=\"right\"><a class=\"buttonhide\" target=\"_blank\" onclick=\"%@\"> &#9661; </a></div></div><div class=\"message separator\" id=\"20%d\"></div>", index, name, sShowPostJS, index];
+        NSString* sShowPostDiv = [NSString stringWithFormat: @"<div class=\"message headerblacklist\" id=\"10%d\" style=\"display='block'\"><div class=\"blavatar\"></div><div class=\"blpseudo\">%@</div><div class=\"right\"><a class=\"buttonhide\" target=\"_blank\" onclick=\"%@\"> &#9660; </a></div></div><div class=\"message separator\" id=\"20%d\"></div>", index, name, sShowPostJS, index];
         tempHTML = [sShowPostDiv stringByAppendingString:tempHTML];
     }
     
