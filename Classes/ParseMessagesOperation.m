@@ -189,25 +189,27 @@
             for (HTMLNode * quoteNode in quoteArray) {
                 HTMLNode *subQuoteNode = [quoteNode findChildWithAttribute:@"class" matchingName:@"Topic" allowPartial:NO];
                 NSString* sFullTextAuthor = [subQuoteNode allContents];
-                NSString* sQuoteAuthor = [sFullTextAuthor substringToIndex:[sFullTextAuthor length]-10];
-                NSLog(@"=======================================> QUOTE : %@", sFullTextAuthor);
-                // Check for own post
-                if ([sQuoteAuthor isEqualToString:currentPseudoLowercase]) {
-                    [quoteNode setAttributeNamed:@"class" withValue:@"citation_me_quoted"];
-                    NSLog(@"===========================================> QUOTE ME");
-                } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
-                    [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
-                    NSString* sPostId = [fasTest.postID substringFromIndex:1];
-                    [quoteNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
-                    [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
-                    [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
-                    
-                    HTMLNode *pNode = [quoteNode findChildTag:@"p"];
-                    [pNode addAttributeNamed:@"class" withValue:@"pbl"];
-                    [pNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
-                    NSLog(@"===========================================> QUOTE BL");
-                }
-                quoteIndex++;
+                if ([sFullTextAuthor length] > 10) {
+                    NSString* sQuoteAuthor = [sFullTextAuthor substringToIndex:[sFullTextAuthor length]-10];
+                    NSLog(@"=======================================> QUOTE : %@", sFullTextAuthor);
+                    // Check for own post
+                    if ([sQuoteAuthor isEqualToString:currentPseudoLowercase]) {
+                        [quoteNode setAttributeNamed:@"class" withValue:@"citation_me_quoted"];
+                        NSLog(@"===========================================> QUOTE ME");
+                    } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
+                        [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
+                        NSString* sPostId = [fasTest.postID substringFromIndex:1];
+                        [quoteNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
+                        [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
+                        [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
+                        
+                        HTMLNode *pNode = [quoteNode findChildTag:@"p"];
+                        [pNode addAttributeNamed:@"class" withValue:@"pbl"];
+                        [pNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
+                        NSLog(@"===========================================> QUOTE BL");
+                    }
+                    quoteIndex++;
+                } 
             }
             
             fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
