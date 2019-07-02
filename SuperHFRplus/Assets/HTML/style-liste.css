@@ -234,13 +234,13 @@ background:-webkit-gradient(
 }
 
 .message .hidepost {
-    font-size: 20px !important;
+    font-size: 15px !important;
     color: var(--color-action);
     font-family: blisslight !important;
-    font-weight: bold;
+    /*font-weight: bold;*/
     float:right;
-    margin-top: 5px !important;
-    margin-right: 18px !important;
+    margin-top: 7px !important;
+    margin-right: 11px !important;
 }
 
 .message .header .right a.small.awesome, .message .header .right a.small.awesome:visited {
@@ -327,7 +327,7 @@ table.citation_blacklist {
     table-layout:fixed;
     border: none;
     border-left: 2px solid var(--color-border-quotation);
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    background: #F8F8F8;
 }
 
 table.citation_me_quoted {
@@ -612,7 +612,7 @@ body.ios7 {
     margin-top:0 !important;
     padding-top: 5px !important;
     padding-bottom: 0px !important;
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    background: #F8F8F8;
     color: rgba(109, 109, 114, 1);/* ?? */
     border:none;
     border-top: var(--border-header);
@@ -632,7 +632,7 @@ body.ios7 {
     margin-top:0 !important;
     padding-top: 5px !important;
     padding-bottom: 0px !important;
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    background: #F8F8F8;
     border:none;
 }
 
@@ -641,7 +641,7 @@ body.ios7 {
     padding-top: 5px !important;
     padding-bottom: 5px !important;
     padding-left: 10px !important;
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    background: #F8F8F8;
     border:none;
 }
 .ios7 .message.headerblacklist .blavatar {
@@ -657,15 +657,16 @@ body.ios7 {
     background-repeat: no-repeat;
     background-position:center;
     background-image:var(--imagefile-avatar);
+    opacity: 0.5;
 }
 
 .ios7 .message.headerblacklist .blpseudo {
     text-align:left;
     float:left;
-    color: var(--color-text-pseudo);  /*texte nom pseudo*/
+    color: #C0C0C0; /*var(--color-text-pseudo);  /*texte nom pseudo*/
     font-weight: bolder;
     font-size: 13px !important;
-    margin-top: 1px !important;
+    margin-top: 9px !important;
     margin-left: 10px !important;
 }
 
@@ -675,7 +676,7 @@ body.ios7 {
     width: 10px;
     float: right;
     margin-right: 26px !important;
-    font-size: 1.2em;
+    font-size: 15px;
     margin-top: 8px !important;
 }
 
@@ -687,22 +688,22 @@ body.ios7 {
     color:var(--color-action);
 }
 
+.bl_quote_right .a {
+    color:var(--color-border-quotation);
+}
+
 .buttonshow {
-    color:var(--color-action);
+    color:var(--color-border-quotation) !important;
 }
 
 .buttonhide {
-    color:var(--color-action);
+    color:var(--color-border-quotation) !important;
 }
 
 .message.separator {
     height: 10px !important;
     background:white;
 }
-/*
-.ios7 .message.blacklist .header .left {
-    display: none;
-}*/
 
 .ios7 .message .bl_quote_left {
     text-align: left;
@@ -711,19 +712,24 @@ body.ios7 {
 
 .ios7 .message .bl_quote_right {
     float: right;
-    color:var(--color-action);
+    color:var(--color-border-quotation);
     margin-top: 2px !important;
     margin-right: 9px !important;
 }
 
 .ios7 .message .bl_quote_show {
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    background: #F8F8F8;
     border: none;
-    border-left: 2px solid var(--color-border-quotation);
+    /*border-left: 2px solid var(--color-border-quotation);*/
 }
 
+.ios7 .message .bl_quote_show .a {
+    color: #A0A0A0;
+}
+
+
 .ios7 .message .bl_quote_hide {
-    background: repeating-linear-gradient( -45deg, #FFF, #FFF 10px, #F8F8F8 10px, #F8F8F8 20px );
+    background: #F8F8F8;
     border: none;
     border-left: 2px solid var(--color-border-quotation);
 }
