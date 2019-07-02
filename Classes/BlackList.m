@@ -58,7 +58,7 @@ static BlackList *_shared = nil;    // static instance variable
     }
     
     return false;
-    
+
 }
 - (bool)removeAt:(int)index {
     
@@ -82,20 +82,39 @@ static BlackList *_shared = nil;    // static instance variable
     return false;
 }
 
--(int)findIndexFor:(NSString *)word {
+-(int)findIndexFor:(NSString *)pseudo {
     int i = 0;
-    
+    //NSLog(@"BL1 pseudo<%@><%@>", pseudo, [self stringToHex:pseudo]);
+    NSString* pseudolower = [[pseudo stringByReplacingOccurrencesOfString:@"\u200B" withString:@""] lowercaseString];
+
     for (NSDictionary *dc in self.list) {
-        if ([[dc valueForKey:@"word"] caseInsensitiveCompare:word] == NSOrderedSame) {
-            //NSLog(@"idx found %d for %@", i, word);
+        NSString* pseudoBLlower = [[[dc valueForKey:@"word"] stringByReplacingOccurrencesOfString:@"\u200B" withString:@""] lowercaseString];
+        if ([pseudolower isEqualToString:pseudoBLlower]) {
             return i;
         }
         i++;
     }
-    
+
     return -1;
 }
 
+- (NSString *) stringToHex:(NSString *)str
+{
+    NSUInteger len = [str length];
+    unichar *chars = malloc(len * sizeof(unichar));
+    [str getCharacters:chars];
+    
+    NSMutableString *hexString = [[NSMutableString alloc] init];
+    
+    for(NSUInteger i = 0; i < len; i++ )
+    {
+        // [hexString [NSString stringWithFormat:@"%02x", chars[i]]]; /*previous input*/
+        [hexString appendFormat:@"%02x", chars[i]]; /*EDITED PER COMMENT BELOW*/
+    }
+    free(chars);
+    
+    return hexString;
+}
 
 - (void)save {
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
