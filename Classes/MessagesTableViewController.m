@@ -1985,8 +1985,8 @@
         
         }
         else {
-            jsString2 = @"document.getElementById('endofpagetoolbar').scrollIntoView(true);";
-            jsString3 = [NSString stringWithFormat:@"document.getElementById('%@').scrollIntoView(true);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
+            jsString2 = @"window.scrollTo(0,document.getElementById('endofpagetoolbar').offsetTop);";
+            jsString3 = [NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
 
         }
         //Position du Flag

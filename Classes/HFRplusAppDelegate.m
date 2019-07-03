@@ -146,6 +146,9 @@
                                                object:nil];
     
     [[MultisManager sharedManager] updateAllAccounts];
+    
+    [self setTheme:[[ThemeManager sharedManager] theme]];
+    [[ThemeManager sharedManager] refreshTheme];
 
     return YES;
 }
@@ -200,6 +203,11 @@
     if ([self.window respondsToSelector:@selector(setTintColor:)]) {
         self.window.tintColor = [ThemeColors tintColor:theme];
     }
+    
+    if ([self.window respondsToSelector:@selector(setBackgroundColor:)]) {
+        self.window.backgroundColor =[ThemeColors navBackgroundColor:theme];
+    }
+    
     
     if ([[UITabBar appearance] respondsToSelector:@selector(setTranslucent:)]) {
         [[UITabBar appearance] setTranslucent:YES];
