@@ -47,7 +47,7 @@
 	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
     } else if (bIsPostBL) {
-        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message bl\" style=\"display:none;"];
+        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message bl\" style=\"height:0px;"];
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"header" withString:@"class=\"header bl\""];
     }
 
@@ -257,12 +257,12 @@
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
 	
     if (bIsPostBL) {
-        NSString* sHidePostJS = [NSString stringWithFormat:@"document.getElementById(%d).style.display = 'none'; document.getElementById(10%d).style.display = 'block'; document.getElementById(20%d).style.display = 'block';", index, index, index];
-        NSString* sHidePostDiv = [NSString stringWithFormat: @"<div class=\"hidepost\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\"> &#9650; </a></div>", sHidePostJS];
+        NSString* sHidePostJS = [NSString stringWithFormat:@"event.stopPropagation(); document.getElementById(%d).style.height = '0px'; document.getElementById(10%d).style.display = 'block'; document.getElementById(20%d).style.display = 'block';", index, index, index];
+        NSString* sHidePostDiv = [NSString stringWithFormat: @"<div class=\"hidepost\" onclick=\"%@\"><a class=\"buttonshow\"> &#9650; </a></div>", sHidePostJS];
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"<div class=\"right\"> + </div>" withString:sHidePostDiv];
         
-        NSString* sShowPostJS = [NSString stringWithFormat:@"document.getElementById(%d).style.display = 'block'; document.getElementById(10%d).style.display = 'none'; document.getElementById(20%d).style.display = 'none';", index, index, index];
-        NSString* sShowPostDiv = [NSString stringWithFormat: @"<div class=\"message headerblacklist\" id=\"10%d\" style=\"display='block'\"><div class=\"blavatar\"></div><div class=\"blpseudo\">%@</div><div class=\"right\"><a class=\"buttonhide\" target=\"_blank\" onclick=\"%@\"> &#9660; </a></div></div><div class=\"message separator\" id=\"20%d\"></div>", index, name, sShowPostJS, index];
+        NSString* sShowPostJS = [NSString stringWithFormat:@"event.stopPropagation(); document.getElementById(%d).style.height = 'auto'; document.getElementById(10%d).style.display = 'none'; document.getElementById(20%d).style.display = 'none';", index, index, index];
+        NSString* sShowPostDiv = [NSString stringWithFormat: @"<div class=\"message headerblacklist\" id=\"10%d\" style=\"display='block'\"><div class=\"blavatar\"></div><div class=\"blpseudo\">%@</div><div class=\"right\" onclick=\"%@\"><a class=\"buttonhide\"> &#9660; </a></div></div><div class=\"message separator\" id=\"20%d\"></div>", index, name, sShowPostJS, index];
         tempHTML = [sShowPostDiv stringByAppendingString:tempHTML];
     }
     

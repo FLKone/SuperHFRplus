@@ -120,7 +120,7 @@
 
     }
     else {
-        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.getElementById('%@').scrollIntoView(true);", [[arrayData objectAtIndex:curMsg] postID]]];
+        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", [[arrayData objectAtIndex:curMsg] postID]]];
 
     }
 
