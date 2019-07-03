@@ -239,8 +239,8 @@ background:-webkit-gradient(
     font-family: blisslight !important;
     /*font-weight: bold;*/
     float:right;
-    margin-top: 7px !important;
-    margin-right: 11px !important;
+    padding: 7px !important;
+    padding-right: 11px !important;
 }
 
 .message .header .right a.small.awesome, .message .header .right a.small.awesome:visited {
@@ -672,12 +672,10 @@ body.ios7 {
 
 
 .ios7 .message.headerblacklist .right{
-    height: 10px;
-    width: 10px;
     float: right;
-    margin-right: 26px !important;
+    padding:7px !important;
+    margin-right : 15px !important;
     font-size: 15px;
-    margin-top: 8px !important;
 }
 
 .ios7 .message.headerblacklist .left .a {
