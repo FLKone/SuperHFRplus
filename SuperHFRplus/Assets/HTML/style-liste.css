@@ -33,7 +33,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 	padding:0 !important;
 
 	font-family:-apple-system !important;
-/*    color:var(--color-text); */
+    color:var(--color-text); 
 	-webkit-text-size-adjust: none;
 }
 
