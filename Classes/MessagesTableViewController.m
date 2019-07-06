@@ -1871,6 +1871,8 @@
                                 document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
                                 document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
@@ -1881,6 +1883,7 @@
                                 document.documentElement.style.setProperty('--color-border-quotation', '%@');\
                                 document.documentElement.style.setProperty('--color-border-avatar', '%@');\
                                 document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                                document.documentElement.style.setProperty('--color-text-pseudo-bl', '%@');\
                                 document.documentElement.style.setProperty('--border-header', '%@');\
                                 </script>\
                                 </body></html>",
@@ -1893,6 +1896,8 @@
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
@@ -1903,6 +1908,7 @@
                                 [ThemeColors getColorBorderQuotation:theme],
                                 [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
                                 [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],
                                 sBorderHeader
                                 ];
         
@@ -2924,17 +2930,20 @@
                     document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
                     document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
                     document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
                     document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
-                    document.documentElement.style.setProperty('--color-text', '%@');\
-                    document.documentElement.style.setProperty('--color-text2', '%@');\
-                    document.documentElement.style.setProperty('--color-background-bars', '%@');\
-                    document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
-                    document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-                    document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
-                    document.documentElement.style.setProperty('--color-border-quotation', '%@');\
-                    document.documentElement.style.setProperty('--color-border-avatar', '%@');\
-                    document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
-                    document.documentElement.style.setProperty('--border-header', '%@');",
+                        document.documentElement.style.setProperty('--color-text', '%@');\
+                        document.documentElement.style.setProperty('--color-text2', '%@');\
+                        document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                        document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
+                        document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+                        document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                        document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+                        document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+                        document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                        document.documentElement.style.setProperty('--color-text-pseudo-bl', '%@');\
+                        document.documentElement.style.setProperty('--border-header', '%@');",
                         [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
                         [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                         [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
@@ -2943,6 +2952,8 @@
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
                         [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                         [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
@@ -2953,6 +2964,7 @@
                         [ThemeColors getColorBorderQuotation:theme],
                         [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
                         [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],
                         sBorderHeader];
 
     [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];

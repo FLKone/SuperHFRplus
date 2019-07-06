@@ -76,8 +76,17 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
 }
 
 
-+ (UIColor *)textFieldBackgroundColor:(Theme)theme{
++ (UIColor *)textFieldBackgroundColor:(Theme)theme {
     switch (theme) {
+        case ThemeLight: return [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:0.7];
+        case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:46.0/255.0 green:47.0/255.0 blue:51.0/255.0 alpha:0.7] withMin:20.0];
+        case ThemeOLED:  return [UIColor colorWithRed:20.0/255.0 green:20.0/255.0 blue:20.0/255.0 alpha:0.7];
+        default:         return [UIColor whiteColor];
+    }
+}
+
++ (UIColor *)headerBLBackgroundColor {
+    switch ([ThemeManager currentTheme]) {
         case ThemeLight: return [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1.0];
         case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:46.0/255.0 green:47.0/255.0 blue:51.0/255.0 alpha:1.0] withMin:20.0];
         case ThemeOLED:  return [UIColor colorWithRed:20.0/255.0 green:20.0/255.0 blue:20.0/255.0 alpha:1.0];

@@ -54,6 +54,7 @@
 + (UIColor *)titleTextAttributesColor;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
++ (UIColor *)headerBLBackgroundColor;
 + (UIColor *)lightTextColor:(Theme)theme;
 + (UIColor *)topicMsgTextColor:(Theme)theme;
 + (UIColor *)topicMsgTextColor;

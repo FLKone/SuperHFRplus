@@ -112,7 +112,7 @@
 	}
 	else {
 		[(UISegmentedControl *)self.navigationItem.rightBarButtonItem.customView setEnabled:NO forSegmentAtIndex:1];
-		
+        return;
 	}
     
     if (SYSTEM_VERSION_LESS_THAN(@"11")) {
@@ -160,6 +160,8 @@
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
             sBorderHeader = @"1px solid #505050";
+            break;
+        case ThemeLight:
             break;
     }
     

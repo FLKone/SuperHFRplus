@@ -13,12 +13,15 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-message-mequoted-background:#EEE; /* Fond des messages dans lesquels je suis quoted */
     --color-message-mequoted-borderleft:#EEE;
     --color-message-mequoted-borderother:#EEE;
+    --color-message-quoted-bl-background:#EEE;
+    --color-message-header-bl-background::#EEE;
     --color-separator-new-message:rgba(0,0,0,0.4);
     --color-background-bars:#F5F5F5;
     --color-searchintra-nextresults:rgba(240,240,240,0.9);
     --color-text:#202020;
     --color-text2:#202020;
     --color-text-pseudo:#202020;
+    --color-text-pseudo-bl:#202020;
     --imagefile-avatar:url(avatar_male_gray_on_light_48x48.png); /* Image d'avatar */
     --imagefile-loadinfo:url(loadinfo.gif);
     --color-border-quotation:silver;
@@ -327,7 +330,13 @@ table.citation_blacklist {
     table-layout:fixed;
     border: none;
     border-left: 2px solid var(--color-border-quotation);
-    background: #F8F8F8;
+    background: var(--color-message-quoted-bl-background);
+}
+
+table.bl_quote_show {
+    table-layout:fixed;
+    border: none;
+    background: var(--color-message-quoted-bl-background);
 }
 
 table.citation_me_quoted {
@@ -612,7 +621,7 @@ body.ios7 {
     margin-top:0 !important;
     padding-top: 5px !important;
     padding-bottom: 0px !important;
-    background: #F8F8F8;
+    background: var(--color-message-header-bl-background);
     color: rgba(109, 109, 114, 1);/* ?? */
     border:none;
     border-top: var(--border-header);
@@ -641,7 +650,7 @@ body.ios7 {
     padding-top: 5px !important;
     padding-bottom: 5px !important;
     padding-left: 10px !important;
-    background: #F8F8F8;
+    background: var(--color-message-header-bl-background);
     border:none;
 }
 .ios7 .message.headerblacklist .blavatar {
@@ -663,7 +672,7 @@ body.ios7 {
 .ios7 .message.headerblacklist .blpseudo {
     text-align:left;
     float:left;
-    color: #C0C0C0; /*var(--color-text-pseudo);  /*texte nom pseudo*/
+    color: var(--color-text-pseudo-bl);  /*texte nom pseudo bl*/
     font-weight: bolder;
     font-size: 13px !important;
     margin-top: 9px !important;
@@ -700,7 +709,7 @@ body.ios7 {
 
 .message.separator {
     height: 10px !important;
-    background:white;
+    background:var(--color-message-background);
 }
 
 .ios7 .message .bl_quote_left {
@@ -715,11 +724,12 @@ body.ios7 {
     margin-right: 9px !important;
 }
 
+/* TO DELETE
 .ios7 .message .bl_quote_show {
-    background: #F8F8F8;
+    background: var(--color-message-quoted-bl-background);
     border: none;
-    /*border-left: 2px solid var(--color-border-quotation);*/
 }
+*/
 
 .ios7 .message .bl_quote_show .a {
     color: #A0A0A0;
@@ -727,7 +737,7 @@ body.ios7 {
 
 
 .ios7 .message .bl_quote_hide {
-    background: #F8F8F8;
+    background: var(--color-message-quoted-bl-background);
     border: none;
     border-left: 2px solid var(--color-border-quotation);
 }

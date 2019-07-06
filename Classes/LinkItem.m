@@ -70,44 +70,25 @@
 
     NSString *myRawContent = [[self dicoHTML] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-    /*
-    if (bIsPostBL) {
-        NSString *show_hide = [NSString stringWithFormat:@"var x = document.getElementById('bl_%d');if (x.style.display === 'none') {x.style.display = 'block';} else {x.style.display = 'none';}", index];
-        myRawContent = [NSString stringWithFormat:@"<div class=\"blacklist_group\"><div class=\"blacklist_showhidetext\"><a target=\"_blank\" onclick=\"%@\">&#9661;</a></div><div class=\"blacklist_content\" id=\"bl_%d\">%@", show_hide, index, myRawContent];
-    }*/
-
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
     
     // For each BL pseudo, add the HTML div to replace classic quote
     NSLog(@"----------------> BEFORE (%d) <-----------------", index);
     NSLog(@"%@", myRawContent);
     NSLog(@"----------------> /BEFORE (%d) <-----------------", index);
-    /*
-    NSString *show_quote = @"<table class=\"bl_quote_group\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>citation masquée</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9661;</a></div></div></td></tr></table>";
-    myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"<table class=\"citation_blacklist\""
-                                                           withString:[NSString stringWithFormat:@"%@<table class=\"citation_blacklist\"",show_quote]];
-    */
+    
+    // Add "Show quote" button
     NSString* sShowQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = ''; document.getElementById(1$1).style.display = 'none'; document.getElementById(1$1).style.display = 'none'; document.getElementById(3$1).style.display = '';"];
     NSString *sShowQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_show\" id=\"1$1\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit :</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\">&#9660;</a></div></div></td></tr></table>", sShowQuoteJS];
-    /*
-    NSString* sHideQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = 'none'; document.getElementById(1$1).style.display = ''; document.getElementById(1$1).style.display = ''; document.getElementById(3$1).style.display = 'none';"];
-    NSString *sHideQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_hide\" id=\"3$1\" style=\"display: none;\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit:</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9667;</a></div></div></td></tr></table>", sHideQuoteJS];
-    
-    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<table class=\"citation_blacklist\" id=\"([0-9]+)\" auteur=\"([^\"]+)\""
-                                                          withString:[NSString stringWithFormat:@"%@%@<table class=\"citation_blacklist\" id=\"$1\"", sShowQuote, sHideQuote]];*/
 
-    //V2
-    // Add "Show quote" button
     myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<table class=\"citation_blacklist\" id=\"([0-9]+)\" auteur=\"([^\"]+)\""
                                                           withString:[NSString stringWithFormat:@"%@<table class=\"citation_blacklist\" id=\"$1\"", sShowQuote]];
 
     // Add "Hide quote" button
     NSString* sHideQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = 'none'; document.getElementById(1$1).style.display = ''; document.getElementById(1$1).style.display = ''; document.getElementById(3$1).style.display = 'none';"];
-    NSString *sHideQuote = [NSString stringWithFormat:@"</td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonhide\" target=\"_blank\" onclick=\"%@\">&#9650;</a></div></tr><tr><td>", sHideQuoteJS];
-                            //table class=\"bl_quote_hide\" id=\"3$1\" style=\"display: none;\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit:</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a target=\"_blank\" onclick=\"%@\">&#9667;</a></div></div></td></tr></table>", sHideQuoteJS];
+    NSString *sHideQuote = [NSString stringWithFormat:@"</td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonhide\" target=\"_blank\" onclick=\"%@\">&#9650;</a></div></tr><tr><td colspan=\"2\">", sHideQuoteJS];
 
-
-    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<br><p class=\"pbl\" id=\"([0-9]+)\""
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<p class=\"pbl\" id=\"([0-9]+)\""
                                                            withString:[NSString stringWithFormat:@"%@<p class=\"pbl\"", sHideQuote]];
 
     
@@ -256,6 +237,7 @@
 	
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
 	
+    // Add show/hide action on BL posts
     if (bIsPostBL) {
         NSString* sHidePostJS = [NSString stringWithFormat:@"event.stopPropagation(); document.getElementById(%d).style.height = '0px'; document.getElementById(10%d).style.display = 'block'; document.getElementById(20%d).style.display = 'block';", index, index, index];
         NSString* sHidePostDiv = [NSString stringWithFormat: @"<div class=\"hidepost\" onclick=\"%@\"><a class=\"buttonshow\"> &#9650; </a></div>", sHidePostJS];
