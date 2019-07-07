@@ -10,7 +10,7 @@
 #import "HFRplusAppDelegate.h"
 
 @implementation BlackList
-@synthesize list;
+@synthesize listBlackList, listWhiteList;
 
 static BlackList *_shared = nil;    // static instance variable
 
@@ -24,12 +24,14 @@ static BlackList *_shared = nil;    // static instance variable
 - (id)init {
     if ( (self = [super init]) ) {
         // your custom initialization
-        self.list = [[NSMutableArray alloc] init];
+        self.listBlackList = [[NSMutableArray alloc] init];
+        self.listWhiteList = [[NSMutableArray alloc] init];
         [self load];
     }
     return self;
 }
 
+/*
 - (NSString *)description {
     NSString *tmp = [NSString stringWithFormat:@"List: "];
     
@@ -39,55 +41,82 @@ static BlackList *_shared = nil;    // static instance variable
     
     return tmp;
 }
+*/
 
+/*
 - (void)addDictionnary:(NSDictionary *)dico {
     [self.list addObject:dico];
     [self save];
 
+}*/
+
+- (void)addToBlackList:(NSString *)pseudo {
+    [self.listBlackList addObject:[NSDictionary dictionaryWithObjectsAndKeys:pseudo, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
+    [self save];
 }
 
-- (void)add:(NSString *)word {
-    [self addDictionnary:[NSDictionary dictionaryWithObjectsAndKeys:word, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
+- (void)addToWhiteList:(NSString *)pseudo {
+    [self.listWhiteList addObject:[NSDictionary dictionaryWithObjectsAndKeys:pseudo, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
+    [self save];
 }
 
-- (bool)removeWord:(NSString*)word {
-    
-    int idx = [self findIndexFor:word];
+- (bool)removeFromBlackList:(NSString*)pseudo {
+    int idx = [self findIndexFor:pseudo in:listBlackList];
     if (idx >= 0) {
-        return [self removeAt:idx];
+        return [self removeAt:idx in:listBlackList];
     }
     
     return false;
-
 }
-- (bool)removeAt:(int)index {
+
+- (bool)removeFromWhiteList:(NSString*)pseudo {
+    int idx = [self findIndexFor:pseudo in:listWhiteList];
+    if (idx >= 0) {
+        return [self removeAt:idx in:listWhiteList];
+    }
     
-    if ([self.list count] > index) {
-        [self.list removeObjectAtIndex:index];
+    return false;
+}
+
+- (bool)removeAt:(int)index  in:(NSMutableArray *)list {
+    if ([list count] > index) {
+        [list removeObjectAtIndex:index];
         [self save];
         return true;
     }
     return false;
 
 }
-- (NSArray *)getAll {
-    return self.list;
+
+- (NSArray *)getAllBlackList {
+    return self.listBlackList;
 }
-- (bool)isBL:(NSString*)word {
-    
-    if ([self findIndexFor:word] >= 0) {
+
+- (NSArray *)getAllWhiteList {
+    return self.listWhiteList;
+}
+
+- (bool)isBL:(NSString*)pseudo {
+    if ([self findIndexFor:pseudo in:listBlackList] >= 0) {
         return true;
     }
     
     return false;
 }
 
--(int)findIndexFor:(NSString *)pseudo {
-    int i = 0;
-    //NSLog(@"BL1 pseudo<%@><%@>", pseudo, [self stringToHex:pseudo]);
-    NSString* pseudolower = [[pseudo stringByReplacingOccurrencesOfString:@"\u200B" withString:@""] lowercaseString];
+- (bool)isWL:(NSString*)pseudo {
+    if ([self findIndexFor:pseudo in:listWhiteList] >= 0) {
+        return true;
+    }
+    
+    return false;
+}
 
-    for (NSDictionary *dc in self.list) {
+- (int)findIndexFor:(NSString *)pseudo in:(NSArray *)list {
+    int i = 0;
+
+    NSString* pseudolower = [[pseudo stringByReplacingOccurrencesOfString:@"\u200B" withString:@""] lowercaseString];
+    for (NSDictionary *dc in list) {
         NSString* pseudoBLlower = [[[dc valueForKey:@"word"] stringByReplacingOccurrencesOfString:@"\u200B" withString:@""] lowercaseString];
         if ([pseudolower isEqualToString:pseudoBLlower]) {
             return i;
@@ -120,7 +149,8 @@ static BlackList *_shared = nil;    // static instance variable
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *blackList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:BLACKLIST_FILE]];
     
-    [self.list writeToFile:blackList atomically:YES];
+    [self.listBlackList writeToFile:blackList atomically:YES];
+    [self.listWhiteList writeToFile:blackList atomically:YES];
 }
 
 - (void)load {
@@ -129,10 +159,12 @@ static BlackList *_shared = nil;    // static instance variable
     NSString *blackList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:BLACKLIST_FILE]];
     
     if ([fileManager fileExistsAtPath:blackList]) {
-        self.list = [NSMutableArray arrayWithContentsOfFile:blackList];
+        self.listBlackList = [NSMutableArray arrayWithContentsOfFile:blackList];
+        self.listWhiteList = [NSMutableArray arrayWithContentsOfFile:blackList];
     }
     else {
-        [self.list removeAllObjects];
+        [self.listBlackList removeAllObjects];
+        [self.listWhiteList removeAllObjects];
     }
 }
 
@@ -145,23 +177,5 @@ static BlackList *_shared = nil;    // static instance variable
 - (id)copyWithZone:(NSZone *)zone {
     return self;
 }
-/*
-- (id)retain {
-    return self;
-}
-
-- (NSUInteger)retainCount {
-    return NSUIntegerMax;  // denotes an object that cannot be released
-}
-
-- (oneway void)release {
-    // do nothing - we aren't releasing the singleton object.
-}
-
-- (id)autorelease {
-    return self;
-}
-*/
-
 
 @end

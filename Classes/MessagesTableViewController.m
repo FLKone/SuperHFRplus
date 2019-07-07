@@ -2678,15 +2678,15 @@
     
     int curMsg = [curMsgN intValue];
     
-    NSString *username_lowercase = [[[arrayData objectAtIndex:curMsg] name] lowercaseString];
+    NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
     NSString *promptMsg = @"";
     
-    if ([[BlackList shared] removeWord:username_lowercase]) {
-        promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", username_lowercase];
+    if ([[BlackList shared] removeFromBlackList:pseudo]) {
+        promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", pseudo];
     }
     else {
-        [[BlackList shared] add:username_lowercase];
-        promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", username_lowercase];
+        [[BlackList shared] addToBlackList:pseudo];
+        promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
     }
     
     

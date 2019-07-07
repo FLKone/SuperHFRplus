@@ -43,15 +43,8 @@ NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
 }
 
 -(void)reloadData {
-    //NSLog(@"list: %@", [[BlackList shared] description]);
-    
-    NSArray *sortedArray = [[[BlackList shared] getAll] sortedArrayUsingFunction:Sort_BL_Comparer context:(__bridge void * _Nullable)(self)];
-
-    
-    self.blackListDict = (NSMutableArray *)sortedArray;//[[[BlackList shared] getAll] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-      //  return [[obj1 valueForKey:@"word"] compare:[obj2 valueForKey:@"word"]];
-    //}];
-    
+    NSArray *sortedArray = [[[BlackList shared] getAllBlackList] sortedArrayUsingFunction:Sort_BL_Comparer context:(__bridge void * _Nullable)(self)];
+    self.blackListDict = (NSMutableArray *)sortedArray;
     [self.tableView reloadData];
 }
 -(void)viewWillAppear:(BOOL)animated {
@@ -177,7 +170,7 @@ NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
     // If row is deleted, remove it from the list.
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        [[BlackList shared] removeWord:[[self.blackListDict objectAtIndex:indexPath.row] valueForKey:@"word"]];
+        [[BlackList shared] removeFromBlackList:[[self.blackListDict objectAtIndex:indexPath.row] valueForKey:@"word"]];
         [self reloadData];
         
     }

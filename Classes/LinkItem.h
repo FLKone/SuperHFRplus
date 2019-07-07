@@ -24,7 +24,7 @@
 	BOOL viewed;
 	BOOL isDel;
     
-	BOOL isBL;
+	//BOOL isBL;
     
 	int rep;
 
