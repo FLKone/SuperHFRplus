@@ -148,22 +148,29 @@ static BlackList *_shared = nil;    // static instance variable
 - (void)save {
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *blackList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:BLACKLIST_FILE]];
-    
+    NSString *whiteList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:WHITELIST_FILE]];
+
     [self.listBlackList writeToFile:blackList atomically:YES];
-    [self.listWhiteList writeToFile:blackList atomically:YES];
+    [self.listWhiteList writeToFile:whiteList atomically:YES];
 }
 
 - (void)load {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *blackList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:BLACKLIST_FILE]];
-    
+    NSString *whiteList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:WHITELIST_FILE]];
+
     if ([fileManager fileExistsAtPath:blackList]) {
         self.listBlackList = [NSMutableArray arrayWithContentsOfFile:blackList];
-        self.listWhiteList = [NSMutableArray arrayWithContentsOfFile:blackList];
     }
     else {
         [self.listBlackList removeAllObjects];
+    }
+
+    if ([fileManager fileExistsAtPath:whiteList]) {
+        self.listWhiteList = [NSMutableArray arrayWithContentsOfFile:whiteList];
+    }
+    else {
         [self.listWhiteList removeAllObjects];
     }
 }

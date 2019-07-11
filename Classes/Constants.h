@@ -86,6 +86,7 @@ typedef enum Theme : int {
 #define REHOST_IMAGE_FILE @"rehostImages.plist"
 #define USED_SMILEYS_FILE @"usedSmilieys.plist"
 #define BLACKLIST_FILE @"blackList.plist"
+#define WHITELIST_FILE @"whiteList.plist"
 #define FORUMSMETA_FILE @"forumsMeta.plist"
 #define FORUMS_CACHE_FILE @"forumsCache.plist"
 

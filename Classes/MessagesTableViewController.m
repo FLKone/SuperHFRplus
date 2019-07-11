@@ -1871,6 +1871,10 @@
                                 document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                                document.documentElement.style.setProperty('--color-message-header-love-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-love-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-love-borderleft', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-love-borderother', '%@');\
                                 document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
                                 document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
                                 document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
@@ -1893,9 +1897,13 @@
                                 [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-background
-                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], // --color-message-header-me-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1], //--color-message-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.03], // --color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.6],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1],  //--color-message-mequoted-borderother
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
@@ -2231,11 +2239,11 @@
         answString = @"Rép.";
     }
     
-    //UIImage *menuImgBan = [UIImage imageNamed:@"RemoveUserFilled-20"];
     UIImage *menuImgBan = [UIImage imageNamed:@"ThorHammer-20"];
     if ([[BlackList shared] isBL:[[arrayData objectAtIndex:curMsg] name]]) {
         menuImgBan = [UIImage imageNamed:@"ThorHammerFilled-20"];
     }
+    UIImage *menuImgWL = [UIImage imageNamed:@"Heart-20"];
 
     UIImage *menuImgEdit = [UIImage imageNamed:@"EditColumnFilled-20"];
     UIImage *menuImgProfil = [UIImage imageNamed:@"ContactCardFilled-20"];
@@ -2311,6 +2319,7 @@
         }
         
         [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Blacklist", @"actionBL", menuImgBan, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
+        [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Whitelist", @"actionWL", menuImgWL, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
     }
     
     // AQ (sauf dans les MPs)
@@ -2324,7 +2333,7 @@
 	NSMutableArray *menuAction = [[NSMutableArray alloc] init];
     
 	for (id tmpAction in self.arrayAction) {
-		//NSLog(@"%@", [tmpAction objectForKey:@"code"]);
+		NSLog(@"%@", [tmpAction objectForKey:@"code"]);
 		
         if ([tmpAction objectForKey:@"image"] != nil) {
             UIMenuItem *tmpMenuItem2 = [[UIMenuItem alloc] initWithTitle:[tmpAction valueForKey:@"title"] action:NSSelectorFromString([tmpAction objectForKey:@"code"]) image:(UIImage *)[tmpAction objectForKey:@"image"]];
@@ -2675,9 +2684,7 @@
 }
 
 -(void) actionBL:(NSNumber *)curMsgN {
-    
     int curMsg = [curMsgN intValue];
-    
     NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
     NSString *promptMsg = @"";
     
@@ -2689,14 +2696,31 @@
         promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
     }
     
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:promptMsg
+                                                   delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+    alert.tag = kAlertBlackListOK;
+    [alert show];
+}
+
+-(void) actionWL:(NSNumber *)curMsgN {
+    int curMsg = [curMsgN intValue];
+    NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
+    NSString *promptMsg = @"";
+    
+    if ([[BlackList shared] removeFromWhiteList:pseudo]) {
+        promptMsg = [NSString stringWithFormat:@"OH NOES ! %@ a été supprimé de la love list", pseudo];
+    }
+    else {
+        [[BlackList shared] addToWhiteList:pseudo];
+        promptMsg = [NSString stringWithFormat:@"BOUM ! %@ ajouté à la love list", pseudo];
+    }
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:promptMsg
                                                    delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
     alert.tag = kAlertBlackListOK;
     [alert show];
-
-    
 }
+
 
 -(void)actionMessage:(NSNumber *)curMsgN {
 	if (self.isAnimating) {
@@ -2859,6 +2883,10 @@
 }
 -(void)actionBL {
     [self actionBL:[NSNumber numberWithInt:curPostID]];
+    
+}
+-(void)actionWL {
+    [self actionWL:[NSNumber numberWithInt:curPostID]];
     
 }
 -(void)actionAlerter {

@@ -262,6 +262,16 @@ static float fDarkColor2 = 33/360.0; //100% par défaut
     }
 }
 
++ (UIColor *)messageHeaderLoveBackgroundColor {
+    //    switch ([ThemeManager currentTheme]) {
+    return [UIColor colorWithRed:1.0 green:0.0 blue:1.0 alpha:1.0];
+}
+
++ (UIColor *)loveColor {
+    //    switch ([ThemeManager currentTheme]) {
+    return [UIColor colorWithRed:1.0 green:0.0 blue:1.0 alpha:1.0];
+}
+
 // Tint color avec transparence 0.07/1
 + (UIColor *)messageMeQuotedBackgroundColor:(Theme)theme{
     CGFloat r, g, b, alpha;

@@ -30,6 +30,7 @@
 + (UIColor *)messageModoBackgroundColor:(Theme)theme;
 + (UIColor *)messageMeBackgroundColor:(Theme)theme;
 + (UIColor *)messageHeaderMeBackgroundColor:(Theme)theme;
++ (UIColor *)messageHeaderLoveBackgroundColor:(Theme)theme;
 + (UIColor *)messageMeQuotedBackgroundColor:(Theme)theme;
 + (UIColor *)addMessageBackgroundColor:(Theme)theme;
 + (UIColor *)cellBackgroundColor:(Theme)theme;
@@ -63,6 +64,7 @@
 + (UIColor *)tintLightColor;
 + (UIColor *)tintWhiteColor:(Theme)theme;
 + (UIColor *)tintColorDisabled:(Theme)theme;
++ (UIColor *)loveColor;
 + (UIColor *)overlayColor:(Theme)theme;
 + (UIColor *)toolbarColor:(Theme)theme;
 + (UIColor *)toolbarPageBackgroundColor:(Theme)theme;

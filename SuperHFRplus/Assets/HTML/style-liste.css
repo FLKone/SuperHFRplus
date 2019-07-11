@@ -13,8 +13,14 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-message-mequoted-background:#EEE; /* Fond des messages dans lesquels je suis quoted */
     --color-message-mequoted-borderleft:#EEE;
     --color-message-mequoted-borderother:#EEE;
+    --color-message-header-love-background:#EEE;
+    --color-message-quoted-love-background:#EEE;
+    --color-message-quoted-love-borderleft:#EEE;
+    --color-message-quoted-love-borderother::#EEE;
     --color-message-quoted-bl-background:#EEE;
     --color-message-header-bl-background::#EEE;
+    
+    
     --color-separator-new-message:rgba(0,0,0,0.4);
     --color-background-bars:#F5F5F5;
     --color-searchintra-nextresults:rgba(240,240,240,0.9);
@@ -349,6 +355,16 @@ table.citation_me_quoted {
     border-top: 1px solid var(--color-message-mequoted-borderother);
 }
 
+table.citation_whitelist {
+    table-layout:fixed;
+    border-left: 2px solid var(--color-action);
+    background: var(--color-message-quoted-love-background);
+    border-left: 2px solid var(--color-message-quoted-love-borderleft);
+    border-right: 1px solid var(--color-message-quoted-love-borderother);
+    border-bottom: 1px solid var(--color-message-quoted-love-borderother);
+    border-top: 1px solid var(--color-message-quoted-love-borderother);
+}
+
 hr {
     visibility:hidden;
     height:12px;
@@ -636,6 +652,15 @@ body.ios7 {
     background: var(--color-message-header-me-background);
     border-left: 2px solid var(--color-message-mequoted-borderleft);
 }
+
+.ios7 .message.whitelist .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: var(--color-message-header-love-background);
+    border-left: 2px solid var(--color-message-quoted-love-borderleft);
+}
+
 
 .ios7 .message.blacklist .header {
     margin-top:0 !important;

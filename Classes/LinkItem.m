@@ -46,6 +46,8 @@
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode "];
 	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
+    } else if ([[BlackList shared] isWL:[self name]]) {
+        tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message whitelist"];
     } else if (bIsPostBL) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message bl\" style=\"height:0px;"];
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"header" withString:@"class=\"header bl\""];
