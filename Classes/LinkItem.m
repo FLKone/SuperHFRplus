@@ -20,7 +20,7 @@
 
 @synthesize quotedNB, quotedLINK, editedTime;
 
--(NSString *)toHTML:(int)index egoQuote:(BOOL)egoQuote
+-(NSString *)toHTML:(int)index isMP:(BOOL)bIsMP
 {
     //NSLog(@"toHTML index %d", index);
     BOOL bIsPostBL = NO;
@@ -44,7 +44,7 @@
 
 	if ([[self name] isEqualToString:@"Modération"]) {
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode "];
-	} else if (egoQuote == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
+	} else if (bIsMP == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
     } else if ([[BlackList shared] isWL:[self name]]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message whitelist"];
@@ -74,11 +74,6 @@
 
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
     
-    // For each BL pseudo, add the HTML div to replace classic quote
-    NSLog(@"----------------> BEFORE (%d) <-----------------", index);
-    NSLog(@"%@", myRawContent);
-    NSLog(@"----------------> /BEFORE (%d) <-----------------", index);
-    
     // Add "Show quote" button
     NSString* sShowQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = ''; document.getElementById(1$1).style.display = 'none'; document.getElementById(1$1).style.display = 'none'; document.getElementById(3$1).style.display = '';"];
     NSString *sShowQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_show\" id=\"1$1\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit :</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\">&#9660;</a></div></div></td></tr></table>", sShowQuoteJS];
@@ -93,13 +88,8 @@
     myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<p class=\"pbl\" id=\"([0-9]+)\""
                                                            withString:[NSString stringWithFormat:@"%@<p class=\"pbl\"", sHideQuote]];
 
-    
-    NSLog(@"----------------> AFTER (%d) <-----------------", index);
-    NSLog(@"%@", myRawContent);
-    NSLog(@"----------------> /AFTER (%d) <-----------------", index);
 
-	
-	//Custom Internal Images
+    //Custom Internal Images
 	NSString *regEx2 = @"<img src=\"http://forum-images.hardware.fr/([^\"]+)\" alt=\"\\[[^\"]+\" title=\"[^\"]+\">";			
 	myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx2
 														withString:@"<img class=\"smileycustom\" src=\"https://forum-images.hardware.fr/$1\" />"]; //
@@ -250,10 +240,11 @@
         tempHTML = [sShowPostDiv stringByAppendingString:tempHTML];
     }
     
+    /*
     NSLog(@"----------------> OUTPUT  <---------------------");
     NSLog(@"%@", tempHTML);
     NSLog(@"----------------> /OUTPUT <---------------------");
-
+*/ 
 	return tempHTML;
 }
 

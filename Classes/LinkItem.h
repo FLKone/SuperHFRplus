@@ -91,6 +91,6 @@
 @property BOOL isDel;
 @property BOOL isBL;
 
--(NSString *)toHTML:(int)index egoQuote:(BOOL)egoQuote;
+-(NSString *)toHTML:(int)index isMP:(BOOL)bIsMP;
 
 @end

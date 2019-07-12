@@ -720,6 +720,10 @@ body.ios7 {
     color:var(--color-action);
 }
 
+.message.whitelist .right {
+    color:var(--color-message-quoted-love-borderleft);
+}
+
 .bl_quote_right .a {
     color:var(--color-border-quotation);
 }

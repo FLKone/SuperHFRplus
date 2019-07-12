@@ -272,17 +272,27 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
-		<dict>
-			<key>IASKCellImage</key>
-			<string>ThorHammerFilled-25</string>
-			<key>IASKViewControllerClass</key>
-			<string>BlackListTableViewController</string>
-			<key>Title</key>
-			<string>Liste noire</string>
-			<key>Type</key>
-			<string>PSChildPaneSpecifier</string>
-		</dict>
-		<dict>
+        <dict>
+            <key>IASKCellImage</key>
+            <string>ThorHammerFilled-25</string>
+            <key>IASKViewControllerClass</key>
+            <string>BlackListTableViewController</string>
+            <key>Title</key>
+            <string>Liste noire</string>
+            <key>Type</key>
+            <string>PSChildPaneSpecifier</string>
+        </dict>
+        <dict>
+            <key>IASKCellImage</key>
+            <string>HeartBlack-23</string>
+            <key>IASKViewControllerClass</key>
+            <string>WhiteListTableViewController</string>
+            <key>Title</key>
+            <string>Love list</string>
+            <key>Type</key>
+            <string>PSChildPaneSpecifier</string>
+        </dict>
+        <dict>
 			<key>File</key>
 			<string>ActionsMessages</string>
 			<key>Title</key>

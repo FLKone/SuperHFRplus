@@ -1377,12 +1377,12 @@
 	//NSLog(@"%@", [[arrayData objectAtIndex:index] toHTML:index]);
 	//NSLog(@"selectedURL %@", selectedURL);
     // Ego quote not applyed on MP
-    BOOL bEgoQuote = YES;
+    BOOL bIsMP = YES;
     if ([self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
-        bEgoQuote = NO;
+        bIsMP = NO;
     }
 
-	HTMLParser * myParser = [[HTMLParser alloc] initWithString:[[arrayData objectAtIndex:index] toHTML:index egoQuote:bEgoQuote] error:NULL];
+	HTMLParser * myParser = [[HTMLParser alloc] initWithString:[[arrayData objectAtIndex:index] toHTML:index isMP:bIsMP] error:NULL];
 	HTMLNode * msgNode = [myParser doc]; //Find the body tag
 
 	NSArray * tmpImageArray =  [msgNode findChildrenWithAttribute:@"class" matchingName:@"hfrplusimg" allowPartial:NO];
@@ -1684,13 +1684,13 @@
         //NSLog(@"==============");
         
         // Ego quote not applyed on MP
-        BOOL bEgoQuote = YES;
+        BOOL bIsMP = YES;
         if ([self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
-            bEgoQuote = NO;
+            bIsMP = NO;
         }
         
         for (i = 0; i < [self.arrayData count]; i++) { //Loop through all the tags
-            NSString* sNewMessage = [[self.arrayData objectAtIndex:i] toHTML:i egoQuote:bEgoQuote];
+            NSString* sNewMessage = [[self.arrayData objectAtIndex:i] toHTML:i isMP:bIsMP];
             tmpHTML = [tmpHTML stringByAppendingString:sNewMessage];
 
             if (!ifCurrentFlag) {
@@ -1902,7 +1902,7 @@
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
                                 [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1], //--color-message-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.03], // --color-message-header-me-background
-                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.6],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8],  //--color-message-mequoted-borderleft
                                 [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1],  //--color-message-mequoted-borderother
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
@@ -2696,10 +2696,7 @@
         promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
     }
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:promptMsg
-                                                   delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-    alert.tag = kAlertBlackListOK;
-    [alert show];
+    [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
 }
 
 -(void) actionWL:(NSNumber *)curMsgN {
@@ -2715,10 +2712,7 @@
         promptMsg = [NSString stringWithFormat:@"BOUM ! %@ ajouté à la love list", pseudo];
     }
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:promptMsg
-                                                   delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-    alert.tag = kAlertBlackListOK;
-    [alert show];
+    [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
 }
 
 
@@ -2958,6 +2952,10 @@
                     document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
                     document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
                     document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                    document.documentElement.style.setProperty('--color-message-header-love-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-love-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-love-borderleft', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-love-borderother', '%@');\
                     document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
                     document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
                     document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
@@ -2975,11 +2973,15 @@
                         [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
                         [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                         [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
-                        [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
-                        [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-background
+                        [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-modo-background
+                        [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-header-me-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1], //--color-message-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.03], // --color-message-header-me-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8],  //--color-message-mequoted-borderleft
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1],  //--color-message-mequoted-borderother
                         [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message

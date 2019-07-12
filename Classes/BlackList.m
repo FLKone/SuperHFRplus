@@ -51,11 +51,13 @@ static BlackList *_shared = nil;    // static instance variable
 }*/
 
 - (void)addToBlackList:(NSString *)pseudo {
+    [self removeFromWhiteList:pseudo];
     [self.listBlackList addObject:[NSDictionary dictionaryWithObjectsAndKeys:pseudo, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
     [self save];
 }
 
 - (void)addToWhiteList:(NSString *)pseudo {
+    [self removeFromBlackList:pseudo];
     [self.listWhiteList addObject:[NSDictionary dictionaryWithObjectsAndKeys:pseudo, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
     [self save];
 }

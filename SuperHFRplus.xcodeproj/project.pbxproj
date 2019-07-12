@@ -12,6 +12,11 @@
 		1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755421FE249300A5F7E1 /* PlusCellView.xib */; };
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
 		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
+		1556408E22D91E980018A619 /* ListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556408D22D91E980018A619 /* ListTableViewController.m */; };
+		1556409122D928D30018A619 /* WhiteListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556409022D928D30018A619 /* WhiteListTableViewController.m */; };
+		1556409322D9297C0018A619 /* WhiteListTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1556409222D9297C0018A619 /* WhiteListTableViewController.xib */; };
+		1556409622D92D4F0018A619 /* HeartBlack-23.png in Resources */ = {isa = PBXBuildFile; fileRef = 1556409422D92D4F0018A619 /* HeartBlack-23.png */; };
+		1556409722D92D4F0018A619 /* HeartWhite-23.png in Resources */ = {isa = PBXBuildFile; fileRef = 1556409522D92D4F0018A619 /* HeartWhite-23.png */; };
 		156246D8218230DC00F5B8DC /* plus.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D7218230DC00F5B8DC /* plus.svg */; };
 		156246DD2182310000F5B8DC /* arrowend.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D92182310000F5B8DC /* arrowend.svg */; };
 		156246DE2182310000F5B8DC /* arrowforward.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DA2182310000F5B8DC /* arrowforward.svg */; };
@@ -756,6 +761,13 @@
 		1503755721FF794200A5F7E1 /* PlusCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusCellView.m; sourceTree = "<group>"; };
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
+		1556408C22D91E820018A619 /* ListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListTableViewController.h; sourceTree = "<group>"; };
+		1556408D22D91E980018A619 /* ListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListTableViewController.m; sourceTree = "<group>"; };
+		1556408F22D928AE0018A619 /* WhiteListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WhiteListTableViewController.h; sourceTree = "<group>"; };
+		1556409022D928D30018A619 /* WhiteListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WhiteListTableViewController.m; sourceTree = "<group>"; };
+		1556409222D9297C0018A619 /* WhiteListTableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WhiteListTableViewController.xib; sourceTree = "<group>"; };
+		1556409422D92D4F0018A619 /* HeartBlack-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "HeartBlack-23.png"; path = "../../../../../../Temp/HeartBlack-23.png"; sourceTree = "<group>"; };
+		1556409522D92D4F0018A619 /* HeartWhite-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "HeartWhite-23.png"; path = "../../../../../../Temp/HeartWhite-23.png"; sourceTree = "<group>"; };
 		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
 		156246D92182310000F5B8DC /* arrowend.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowend.svg; sourceTree = "<group>"; };
 		156246DA2182310000F5B8DC /* arrowforward.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowforward.svg; sourceTree = "<group>"; };
@@ -1641,6 +1653,7 @@
 				CAFD003915B9B4FF003CA3FC /* Debug */,
 				01BF877E121C4407007624B6 /* Compte */,
 				4C0B8DF81BA455AF00D329BA /* InfosCell */,
+				CA34781112EB56DC00D1BA2A /* inApp */,
 				01BF8776121C4407007624B6 /* InfosViewController.h */,
 				01BF8777121C4407007624B6 /* InfosViewController.m */,
 				4CB132A21B9068250081B44D /* InfosViewController.xib */,
@@ -1650,12 +1663,16 @@
 				01BF8778121C4407007624B6 /* AideViewController.h */,
 				01BF877C121C4407007624B6 /* AideViewController.xib */,
 				01BF877D121C4407007624B6 /* CreditsViewController.xib */,
-				CA34781112EB56DC00D1BA2A /* inApp */,
+				1556408C22D91E820018A619 /* ListTableViewController.h */,
+				1556408D22D91E980018A619 /* ListTableViewController.m */,
 				4CB132981B905BF80081B44D /* BlackListTableViewController.h */,
 				4CB132991B905BF80081B44D /* BlackListTableViewController.m */,
+				4CB1329A1B905BF80081B44D /* BlackListTableViewController.xib */,
+				1556408F22D928AE0018A619 /* WhiteListTableViewController.h */,
+				1556409022D928D30018A619 /* WhiteListTableViewController.m */,
+				1556409222D9297C0018A619 /* WhiteListTableViewController.xib */,
 				4CB132F61B90A1930081B44D /* BlackList.h */,
 				4CB132F71B90A1930081B44D /* BlackList.m */,
-				4CB1329A1B905BF80081B44D /* BlackListTableViewController.xib */,
 			);
 			name = Infos;
 			sourceTree = "<group>";
@@ -2646,6 +2663,8 @@
 		CA7472D317E14D4500B45E15 /* iOS7 */ = {
 			isa = PBXGroup;
 			children = (
+				1556409422D92D4F0018A619 /* HeartBlack-23.png */,
+				1556409522D92D4F0018A619 /* HeartWhite-23.png */,
 				156246DC2182310000F5B8DC /* arrowback.svg */,
 				156246DB2182310000F5B8DC /* arrowbegin.svg */,
 				156246D92182310000F5B8DC /* arrowend.svg */,
@@ -3330,6 +3349,7 @@
 				CA7C707A185EF50E00B348BA /* commonsmile.plist in Resources */,
 				CA7C707C185EF50E00B348BA /* flagblue2.png in Resources */,
 				4C9C2B7B1BAE7E6E00511853 /* CircledUserMaleFilled-25.png in Resources */,
+				1556409722D92D4F0018A619 /* HeartWhite-23.png in Resources */,
 				CA7C707D185EF50E00B348BA /* ToolBarFastRewind_on.png in Resources */,
 				CA7C707E185EF50E00B348BA /* upsmall.png in Resources */,
 				CA019F1819CD77D500F67C47 /* jquery-2.1.1.min.js in Resources */,
@@ -3385,6 +3405,7 @@
 				CA7C7097185EF50E00B348BA /* bounce.gif in Resources */,
 				CA7C7098185EF50E00B348BA /* multipleflag0.gif in Resources */,
 				CA7C7099185EF50E00B348BA /* RehostCell.xib in Resources */,
+				1556409322D9297C0018A619 /* WhiteListTableViewController.xib in Resources */,
 				4C1991981FA9EC8E00A07A8A /* Icon-REDFACE-IPAD@2x.png in Resources */,
 				4C0B8DA51BA4522900D329BA /* ShieldFilled-40.png in Resources */,
 				4CD6B8B41B97ACA8007FC29E /* Camera-32@2x.png in Resources */,
@@ -3396,6 +3417,7 @@
 				4CB132BB1B9097110081B44D /* RemoveUserFilled-20.png in Resources */,
 				4C21E96E1BA5C70400691D65 /* QuoteEFilled-20.png in Resources */,
 				15EBFD152206211500A37CED /* AQCellView.xib in Resources */,
+				1556409622D92D4F0018A619 /* HeartBlack-23.png in Resources */,
 				CA7C709C185EF50E00B348BA /* buttonbeginon.png in Resources */,
 				CA7C709D185EF50E00B348BA /* plus.png in Resources */,
 				CA7C709E185EF50E00B348BA /* downsmall.png in Resources */,
@@ -3519,6 +3541,7 @@
 				CA7C70C9185EF50E00B348BA /* Forum.m in Sources */,
 				CA7C70CB185EF50E00B348BA /* Topic.m in Sources */,
 				4C39038F1BCAD0C700FD6F1F /* MWPhotoBrowser.m in Sources */,
+				1556409122D928D30018A619 /* WhiteListTableViewController.m in Sources */,
 				CA7C70D5185EF50E00B348BA /* LinkItem.m in Sources */,
 				CA7C70DB185EF50E00B348BA /* ParseMessagesOperation.m in Sources */,
 				4CB132F91B90A1930081B44D /* BlackList.m in Sources */,
@@ -3547,6 +3570,7 @@
 				CA7C70E4185EF50E00B348BA /* RehostCell.m in Sources */,
 				CA7C70EC185EF50E00B348BA /* TabBarController.m in Sources */,
 				4C3903651BCACEC200FD6F1F /* PSTCollectionViewLayout.m in Sources */,
+				1556408E22D91E980018A619 /* ListTableViewController.m in Sources */,
 				CA7C70ED185EF50E00B348BA /* TopicCellView.m in Sources */,
 				CA7C70EE185EF50E00B348BA /* AKSegmentedControl.m in Sources */,
 				CA7C70F0185EF50E00B348BA /* NewMessageViewController.m in Sources */,

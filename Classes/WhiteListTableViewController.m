@@ -1,5 +1,5 @@
 //
-//  BlackListTableViewController.m
+//  WhiteListTableViewController.m
 //  HFRplus
 //
 //  Created by FLK on 28/08/2015.
@@ -7,20 +7,20 @@
 //
 
 #import "HFRplusAppDelegate.h"
-#import "BlackListTableViewController.h"
+#import "WhiteListTableViewController.h"
 #import "BlackList.h"
 #import "InsetLabel.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 #import "Constants.h"
 
-@interface BlackListTableViewController ()
+@interface WhiteListTableViewController ()
 
 @end
 
-@implementation BlackListTableViewController
+@implementation WhiteListTableViewController
 
-NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
+NSInteger Sort_WL_Comparer(id id1, id id2, void *context)
 {
     // Sort Function
     NSDictionary* dc1 = (NSDictionary*)id1;
@@ -32,13 +32,13 @@ NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
 }
 
 - (void)reloadData {
-    NSArray *sortedArray = [[[BlackList shared] getAllBlackList] sortedArrayUsingFunction:Sort_BL_Comparer context:(__bridge void * _Nullable)(self)];
+    NSArray *sortedArray = [[[BlackList shared] getAllWhiteList] sortedArrayUsingFunction:Sort_WL_Comparer context:(__bridge void * _Nullable)(self)];
     self.listDict = (NSMutableArray *)sortedArray;
     [self.tableView reloadData];
 }
 
 - (void)viewDidLoad {
-    self.title = @"Liste noire";
+    self.title = @"Love list";
 }
 
 #pragma mark - Table view data source
@@ -47,7 +47,7 @@ NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
     // If row is deleted, remove it from the list.
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        [[BlackList shared] removeFromBlackList:[[self.listDict objectAtIndex:indexPath.row] valueForKey:@"word"]];
+        [[BlackList shared] removeFromWhiteList:[[self.listDict objectAtIndex:indexPath.row] valueForKey:@"word"]];
         [self reloadData];
     }
 }
