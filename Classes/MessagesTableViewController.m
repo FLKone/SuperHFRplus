@@ -2141,8 +2141,10 @@
 	}
 	else if (navigationType == UIWebViewNavigationTypeOther) {
 		if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdodetails"]) {
-            //NSLog(@"details ==========");
-			[self didSelectMessage:[[[aRequest.URL absoluteString] lastPathComponent] intValue]];
+            int iPostId = [[[aRequest.URL absoluteString] lastPathComponent] intValue];
+            if (iPostId < 1000) {
+                [self didSelectMessage:iPostId];
+            }
 			return NO;
 		}
 		else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdotouch"]) {
