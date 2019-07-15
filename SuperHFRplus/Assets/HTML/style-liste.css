@@ -661,6 +661,19 @@ body.ios7 {
     border-left: 2px solid var(--color-message-quoted-love-borderleft);
 }
 
+/*
+.ios7 .message.mode .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: rgba(143, 0, 0, 0.6);
+    border-left: 2px solid rgba(255, 18, 18, 1);
+}*/
+
+/* Color of keywork in cpp area */
+.olcode .span {
+    color: var(--color-action);
+}
 
 .ios7 .message.blacklist .header {
     margin-top:0 !important;

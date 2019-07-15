@@ -43,7 +43,7 @@
 	}
 
 	if ([[self name] isEqualToString:@"Modération"]) {
-		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode "];
+		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode"];
 	} else if (bIsMP == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
     } else if ([[BlackList shared] isWL:[self name]]) {
@@ -219,8 +219,11 @@
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<p class=\"editedhfrlink\">édité par %@</p>", self.editedTime]];
     }
     
-	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%MESSAGE_CONTENT%%" withString:myRawContent];
-	
+    // Improve color for keyword in cpp tag
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"<span style=\"color:blue\">" withString:@"<span style=\"color:var( --color-action)\">"];
+
+    tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%MESSAGE_CONTENT%%" withString:myRawContent];
+
     //NSLog(@"%@", tempHTML);
     tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%%%ID%%%%" withString:[NSString stringWithFormat:@"%d", index]];
 
@@ -240,11 +243,11 @@
         tempHTML = [sShowPostDiv stringByAppendingString:tempHTML];
     }
     
-    /*
+
     NSLog(@"----------------> OUTPUT  <---------------------");
     NSLog(@"%@", tempHTML);
     NSLog(@"----------------> /OUTPUT <---------------------");
-*/ 
+
 	return tempHTML;
 }
 
