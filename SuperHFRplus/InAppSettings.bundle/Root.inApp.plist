@@ -416,6 +416,32 @@
             <key>Type</key>
             <string>PSToggleSwitchSpecifier</string>
         </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>0</integer>
+            <key>Key</key>
+            <string>hiderecentposts</string>
+            <key>Title</key>
+            <string>Masquer les posts récents</string>
+            <key>Titles</key>
+            <array>
+                <string>Non</string>
+                <string>&lt; 2 min</string>
+                <string>&lt; 4 min</string>
+                <string>&lt; 6 min</string>
+                <string>&lt; 10 min</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>0</integer>
+                <integer>2</integer>
+                <integer>4</integer>
+                <integer>6</integer>
+                <integer>10</integer>
+            </array>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Maintenance</string>

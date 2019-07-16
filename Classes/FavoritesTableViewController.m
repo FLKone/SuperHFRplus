@@ -1151,7 +1151,9 @@
                 iWidth = 23;
             } else if (iPageNumber < 1000) {
                 iWidth = 30;
-            } if (iPageNumber > 9999) {
+            } else if (iPageNumber <= 9999) {
+                iWidth = 38;
+            } else if (iPageNumber > 9999) {
                 iPageNumber = 9999;
                 iWidth = 38;
             }
@@ -1159,20 +1161,6 @@
             cell.labelBadge.layer.cornerRadius = 16 / 2;
             [cell.labelBadge setText:[NSString stringWithFormat:@"%d", iPageNumber]];
             cell.labelBadgeWidth.constant = iWidth;
-            /*
-            [cell.labelBadge sizeToFit];
-             labelBadgeWidth
-            // Width constraint
-            NSArray* constraints1 = [cell.labelBadge constraints];
-            [cell.labelBadge addConstraint:[NSLayoutConstraint constraintWithItem:cell.labelBadge
-                                                              attribute:NSLayoutAttributeWidth
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:nil
-                                                              attribute: NSLayoutAttributeNotAnAttribute
-                                                             multiplier:1
-                                                               constant:iWidth]];
-            NSArray* constraints2 = [cell.labelBadge constraints];
-            NSLog(@"Constraints b/a:%d/%d", constraints1.count, constraints2.count);*/
             cell.labelBadge.backgroundColor = [ThemeColors tintColor];
         }
         
