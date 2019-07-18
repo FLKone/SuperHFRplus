@@ -11,6 +11,7 @@
 #import "AvatarTableViewCell.h"
 #import "PlusCellView.h"
 
+
 @implementation ThemeManager
 
 int dayDelayMin = 40;
@@ -36,7 +37,7 @@ int nightDelay;
 - (id)init {
     if (self = [super init]) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        theme = [defaults integerForKey:@"theme"];
+        theme = (Theme)[defaults integerForKey:@"theme"];
         if(!theme){
             theme = ThemeLight;
         }
@@ -46,12 +47,12 @@ int nightDelay;
             //  Apply customisation
             NSInteger value1 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
             NSInteger value2 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color2"];
-            [ThemeColors setDarkColor1:value1];
-            [ThemeColors setDarkColor2:value2];
+            [ThemeColors setDarkColor1:(Theme)value1];
+            [ThemeColors setDarkColor2:(Theme)value2];
         }
         
         [self applyAppearance];
-        [self changeAutoTheme:[defaults boolForKey:@"auto_theme"]];
+        [self changeAutoTheme:([defaults integerForKey:@"auto_theme"] == 1)];
     }
     return self;
 }
@@ -97,8 +98,8 @@ int nightDelay;
 
 - (void)switchTheme {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    Theme day = [defaults integerForKey:@"auto_theme_day"];
-    Theme night = [defaults integerForKey:@"auto_theme_night"];
+    Theme day = (Theme)[defaults integerForKey:@"auto_theme_day"];
+    Theme night = (Theme)[defaults integerForKey:@"auto_theme_night"];
 
     if (self.theme == day) {
         [self setTheme:night];
@@ -215,11 +216,11 @@ int nightDelay;
     }
 }
     
--(void)didUpdateLuminosity:(float)luminosity {
+- (void)didUpdateLuminosity:(float)luminosity {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    Theme day = [defaults integerForKey:@"auto_theme_day"];
-    Theme night = [defaults integerForKey:@"auto_theme_night"];
+    Theme day = (Theme)[defaults integerForKey:@"auto_theme_day"];
+    Theme night = (Theme)[defaults integerForKey:@"auto_theme_night"];
     
     if(dayDelay == 0 || nightDelay == 0){
         dayDelay = dayDelayMin;
@@ -242,5 +243,34 @@ int nightDelay;
 
 }
 
+- (void)checkTheme {
+    //NSLog(@"periodicThemeCheckBack");
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_TIME) {
+        NSDate *now = [NSDate date];
 
+        NSDateFormatter * df = [[NSDateFormatter alloc] init];
+        NSDateFormatter * df2 = [[NSDateFormatter alloc] init];
+        NSString *sTimeDay = [[NSUserDefaults standardUserDefaults] stringForKey:@"auto_theme_day_time"];
+        NSString *sTimeNight = [[NSUserDefaults standardUserDefaults] stringForKey:@"auto_theme_night_time"];
+        [df setDateFormat:@"YY-MM-dd HH:mm"];
+        [df2 setDateFormat:@"YY-MM-dd"];
+        NSString *today = [df2 stringFromDate:now];
+        NSDate *dTimeDay = [df dateFromString:[NSString stringWithFormat:@"%@ %@", today,  sTimeDay]];
+        NSDate *dTimeNight = [df dateFromString:[NSString stringWithFormat:@"%@ %@", today,  sTimeNight]];
+
+        if ([dTimeDay earlierDate:now] == now || [dTimeNight laterDate:now] == now) {
+            // Nuit
+            Theme night = (Theme)[[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme_night"];
+            if (self.theme != night) {
+                [self setTheme:night];
+            }
+        } else {
+            // Jour
+            Theme day = (Theme)[[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme_day"];
+            if (self.theme != day) {
+                [self setTheme:day];
+            }
+        }
+    }
+}
 @end

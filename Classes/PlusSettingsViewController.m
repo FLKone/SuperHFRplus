@@ -57,15 +57,25 @@
         [self hideCell:@"menu_debug_entry"];
     }
     
-    BOOL autoThemeEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"auto_theme"];
+    NSInteger autoThemeEnabled = [[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"];
     
-    if(autoThemeEnabled){
+    if (autoThemeEnabled == AUTO_THEME_AUTO_CAMERA) {
         [self hideCell:@"theme"];
+        [self hideCell:@"auto_theme_day_time"];
         [self showCell:@"auto_theme_day"];
+        [self hideCell:@"auto_theme_night_time"];
         [self showCell:@"auto_theme_night"];
-    }else{
+    } else if (autoThemeEnabled == AUTO_THEME_AUTO_TIME) {
+        [self hideCell:@"theme"];
+        [self showCell:@"auto_theme_day_time"];
+        [self showCell:@"auto_theme_day"];
+        [self showCell:@"auto_theme_night_time"];
+        [self showCell:@"auto_theme_night"];
+    } else {
         [self showCell:@"theme"];
+        [self hideCell:@"auto_theme_day_time"];
         [self hideCell:@"auto_theme_day"];
+        [self hideCell:@"auto_theme_night_time"];
         [self hideCell:@"auto_theme_night"];
     }
     
@@ -109,17 +119,30 @@
     } else if([notification.userInfo objectForKey:@"auto_theme"]) {
         
         [[ThemeManager sharedManager] changeAutoTheme:[[NSUserDefaults standardUserDefaults] boolForKey:@"auto_theme"]];
-        BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"auto_theme"];
-        
-        if(enabled){
+        NSInteger iAutoTheme = [[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"];
+        // 0 = Manuel, 1 = Automatique, 2 = Heure fixe
+        if (iAutoTheme == AUTO_THEME_AUTO_CAMERA) {
             [self hideCell:@"theme"];
+            [self hideCell:@"auto_theme_day_time"];
             [self showCell:@"auto_theme_day"];
+            [self hideCell:@"auto_theme_night_time"];
             [self showCell:@"auto_theme_night"];
-        }else{
+        } else if (iAutoTheme == AUTO_THEME_AUTO_TIME) {
+            [self hideCell:@"theme"];
+            [self showCell:@"auto_theme_day_time"];
+            [self showCell:@"auto_theme_day"];
+            [self showCell:@"auto_theme_night_time"];
+            [self showCell:@"auto_theme_night"];
+            [[ThemeManager sharedManager] checkTheme];
+        } else {
             [self showCell:@"theme"];
+            [self hideCell:@"auto_theme_day_time"];
             [self hideCell:@"auto_theme_day"];
+            [self hideCell:@"auto_theme_night_time"];
             [self hideCell:@"auto_theme_night"];
         }
+    } else if([notification.userInfo objectForKey:@"auto_theme_day_time"] || [notification.userInfo objectForKey:@"auto_theme_night_time"] ) {
+        [[ThemeManager sharedManager] checkTheme];
     } else if([notification.userInfo objectForKey:@"theme_dark_adjust"]) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"]) {
             [self showCell:@"theme_dark_color1"];

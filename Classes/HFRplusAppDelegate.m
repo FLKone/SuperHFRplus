@@ -134,11 +134,16 @@
     [window makeKeyAndVisible];
 
     periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
-                                                                 target:self
-                                                               selector:@selector(periodicMaintenance)
-                                                               userInfo:nil
-                                                                repeats:YES];
-    
+                                                                target:self
+                                                              selector:@selector(periodicMaintenance)
+                                                              userInfo:nil
+                                                               repeats:YES];
+    periodicThemeCheckTimer = [NSTimer scheduledTimerWithTimeInterval:60
+                                                                target:self
+                                                              selector:@selector(periodicThemeCheck)
+                                                              userInfo:nil
+                                                               repeats:YES];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(setThemeFromNotification:) //note the ":" - should take an NSNotification as parameter
@@ -283,7 +288,9 @@
      */
     NSLog(@"applicationDidEnterBackground");
     [periodicMaintenanceTimer invalidate];
-    periodicMaintenanceTimer = nil;    
+    [periodicThemeCheckTimer invalidate];
+    periodicMaintenanceTimer = nil;
+    periodicThemeCheckTimer = nil;
 }
 
 
@@ -294,27 +301,24 @@
     NSLog(@"applicationWillEnterForeground");
 
     periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
-                                                                 target:self
-                                                               selector:@selector(periodicMaintenance)
-                                                               userInfo:nil
-                                                                repeats:YES];    
+                                                                target:self
+                                                              selector:@selector(periodicMaintenance)
+                                                              userInfo:nil
+                                                               repeats:YES];
+    periodicThemeCheckTimer = [NSTimer scheduledTimerWithTimeInterval:60
+                                                                target:self
+                                                              selector:@selector(periodicThemeCheck)
+                                                              userInfo:nil
+                                                               repeats:YES];
 }
 
 - (void)periodicMaintenance
 {
-    //NSLog(@"periodicMaintenance");
-    
-
-    
     [self performSelectorInBackground:@selector(periodicMaintenanceBack) withObject:nil];
-    
-    
-
 }
 
 - (void)periodicMaintenanceBack
 {
-    
     @autoreleasepool {
     
     //NSLog(@"periodicMaintenanceBack");
@@ -417,6 +421,21 @@
 
 }
 
+- (void)periodicThemeCheck
+{
+    [self performSelectorInBackground:@selector(periodicThemeCheckBack) withObject:nil];
+}
+
+- (void)periodicThemeCheckBack
+{
+    @autoreleasepool {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[ThemeManager sharedManager] checkTheme];
+        });
+    }
+}
+
+
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     /*
@@ -424,6 +443,7 @@
      */
     
     // Noel
+    /*
     NSDate * now = [NSDate date];
     NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];
     [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
@@ -453,8 +473,11 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
     }
     
-    [self setTheme:[[ThemeManager sharedManager] theme]];
+    [self setTheme:[[ThemeManager sharedManager] theme]];*/
+    
+    [[ThemeManager sharedManager] checkTheme];
     [[ThemeManager sharedManager] refreshTheme];
+    /*
     if (cestNoel) {
         // Popup retry
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
@@ -468,7 +491,7 @@
         [activeVC presentViewController:alert animated:YES completion:nil];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         
-    }
+    }*/
 
 }
 
@@ -787,12 +810,8 @@
 - (void)dealloc {
     [periodicMaintenanceTimer invalidate];
     periodicMaintenanceTimer = nil;
-    //[periodicMaintenanceOperation release], periodicMaintenanceOperation = nil;
-    //[ioQueue release], ioQueue = nil;
-    
-    
-    
-    
+    [periodicThemeCheckTimer invalidate];
+    periodicThemeCheckTimer = nil;
 }
 
 
