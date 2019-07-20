@@ -24,17 +24,23 @@
 	//NSLog(@"TBC viewDidLoad %@", self.tabBar);
     self.title = @"Menu";
 
-    for (int i=0; i<4; i++) {
+    NSLog(@"viewDidLoad> self.tabBar.items.count - %d", self.tabBar.items.count);
+    for (int i=0; i<self.tabBar.items.count; i++) {
         UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
-        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i]]
+        int iShift = 0;
+        if (self.tabBar.items.count == 4 && i >= 2) {
+            iShift = 1;
+        }
+        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i+iShift]]
                                     imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
-        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i]]
+        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i+iShift]]
                             imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
-        switch (i) {
+        switch (i+iShift) {
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
-            case 2: tabBarItem.title = @"Messages"; break;
-            case 3: tabBarItem.title = @"Plus"; break;
+            case 2: tabBarItem.title = @"Sticky"; break;
+            case 3: tabBarItem.title = @"Messages"; break;
+            case 4: tabBarItem.title = @"Plus"; break;
         }
     }
     
@@ -49,7 +55,6 @@
     if([((HFRNavigationController *)self.viewControllers[0]).topViewController isKindOfClass:[ForumsTableViewController class]]){
         ((ForumsTableViewController *)((HFRNavigationController *)self.viewControllers[0]).topViewController).reloadOnAppear = YES;
     }
-    
 }
 
 -(UITraitCollection *)traitCollection
@@ -131,18 +136,24 @@
             nvc.navigationBar.barStyle = [ThemeColors barStyle:theme];
         }
     }
-    
-    for (int i=0; i<4; i++) {
+
+    NSLog(@"SETTHEME> self.tabBar.items.count - %d", self.tabBar.items.count);
+    for (int i=0; i<self.tabBar.items.count; i++) {
         UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
-        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i]]
+        int iShift = 0;
+        if (self.tabBar.items.count == 4 && i >= 2) {
+            iShift = 1;
+        }
+        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i+iShift]]
                                     imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
-        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i]]
+        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i+iShift]]
                             imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
-        switch (i) {
+        switch (i+iShift) {
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
-            case 2: tabBarItem.title = @"Messages"; break;
-            case 3: tabBarItem.title = @"Plus"; break;
+            case 2: tabBarItem.title = @"Sticky"; break;
+            case 3: tabBarItem.title = @"Messages"; break;
+            case 4: tabBarItem.title = @"Plus"; break;
         }
     }
 }
@@ -261,6 +272,8 @@
     }
 }
 
+- (void) removeStickyTopic {
+}
 
 
 @end

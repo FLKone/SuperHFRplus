@@ -784,7 +784,25 @@
         [navItem setLeftBarButtonItem:((SplitViewController *)self.splitViewController).mybarButtonItem animated:YES];
         [navItem setLeftItemsSupplementBackButton:YES];
     }
+    /* Evol onglet sticky (gardée au cas où)
+
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(removeTabBar)];*/
 }
+
+/* Evol onglet sticky (gardée au cas où)
+-(void)removeTabBar {
+    [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Onglet additionnel"
+                                          andMessage:@"Fermer l'onglet ?"
+                                          handlerOK:^(UIAlertAction * action) { [self removeTabBarConfirmed];}];
+}
+
+- (void)removeTabBarConfirmed {
+    // Get viewControllers array and remove MessagesTable controller at index 2
+    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.tabBarController.viewControllers];
+    [viewControllers removeObjectAtIndex:2];
+    [self.tabBarController setViewControllers:viewControllers animated:YES];
+    [self.tabBarController setSelectedIndex:0];
+*/
 
 
 - (void)viewDidLoad {
