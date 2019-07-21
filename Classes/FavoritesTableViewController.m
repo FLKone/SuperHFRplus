@@ -652,7 +652,13 @@
         self.arrayCategoriesHiddenOrder = [[NSMutableArray alloc] init];
     }
     
-    self.idPostSuperFavorites = [[NSMutableArray alloc] init];
+    // Get Ids super favorites if presents
+    if ([[[defaults dictionaryRepresentation] allKeys] containsObject:@"SuperFavoritesIds"]) {
+        self.idPostSuperFavorites = [[defaults arrayForKey:@"SuperFavoritesIds"] mutableCopy];
+    } else {
+        // If not, create en empty array
+        self.idPostSuperFavorites = [[NSMutableArray alloc] init];
+    }
     
 	self.statusMessage = [[NSString alloc] init];
 	
@@ -1094,7 +1100,13 @@
             tmpTopic = [self.arrayTopics objectAtIndex:indexPath.row];
             NSLog(@"Topic sans cat, row=%ld",indexPath.row);
         }
-            
+
+        if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]]) {
+            cell.isSuperFavorite = YES;
+        } else {
+            cell.isSuperFavorite = NO;
+        }
+
         // Configure the cell...
         UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
         if ([tmpTopic isViewed]) {
@@ -1134,7 +1146,7 @@
                 [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
         }
-
+        
         // Badge
         int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
         if (iPageNumber == 0) {
@@ -1161,7 +1173,12 @@
             cell.labelBadge.layer.cornerRadius = 16 / 2;
             [cell.labelBadge setText:[NSString stringWithFormat:@"%d", iPageNumber]];
             cell.labelBadgeWidth.constant = iWidth;
-            cell.labelBadge.backgroundColor = [ThemeColors tintColor];
+            /*
+            if (cell.isSuperFavorite) {
+                cell.labelBadge.backgroundColor = [ThemeColors tintColor];
+            } else {
+                cell.labelBadge.backgroundColor = [ThemeColors tintColor];
+            }*/
         }
         
         [cell setShowsReorderControl:NO];
@@ -1541,19 +1558,26 @@
 
 
 -(void)setTopicSuperFavoriteWithIndex:(NSIndexPath *)indexPath {
-    if(self.arrayData.count > 0){
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
+    [self.favoritesTableView setEditing:NO animated:NO];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         // Go to URL in BG
-        Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
         if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]])
         {
+            NSLog(@"Topic is NO more favorite %d", tmpTopic.postID);
             [self.idPostSuperFavorites removeObject:[NSNumber numberWithInt:tmpTopic.postID]];
+            tmpTopic.isSuperFavorite = NO;
         }
         else
         {
+            NSLog(@"Topic is super favorite %d", tmpTopic.postID);
             [self.idPostSuperFavorites addObject:[NSNumber numberWithInt:tmpTopic.postID]];
+            tmpTopic.isSuperFavorite = YES;
         }
-        tmpTopic.isSuperFavorite = YES;
-    }
+        [[NSUserDefaults standardUserDefaults] setObject:self.idPostSuperFavorites forKey:@"SuperFavoritesIds"];
+        [self.favoritesTableView reloadData];
+    });
 }
 
 #pragma mark -
@@ -1781,16 +1805,16 @@
 
     markReadAction.image = [UIImage checkmarkImage];
     markReadAction.backgroundColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-    /*
-    UIContextualAction *markSuperFavorite = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"Super Fav" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
+    
+    UIContextualAction *markSuperFavorite = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
         [self setTopicSuperFavoriteWithIndex:indexPath];
     }];
     
-    //markSuperFavorite.image = [UIImage checkmarkImage];
+    markSuperFavorite.image = [UIImage imageNamed:@"28-star@2x"];
     markSuperFavorite.backgroundColor = [UIColor colorWithRed:255/255.0 green:205/255.0 blue:40/255.0 alpha:1.0];
     
-    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction, markSuperFavorite]];*/
-    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction]];
+    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction, markSuperFavorite]];
+    config.performsFirstActionWithFullSwipe = NO;
     return config;
 }
 
