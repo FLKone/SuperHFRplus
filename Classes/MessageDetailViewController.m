@@ -155,11 +155,8 @@
         case ThemeDark:
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
-            break;
-        case ThemeOLED:
-            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
-            sBorderHeader = @"1px solid #505050";
+            // For OLED only
+            // sBorderHeader = @"1px solid #505050";
             break;
         case ThemeLight:
             break;

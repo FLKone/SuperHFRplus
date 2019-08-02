@@ -25,16 +25,16 @@
     [self.labelMessageNumber setTextColor:[ThemeColors topicMsgTextColor:theme]];
     self.selectionStyle = [ThemeColors cellSelectionStyle:theme];
     if (self.isSuperFavorite) {
-        self.backgroundColor = [UIColor colorWithRed:1.0 green:0.8 blue:0.0 alpha:0.1];
-        self.contentView.superview.backgroundColor = [UIColor colorWithRed:1.0 green:0.8 blue:0.0 alpha:0.1];
-        [self.labelDate setTextColor:[UIColor colorWithRed:0.8 green:0.6 blue:0.0 alpha:1.0]];
-        [self.labelBadge setTextColor:[UIColor whiteColor]];
-        self.labelBadge.backgroundColor = [UIColor colorWithRed:1.0 green:0.8 blue:0.0 alpha:1.0];
+        self.backgroundColor = [ThemeColors cellBackgroundColorSuperFavorite];
+        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColorSuperFavorite];
+        [self.labelDate setTextColor:[ThemeColors tintColorSuperFavorite]];
+        [self.labelBadge setTextColor:[ThemeColors cellBackgroundColorSuperFavorite]];
+        self.labelBadge.backgroundColor = [ThemeColors tintColorSuperFavorite];
         
         // Add some shadow
         self.labelTitle.layer.shadowColor = [self.labelTitle.textColor CGColor];
         self.labelTitle.layer.shadowOffset = CGSizeMake(1.0, 1.0);
-        self.labelTitle.layer.shadowRadius = 1.5;
+        self.labelTitle.layer.shadowRadius = 0.3;
         self.labelTitle.layer.shadowOpacity = 0.3;
         self.labelTitle.layer.masksToBounds = NO;
         self.labelTitle.layer.shouldRasterize = YES;

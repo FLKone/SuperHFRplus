@@ -1048,7 +1048,7 @@
     // cancelButtonStyle not needed on iPad
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
         [styleAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
             [self dismissViewControllerAnimated:YES completion:nil];
         }]];
@@ -1841,7 +1841,7 @@
         NSString* sBorderHeader = @"none";
         
         // Modified in theme Dark or OLED
-        if (theme == ThemeDark || theme == ThemeOLED) {
+        if (theme == ThemeDark) {
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
         }
@@ -1918,10 +1918,14 @@
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], // --color-message-header-me-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
-                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1], //--color-message-background
-                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.03], // --color-message-header-me-background
-                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8],  //--color-message-mequoted-borderleft
-                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1],  //--color-message-mequoted-borderother
+                                /*[ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.7], //--color-message-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8], // --color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:0.6],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0],  //--color-message-mequoted-borderother*/
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.4], //--color-message-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.3], // --color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:1],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.5 addSaturation:1], //--color-message-mequoted-borderother
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
@@ -2087,7 +2091,7 @@
     return NO;
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)aRequest navigationType:(UIWebViewNavigationType)navigationType {
-	NSLog(@"expected:%ld, got:%ld | url:%@", (long)UIWebViewNavigationTypeLinkClicked, (long)navigationType, aRequest.URL);
+	//NSLog(@"expected:%ld, got:%ld | url:%@", (long)UIWebViewNavigationTypeLinkClicked, (long)navigationType, aRequest.URL);
 	
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
                     
@@ -2958,7 +2962,7 @@
     NSString* sBorderHeader = @"none";
     
     // Modified in theme Dark or OLED
-    if (theme == ThemeDark || theme == ThemeOLED) {
+    if (theme == ThemeDark) {
         sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
         sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
     }
@@ -2998,10 +3002,14 @@
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
-                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1], //--color-message-background
-                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.03], // --color-message-header-me-background
-                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8],  //--color-message-mequoted-borderleft
-                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1],  //--color-message-mequoted-borderother
+                        /*[ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.7], //--color-message-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8], // --color-message-header-me-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:0.6],  //--color-message-mequoted-borderleft
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0],  //--color-message-mequoted-borderother*/
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.4], //--color-message-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.3], // --color-message-header-me-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:1],  //--color-message-mequoted-borderleft
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.2 addSaturation:1], //--color-message-mequoted-borderother
                         [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message

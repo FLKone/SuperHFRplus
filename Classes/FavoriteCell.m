@@ -27,9 +27,6 @@
 		[self.labelTitle setLineBreakMode:NSLineBreakByTruncatingTail];
 		//[labelTitle setBackgroundColor:[UIColor blueColor]];
 		[self.labelTitle setTextAlignment:NSTextAlignmentLeft];
-        if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            [self.labelTitle setHighlightedTextColor:[UIColor whiteColor]];
-        }
 		[self.labelTitle setTag:999];
 		[self.labelTitle setTextColor:[UIColor blackColor]];
 		[self.labelTitle setNumberOfLines:0];
@@ -83,11 +80,11 @@
 
 -(void)applyTheme {
     Theme theme = [[ThemeManager sharedManager] theme];
-    self.backgroundColor = [ThemeColors cellBackgroundColor:theme];
+    
     // Background color of topic cells in favorite list
     if (self.isSuperFavorite)
     {
-        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColorSuperFavorite:theme];
+        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColorSuperFavorite];
     }
     else
     {

@@ -177,50 +177,6 @@
 			<array>
 				<string>Clair</string>
 				<string>Sombre</string>
-				<string>Sombre OLED</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<integer>0</integer>
-			<key>Key</key>
-			<string>auto_theme_day</string>
-			<key>Title</key>
-			<string>Thème jour</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
-				<string>Sombre OLED</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<integer>1</integer>
-			<key>Key</key>
-			<string>auto_theme_night</string>
-			<key>Title</key>
-			<string>Thème nuit</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
@@ -230,7 +186,7 @@
 				<integer>1</integer>
 			</array>
 		</dict>
-		<dict>
+        <dict>
 			<key>DefaultValue</key>
 			<string>07:00</string>
 			<key>Key</key>
@@ -310,54 +266,14 @@
 				<string>23:00</string>
 			</array>
 		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<false/>
-			<key>Key</key>
-			<string>theme_noel_disabled</string>
-			<key>Title</key>
-			<string>Arrêter la magie de noël</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<false/>
-			<key>Key</key>
-			<string>theme_dark_adjust</string>
-			<key>Title</key>
-			<string>Ajustement thème sombre</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-			<key>Key</key>
-			<string>theme_dark_color1</string>
-			<key>DefaultValue</key>
-			<integer>100</integer>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>MaximumValue</key>
-			<integer>130</integer>
-			<key>MinimumValueImage</key>
-			<string>Contrast</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-			<key>Key</key>
-			<string>theme_dark_color2</string>
-			<key>DefaultValue</key>
-			<integer>33</integer>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>MaximumValue</key>
-			<integer>360</integer>
-			<key>MinimumValueImage</key>
-			<string>ColorWheel</string>
-		</dict>
+        <dict>
+            <key>Title</key>
+            <string>Ajustement de thème</string>
+            <key>Type</key>
+            <string>PSChildPaneSpecifier</string>
+            <key>IASKViewControllerClass</key>
+            <string>ThemeSettingsViewController</string>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Sujets</string>
@@ -518,20 +434,40 @@
 			<key>Titles</key>
 			<array>
 				<string>Non</string>
-				<string>&lt; 2 min</string>
-				<string>&lt; 4 min</string>
-				<string>&lt; 6 min</string>
-				<string>&lt; 10 min</string>
+                <string>&lt; 1 min</string>
+                <string>&lt; 2 min</string>
+                <string>&lt; 3 min</string>
+                <string>&lt; 4 min</string>
+                <string>&lt; 5 min</string>
+                <string>&lt; 6 min</string>
+                <string>&lt; 7 min</string>
+                <string>&lt; 8 min</string>
+                <string>&lt; 9 min</string>
+                <string>&lt; 10 min</string>
+                <string>&lt; 15 min</string>
+                <string>&lt; 20 min</string>
+                <string>&lt; 25 min</string>
+                <string>&lt; 30 min</string>
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Values</key>
 			<array>
 				<integer>0</integer>
-				<integer>2</integer>
-				<integer>4</integer>
-				<integer>6</integer>
-				<integer>10</integer>
+                <integer>1</integer>
+                <integer>2</integer>
+                <integer>3</integer>
+                <integer>4</integer>
+                <integer>5</integer>
+                <integer>6</integer>
+                <integer>7</integer>
+                <integer>8</integer>
+				<integer>9</integer>
+                <integer>10</integer>
+                <integer>15</integer>
+                <integer>20</integer>
+                <integer>25</integer>
+                <integer>30</integer>
 			</array>
 		</dict>
 		<dict>

@@ -31,7 +31,6 @@
     
    // NSOperationQueue *ioQueue;
     NSTimer *periodicMaintenanceTimer;
-    NSTimer *periodicThemeCheckTimer;
     //NSOperation *periodicMaintenanceOperation;
     
     NSString *hash_check;
