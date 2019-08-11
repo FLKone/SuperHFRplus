@@ -771,17 +771,17 @@
 }
 
 - (IBAction)done {
-    //NSLog(@"done %@", self.formSubmit);
+    NSLog(@"formSubmit:%@", self.formSubmit);
     
     ASIFormDataRequest  *arequest =
     [[ASIFormDataRequest  alloc]  initWithURL:[NSURL URLWithString:self.formSubmit]];
     //delete
     NSString *key;
     for (key in self.arrayInputData) {
-        //NSLog(@"POST: %@ : %@", key, [self.arrayInputData objectForKey:key]);
         if ([key isEqualToString:@"allowvisitor"] || [key isEqualToString:@"have_sondage"] || [key isEqualToString:@"sticky"] || [key isEqualToString:@"sticky_everywhere"]) {
             if ([[self.arrayInputData objectForKey:key] isEqualToString:@"1"]) {
                 [arequest setPostValue:[self.arrayInputData objectForKey:key] forKey:key];
+                NSLog(@"POST: >%@< : >%@<", key, [self.arrayInputData objectForKey:key]);
             }
         }
         else if ([key isEqualToString:@"delete"]) {
@@ -791,32 +791,41 @@
         }
         else if ([key isEqualToString:@"pseudo"]) {
                 [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_DISPLAY_KEY] forKey:@"pseudo"];
+                NSLog(@"POST: >%@< : >%@<", @"pseudo", [selectedCompte objectForKey:PSEUDO_DISPLAY_KEY]);
         }else if ([key isEqualToString:@"hash_check"]) {
             if([selectedCompte objectForKey:HASH_KEY]){
                 [arequest setPostValue:[selectedCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
+                NSLog(@"POST: >%@< : >%@<", @"hash_check", [selectedCompte objectForKey:HASH_KEY]);
             }else{
                 [arequest setPostValue:[[HFRplusAppDelegate sharedAppDelegate] hash_check] forKey:@"hash_check"];
+                NSLog(@"POST: >%@< : >%@<", @"hash_check", [[HFRplusAppDelegate sharedAppDelegate] hash_check]);
+
                 // Set hash_check for compte
                 [[MultisManager sharedManager] setHashForCompte:selectedCompte andHash:[[HFRplusAppDelegate sharedAppDelegate] hash_check]];
             }
         }
-        else
+        else {
             [arequest setPostValue:[self.arrayInputData objectForKey:key] forKey:key];
+            NSLog(@"POST: >%@< : >%@<", key, [self.arrayInputData objectForKey:key]);
+        }
     }
     
     NSString* txtTW = [[textView text] removeEmoji];
     txtTW = [txtTW stringByReplacingOccurrencesOfString:@"\n" withString:@"\r\n"];
     
     [arequest setPostValue:txtTW forKey:@"content_form"];
-    
+    NSLog(@"POST: >%@< : >%@<", @"content_form", txtTW);
     if (self.haveTitle) {
         [arequest setPostValue:[textFieldTitle text] forKey:@"sujet"];
+        NSLog(@"POST: >%@< : >%@<", @"sujet", [textFieldTitle text]);
     }
     if (self.haveCategory) {
         [arequest setPostValue:[textFieldCat text] forKey:@"subcat"];
+        NSLog(@"POST: >%@< : >%@<", @"subcat", [textFieldCat text]);
     }
     if (self.haveTo) {
         [arequest setPostValue:[textFieldTo text] forKey:@"dest"];
+        NSLog(@"POST: >%@< : >%@<", @"dest", [textFieldTo text]);
     }
     
     // Set selected compte cookies

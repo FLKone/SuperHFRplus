@@ -31,6 +31,7 @@
 		1572FC4D22F3826100D40789 /* icons8-reset-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 1572FC4C22F3826100D40789 /* icons8-reset-50.png */; };
 		1572FC4F22F384AA00D40789 /* reset-512.png in Resources */ = {isa = PBXBuildFile; fileRef = 1572FC4E22F384AA00D40789 /* reset-512.png */; };
 		158D498B2240618C00AFDBDE /* 08-chat-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */; };
+		15960FE522F6147B006BBD34 /* MPStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 15960FE422F6147B006BBD34 /* MPStorage.m */; };
 		15A1238D22D659CB00C3DFEC /* Heart-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A1238C22D659CB00C3DFEC /* Heart-20.png */; };
 		15AEF9FE223E9053005E6739 /* Icon-BLUE@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AEF9FC223E9052005E6739 /* Icon-BLUE@3x.png */; };
 		15AEF9FF223E9053005E6739 /* Icon-BLUE@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AEF9FD223E9053005E6739 /* Icon-BLUE@2x.png */; };
@@ -796,6 +797,8 @@
 		1572FC4C22F3826100D40789 /* icons8-reset-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-reset-50.png"; sourceTree = "<group>"; };
 		1572FC4E22F384AA00D40789 /* reset-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reset-512.png"; sourceTree = "<group>"; };
 		158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "08-chat-20@2x.png"; path = "SuperHFRplus/Assets/UI/08-chat-20@2x.png"; sourceTree = SOURCE_ROOT; };
+		15960FE322F6146B006BBD34 /* MPStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPStorage.h; sourceTree = "<group>"; };
+		15960FE422F6147B006BBD34 /* MPStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPStorage.m; sourceTree = "<group>"; };
 		15A1238C22D659CB00C3DFEC /* Heart-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Heart-20.png"; path = "../../../../../../Temp/Heart-20.png"; sourceTree = "<group>"; };
 		15AEF9FC223E9052005E6739 /* Icon-BLUE@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BLUE@3x.png"; sourceTree = "<group>"; };
 		15AEF9FD223E9053005E6739 /* Icon-BLUE@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BLUE@2x.png"; sourceTree = "<group>"; };
@@ -1644,6 +1647,8 @@
 				0140AA84121DF25F001C35C4 /* HFRMPViewController.h */,
 				0140AA85121DF25F001C35C4 /* HFRMPViewController.m */,
 				0140AAAA121DF603001C35C4 /* HFRMPViewController.xib */,
+				15960FE322F6146B006BBD34 /* MPStorage.h */,
+				15960FE422F6147B006BBD34 /* MPStorage.m */,
 			);
 			name = MP;
 			sourceTree = "<group>";
@@ -3610,6 +3615,7 @@
 				CA7C70DC185EF50E00B348BA /* RehostImage.m in Sources */,
 				CAF5DB5919328EB4000B5215 /* PullToRefreshErrorViewController.m in Sources */,
 				D80DBD6C1E55BE730051B751 /* ASIDataCompressor.m in Sources */,
+				15960FE522F6147B006BBD34 /* MPStorage.m in Sources */,
 				CA7C70CC185EF50E00B348BA /* UIAlertViewURL.m in Sources */,
 				CA7C70D0185EF50E00B348BA /* FavoriteCell.m in Sources */,
 				CA7C70D1185EF50E00B348BA /* Catcounter.m in Sources */,

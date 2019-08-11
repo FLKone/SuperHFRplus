@@ -8,6 +8,7 @@
 
 #import "BlackList.h"
 #import "HFRplusAppDelegate.h"
+#import "MPStorage.h"
 
 @implementation BlackList
 @synthesize listBlackList, listWhiteList;
@@ -26,52 +27,44 @@ static BlackList *_shared = nil;    // static instance variable
         // your custom initialization
         self.listBlackList = [[NSMutableArray alloc] init];
         self.listWhiteList = [[NSMutableArray alloc] init];
+        // load local storage data
         [self load];
+        // update with MPstorage data when available
+        [[MPStorage shared] loadBlackListAsynchronous];
     }
     return self;
 }
 
-/*
-- (NSString *)description {
-    NSString *tmp = [NSString stringWithFormat:@"List: "];
-    
-    for (NSDictionary *dc in self.list) {
-        tmp = [tmp stringByAppendingFormat:@"\n%@ - %@ - %d", [dc objectForKey:@"word"], [dc objectForKey:@"alias"], [[dc valueForKey:@"mode"] integerValue]];
-    }
-    
-    return tmp;
-}
-*/
-
-/*
-- (void)addDictionnary:(NSDictionary *)dico {
-    [self.list addObject:dico];
-    [self save];
-
-}*/
-
-- (void)addToBlackList:(NSString *)pseudo {
-    [self removeFromWhiteList:pseudo];
+- (void)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave {
+    [self removeFromBlackList:pseudo andSave:NO]; // Security to avoid pseudo duplication
     [self.listBlackList addObject:[NSDictionary dictionaryWithObjectsAndKeys:pseudo, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
-    [self save];
+    if (bSave) {
+        [self save];
+        [[MPStorage shared] saveBlackListAsynchronous:self.listBlackList];
+    }
 }
 
 - (void)addToWhiteList:(NSString *)pseudo {
-    [self removeFromBlackList:pseudo];
+    [self removeFromWhiteList:pseudo]; // Security to avoid pseudo duplication
     [self.listWhiteList addObject:[NSDictionary dictionaryWithObjectsAndKeys:pseudo, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
     [self save];
 }
 
-- (bool)removeFromBlackList:(NSString*)pseudo {
+- (bool)removeFromBlackList:(NSString*)pseudo andSave:(BOOL)bSave {
     int idx = [self findIndexFor:pseudo in:listBlackList];
     if (idx >= 0) {
-        return [self removeAt:idx in:listBlackList];
+        BOOL b = [self removeAt:idx in:listBlackList];
+        if (bSave) {
+            [self save];
+            [[MPStorage shared] saveBlackListAsynchronous:self.listBlackList];
+        }
+        return b;
     }
     
     return false;
 }
 
-- (bool)removeFromWhiteList:(NSString*)pseudo {
+- (bool)removeFromWhiteList:(NSString*)pseudo andSave:(BOOL)bSave {
     int idx = [self findIndexFor:pseudo in:listWhiteList];
     if (idx >= 0) {
         return [self removeAt:idx in:listWhiteList];
@@ -80,10 +73,9 @@ static BlackList *_shared = nil;    // static instance variable
     return false;
 }
 
-- (bool)removeAt:(int)index  in:(NSMutableArray *)list {
+- (bool)removeAt:(int)index in:(NSMutableArray *)list {
     if ([list count] > index) {
         [list removeObjectAtIndex:index];
-        [self save];
         return true;
     }
     return false;
@@ -148,19 +140,25 @@ static BlackList *_shared = nil;    // static instance variable
 }
 
 - (void)save {
+    
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *blackList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:BLACKLIST_FILE]];
     NSString *whiteList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:WHITELIST_FILE]];
 
     [self.listBlackList writeToFile:blackList atomically:YES];
     [self.listWhiteList writeToFile:whiteList atomically:YES];
+    
+    // MPStorage : start asynchronous request for MP blacklist save
+    
 }
 
 - (void)load {
+    // In worse case, take what is present in cache
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *blackList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:BLACKLIST_FILE]];
     NSString *whiteList = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:WHITELIST_FILE]];
+
 
     if ([fileManager fileExistsAtPath:blackList]) {
         self.listBlackList = [NSMutableArray arrayWithContentsOfFile:blackList];
@@ -175,6 +173,9 @@ static BlackList *_shared = nil;    // static instance variable
     else {
         [self.listWhiteList removeAllObjects];
     }
+    
+    // MPStorage : start asynchronous request for MP blacklist load
+    
 }
 
 

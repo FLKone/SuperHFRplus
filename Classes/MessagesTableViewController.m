@@ -2712,11 +2712,11 @@
     NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
     NSString *promptMsg = @"";
     
-    if ([[BlackList shared] removeFromBlackList:pseudo]) {
+    if ([[BlackList shared] removeFromBlackList:pseudo andSave:YES]) {
         promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", pseudo];
     }
     else {
-        [[BlackList shared] addToBlackList:pseudo];
+        [[BlackList shared] addToBlackList:pseudo andSave:YES];
         promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
     }
     

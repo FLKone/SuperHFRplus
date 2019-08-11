@@ -288,7 +288,7 @@
 	
 	[super fetchContentComplete:theRequest];
 
-    //NSLog(@"%d", self.status);
+    
     
 	switch (self.status) {
 		case kMaintenance:
@@ -300,6 +300,9 @@
             [self statusBarButton:kNewTopic enable:YES];
 			break;
 	}
+    
+    // TODOMP
+    // Start asynchronous request for MP drapals
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest

@@ -47,7 +47,7 @@ NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
     // If row is deleted, remove it from the list.
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        [[BlackList shared] removeFromBlackList:[[self.listDict objectAtIndex:indexPath.row] valueForKey:@"word"]];
+        [[BlackList shared] removeFromBlackList:[[self.listDict objectAtIndex:indexPath.row] valueForKey:@"word"] andSave:YES];
         [self reloadData];
     }
 }

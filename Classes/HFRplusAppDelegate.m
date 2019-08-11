@@ -20,7 +20,8 @@
 #import "ThemeManager.h"
 
 #import "MultisManager.h"
-
+#import "MPStorage.h"
+#import "BlackList.h"
 #import "WEBPURLProtocol.h"
 #import "WEBPDemoDecoder.h"
 
@@ -61,6 +62,11 @@
 
     NSLog(@"didFinishLaunchingWithOptions");
 
+    // MPStorage : Init (find topic Id at first startup), then do nothing
+    [MPStorage shared];
+    
+    // Blacklist : init blacklist / lovelist lists
+    [BlackList shared];
     
     [WEBPURLProtocol registerWebP:[WEBPDemoDecoder new]];
 
