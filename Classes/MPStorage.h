@@ -14,6 +14,7 @@
 {
 }
 
+@property BOOL bIsActive;
 @property NSDictionary* dData;
 @property NSString* sPostId;
 @property NSString* sNumRep;
@@ -23,7 +24,9 @@
 
 + (MPStorage *)shared;
 
+- (void)initOrResetMP:(NSString*)pseudo;
 - (void)loadBlackListAsynchronous;
-- (void)saveBlackListAsynchronous:(NSMutableArray*)listBlacklist;
+- (BOOL)addBlackListSynchronous:(NSString*)pseudo;
+- (BOOL)removeBlackListSynchronous:(NSString*)pseudo;
 
 @end

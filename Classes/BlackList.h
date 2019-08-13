@@ -13,16 +13,17 @@
     NSMutableArray *list;
 }
 
-@property (nonatomic, strong) NSMutableArray *listBlackList;
+@property (nonatomic, strong) NSMutableDictionary *dicBlackList;
 @property (nonatomic, strong) NSMutableArray *listWhiteList;
 
 + (BlackList *)shared;
-- (void)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave;
+- (NSInteger)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave;
 - (void)addToWhiteList:(NSString *)pseudo;
-- (bool)removeFromBlackList:(NSString*)pseudo andSave:(BOOL)bSave;
+- (BOOL)removeFromBlackList:(NSString*)pseudo andSave:(BOOL)bSave;
 - (bool)removeFromWhiteList:(NSString*)pseudo;
 - (bool)isBL:(NSString*)pseudo;
 - (bool)isWL:(NSString*)pseudo;
-- (NSArray *)getAllBlackList;
+- (NSMutableArray *)getBlackListForActiveCompte;
+- (void) setBlackListForActiveCompte:(NSMutableArray*)listBlackListUpdated;
 - (NSArray *)getAllWhiteList;
 @end

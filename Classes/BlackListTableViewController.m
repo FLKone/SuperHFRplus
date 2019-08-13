@@ -32,7 +32,7 @@ NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
 }
 
 - (void)reloadData {
-    NSArray *sortedArray = [[[BlackList shared] getAllBlackList] sortedArrayUsingFunction:Sort_BL_Comparer context:(__bridge void * _Nullable)(self)];
+    NSArray *sortedArray = [[[BlackList shared] getBlackListForActiveCompte] sortedArrayUsingFunction:Sort_BL_Comparer context:(__bridge void * _Nullable)(self)];
     self.listDict = (NSMutableArray *)sortedArray;
     [self.tableView reloadData];
 }

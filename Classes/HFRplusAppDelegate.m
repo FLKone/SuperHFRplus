@@ -61,12 +61,6 @@
 - (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 
     NSLog(@"didFinishLaunchingWithOptions");
-
-    // MPStorage : Init (find topic Id at first startup), then do nothing
-    [MPStorage shared];
-    
-    // Blacklist : init blacklist / lovelist lists
-    [BlackList shared];
     
     [WEBPURLProtocol registerWebP:[WEBPDemoDecoder new]];
 
@@ -153,6 +147,12 @@
     
     [[MultisManager sharedManager] updateAllAccounts];
     
+    // Blacklist : init blacklist / lovelist lists
+    [BlackList shared];
+
+    // MPStorage : Init (find topic Id at first startup), then do nothing
+    [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
+
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] refreshTheme];
 

@@ -13,9 +13,7 @@
 #import "HFRplusAppDelegate.h"
 #import <SimpleKeychain/SimpleKeychain.h>
 #import "ASIFormDataRequest.h"
-
-
-
+#include "MPStorage.h"
 
 @implementation MultisManager
 
@@ -82,6 +80,8 @@
         [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
     }
     [self setCookiesForMain];
+    
+    [[MPStorage shared] initOrResetMP:pseudo];
 }
 
 - (void)setPseudoAsMain:(NSString *)pseudo{
@@ -99,6 +99,8 @@
         [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
         [self setCookiesForMain];
     }
+    
+    [[MPStorage shared] initOrResetMP:pseudo];
 }
 
 - (void)setCookiesForMain {
@@ -152,6 +154,17 @@
         }
     }
     return main;
+}
+
+-(NSString *)getCurrentPseudo {
+    NSArray *comptesArray = [self getComtpes];
+    NSDictionary *main;
+    for (NSMutableDictionary* compte in comptesArray) {
+        if([[compte objectForKey:MAIN_KEY] boolValue]){
+            main = compte;
+        }
+    }
+    return [main objectForKey:PSEUDO_DISPLAY_KEY];
 }
 
 -(UIImage *)getAvatarForCompte:(NSDictionary *)compte{

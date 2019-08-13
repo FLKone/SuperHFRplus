@@ -2712,12 +2712,22 @@
     NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
     NSString *promptMsg = @"";
     
-    if ([[BlackList shared] removeFromBlackList:pseudo andSave:YES]) {
-        promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", pseudo];
+    if ([[BlackList shared] isBL:pseudo]) {
+        BOOL ret = [[BlackList shared] removeFromBlackList:pseudo andSave:YES];
+        if (ret) {
+            promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", pseudo];
+        } else {
+            promptMsg = [NSString stringWithFormat:@"Erreur! %@ n'a pas pu être supprimé de la liste noire", pseudo];
+        }
     }
     else {
-        [[BlackList shared] addToBlackList:pseudo andSave:YES];
-        promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
+        NSInteger ret = [[BlackList shared] addToBlackList:pseudo andSave:YES];
+        if (ret > 0) {
+            promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire (%ldms)", pseudo, (long)ret];
+        }
+        else {
+            promptMsg = [NSString stringWithFormat:@"Erreur! %@ n'a pas pu être ajouté à la liste noire", pseudo];
+        }
     }
     
     [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
@@ -2728,13 +2738,15 @@
     NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
     NSString *promptMsg = @"";
     
-    if ([[BlackList shared] removeFromWhiteList:pseudo]) {
+    if ([[BlackList shared] isWL:pseudo]) {
+        [[BlackList shared] removeFromWhiteList:pseudo];
         promptMsg = [NSString stringWithFormat:@"OH NOES ! %@ a été supprimé de la love list", pseudo];
     }
     else {
         [[BlackList shared] addToWhiteList:pseudo];
-        promptMsg = [NSString stringWithFormat:@"BOUM ! %@ ajouté à la love list", pseudo];
+        promptMsg = [NSString stringWithFormat:@"BOUM BOUM ! %@ ajouté à la love list \u2665", pseudo];
     }
+
     
     [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
 }
