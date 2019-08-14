@@ -167,7 +167,7 @@
         <head>\
         <meta name='viewport' content='initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0' />\
         <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
-        <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+        <link type='text/css' rel='stylesheet' href='style-liste-light.css' id='light-styles'/>\
         <style type='text/css'>\
         %@\
         </style>\

@@ -1855,7 +1855,7 @@
                                 <script type='text/javascript' src='jquery.doubletap.js'></script>\
                                 <script type='text/javascript' src='jquery.base64.js'></script>\
                                 <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
-                                <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+                                <link type='text/css' rel='stylesheet' href='style-liste-light.css' id='light-styles'/>\
                                 <style type='text/css'>\
                                 %@\
                                 </style>\
