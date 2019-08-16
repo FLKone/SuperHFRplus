@@ -15,6 +15,7 @@
 
 #import "ThemeManager.h"
 #import "ThemeColors.h"
+#import "MPStorage.h"
 
 @implementation HFRMPViewController
 @synthesize reloadOnAppear, actionButton, reloadButton;
@@ -34,6 +35,13 @@
 - (void)loadView {
 }
 */
+
+- (void)fetchContent
+{
+    [super fetchContent];
+    [[MPStorage shared] reloadMPStorageAsynchronous];
+}
+
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -150,7 +158,13 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    NSString * sOpennedUrl = nil;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
+        sOpennedUrl = [[MPStorage shared] getUrlFlagForTopidId:[[arrayData objectAtIndex:indexPath.row] postID]];
+    }
+    if (sOpennedUrl == nil) {
+        sOpennedUrl = [[arrayData objectAtIndex:indexPath.row] aURLOfLastPage];
+    }
 	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row] aURLOfLastPost] displaySeparator:YES];
 	self.messagesTableViewController = aView;
 

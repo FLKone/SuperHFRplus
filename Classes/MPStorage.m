@@ -24,7 +24,7 @@ NSString* const MP_SOURCE_NAME = @"iOS";
 
 @implementation MPStorage
 
-@synthesize bIsActive, dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, dicMPBlacklistPseudoTimestamp;
+@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag;
 static MPStorage *_shared = nil;    // static instance variable
 
 // --------------------------------------------------------------------------------
@@ -42,29 +42,38 @@ static MPStorage *_shared = nil;    // static instance variable
     if ( (self = [super init]) ) {
         // your custom initialization
         bIsActive = NO;
+        bIsMPStorageSavedSuccessfully = YES; // A startup, every thing is fine
     }
     return self;
 }
 
-- (void)initOrResetMP:(NSString*)pseudo {
+- (BOOL)initOrResetMP:(NSString*)pseudo {
     if (pseudo) {
         NSMutableDictionary* dicMPStorage_postid = [[NSUserDefaults standardUserDefaults] objectForKey:@"dicMPStorage_postid"];
         
         if (dicMPStorage_postid == nil || [dicMPStorage_postid objectForKey:pseudo] == nil) {
             // Find MP with title a2bcc09b796b8c6fab77058ff8446c34
             if ([self findStorageMPFromPage:1] == NO) {
-                // Create empty structure
-                if ([self createEmptyMPStorage] == NO) {
-                    bIsActive = NO;
-                    return;
-                }
-                
-                // Search again to find post ID
-                if ([self findStorageMPFromPage:1] == NO) {
-                    [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:@"Failed to find MPStorage after its creation" forDuration:(long)3];
-                    bIsActive = NO;
-                    return;
-                }
+                [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
+                    
+                    // Create empty structure
+                    if ([self createEmptyMPStorage] == NO) {
+                        bIsActive = NO;
+                        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
+                        return;
+                    }
+                    
+                    // Search again to find post ID
+                    if ([self findStorageMPFromPage:1] == NO) {
+                        [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Failed to find MPStorage after its creation"];
+                        bIsActive = NO;
+                        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
+                        return;
+                    }
+                    
+                    bIsActive = YES;
+                    [[MPStorage shared] loadBlackListAsynchronous];
+                }];
             }
         }
         else {
@@ -73,10 +82,33 @@ static MPStorage *_shared = nil;    // static instance variable
         bIsActive = YES;
         
         [[MPStorage shared] loadBlackListAsynchronous];
+        return YES;
+    }
+    return NO;
+}
+
+// --------------------------------------------------------------------------------
+// Load MPStorage
+// --------------------------------------------------------------------------------
+
+- (void)reloadMPStorageAsynchronous {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
+        if (bIsMPStorageSavedSuccessfully) {
+            ASIHTTPRequest *request = [self GETRequest];
+            [request setShouldRedirect:NO];
+            [request setDelegate:self];
+            [request setDidFinishSelector:@selector(reloadMPStorageAsynchronousComplete:)];
+            [request startAsynchronous];
+        }
     }
 }
 
-
+- (void)reloadMPStorageAsynchronousComplete:(ASIHTTPRequest *)request
+{
+    if ([self parseMPStorage:[request responseString]]) {
+        [self updateLastSucessAcessDate];
+    }
+}
 // --------------------------------------------------------------------------------
 // Load black list methods
 // --------------------------------------------------------------------------------
@@ -85,62 +117,34 @@ static MPStorage *_shared = nil;    // static instance variable
     ASIHTTPRequest *request = [self GETRequest];
     [request setShouldRedirect:NO];
     [request setDelegate:self];
-    [request setDidStartSelector:@selector(loadBlackListStarted:)];
     [request setDidFinishSelector:@selector(loadBlackListComplete:)];
     [request setDidFailSelector:@selector(loadBlackListFailed:)];
     [request startAsynchronous];
 }
 
-- (void)loadBlackListStarted:(ASIHTTPRequest *)request
-{
-}
-
 - (void)loadBlackListFailed:(ASIHTTPRequest *)request
 {
-    [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:@"Failed to load MPstorage for blacklist" forDuration:(long)3];
+    [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Request failed to load MPstorage for blacklist"];
 }
 
 - (void)loadBlackListComplete:(ASIHTTPRequest *)request
 {
-    [self parseBlackList:[request responseString] updateBL:YES];
+    if ([self updateBlackList:[request responseString]] == NO) {
+        // TODO Retry later
+    }
 }
 
-- (BOOL)parseBlackList:(NSString *)content updateBL:(BOOL)updateBL
+- (BOOL)updateBlackList:(NSString *)content
 {
     BOOL success = NO;
     @try {
-        NSError *error;
-        HTMLParser *myParser = [[HTMLParser alloc] initWithString:content error:&error];
-        HTMLNode * bodyNode = [myParser body]; //Find the body tag
-        HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
-        NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
-        HTMLNode *temporaryDivIdRepNode = [[temporaryMPArray objectAtIndex:1] findChildWithAttribute:@"id" matchingName:@"para" allowPartial:YES];
-        sNumRep = [[temporaryDivIdRepNode getAttributeNamed:@"id"] substringFromIndex:4];
-        NSString* contentJson = [[[temporaryMPArray objectAtIndex:1] findChildTag:@"p"] allContents];
-        NSString *contentJson2 = [contentJson stringByReplacingOccurrencesOfString:@"\u00a0" withString:@""]; // Remove unsecable space
-        NSData *jsonData = [contentJson2 dataUsingEncoding:NSUTF8StringEncoding];
-        
-        dData = [NSJSONSerialization JSONObjectWithData:jsonData options: NSJSONReadingMutableContainers error: &error];
-        
-        // Reset black list and fill it with MPStorage values
-        if (updateBL) {
-            [[BlackList shared] setBlackListForActiveCompte:[NSMutableArray array]];
-        }
-        
-        listMPBlacklistPseudo = [NSMutableArray array];
-        dicMPBlacklistPseudoTimestamp = [NSMutableDictionary dictionary];
-        
-        NSArray* bl = dData[@"data"][0][@"blacklist"][@"list"];
-        for (NSDictionary *dUser in bl) {
-            NSString* pseudo = [dUser valueForKey:@"username"];
-            NSNumber* timestamp = [dUser valueForKey:@"createDate"];
-            [listMPBlacklistPseudo addObject:pseudo];
-            [dicMPBlacklistPseudoTimestamp setValue:timestamp forKey:pseudo];
+        if (![self parseMPStorage:content]) return NO;
 
-            if (updateBL) {
-                [[BlackList shared] addToBlackList:pseudo andSave:NO];
-                NSLog(@"User BL added: %@", pseudo);
-            }
+        // Reset black list and fill it with MPStorage values
+        [[BlackList shared] setBlackListForActiveCompte:[NSMutableArray array]];
+        
+        for (NSDictionary *dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
+            [[BlackList shared] addToBlackList:[dUser valueForKey:@"username"] andSave:NO];
         }
         
         success = YES;
@@ -153,20 +157,15 @@ static MPStorage *_shared = nil;    // static instance variable
     
     return success;
 }
+
 // --------------------------------------------------------------------------------
 // Save black list methods
 // --------------------------------------------------------------------------------
 
 - (BOOL)addBlackListSynchronous:(NSString*)newPseudoBL {
     // First get content of MPStorage
-    NSInteger t1 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-
     ASIHTTPRequest *request = [self GETRequest];
     [request startSynchronous];
-
-    NSInteger t2 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-    NSLog(@"Time parseBlackList : %d ms", (int)(t2-t1));
-
     if (request) {
         if ([request error]) {
             NSLog(@"error: %@", [[request error] localizedDescription]);
@@ -175,14 +174,9 @@ static MPStorage *_shared = nil;    // static instance variable
         
         if ([request responseString])
         {
-            // If content is not parsed, then error
-            if ([self parseBlackList:[request responseString] updateBL:NO] == NO) {
-                return NO;
-            }
-
-            NSInteger t3 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-            NSLog(@"Time parseBlackList : %d ms", (int)(t3-t2));
+            if (![self parseMPStorage:[request responseString]]) return NO;
             
+            // Check if pseudo already exists in list
             NSUInteger index = 0;
             NSUInteger indexFound = -1;
             for (NSDictionary* dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
@@ -192,44 +186,15 @@ static MPStorage *_shared = nil;    // static instance variable
                 }
                 index++;
             }
-            if (indexFound == -1) { // Not found, so it can be added
+            
+             // Not found, so it can be added
+            if (indexFound == -1) {
                 NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: TIMESTAMP, @"createDate", newPseudoBL, @"username", nil];
-                
                 [dData[@"data"][0][@"blacklist"][@"list"] insertObject:dict atIndex:0];
                 [dData setValue:TIMESTAMP forKey:@"lastUpdate"];
                 [dData setValue:MP_SOURCE_NAME forKey:@"sourceName"];
-                NSError* error = nil;
-                NSData* dataJson = [NSJSONSerialization dataWithJSONObject:dData options:kNilOptions error:&error];
-                NSString *stringJson = [[NSString alloc] initWithData:dataJson encoding:NSUTF8StringEncoding];
-                
-                NSLog(@"String Json updated:\n%@\n==========================\n", stringJson);
-                
-                NSInteger t4 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-                NSLog(@"Time update json : %d ms", (int)(t4-t3));
 
-                
-                // POST request to save new content
-                ASIFormDataRequest *requestPOST = [self POSTRequestWithData:stringJson newMessage:NO];
-                [requestPOST startSynchronous];
-
-                NSInteger t5 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-                NSLog(@"Time POST : %d ms", (int)(t5-t4));
-
-                if (requestPOST) {
-                    if ([requestPOST error]) {
-                        // Set main compte cookies
-                        NSLog(@"ERROR updating MPstorage");
-                    }
-                    else if ([requestPOST responseString])
-                    {
-                        NSLog(@"Success ? updating MPstorage :\n%@", [requestPOST responseString]);
-                        if ([[requestPOST responseString] containsString:@"succès"]) {
-                            NSInteger t6 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-                            NSLog(@"Time GLOBAL : %d ms", (int)(t6-t1));
-                            return YES;
-                        }
-                    }
-                }
+                return [self saveMPStorageSynchronous];
             }
         }
     }
@@ -250,11 +215,9 @@ static MPStorage *_shared = nil;    // static instance variable
         if ([request responseString])
         {
             // If content is not parsed, then error
-            if ([self parseBlackList:[request responseString] updateBL:NO] == NO) {
-                return NO;
-            }
-            
+            if (![self parseMPStorage:[request responseString]]) return NO;
 
+            // Check if pseudo already exists in list
             NSUInteger index = 0;
             NSUInteger indexFound = -1;
             for (NSDictionary* dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
@@ -264,37 +227,102 @@ static MPStorage *_shared = nil;    // static instance variable
                 }
                 index++;
             }
+            
+            // Found, so it can be removed
             if (indexFound >= 0) {
                 [dData[@"data"][0][@"blacklist"][@"list"] removeObjectAtIndex: indexFound];
-                                           
-                NSError* error = nil;
-                NSData* dataJson = [NSJSONSerialization dataWithJSONObject:dData options:kNilOptions error:&error];
-                NSString *stringJson = [[NSString alloc] initWithData:dataJson encoding:NSUTF8StringEncoding];
                 
-                NSLog(@"String Json updated:\n%@\n==========================\n", stringJson);
-                
-                // POST request to save new content
-                ASIFormDataRequest *requestPOST = [self POSTRequestWithData:stringJson newMessage:NO];
-                [requestPOST startSynchronous];
-                if (requestPOST) {
-                    if ([requestPOST error]) {
-                        // Set main compte cookies
-                        NSLog(@"ERROR updating MPstorage");
-                    }
-                    else if ([requestPOST responseString])
-                    {
-                        NSLog(@"Success ? updating MPstorage :\n%@", [requestPOST responseString]);
-                        if ([[requestPOST responseString] containsString:@"succès"]) {
-                            return YES;
-                        }
-                    }
-                }
+                return [self saveMPStorageSynchronous];
             }
         }
     }
     return NO;
 }
 
+// --------------------------------------------------------------------------------
+// Save MP flags methods
+// --------------------------------------------------------------------------------
+
+- (BOOL)updateMPFlagAsynchronous:(NSDictionary*)newFlag {
+    dicProcessedFlag = newFlag;
+    // Only reload MPStorage when it has been saved successfuly last time
+    if (bIsMPStorageSavedSuccessfully) {
+        ASIHTTPRequest *request = [self GETRequest];
+        [request setDelegate:self];
+        [request setDidFinishSelector:@selector(updateFlag:)];
+        [request setDidFailSelector:@selector(updateMPFlagAsynchronousFailed:)];
+        [request startAsynchronous];
+    }
+    else { // Else, only update internally and try again to save data to MPStorage
+        [self updateFlagInternally];
+        [self saveMPStorageAsynchronous];
+    }
+}
+
+- (void)updateMPFlagAsynchronousFailed:(ASIHTTPRequest *)request {
+    bIsMPStorageSavedSuccessfully = NO;
+    
+    // TODO Add Timer to do a retry after like
+}
+
+- (void)updateFlag:(ASIHTTPRequest *)request
+{
+    BOOL success = NO;
+
+    // If content is not parsed, then error
+    if ([self parseMPStorage:[request responseString]]) {
+        
+        if ([self updateFlagInternally]) {
+            success = [self saveMPStorageAsynchronous];
+        }
+    }
+}
+
+- (BOOL)updateFlagInternally {
+    @try {
+        // Check if post (topic) already exists in list and remove it
+        NSUInteger index = 0;
+        NSUInteger indexFound = -1;
+        for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
+            NSNumber* post = [dFlag valueForKey:@"post"];
+            NSNumber* addedPost = [dicProcessedFlag valueForKey:@"post"];
+            if ([post isEqualToNumber:addedPost]) {
+                indexFound = index;
+            }
+            index++;
+        }
+        
+        // Remove the found flag
+        if (indexFound >= 0) {
+            [dData[@"data"][0][@"mpFlags"][@"list"] removeObjectAtIndex: indexFound];
+        }
+        
+        // Add the new flag
+        [dData[@"data"][0][@"mpFlags"][@"list"] insertObject:dicProcessedFlag atIndex:0];
+        [dData setValue:TIMESTAMP forKey:@"lastUpdate"];
+        [dData setValue:MP_SOURCE_NAME forKey:@"sourceName"];
+    }
+    @catch (NSException * e) {
+        NSLog(@"Exception: %@", e);
+        [HFRAlertView DisplayOKAlertViewWithTitle:@"MPStorage error !" andMessage:@"Error parsing data while updating MP flags."];
+        return NO;
+    }
+    @finally {}
+    return YES;
+}
+
+- (NSString*)getUrlFlagForTopidId:(int)iTopicId {
+    NSString* retUrl = nil;
+    // Check if topic  exists in list
+    for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
+        NSInteger post = [[dFlag valueForKey:@"post"] integerValue];
+        if (post == iTopicId) {
+            retUrl = [dFlag valueForKey:@"uri"];
+            break;
+        }
+    }
+    return retUrl;
+}
 
 // --------------------------------------------------------------------------------
 // MPstorage general handling methods
@@ -327,10 +355,9 @@ static MPStorage *_shared = nil;    // static instance variable
                     if ([key isEqualToString:@"post"]) {
                         sPostId = [[qs componentsSeparatedByString:@"="] objectAtIndex:1];
                         
-                        NSMutableDictionary* dicMPStorage_postid = [[NSUserDefaults standardUserDefaults] objectForKey:@"dicMPStorage_postid"];
+                        NSMutableDictionary* dicMPStorage_postid = [[[NSUserDefaults standardUserDefaults] objectForKey:@"dicMPStorage_postid"] mutableCopy];
                         if (dicMPStorage_postid == nil) dicMPStorage_postid = [NSMutableDictionary dictionary];
-                        NSString* pseudo = [[[MultisManager sharedManager] getMainCompte] objectForKey:PSEUDO_DISPLAY_KEY];
-                        [dicMPStorage_postid setValue:sPostId forKey:pseudo];
+                        [dicMPStorage_postid setValue:sPostId forKey:[[MultisManager sharedManager] getCurrentPseudo]];
                         [[NSUserDefaults standardUserDefaults] setObject:dicMPStorage_postid forKey:@"dicMPStorage_postid"];
                         
                         return YES;
@@ -340,6 +367,7 @@ static MPStorage *_shared = nil;    // static instance variable
         }
     }
 
+    // If not find on current page, search it on next page
     if (iMaxPages > 1 && pageId < iMaxPages) {
         return [self findStorageMPFromPage:(pageId+1)];
     }
@@ -349,7 +377,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (BOOL)createEmptyMPStorage {
     // POST request to save new content
-    NSString* stringJson = [NSString stringWithFormat: @"{\"lastUpdate\":%@,\"data\":[{\"lastUpdate\":%@,\"blacklist\":{\"lastUpdate\":%@,\"sourceName\":\"%@\",\"list\":[]},\"sourceName\":\"%@\",\"mpFlags\":{\"lastUpdate\":%@,\"sourceName\":\"%@\",\"list\":[],\"sourceName\":\"%@\"}", TIMESTAMP, TIMESTAMP, TIMESTAMP, MP_SOURCE_NAME, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, MP_SOURCE_NAME ];
+    NSString* stringJson = [NSString stringWithFormat: @"{\"data\":[{\"version\":\"0.1\",\"blacklist\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"mpFlags\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@}, ,\"sourceName\":\"%@\",\"lastUpdate\":%@],\"sourceName\":\"%@\",\"lastUpdate\":%@}", MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP ];
     ASIFormDataRequest *requestPOST = [self POSTRequestWithData:stringJson newMessage:YES];
 
     [requestPOST startSynchronous];
@@ -431,24 +459,116 @@ static MPStorage *_shared = nil;    // static instance variable
     return arequest;
 }
 
+- (BOOL)parseMPStorage:(NSString *)content
+{
+    if ([content containsString:@"destiné"]) {
+        [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Le MP de stockage semble avoir été supprimé. La fonctionalité va être desactivée"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
+        bIsActive = NO;
+        return NO;
+    }
 
-- (void)loadMP {
-    ASIHTTPRequest *request = [self GETRequest];
-    [request startSynchronous];
-    NSError *error = [request error];
-    if (!error) {
-        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request responseString] error:&error];
+    @try {
+        NSError *error;
+        HTMLParser *myParser = [[HTMLParser alloc] initWithString:content error:&error];
         HTMLNode * bodyNode = [myParser body]; //Find the body tag
         HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
         NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
-        NSString* content = [[[temporaryMPArray objectAtIndex:1] findChildTag:@"p"] allContents];
-        //NSLog(@"MPStorage content: \n======================================\n%@\n======================================\n", content);
-        // Remove unsecable space
-        NSString *content2 = [content stringByReplacingOccurrencesOfString:@"\u00a0" withString:@""];
-        NSData *jsonData = [content2 dataUsingEncoding:NSUTF8StringEncoding];
+        HTMLNode *temporaryDivIdRepNode = [[temporaryMPArray objectAtIndex:1] findChildWithAttribute:@"id" matchingName:@"para" allowPartial:YES];
+        sNumRep = [[temporaryDivIdRepNode getAttributeNamed:@"id"] substringFromIndex:4];
+        NSString* contentJson = [[[temporaryMPArray objectAtIndex:1] findChildTag:@"p"] allContents];
+        NSString *contentJson2 = [contentJson stringByReplacingOccurrencesOfString:@"\u00a0" withString:@""]; // Remove unsecable space
+        NSData *jsonData = [contentJson2 dataUsingEncoding:NSUTF8StringEncoding];
         
         dData = [NSJSONSerialization JSONObjectWithData:jsonData options: NSJSONReadingMutableContainers error: &error];
+
+        if (error) {
+            [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"MPstorage JSON parsing error"];
+            return NO;
+        }
+    }
+    @catch (NSException * e) {
+        NSLog(@"Exception: %@", e);
+        [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"MPstorage global parsing error"];
+        return NO;
+    }
+    @finally {}
+    
+    [self updateLastSucessAcessDate];
+    return YES;
+}
+
+- (BOOL)saveMPStorageSynchronous {
+    bIsMPStorageSavedSuccessfully = NO;
+    NSError* error = nil;
+    NSData* dataJson = [NSJSONSerialization dataWithJSONObject:dData options:kNilOptions error:&error];
+    NSString *stringJson = [[NSString alloc] initWithData:dataJson encoding:NSUTF8StringEncoding];
+
+    // POST request to save new content
+    ASIFormDataRequest *requestPOST = [self POSTRequestWithData:stringJson newMessage:NO];
+    [requestPOST startSynchronous];
+    if (requestPOST) {
+        if ([requestPOST error]) {
+            // Set main compte cookies
+            NSLog(@"ERROR updating MPstorage");
+        }
+        else if ([requestPOST responseString])
+        {
+            NSLog(@"Success ? updating MPstorage :\n%@", [requestPOST responseString]);
+            if ([[requestPOST responseString] containsString:@"succès"]) {
+                [self updateLastSucessAcessDate];
+                bIsMPStorageSavedSuccessfully = YES;
+                return YES;
+            }
+        }
     }
 }
 
+- (BOOL)saveMPStorageAsynchronous {
+    // Serialize JSON to be saved
+    NSError* error = nil;
+    NSData* dataJson = [NSJSONSerialization dataWithJSONObject:dData options:kNilOptions error:&error];
+    NSString *stringJson = [[NSString alloc] initWithData:dataJson encoding:NSUTF8StringEncoding];
+
+    // POST request to save new content
+    ASIFormDataRequest *requestPOST = [self POSTRequestWithData:stringJson newMessage:NO];
+    [requestPOST startSynchronous];
+
+    ASIHTTPRequest *request = [self GETRequest];
+    [request setShouldRedirect:NO];
+    [request setDelegate:self];
+    [request setDidFinishSelector:@selector(saveMPStorageAsynchronousComplete:)];
+    [request setDidFailSelector:@selector(saveMPStorageAsynchronousFailed:)];
+    [request startAsynchronous];
+}
+    
+- (void)saveMPStorageAsynchronousFailed:(ASIHTTPRequest *)request {
+    bIsMPStorageSavedSuccessfully = NO;
+    NSLog(@"ERROR updating MPstorage");
+}
+
+- (void)saveMPStorageAsynchronousComplete:(ASIHTTPRequest *)request
+{
+    bIsMPStorageSavedSuccessfully = NO;
+    if ([request responseString])
+    {
+        if ([[request responseString] containsString:@"succès"]) {
+            [self updateLastSucessAcessDate];
+            bIsMPStorageSavedSuccessfully = YES;
+        }
+    }
+}
+
+- (void)updateLastSucessAcessDate {
+    NSDateFormatter *objDateformat = [[NSDateFormatter alloc] init];
+    [objDateformat setDateFormat:@"dd-MM-yyyy hh:mm:ss"];
+    sLastSucessAcessDate = [objDateformat stringFromDate:[NSDate date]];
+    
+    // Update value into settings
+    NSDictionary *dic =  [NSDictionary dictionaryWithObjectsAndKeys: sLastSucessAcessDate, @"mpstorage_last_rw", nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:dic];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+}
+    
 @end

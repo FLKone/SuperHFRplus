@@ -10,6 +10,8 @@
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 #import "HFRAlertView.h"
+#import "MPStorage.h"
+#import "MultisManager.h"
 
 @import InAppSettingsKit;
 
@@ -105,6 +107,16 @@
     }
     [self setThemeColors:[[ThemeManager sharedManager] theme]];
 
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
+        [self showCell:@"mpstorage_last_rw"];
+        [self showCell:@"mpstorage_reset"];
+    }
+    else {
+        [self hideCell:@"mpstorage_last_rw"];
+        [self hideCell:@"mpstorage_reset"];
+    }
+
+    
     self.navigationItem.rightBarButtonItem = nil;
 }
 
@@ -235,7 +247,20 @@
         
         //Post it to the default notification center
         [[NSNotificationCenter defaultCenter] postNotification:myNotification];
+    } else if([notification.userInfo objectForKey:@"mpstorage_active"]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
+            // MPStorage : Init (find topic Id at first startup), then do nothing
+            if ([[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]]) {
+                [self showCell:@"mpstorage_last_rw"];
+                [self showCell:@"mpstorage_reset"];
+            }
+        }
+        else {
+            [self hideCell:@"mpstorage_last_rw"];
+            [self hideCell:@"mpstorage_reset"];
+        }
     }
+
 
     [self.tableView reloadData];
 }

@@ -166,26 +166,46 @@
 				<integer>2</integer>
 			</array>
 		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<integer>0</integer>
-			<key>Key</key>
-			<string>theme</string>
-			<key>Title</key>
-			<string>Thème</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-			</array>
-		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>0</integer>
+            <key>Key</key>
+            <string>theme_style</string>
+            <key>Title</key>
+            <string>Style du thème</string>
+            <key>Titles</key>
+            <array>
+                <string>Classique</string>
+                <string>Moderne</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>0</integer>
+            <key>Key</key>
+            <string>theme</string>
+            <key>Title</key>
+            <string>Luminosité du thème</string>
+            <key>Titles</key>
+            <array>
+                <string>Clair</string>
+                <string>Sombre</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+        </dict>
         <dict>
 			<key>DefaultValue</key>
 			<string>07:00</string>
@@ -470,6 +490,42 @@
                 <integer>30</integer>
 			</array>
 		</dict>
+        <dict>
+            <key>FooterText</key>
+            <string>Permet de synchroniser certaines données (Drapeaux MP, Blacklist) avec le script équivalent GreaseMonkey.</string>
+            <key>Title</key>
+            <string>Stockage MP</string>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Activer le stockage MP</string>
+            <key>Key</key>
+            <string>mpstorage_active</string>
+            <key>DefaultValue</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>-</string>
+            <key>Key</key>
+            <string>mpstorage_last_rw</string>
+            <key>Title</key>
+            <string>Dernier acces réussi</string>
+            <key>Type</key>
+            <string>PSTitleValueSpecifier</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>IASKButtonSpecifier</string>
+            <key>Title</key>
+            <string>Réinitialiser le MP de stockage</string>
+            <key>Key</key>
+            <string>mpstorage_reset</string>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Maintenance</string>

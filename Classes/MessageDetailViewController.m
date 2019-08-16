@@ -162,12 +162,17 @@
             break;
     }
     
+    NSString* sCssStyle = @"style-liste.css";
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"theme_style"] == 1) {
+        sCssStyle = @"style-liste-light.css";
+    }
+
 	NSString *HTMLString = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
         <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
         <head>\
         <meta name='viewport' content='initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0' />\
         <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
-        <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+        <link type='text/css' rel='stylesheet' href='%@' id='light-styles'/>\
         <style type='text/css'>\
         %@\
         </style>\
@@ -190,7 +195,7 @@
         document.documentElement.style.setProperty('--color-border-quotation', '%@');\
         document.documentElement.style.setProperty('--color-border-avatar', '%@');\
         document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
-                            document.documentElement.style.setProperty('--border-header', '%@');</script>", customFontSize, doubleSmileysCSS, myRawContent,  [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                            document.documentElement.style.setProperty('--border-header', '%@');</script>", sCssStyle, customFontSize, doubleSmileysCSS, myRawContent,  [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
                             [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
                             [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
                             [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text

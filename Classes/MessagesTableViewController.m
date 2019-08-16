@@ -42,6 +42,7 @@
 #import "ThemeColors.h"
 #import "MultisManager.h"
 #import "HFRAlertView.h"
+#import "MPStorage.h"
 
 @implementation MessagesTableViewController
 @synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
@@ -1475,15 +1476,10 @@
 }
 
 -(void)searchNewMessages {
-	
 	[self searchNewMessages:kNewMessageFromUnkwn];
-    
 }
 
 - (void)fetchContentinBackground:(id)from {
-    
-    
-    
         int intfrom = [from intValue];
         
         switch (intfrom) {
@@ -1502,7 +1498,6 @@
         }
         
         [self fetchContent:intfrom];
-	
 }
 
 #pragma mark -
@@ -1835,6 +1830,12 @@
         <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
         <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\ */
 
+        
+        NSString* sCssStyle = @"style-liste.css";
+        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"theme_style"] == 1) {
+            sCssStyle = @"style-liste-light.css";
+        }
+
         // Default value for light theme
         NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
         NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
@@ -1855,7 +1856,7 @@
                                 <script type='text/javascript' src='jquery.doubletap.js'></script>\
                                 <script type='text/javascript' src='jquery.base64.js'></script>\
                                 <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
-                                <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+                                <link type='text/css' rel='stylesheet' href='%@' id='light-styles'/>\
                                 <style type='text/css'>\
                                 %@\
                                 </style>\
@@ -1909,7 +1910,7 @@
                                 document.documentElement.style.setProperty('--border-header', '%@');\
                                 </script>\
                                 </body></html>",
-                                customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
+                                sCssStyle, customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                                 [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
@@ -2066,9 +2067,19 @@
 
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-    //NSLog(@"== webViewDidFinishLoad OK");
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
+        NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
+        NSString* sP = self.arrayInputData[@"p"];
+        NSNumber* nPage = [NSNumber numberWithInt: [self.arrayInputData[@"page"] intValue]];
+        NSString* sTPostID = [[self.arrayData lastObject] postID];
+        NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
 
+        NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sURI, @"uri", nil];
+        [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
+    }
 }
+/*
+https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179&page=57043&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t57321037*/
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     NSLog(@"MTV %@ nbS=%lu", NSStringFromSelector(action), [UIMenuController sharedMenuController].menuItems.count);

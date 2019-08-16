@@ -150,7 +150,7 @@
     // Blacklist : init blacklist / lovelist lists
     [BlackList shared];
 
-    // MPStorage : Init (find topic Id at first startup), then do nothing
+    // MPStorage : Update Blacklist from MPStorage
     [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
 
     [self setTheme:[[ThemeManager sharedManager] theme]];
