@@ -109,7 +109,7 @@
 
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
         [self showCell:@"mpstorage_last_rw"];
-        [self showCell:@"mpstorage_reset"];
+        [self hideCell:@"mpstorage_reset"];
     }
     else {
         [self hideCell:@"mpstorage_last_rw"];
@@ -252,7 +252,7 @@
             // MPStorage : Init (find topic Id at first startup), then do nothing
             if ([[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]]) {
                 [self showCell:@"mpstorage_last_rw"];
-                [self showCell:@"mpstorage_reset"];
+                [self hideCell:@"mpstorage_reset"];
             }
         }
         else {

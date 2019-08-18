@@ -32,7 +32,7 @@
 - (void)loadBlackListAsynchronous;
 - (BOOL)addBlackListSynchronous:(NSString*)pseudo;
 - (BOOL)removeBlackListSynchronous:(NSString*)pseudo;
-- (BOOL)updateMPFlagAsynchronous:(NSDictionary*)newFlag;
+- (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag;
 - (NSString*)getUrlFlagForTopidId:(int)topicID;
 - (void)reloadMPStorageAsynchronous;
 @end

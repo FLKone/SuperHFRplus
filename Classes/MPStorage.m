@@ -48,7 +48,7 @@ static MPStorage *_shared = nil;    // static instance variable
 }
 
 - (BOOL)initOrResetMP:(NSString*)pseudo {
-    if (pseudo) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && pseudo) {
         NSMutableDictionary* dicMPStorage_postid = [[NSUserDefaults standardUserDefaults] objectForKey:@"dicMPStorage_postid"];
         
         if (dicMPStorage_postid == nil || [dicMPStorage_postid objectForKey:pseudo] == nil) {
@@ -58,7 +58,7 @@ static MPStorage *_shared = nil;    // static instance variable
                     
                     // Create empty structure
                     if ([self createEmptyMPStorage] == NO) {
-                        bIsActive = NO;
+                        self.bIsActive = NO;
                         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
                         return;
                     }
@@ -66,12 +66,12 @@ static MPStorage *_shared = nil;    // static instance variable
                     // Search again to find post ID
                     if ([self findStorageMPFromPage:1] == NO) {
                         [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Failed to find MPStorage after its creation"];
-                        bIsActive = NO;
+                        self.bIsActive = NO;
                         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
                         return;
                     }
                     
-                    bIsActive = YES;
+                    self.bIsActive = YES;
                     [[MPStorage shared] loadBlackListAsynchronous];
                 }];
             }
@@ -100,6 +100,9 @@ static MPStorage *_shared = nil;    // static instance variable
             [request setDidFinishSelector:@selector(reloadMPStorageAsynchronousComplete:)];
             [request startAsynchronous];
         }
+        else {
+            NSLog(@"Not reloading MPStorage because last save is not successful.");
+        }
     }
 }
 
@@ -124,7 +127,6 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (void)loadBlackListFailed:(ASIHTTPRequest *)request
 {
-    [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Request failed to load MPstorage for blacklist"];
 }
 
 - (void)loadBlackListComplete:(ASIHTTPRequest *)request
@@ -142,9 +144,11 @@ static MPStorage *_shared = nil;    // static instance variable
 
         // Reset black list and fill it with MPStorage values
         [[BlackList shared] setBlackListForActiveCompte:[NSMutableArray array]];
-        
-        for (NSDictionary *dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
-            [[BlackList shared] addToBlackList:[dUser valueForKey:@"username"] andSave:NO];
+        if ([dData[@"data"][0][@"blacklist"][@"list"] count] > 0) {
+
+            for (NSDictionary *dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
+                [[BlackList shared] addToBlackList:[dUser valueForKey:@"username"] andSave:NO];
+            }
         }
         
         success = YES;
@@ -177,14 +181,16 @@ static MPStorage *_shared = nil;    // static instance variable
             if (![self parseMPStorage:[request responseString]]) return NO;
             
             // Check if pseudo already exists in list
-            NSUInteger index = 0;
-            NSUInteger indexFound = -1;
-            for (NSDictionary* dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
-                NSString* pseudo = [dUser valueForKey:@"username"];
-                if ([[pseudo lowercaseString] isEqualToString:[newPseudoBL lowercaseString]]) {
-                    indexFound = index;
+            NSInteger index = 0;
+            NSInteger indexFound = -1;
+            if ([dData[@"data"][0][@"blacklist"][@"list"] count] > 0) {
+                for (NSDictionary* dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
+                    NSString* pseudo = [dUser valueForKey:@"username"];
+                    if ([[pseudo lowercaseString] isEqualToString:[newPseudoBL lowercaseString]]) {
+                        indexFound = index;
+                    }
+                    index++;
                 }
-                index++;
             }
             
              // Not found, so it can be added
@@ -217,22 +223,24 @@ static MPStorage *_shared = nil;    // static instance variable
             // If content is not parsed, then error
             if (![self parseMPStorage:[request responseString]]) return NO;
 
-            // Check if pseudo already exists in list
-            NSUInteger index = 0;
-            NSUInteger indexFound = -1;
-            for (NSDictionary* dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
-                NSString* pseudo = [dUser valueForKey:@"username"];
-                if ([[pseudo lowercaseString] isEqualToString:[pseudoBLtoRemove lowercaseString]]) {
-                    indexFound = index;
+            if ([dData[@"data"][0][@"blacklist"][@"list"] count] > 0) {
+                // Check if pseudo already exists in list
+                NSInteger index = 0;
+                NSInteger indexFound = -1;
+                for (NSDictionary* dUser in dData[@"data"][0][@"blacklist"][@"list"]) {
+                    NSString* pseudo = [dUser valueForKey:@"username"];
+                    if ([[pseudo lowercaseString] isEqualToString:[pseudoBLtoRemove lowercaseString]]) {
+                        indexFound = index;
+                    }
+                    index++;
                 }
-                index++;
-            }
-            
-            // Found, so it can be removed
-            if (indexFound >= 0) {
-                [dData[@"data"][0][@"blacklist"][@"list"] removeObjectAtIndex: indexFound];
                 
-                return [self saveMPStorageSynchronous];
+                // Found, so it can be removed
+                if (indexFound >= 0) {
+                    [dData[@"data"][0][@"blacklist"][@"list"] removeObjectAtIndex: indexFound];
+                    
+                    return [self saveMPStorageSynchronous];
+                }
             }
         }
     }
@@ -243,7 +251,7 @@ static MPStorage *_shared = nil;    // static instance variable
 // Save MP flags methods
 // --------------------------------------------------------------------------------
 
-- (BOOL)updateMPFlagAsynchronous:(NSDictionary*)newFlag {
+- (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag {
     dicProcessedFlag = newFlag;
     // Only reload MPStorage when it has been saved successfuly last time
     if (bIsMPStorageSavedSuccessfully) {
@@ -267,13 +275,11 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (void)updateFlag:(ASIHTTPRequest *)request
 {
-    BOOL success = NO;
-
     // If content is not parsed, then error
     if ([self parseMPStorage:[request responseString]]) {
         
         if ([self updateFlagInternally]) {
-            success = [self saveMPStorageAsynchronous];
+            [self saveMPStorageAsynchronous];
         }
     }
 }
@@ -281,20 +287,22 @@ static MPStorage *_shared = nil;    // static instance variable
 - (BOOL)updateFlagInternally {
     @try {
         // Check if post (topic) already exists in list and remove it
-        NSUInteger index = 0;
-        NSUInteger indexFound = -1;
-        for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
-            NSNumber* post = [dFlag valueForKey:@"post"];
-            NSNumber* addedPost = [dicProcessedFlag valueForKey:@"post"];
-            if ([post isEqualToNumber:addedPost]) {
-                indexFound = index;
+        if ([dData[@"data"][0][@"mpFlags"][@"list"] count] > 0) {
+            NSInteger index = 0;
+            NSInteger indexFound = -1;
+            for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
+                NSNumber* post = [dFlag valueForKey:@"post"];
+                NSNumber* addedPost = [dicProcessedFlag valueForKey:@"post"];
+                if ([post isEqualToNumber:addedPost]) {
+                    indexFound = index;
+                }
+                index++;
             }
-            index++;
-        }
-        
-        // Remove the found flag
-        if (indexFound >= 0) {
-            [dData[@"data"][0][@"mpFlags"][@"list"] removeObjectAtIndex: indexFound];
+            
+            // Remove the found flag
+            if (indexFound >= 0) {
+                [dData[@"data"][0][@"mpFlags"][@"list"] removeObjectAtIndex: indexFound];
+            }
         }
         
         // Add the new flag
@@ -313,12 +321,15 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (NSString*)getUrlFlagForTopidId:(int)iTopicId {
     NSString* retUrl = nil;
-    // Check if topic  exists in list
-    for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
-        NSInteger post = [[dFlag valueForKey:@"post"] integerValue];
-        if (post == iTopicId) {
-            retUrl = [dFlag valueForKey:@"uri"];
-            break;
+    
+    if ([dData[@"data"][0][@"mpFlags"][@"list"] count] > 0) {
+        // Check if topic  exists in list
+        for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
+            NSInteger post = [[dFlag valueForKey:@"post"] integerValue];
+            if (post == iTopicId) {
+                retUrl = [dFlag valueForKey:@"uri"];
+                break;
+            }
         }
     }
     return retUrl;
@@ -377,7 +388,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (BOOL)createEmptyMPStorage {
     // POST request to save new content
-    NSString* stringJson = [NSString stringWithFormat: @"{\"data\":[{\"version\":\"0.1\",\"blacklist\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"mpFlags\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@}, ,\"sourceName\":\"%@\",\"lastUpdate\":%@],\"sourceName\":\"%@\",\"lastUpdate\":%@}", MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP ];
+    NSString* stringJson = [NSString stringWithFormat: @"{\"data\":[{\"version\":\"0.1\",\"blacklist\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"mpFlags\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"bookmarks\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"sourceName\":\"%@\",\"lastUpdate\":%@}],\"sourceName\":\"%@\",\"lastUpdate\":%@}", MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP ];
     ASIFormDataRequest *requestPOST = [self POSTRequestWithData:stringJson newMessage:YES];
 
     [requestPOST startSynchronous];
@@ -391,6 +402,7 @@ static MPStorage *_shared = nil;    // static instance variable
             NSLog(@"Response string for creating MPstorage \n%@\n-----------------------------\n", [requestPOST responseString]);
             if ([[requestPOST responseString] containsString:@"succès"]) {
                 NSLog(@"SUCCESS creating MPstorage");
+                [self updateLastSucessAcessDate];
                 return YES;
             } else {
                 NSError* error;
@@ -462,9 +474,26 @@ static MPStorage *_shared = nil;    // static instance variable
 - (BOOL)parseMPStorage:(NSString *)content
 {
     if ([content containsString:@"destiné"]) {
-        [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Le MP de stockage semble avoir été supprimé. La fonctionalité va être desactivée"];
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
-        bIsActive = NO;
+        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
+            
+            // Create empty structure
+            if ([self createEmptyMPStorage] == NO) {
+                self.bIsActive = NO;
+                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
+                return;
+            }
+            
+            // Search again to find post ID
+            if ([self findStorageMPFromPage:1] == NO) {
+                [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Failed to find MPStorage after its creation"];
+                self.bIsActive = NO;
+                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
+                return;
+            }
+            
+            self.bIsActive = YES;
+            [[MPStorage shared] loadBlackListAsynchronous];
+        }];
         return NO;
     }
 
@@ -483,13 +512,12 @@ static MPStorage *_shared = nil;    // static instance variable
         dData = [NSJSONSerialization JSONObjectWithData:jsonData options: NSJSONReadingMutableContainers error: &error];
 
         if (error) {
-            [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"MPstorage JSON parsing error"];
+            [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Le MP de stockage semble être erroné. La fonctionalité va être desactivée"];
             return NO;
         }
     }
     @catch (NSException * e) {
         NSLog(@"Exception: %@", e);
-        [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"MPstorage global parsing error"];
         return NO;
     }
     @finally {}
@@ -540,6 +568,8 @@ static MPStorage *_shared = nil;    // static instance variable
     [request setDidFinishSelector:@selector(saveMPStorageAsynchronousComplete:)];
     [request setDidFailSelector:@selector(saveMPStorageAsynchronousFailed:)];
     [request startAsynchronous];
+    
+    
 }
     
 - (void)saveMPStorageAsynchronousFailed:(ASIHTTPRequest *)request {

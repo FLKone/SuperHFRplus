@@ -37,7 +37,7 @@ static BlackList *_shared = nil;    // static instance variable
 - (NSInteger)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave {
     if (![self isBL:pseudo]) {
         NSInteger t1 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-        if (bSave && [[MPStorage shared] bIsActive] && ![[MPStorage shared] addBlackListSynchronous:pseudo]) {
+        if (bSave && [[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && ![[MPStorage shared] addBlackListSynchronous:pseudo]) {
             return 0; // Error
         }
         NSInteger t2 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
@@ -60,7 +60,7 @@ static BlackList *_shared = nil;    // static instance variable
 }
 
 - (BOOL)removeFromBlackList:(NSString*)pseudo andSave:(BOOL)bSave {
-    if (bSave && [[MPStorage shared] bIsActive] && ![[MPStorage shared] removeBlackListSynchronous:pseudo]) {
+    if (bSave && [[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && ![[MPStorage shared] removeBlackListSynchronous:pseudo]) {
         return NO;
     }
     NSMutableArray* listBlackList = [self getBlackListForActiveCompte];
