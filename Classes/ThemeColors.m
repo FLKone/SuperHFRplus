@@ -333,9 +333,9 @@
 + (UIColor *)defaultLoveColor:(Theme)theme{
     switch (theme) {
         case ThemeLight: // Rose
-            return [UIColor colorWithHue:0.9 saturation:0.2 brightness:1.0 alpha:1.0];
+            return [UIColor colorWithHue:0.9 saturation:0.1 brightness:1.0 alpha:1.0];
         case ThemeDark: // Rose
-            return [UIColor colorWithHue:0.9 saturation:0.9 brightness:0.7 alpha:1.0];
+            return [UIColor colorWithHue:0.9 saturation:0.9 brightness:0.3 alpha:1.0];
     }
 }
 
@@ -946,6 +946,13 @@
     [color getHue:&h saturation:&s brightness:&b alpha:&a];
     return [self rgbaFromUIColor:[UIColor colorWithHue:h saturation:(1-s)*newSat+s brightness:b alpha:newAlpha]];
 }
+
++ (NSString *) rgbaFromUIColor:(UIColor *)color withAlpha:(CGFloat)newAlpha addSaturation:(CGFloat)newSat addBrightness:(CGFloat)newBrightness {
+    CGFloat h, s, b, a;
+    [color getHue:&h saturation:&s brightness:&b alpha:&a];
+    return [self rgbaFromUIColor:[UIColor colorWithHue:h saturation:(1-s)*newSat+s brightness:(1-b)*newBrightness+b alpha:newAlpha]];
+}
+
 
 + (UIColor *) colorWithBrigthness:(UIColor *)color withBrightness:(CGFloat)newBrightness {
     CGFloat h, s, b, a;

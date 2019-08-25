@@ -60,6 +60,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 
 .hfrplusimg {
     margin:2px 0 !important;
+    border-radius:5px;
 }
 
 img {
@@ -122,7 +123,7 @@ div.masque {
 }
 
 .separator1 {
-    border-top: 1px dashed var(--color-separator-new-message);
+    border-top: 2px solid var(--color-separator-new-message);
 }
 
 .message {
@@ -154,8 +155,8 @@ div.masque {
 .message .header .left2 {
 	text-align:left;
 	float:left;
-	width:40px; /* Largeur et hauteur d'avatar */
-	height:40px;
+	width:35px; /* Largeur et hauteur d'avatar */
+	height:35px;
 	margin-top:1px !important;
     border:1px solid var(--color-text2); /* Bordure d'avatar */ 
 	background-size: cover;
@@ -163,6 +164,33 @@ div.masque {
 	background-position:center;
     border-radius:50%;
 }
+
+.message.me .header .left2 {
+    text-align:left;
+    float:left;
+    width:35px; /* Largeur et hauteur d'avatar */
+    height:35px;
+    margin-top:1px !important;
+    border:2px solid var(--color-action); /* Bordure d'avatar */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position:center;
+    border-radius:50%;
+}
+
+.message.whitelist .header .left2 {
+    text-align:left;
+    float:left;
+    width:35px; /* Largeur et hauteur d'avatar */
+    height:35px;
+    margin-top:1px !important;
+    border:2px solid var(--color-message-quoted-love-borderleft); /* Bordure d'avatar */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position:center;
+    border-radius:50%;
+}
+
 .message .header .left2.noavatar {
     background-image:var(--imagefile-avatar); /*Clair 'avatar_male_gray_on_light_48x48.png' */ /* Dark url('avatar_male_gray_on_dark_48x48.png'); */
 }
@@ -184,17 +212,17 @@ div.masque {
 }
 
 .message .header .leftdate {
-	margin-left:10px !important;
-
+	margin-right:20px !important;
 	font-size:9px !important;
 	line-height:14px;
 	color:white; /*Dark rgba(206, 206, 206, 1);*/
-	float:left;
+	float:right;
 	font-weight:bold;
 	width:25%;
 	text-shadow: #555 0px 1px 1px;	
 	height:14px;
     margin-top: 10px !important;
+    text-align:right;
 }
 
 .message .header .right {
@@ -263,20 +291,32 @@ div.masque {
 	color: var(--color-message-header); /*#2DAEBF==rgb(45,174,191);*/
 	line-height: inherit;
 	outline: 0px;
-	text-decoration: none;.message .header .leftdate
+	text-decoration: none;
 }
 
 .message .content {
-    
-	padding:0 !important;
+    padding:0 !important;
     background:var(--color-message-background);
 }
 
+.message.me .content {
+    padding:0 !important;
+    background:var(--color-message-mequoted-background);
+    border-left: 2px solid var(--color-action);
+}
+
+.message.whitelist .content {
+    padding:0 !important;
+    background: var(--color-message-header-love-background);
+    border-left: 2px solid var(--color-message-quoted-love-borderleft);
+}
+
+
 
 .message .content .right {
-	text-align:left;
-	float:right;
-	width:85%;
+    text-align:left;
+    float:right;
+    width: calc(100% - 57px) !important;/*86%;*/
 	overflow:hidden;
     font-size:13px !important;
 }
@@ -313,8 +353,10 @@ table.citation_blacklist {
 
 table.bl_quote_show {
     table-layout:fixed;
-    border: none;
-    background: var(--color-message-quoted-bl-background);
+    border-top: 1px solid var(--color-text2); !important;
+    border-bottom: 1px solid var(--color-text2); !important;
+    border-right: none;
+    border-left: none;
 }
 
 table.citation_me_quoted {
@@ -539,6 +581,13 @@ div[id^=para] {
     margin-bottom: 10px !important;
 }
 
+.content br {
+    display: block;
+    margin-bottom: 2px;
+    font-size:2px;
+    line-height: 2px;
+}
+
 a#searchintra_nextbutton {
     position: fixed;
     bottom: 0;
@@ -591,7 +640,7 @@ a#searchintra_nextbutton {
 }
 
 body.ios7 {
-
+    background: var(--color-message-background);
 }
 
 .ios7 .message .header {
@@ -610,20 +659,25 @@ body.ios7 {
     margin-top:0 !important;
     padding-top: 5px !important;
     padding-bottom: 0px !important;
-    background: var(--color-message-header-bl-background);
     color: rgba(109, 109, 114, 1);/* ?? */
     border:none;
-    border-top: var(--border-header);
-    border-bottom: var(--border-header);
+    border-top:1px solid var(--color-text2);
 }
 
 
-.ios7 .message.me .header {
+.ios7 .message.mode .header {
     margin-top:0 !important;
     padding-top: 5px !important;
     padding-bottom: 0px !important;
-    background: var(--color-message-header-me-background);
-    border-left: 2px solid var(--color-message-mequoted-borderleft);
+    background: var(--color-message-modo-background);
+}
+
+.ios7 .message.me .header {var(--color-message-modo-background)
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: var(--color-message-mequoted-background);
+    border-left: 2px solid var(--color-action);
 }
 
 .ios7 .message.whitelist .header {
@@ -659,25 +713,26 @@ body.ios7 {
 .ios7 .message.headerblacklist {
     margin-top:0 !important;
     padding-top: 5px !important;
-    padding-bottom: 5px !important;
+    padding-bottom: 0px !important;
     padding-left: 10px !important;
-    background: var(--color-message-header-bl-background);
-    border:none;
+    /*background: var(--color-message-header-bl-background);*/
+    border-top:1px solid var(--color-text2);
 }
 .ios7 .message.headerblacklist .blavatar {
     text-align:left;
     
     float:left;
-    width:56px;
-    height:30px;
+    width:35px;
+    height:35px;
     margin-top:1px !important;
     
-    border:1px solid var(--color-border-avatar);
+    border:1px solid var(--color-text2);
     background-size: cover;
     background-repeat: no-repeat;
     background-position:center;
     background-image:var(--imagefile-avatar);
     opacity: 0.5;
+    border-radius:50%;
 }
 
 .ios7 .message.headerblacklist .blpseudo {
@@ -686,7 +741,7 @@ body.ios7 {
     color: var(--color-text-pseudo-bl);  /*texte nom pseudo bl*/
     font-weight: bolder;
     font-size: 13px !important;
-    margin-top: 9px !important;
+    margin-top: 13px !important;
     margin-left: 10px !important;
 }
 
@@ -695,6 +750,7 @@ body.ios7 {
     float: right;
     padding:7px !important;
     margin-right : 15px !important;
+    margin-top:8px !important;
     font-size: 15px;
 }
 
@@ -922,12 +978,57 @@ body.ios7 {
     
 }
 
-/* iPhone 5 landscape */
-@media only screen and (orientation:landscape) and (device-height: 568px) {
+/* iPhone 5/5s landscape */
+@media only screen and (device-aspect-ratio: 40/71) and (orientation:landscape) {
     #actualiserbtn.loading {
         background-position: 225px 14px;
     }
-    
+    .message .header .leftdate {
+        text-align: right;
+        margin-top: 10px !important;
+        width:20%;
+    }
+    .message .header .left2 {
+        width: 30px;
+        height: 30px;
+    }
+    .message.me .header .left2 {
+        width: 30px;
+        height: 30px;
+    }
+    .message.whitelist .header .left2 {
+        width: 30px;
+        height: 30px;
+    }
+
+    .content .right {
+        background-color: pink;
+        width: calc(100%-57px);
+    }
+}
+
+/* iPhone 5/5s portrait */
+@media only screen and (device-aspect-ratio: 40/71) and (orientation:portrait) {
+    .message .header .leftdate {
+        text-align: right;
+        margin-top: 5px !important;
+        width:18%;
+    }
+    .message .header .left2 {
+        width: 30px;
+        height: 30px;
+    }
+    .message.me .header .left2 {
+        width: 30px;
+        height: 30px;
+    }
+    .message.whitelist .header .left2 {
+        width: 30px;
+        height: 30px;
+    }
+    .message .content .right {
+        width: calc(100% - 35px) !important;
+    }
 }
 
 /* iPhone 6 portrait */
@@ -935,7 +1036,11 @@ body.ios7 {
     #actualiserbtn.loading {
         background-position: 130px 14px;
     }
-    
+    .message .header .leftdate {
+        text-align: right;
+        margin-top: 5px !important;
+        width:20%;
+    }
 }
 
 /* iPhone 6 landscape */
@@ -1007,7 +1112,6 @@ body.ios7 {
     .message .content .right * {
         font-size:1em !important;
     }
-    
 }
 
 

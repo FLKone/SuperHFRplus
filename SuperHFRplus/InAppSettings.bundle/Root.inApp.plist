@@ -166,47 +166,47 @@
 				<integer>2</integer>
 			</array>
 		</dict>
-        <dict>
-            <key>DefaultValue</key>
-            <integer>0</integer>
-            <key>Key</key>
-            <string>theme_style</string>
-            <key>Title</key>
-            <string>Style du thème</string>
-            <key>Titles</key>
-            <array>
-                <string>Classique</string>
-                <string>Moderne</string>
-            </array>
-            <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-            </array>
-        </dict>
-        <dict>
-            <key>DefaultValue</key>
-            <integer>0</integer>
-            <key>Key</key>
-            <string>theme</string>
-            <key>Title</key>
-            <string>Luminosité du thème</string>
-            <key>Titles</key>
-            <array>
-                <string>Clair</string>
-                <string>Sombre</string>
-            </array>
-            <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-            </array>
-        </dict>
-        <dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>theme_style</string>
+			<key>Title</key>
+			<string>Style du thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Classique</string>
+				<string>Moderne</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>theme</string>
+			<key>Title</key>
+			<string>Luminosité du thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Clair</string>
+				<string>Sombre</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+			</array>
+		</dict>
+		<dict>
 			<key>DefaultValue</key>
 			<string>07:00</string>
 			<key>Key</key>
@@ -286,14 +286,14 @@
 				<string>23:00</string>
 			</array>
 		</dict>
-        <dict>
-            <key>Title</key>
-            <string>Ajustement de thème</string>
-            <key>Type</key>
-            <string>PSChildPaneSpecifier</string>
-            <key>IASKViewControllerClass</key>
-            <string>ThemeSettingsViewController</string>
-        </dict>
+		<dict>
+			<key>Title</key>
+			<string>Ajustement de thème</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>IASKViewControllerClass</key>
+			<string>ThemeSettingsViewController</string>
+		</dict>
 		<dict>
 			<key>Title</key>
 			<string>Sujets</string>
@@ -414,9 +414,9 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>http</string>
-			<key>Key</key>
 			<string>internal</string>
+			<key>Key</key>
+			<string>default_web</string>
 			<key>Title</key>
 			<string>Ouvrir les liens</string>
 			<key>Titles</key>
@@ -444,7 +444,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
-		<dict>
+		<!--dict>
 			<key>DefaultValue</key>
 			<integer>0</integer>
 			<key>Key</key>
@@ -454,78 +454,78 @@
 			<key>Titles</key>
 			<array>
 				<string>Non</string>
-                <string>&lt; 1 min</string>
-                <string>&lt; 2 min</string>
-                <string>&lt; 3 min</string>
-                <string>&lt; 4 min</string>
-                <string>&lt; 5 min</string>
-                <string>&lt; 6 min</string>
-                <string>&lt; 7 min</string>
-                <string>&lt; 8 min</string>
-                <string>&lt; 9 min</string>
-                <string>&lt; 10 min</string>
-                <string>&lt; 15 min</string>
-                <string>&lt; 20 min</string>
-                <string>&lt; 25 min</string>
-                <string>&lt; 30 min</string>
+				<string>&lt; 1 min</string>
+				<string>&lt; 2 min</string>
+				<string>&lt; 3 min</string>
+				<string>&lt; 4 min</string>
+				<string>&lt; 5 min</string>
+				<string>&lt; 6 min</string>
+				<string>&lt; 7 min</string>
+				<string>&lt; 8 min</string>
+				<string>&lt; 9 min</string>
+				<string>&lt; 10 min</string>
+				<string>&lt; 15 min</string>
+				<string>&lt; 20 min</string>
+				<string>&lt; 25 min</string>
+				<string>&lt; 30 min</string>
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Values</key>
 			<array>
 				<integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-                <integer>3</integer>
-                <integer>4</integer>
-                <integer>5</integer>
-                <integer>6</integer>
-                <integer>7</integer>
-                <integer>8</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+				<integer>4</integer>
+				<integer>5</integer>
+				<integer>6</integer>
+				<integer>7</integer>
+				<integer>8</integer>
 				<integer>9</integer>
-                <integer>10</integer>
-                <integer>15</integer>
-                <integer>20</integer>
-                <integer>25</integer>
-                <integer>30</integer>
+				<integer>10</integer>
+				<integer>15</integer>
+				<integer>20</integer>
+				<integer>25</integer>
+				<integer>30</integer>
 			</array>
+		</dict-->
+		<dict>
+			<key>FooterText</key>
+			<string>Permet de synchroniser certaines données (Drapeaux MP, Blacklist) avec le script équivalent GreaseMonkey.</string>
+			<key>Title</key>
+			<string>Stockage MP</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
 		</dict>
-        <dict>
-            <key>FooterText</key>
-            <string>Permet de synchroniser certaines données (Drapeaux MP, Blacklist) avec le script équivalent GreaseMonkey.</string>
-            <key>Title</key>
-            <string>Stockage MP</string>
-            <key>Type</key>
-            <string>PSGroupSpecifier</string>
-        </dict>
-        <dict>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-            <key>Title</key>
-            <string>Activer le stockage MP</string>
-            <key>Key</key>
-            <string>mpstorage_active</string>
-            <key>DefaultValue</key>
-            <false/>
-        </dict>
-        <dict>
-            <key>DefaultValue</key>
-            <string>-</string>
-            <key>Key</key>
-            <string>mpstorage_last_rw</string>
-            <key>Title</key>
-            <string>Dernier acces réussi</string>
-            <key>Type</key>
-            <string>PSTitleValueSpecifier</string>
-        </dict>
-        <dict>
-            <key>Type</key>
-            <string>IASKButtonSpecifier</string>
-            <key>Title</key>
-            <string>Réinitialiser le MP de stockage</string>
-            <key>Key</key>
-            <string>mpstorage_reset</string>
-        </dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Activer le stockage MP</string>
+			<key>Key</key>
+			<string>mpstorage_active</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>-</string>
+			<key>Key</key>
+			<string>mpstorage_last_rw</string>
+			<key>Title</key>
+			<string>Dernier acces réussi</string>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>IASKButtonSpecifier</string>
+			<key>Title</key>
+			<string>Réinitialiser le MP de stockage</string>
+			<key>Key</key>
+			<string>mpstorage_reset</string>
+		</dict>
 		<dict>
 			<key>Title</key>
 			<string>Maintenance</string>

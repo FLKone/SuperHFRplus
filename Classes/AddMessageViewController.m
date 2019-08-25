@@ -530,7 +530,12 @@
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
     self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-
+    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_text"] isEqualToString:@"sys"]) {
+        CGFloat userFontSize = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody].pointSize;
+        userFontSize = floorf(userFontSize*0.90);
+        [self.textView setFont:[UIFont systemFontOfSize:userFontSize]];
+    }
+    
     [self.rehostTableView reloadData];
     [self.commonTableView reloadData];
 

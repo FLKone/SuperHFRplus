@@ -97,6 +97,7 @@
 + (NSString *) rgbaFromUIColor:(UIColor *)color;
 + (NSString *) rgbaFromUIColor:(UIColor *)color withAlpha:(CGFloat)newAlpha;
 + (NSString *) rgbaFromUIColor:(UIColor *)color withAlpha:(CGFloat)newAlpha addSaturation:(CGFloat)s;
++ (NSString *) rgbaFromUIColor:(UIColor *)color withAlpha:(CGFloat)newAlpha addSaturation:(CGFloat)s addBrightness:(CGFloat)b;
 + (NSString *) getColorBorderQuotation:(Theme)theme;
 + (UIColor *)  getColorBorderAvatar:(Theme)theme;
 + (UIColor *)adjustDarkThemeBrightnessOfColor:(UIColor*)color;
