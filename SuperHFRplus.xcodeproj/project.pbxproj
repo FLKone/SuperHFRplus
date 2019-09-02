@@ -787,8 +787,8 @@
 		1556408F22D928AE0018A619 /* WhiteListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WhiteListTableViewController.h; sourceTree = "<group>"; };
 		1556409022D928D30018A619 /* WhiteListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WhiteListTableViewController.m; sourceTree = "<group>"; };
 		1556409222D9297C0018A619 /* WhiteListTableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WhiteListTableViewController.xib; sourceTree = "<group>"; };
-		1556409422D92D4F0018A619 /* HeartBlack-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "HeartBlack-23.png"; path = "../../../../../../Temp/HeartBlack-23.png"; sourceTree = "<group>"; };
-		1556409522D92D4F0018A619 /* HeartWhite-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "HeartWhite-23.png"; path = "../../../../../../Temp/HeartWhite-23.png"; sourceTree = "<group>"; };
+		1556409422D92D4F0018A619 /* HeartBlack-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HeartBlack-23.png"; sourceTree = "<group>"; };
+		1556409522D92D4F0018A619 /* HeartWhite-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HeartWhite-23.png"; sourceTree = "<group>"; };
 		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
 		156246D92182310000F5B8DC /* arrowend.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowend.svg; sourceTree = "<group>"; };
 		156246DA2182310000F5B8DC /* arrowforward.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowforward.svg; sourceTree = "<group>"; };
@@ -801,7 +801,7 @@
 		158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "08-chat-20@2x.png"; path = "SuperHFRplus/Assets/UI/08-chat-20@2x.png"; sourceTree = SOURCE_ROOT; };
 		15960FE322F6146B006BBD34 /* MPStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPStorage.h; sourceTree = "<group>"; };
 		15960FE422F6147B006BBD34 /* MPStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPStorage.m; sourceTree = "<group>"; };
-		15A1238C22D659CB00C3DFEC /* Heart-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Heart-20.png"; path = "../../../../../../Temp/Heart-20.png"; sourceTree = "<group>"; };
+		15A1238C22D659CB00C3DFEC /* Heart-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Heart-20.png"; sourceTree = "<group>"; };
 		15AEF9FC223E9052005E6739 /* Icon-BLUE@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BLUE@3x.png"; sourceTree = "<group>"; };
 		15AEF9FD223E9053005E6739 /* Icon-BLUE@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-BLUE@2x.png"; sourceTree = "<group>"; };
 		15AEFA00223E918F005E6739 /* Icon-WHITE@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-WHITE@3x.png"; sourceTree = "<group>"; };
