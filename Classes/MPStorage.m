@@ -48,6 +48,7 @@ static MPStorage *_shared = nil;    // static instance variable
 }
 
 - (BOOL)initOrResetMP:(NSString*)pseudo {
+    bIsMPStorageSavedSuccessfully = YES; // Reset values
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && pseudo) {
         NSMutableDictionary* dicMPStorage_postid = [[NSUserDefaults standardUserDefaults] objectForKey:@"dicMPStorage_postid"];
         
@@ -388,7 +389,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (BOOL)createEmptyMPStorage {
     // POST request to save new content
-    NSString* stringJson = [NSString stringWithFormat: @"{\"data\":[{\"version\":\"0.1\",\"blacklist\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"mpFlags\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"bookmarks\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"sourceName\":\"%@\",\"lastUpdate\":%@}],\"sourceName\":\"%@\",\"lastUpdate\":%@}", MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP ];
+    NSString* stringJson = [NSString stringWithFormat: @"{\"data\":[{\"version\":\"0.1\",\"blacklist\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"mpFlags\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"bookmarks\":{\"list\":[],\"sourceName\":\"%@\",\"lastUpdate\":%@},\"sourceName\":\"%@\",\"lastUpdate\":%@}],\"sourceName\":\"%@\",\"lastUpdate\":%@}", MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP, MP_SOURCE_NAME, TIMESTAMP ];
     ASIFormDataRequest *requestPOST = [self POSTRequestWithData:stringJson newMessage:YES];
 
     [requestPOST startSynchronous];
@@ -513,6 +514,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
         if (error) {
             [HFRAlertView DisplayOKAlertViewWithTitle:@"Oups !" andMessage:@"Le MP de stockage semble être erroné. La fonctionalité va être desactivée"];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
             return NO;
         }
     }
@@ -569,7 +571,7 @@ static MPStorage *_shared = nil;    // static instance variable
     [request setDidFailSelector:@selector(saveMPStorageAsynchronousFailed:)];
     [request startAsynchronous];
     
-    
+    return YES;
 }
     
 - (void)saveMPStorageAsynchronousFailed:(ASIHTTPRequest *)request {
