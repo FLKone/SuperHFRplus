@@ -76,10 +76,13 @@ static BlackList *_shared = nil;    // static instance variable
     return NO;
 }
 
-- (bool)removeFromWhiteList:(NSString*)pseudo andSave:(BOOL)bSave {
+- (bool)removeFromWhiteList:(NSString*)pseudo {
     int idx = [self findIndexFor:pseudo in:listWhiteList];
     if (idx >= 0) {
-        return [self removeAt:idx in:listWhiteList];
+        if ([self removeAt:idx in:listWhiteList]) {
+            [self save];
+            return true;
+        }
     }
     
     return false;
