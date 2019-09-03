@@ -34,22 +34,16 @@ static BlackList *_shared = nil;    // static instance variable
     return self;
 }
 
-- (NSInteger)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave {
+- (BOOL)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave {
     if (![self isBL:pseudo]) {
-        NSInteger t1 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
         if (bSave && [[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && ![[MPStorage shared] addBlackListSynchronous:pseudo]) {
-            return 0; // Error
+            return NO; // Error
         }
-        NSInteger t2 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-
         NSMutableArray* listBlackList = [self getBlackListForActiveCompte];
         [listBlackList addObject:[NSDictionary dictionaryWithObjectsAndKeys:pseudo, @"word", @"", @"alias", [NSNumber numberWithInt:kTerminator], @"mode", nil]];
         if (bSave) [self save];
-        NSInteger t3 = (NSInteger)round([NSDate timeIntervalSinceReferenceDate] * 1000);
-        NSLog(@"Time global update black list : %d ms", (int)(t3-t1));
-        return (t2-t1);
     }
-    return 0;
+    return YES;
 }
 
 - (void)addToWhiteList:(NSString *)pseudo {
@@ -66,14 +60,12 @@ static BlackList *_shared = nil;    // static instance variable
     NSMutableArray* listBlackList = [self getBlackListForActiveCompte];
     int idx = [self findIndexFor:pseudo in:listBlackList];
     if (idx >= 0) {
-        BOOL b = [self removeAt:idx in:listBlackList];
+        [self removeAt:idx in:listBlackList];
         if (bSave) {
             [self save];
-            return YES;
         }
-        return b;
     }
-    return NO;
+    return YES;
 }
 
 - (bool)removeFromWhiteList:(NSString*)pseudo {

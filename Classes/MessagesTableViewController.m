@@ -2732,7 +2732,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
         }
     }
     else {
-        NSInteger ret = [[BlackList shared] addToBlackList:pseudo andSave:YES];
+        BOOL ret = [[BlackList shared] addToBlackList:pseudo andSave:YES];
         if (ret > 0) {
             promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
         }

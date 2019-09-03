@@ -17,7 +17,7 @@
 @property (nonatomic, strong) NSMutableArray *listWhiteList;
 
 + (BlackList *)shared;
-- (NSInteger)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave;
+- (BOOL)addToBlackList:(NSString *)pseudo andSave:(BOOL)bSave;
 - (void)addToWhiteList:(NSString *)pseudo;
 - (BOOL)removeFromBlackList:(NSString*)pseudo andSave:(BOOL)bSave;
 - (bool)removeFromWhiteList:(NSString*)pseudo;

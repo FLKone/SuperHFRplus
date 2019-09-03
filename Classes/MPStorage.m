@@ -591,7 +591,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (void)updateLastSucessAcessDate {
     NSDateFormatter *objDateformat = [[NSDateFormatter alloc] init];
-    [objDateformat setDateFormat:@"dd-MM-yyyy hh:mm:ss"];
+    [objDateformat setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
     sLastSucessAcessDate = [objDateformat stringFromDate:[NSDate date]];
     
     // Update value into settings
