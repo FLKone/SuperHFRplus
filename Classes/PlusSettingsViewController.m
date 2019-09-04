@@ -137,24 +137,25 @@
         [[ThemeManager sharedManager] setThemeManually:theme];
         [self setThemeColors:theme];
 
-    } else if([notification.userInfo objectForKey:@"auto_theme"]) {
-        
-        [[ThemeManager sharedManager] changeAutoTheme:[[NSUserDefaults standardUserDefaults] boolForKey:@"auto_theme"]];
+    } else if([notification.userInfo objectForKey:@"auto_theme"]) {        
         NSInteger iAutoTheme = [[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"];
         // 0 = Manuel, 1 = Automatique, 2 = Heure fixe
         if (iAutoTheme == AUTO_THEME_AUTO_CAMERA) {
             [self hideCell:@"theme"];
             [self hideCell:@"auto_theme_day_time"];
             [self hideCell:@"auto_theme_night_time"];
+            [[ThemeManager sharedManager] changeAutoTheme:YES];
         } else if (iAutoTheme == AUTO_THEME_AUTO_TIME) {
             [self showCell:@"theme"];
             [self showCell:@"auto_theme_day_time"];
             [self showCell:@"auto_theme_night_time"];
+            [[ThemeManager sharedManager] changeAutoTheme:NO];
             [[ThemeManager sharedManager] setTheme:[[ThemeManager  sharedManager] getThemeFromCurrentTime]];
         } else {
             [self showCell:@"theme"];
             [self hideCell:@"auto_theme_day_time"];
             [self hideCell:@"auto_theme_night_time"];
+            [[ThemeManager sharedManager] changeAutoTheme:NO];
         }
     } else if([notification.userInfo objectForKey:@"auto_theme_day_time"] || [notification.userInfo objectForKey:@"auto_theme_night_time"] ) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"force_manual_theme"];

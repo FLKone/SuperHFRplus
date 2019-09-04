@@ -49,7 +49,7 @@ int nightDelay;
             theme = ThemeLight;
         }
         [self applyAppearance];
-        [self changeAutoTheme:([defaults integerForKey:@"auto_theme"] == 1)];
+        [self changeAutoTheme:([defaults integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_CAMERA)];
     }
     return self;
 }
