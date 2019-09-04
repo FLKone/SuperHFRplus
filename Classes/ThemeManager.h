@@ -30,7 +30,6 @@
 - (void)switchTheme;
 - (void)changeAutoTheme:(BOOL)autoTheme;
 - (void)refreshTheme;
-- (void)checkThemeApplicationDidBecomeActive;
 - (void)checkTheme;
 - (void)setThemeManually:(Theme)newTheme;
 - (Theme)getThemeFromCurrentTime;

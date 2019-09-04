@@ -251,7 +251,7 @@ int nightDelay;
     [self setTheme:newTheme];
 }
 
-- (void) checkThemeApplicationDidBecomeActive {
+- (void) checkTheme {
     if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_TIME) {
         // Check if theme has been changed manually last time
         Theme calculatedTheme = (Theme)[self getThemeFromCurrentTime];

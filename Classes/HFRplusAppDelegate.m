@@ -305,6 +305,7 @@
     
     // MPStorage : Update Blacklist from MPStorage
     [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
+    [[ThemeManager sharedManager] checkTheme];
 }
 
 - (void)periodicMaintenance
@@ -453,7 +454,6 @@
     }
     
     [self setTheme:[[ThemeManager sharedManager] theme]];*/
-    [[ThemeManager sharedManager] checkThemeApplicationDidBecomeActive];
     //[[ThemeManager sharedManager] refreshTheme];
     /*
     if (cestNoel) {

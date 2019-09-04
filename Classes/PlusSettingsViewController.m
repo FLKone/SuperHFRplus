@@ -157,6 +157,7 @@
             [self hideCell:@"auto_theme_night_time"];
         }
     } else if([notification.userInfo objectForKey:@"auto_theme_day_time"] || [notification.userInfo objectForKey:@"auto_theme_night_time"] ) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"force_manual_theme"];
         [[ThemeManager sharedManager] checkTheme];
     } /*else if([notification.userInfo objectForKey:@"theme_day_adjust"]) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_day_adjust"]) {
