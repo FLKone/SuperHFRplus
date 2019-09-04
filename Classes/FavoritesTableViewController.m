@@ -1359,6 +1359,8 @@
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la dernière réponse", @"lastPostAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la page numéro...", @"chooseTopicPage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         /* Evol onglet sticky (gardée au cas où)
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Nouvel onglet", @"newTabBar", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]]; */
 
@@ -1380,7 +1382,16 @@
             }]];
         }
         
-        
+        // Super favorites handling
+        Topic *tmpTopic = [self getTopicAtIndexPath:self.pressedIndexPath];
+        UIAlertAction* uiAction = [UIAlertAction actionWithTitle:@"Super favori" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self setTopicSuperFavoriteWithIndex:self.pressedIndexPath];
+        }];
+        if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]])
+        {
+            [uiAction setValue:@true forKey:@"checked"];
+        }
+        [topicActionAlert addAction:uiAction];
 		
         
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
@@ -1799,16 +1810,16 @@
 
     markReadAction.image = [UIImage checkmarkImage];
     markReadAction.backgroundColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-    
-    UIContextualAction *markSuperFavorite = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
+    /*
+    UIContextualAction *markSuperFavorite = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"Super Fav" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
         [self setTopicSuperFavoriteWithIndex:indexPath];
     }];
     
-    markSuperFavorite.image = [UIImage imageNamed:@"28-star@2x"];
+    //markSuperFavorite.image = [UIImage checkmarkImage];
     markSuperFavorite.backgroundColor = [UIColor colorWithRed:255/255.0 green:205/255.0 blue:40/255.0 alpha:1.0];
     
-    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction, markSuperFavorite]];
-    config.performsFirstActionWithFullSwipe = NO;
+    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction, markSuperFavorite]];*/
+    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[markReadAction]];
     return config;
 }
 

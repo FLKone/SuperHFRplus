@@ -302,6 +302,9 @@
                                                               selector:@selector(periodicMaintenance)
                                                               userInfo:nil
                                                                repeats:YES];
+    
+    // MPStorage : Update Blacklist from MPStorage
+    [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
 }
 
 - (void)periodicMaintenance
