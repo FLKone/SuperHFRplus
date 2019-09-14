@@ -766,10 +766,18 @@
             return [UIImage imageNamed:@"ThorHammerBlack-20"];
         case ThemeDark:
             return [UIImage imageNamed:@"ThorHammerGrey-20"];
-        default:
-            return [UIImage imageNamed:@"ThorHammerBlack-20"];
     }
 }
+
++ (UIImage *)heart:(Theme)theme{
+    switch (theme) {
+        case ThemeLight:
+            return [UIImage imageNamed:@"HeartBlack-23"];
+        case ThemeDark:
+            return [UIImage imageNamed:@"HeartWhite-23"];
+    }
+}
+
 
 + (UIImage *)avatar:(Theme)theme{
     switch (theme) {

@@ -11,4 +11,7 @@
 @interface WhiteListTableViewController : ListTableViewController {
 }
 
+- (NSTextAttachment *)iconForList;
+
+
 @end

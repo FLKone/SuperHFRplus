@@ -52,4 +52,11 @@ NSInteger Sort_BL_Comparer(id id1, id id2, void *context)
     }
 }
 
+- (NSTextAttachment *)iconForList {
+    // creates a text attachment with an image
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+    attachment.image = [ThemeColors thorHammer:[[ThemeManager sharedManager] theme]];
+    return attachment;
+}
+
 @end

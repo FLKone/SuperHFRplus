@@ -55,7 +55,7 @@ static MPStorage *_shared = nil;    // static instance variable
         if (dicMPStorage_postid == nil || [dicMPStorage_postid objectForKey:pseudo] == nil) {
             // Find MP with title a2bcc09b796b8c6fab77058ff8446c34
             if ([self findStorageMPFromPage:1] == NO) {
-                [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
+                [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez-vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
                     
                     // Create empty structure
                     if ([self createEmptyMPStorage] == NO) {
@@ -74,13 +74,17 @@ static MPStorage *_shared = nil;    // static instance variable
                     
                     self.bIsActive = YES;
                     [[MPStorage shared] loadBlackListAsynchronous];
+                }
+                handlerCancel:^(UIAlertAction *action) {
+                    self.bIsActive = NO;
+                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
+                    return;
                 }];
             }
         }
         else {
             sPostId = [dicMPStorage_postid valueForKey:pseudo];
         }
-        bIsActive = YES;
         
         [[MPStorage shared] loadBlackListAsynchronous];
         return YES;
@@ -475,7 +479,7 @@ static MPStorage *_shared = nil;    // static instance variable
 - (BOOL)parseMPStorage:(NSString *)content
 {
     if ([content containsString:@"destiné"]) {
-        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
+        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez-vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
             
             // Create empty structure
             if ([self createEmptyMPStorage] == NO) {

@@ -116,6 +116,15 @@
     NSString *regEx02 = @"<img src=\"https://forum-images.hardware.fr/[^\"]+/([^/]+)\" alt=\"[^\"]+\" title=\"[^\"]+\">";
     myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx02
                                                           withString:@"|NATIVE-$1-98787687687697|"];
+    
+    // Embedded video
+    //<a rel="nofollow" href="https://www.youtube.com/watch?v=pBsjtSjQEjM" target="_blank" class="cLink">https://www.youtube.com/watch?v=pBsjtSjQEjM</a>
+    //NSString *regExYT = @"http(?:s)?:\/\/(?:www\.|m\.|gaming\.)?(youtu)be\.com\/.+v=([\w-]+)";
+    //myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExYT
+    //                                                      withString:@"|NATIVE-$1-98787687687697|"];
+    //regExYT
+
+    
 	//Replacing Links by HREF
 	//NSString *regEx3 = @"<a rel=\"nofollow\" href=\"([^\"]+)\" target=\"_blank\" class=\"cLink\">[^<]+</a>";			
 	//myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx3

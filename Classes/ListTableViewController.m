@@ -60,6 +60,13 @@
 
 #pragma mark - Table view data source
 
+- (NSTextAttachment *)iconForList {
+    // creates a text attachment with an image
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+    attachment.image = [ThemeColors thorHammer:[[ThemeManager sharedManager] theme]];
+    return attachment;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
     if (self.listDict.count) {
@@ -75,12 +82,8 @@
         if ([NSTextAttachment class]) {
             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"Pour ajouter quelqu'un, selectionnez son pseudo, puis "];
             
-            // creates a text attachment with an image
-            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
             
-            attachment.image = [ThemeColors thorHammer:[[ThemeManager sharedManager] theme]];
-            
-            NSAttributedString *imageAttrString = [NSAttributedString attributedStringWithAttachment:attachment];
+            NSAttributedString *imageAttrString = [NSAttributedString attributedStringWithAttachment:[self iconForList]];
             
             [attributedString appendAttributedString:imageAttrString];
             [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@" !"]];

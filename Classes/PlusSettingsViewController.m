@@ -250,6 +250,14 @@
         //Post it to the default notification center
         [[NSNotificationCenter defaultCenter] postNotification:myNotification];
     } else if([notification.userInfo objectForKey:@"mpstorage_active"]) {
+        if (![[MultisManager sharedManager] getCurrentPseudo]) {
+            [HFRAlertView DisplayAlertViewWithTitle:@"MPstorage" andMessage:@"Vous devez être identifié sur le forum pour activer la fonctionnalité." forDuration:(long)2];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
+            [self hideCell:@"mpstorage_last_rw"];
+            [self hideCell:@"mpstorage_reset"];
+            return;
+        }
+
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
             // MPStorage : Init (find topic Id at first startup), then do nothing
             if ([[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]]) {

@@ -16,6 +16,9 @@
 
 @property (nonatomic, strong) NSMutableArray *listDict;
 
+- (NSTextAttachment *)iconForList;
+
+
 @end
 
 #endif /* ListTableViewController_h */

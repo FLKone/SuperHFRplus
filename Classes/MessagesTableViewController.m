@@ -1915,8 +1915,8 @@
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                                 [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
-                                [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-background
-                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], // --color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1], // -color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], // color-message-mequoted-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:1],  //--color-message-mequoted-borderleft
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
                                 /*[ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.7], //--color-message-background
@@ -3021,7 +3021,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
                         [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                         [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
                         [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-modo-background
-                        [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-header-me-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1], //--color-message-header-me-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:1],  //--color-message-mequoted-borderleft
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother

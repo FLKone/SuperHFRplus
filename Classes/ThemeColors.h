@@ -88,6 +88,7 @@
 + (UIKeyboardAppearance)keyboardAppearance:(Theme)theme;
 + (UIKeyboardAppearance)keyboardAppearance;
 + (UIImage *)thorHammer:(Theme)theme;
++ (UIImage *)heart:(Theme)theme;
 + (UIImage *)avatar:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withTheme:(Theme)theme;
 + (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)color;
