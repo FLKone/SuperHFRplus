@@ -256,7 +256,7 @@
         //Post it to the default notification center
         [[NSNotificationCenter defaultCenter] postNotification:myNotification];
     } else if([notification.userInfo objectForKey:@"mpstorage_active"]) {
-        [self.spinner startAnimating];
+        // NOT WORKING [self.spinner startAnimating];
         NSLog(@"notification.userInfo objectForKey:@mpstorage_active]");
         if (![[MultisManager sharedManager] getCurrentPseudo]) {
             [HFRAlertView DisplayAlertViewWithTitle:@"MPstorage" andMessage:@"Vous devez être identifié sur le forum pour activer la fonctionnalité." forDuration:(long)2];
@@ -280,7 +280,7 @@
         }
     }
 
-    [self.spinner stopAnimating];
+    //[self.spinner stopAnimating];
 
     [self.tableView reloadData];
 }
