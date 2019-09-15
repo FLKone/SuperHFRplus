@@ -48,6 +48,10 @@ static MPStorage *_shared = nil;    // static instance variable
 }
 
 - (BOOL)initOrResetMP:(NSString*)pseudo {
+    [self initOrResetMP:pseudo fromView:nil];
+}
+
+- (BOOL)initOrResetMP:(NSString*)pseudo fromView:(UIView*)view {
     bIsMPStorageSavedSuccessfully = YES; // Reset values
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && pseudo) {
         NSMutableDictionary* dicMPStorage_postid = [[NSUserDefaults standardUserDefaults] objectForKey:@"dicMPStorage_postid"];
@@ -55,7 +59,20 @@ static MPStorage *_shared = nil;    // static instance variable
         if (dicMPStorage_postid == nil || [dicMPStorage_postid objectForKey:pseudo] == nil) {
             // Find MP with title a2bcc09b796b8c6fab77058ff8446c34
             if ([self findStorageMPFromPage:1] == NO) {
+                NSLog(@"MPStorage 1");
                 [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez-vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
+                    /* NOT WORKING
+                     UIActivityIndicatorView *spinner = nil;
+                    UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+                    //if (activeVC.view) {
+                    spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                    spinner.center = CGPointMake(160, 240);
+                    spinner.tag = 12;
+                    [activeVC.view addSubview:spinner];
+                    [spinner startAnimating];
+                        //[spinner release];
+                    //}
+                    */
                     
                     // Create empty structure
                     if ([self createEmptyMPStorage] == NO) {
@@ -74,12 +91,17 @@ static MPStorage *_shared = nil;    // static instance variable
                     
                     self.bIsActive = YES;
                     [[MPStorage shared] loadBlackListAsynchronous];
+                    /*
+                     if (spinner) {
+                        [spinner stopAnimating];
+                    }*/
                 }
                 handlerCancel:^(UIAlertAction *action) {
                     self.bIsActive = NO;
                     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
                     return;
                 }];
+                return NO;
             }
         }
         else {
@@ -479,7 +501,9 @@ static MPStorage *_shared = nil;    // static instance variable
 - (BOOL)parseMPStorage:(NSString *)content
 {
     if ([content containsString:@"destiné"]) {
+        NSLog(@"MPStorage 1");
         [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Stockage MP" andMessage:@"Le MP de stockage n'a pas été trouvé. Voulez-vous qu'il soit créé ?" handlerOK:^(UIAlertAction *action) {
+            
             
             // Create empty structure
             if ([self createEmptyMPStorage] == NO) {

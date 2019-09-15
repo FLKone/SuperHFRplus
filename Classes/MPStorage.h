@@ -29,6 +29,7 @@
 + (MPStorage *)shared;
 
 - (BOOL)initOrResetMP:(NSString*)pseudo;
+- (BOOL)initOrResetMP:(NSString*)pseudo fromView:(UIView*)view;
 - (void)loadBlackListAsynchronous;
 - (BOOL)addBlackListSynchronous:(NSString*)pseudo;
 - (BOOL)removeBlackListSynchronous:(NSString*)pseudo;

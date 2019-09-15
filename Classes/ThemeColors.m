@@ -540,6 +540,10 @@
     return [UIColor colorWithHue:h saturation:0.1 brightness:0.9 alpha:1.0];;*/
 }
 
++ (UIColor *)tintColor {
+    return [self tintColor:[ThemeManager currentTheme]];
+}
+
 
 + (UIColor *)defaultTintColor:(Theme)theme {
     switch (theme) {
@@ -549,7 +553,7 @@
             return [UIColor colorWithHue:31.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
     }
 }
-
+/*
 + (UIColor *)tintColor {
     CGFloat h, s, b, a;
     UIColor *c;
@@ -563,7 +567,7 @@
     [c getHue:&h saturation:&s brightness:&b alpha:&a];
     return [UIColor colorWithHue:h saturation:0.9 brightness:0.95 alpha:1.0];;
 }
-
+*/
 
 + (UIColor *)tintLightColor {
     CGFloat h, s, b, a;

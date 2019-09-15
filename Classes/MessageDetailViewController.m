@@ -112,7 +112,7 @@
 	}
 	else {
 		[(UISegmentedControl *)self.navigationItem.rightBarButtonItem.customView setEnabled:NO forSegmentAtIndex:1];
-        return;
+		
 	}
     
     if (SYSTEM_VERSION_LESS_THAN(@"11")) {
@@ -163,9 +163,10 @@
     }
     
     NSString* sCssStyle = @"style-liste.css";
+    /*
     if ([[NSUserDefaults standardUserDefaults] integerForKey:@"theme_style"] == 1) {
         sCssStyle = @"style-liste-light.css";
-    }
+    }*/
 
 	NSString *HTMLString = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
         <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
@@ -183,29 +184,64 @@
         document.addEventListener('DOMContentLoaded', loadedML);\
         function loadedML() { document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded'; };\
         function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}} $('img').error(function(){\
-        $(this).attr('src', 'photoDefaultfailmini.png');});\
-        document.documentElement.style.setProperty('--color-action', '%@');\
-        document.documentElement.style.setProperty('--color-action-disabled', '%@');\
-        document.documentElement.style.setProperty('--color-message-background', '%@');\
-        document.documentElement.style.setProperty('--color-text', '%@');\
-        document.documentElement.style.setProperty('--color-text2', '%@');\
-        document.documentElement.style.setProperty('--color-background-bars', '%@');\
-        document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-        document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
-        document.documentElement.style.setProperty('--color-border-quotation', '%@');\
-        document.documentElement.style.setProperty('--color-border-avatar', '%@');\
-        document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
-                            document.documentElement.style.setProperty('--border-header', '%@');</script>", sCssStyle, customFontSize, doubleSmileysCSS, myRawContent,  [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
-                            [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
-                            [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
+            $(this).attr('src', 'photoDefaultfailmini.png');});\
+            document.documentElement.style.setProperty('--color-action', '%@');\
+            document.documentElement.style.setProperty('--color-action-disabled', '%@');\
+            document.documentElement.style.setProperty('--color-message-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-modo-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-header-me-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
+            document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+            document.documentElement.style.setProperty('--color-message-header-love-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-love-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-love-borderleft', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-love-borderother', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
+            document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
+            document.documentElement.style.setProperty('--color-text', '%@');\
+            document.documentElement.style.setProperty('--color-text2', '%@');\
+            document.documentElement.style.setProperty('--color-background-bars', '%@');\
+            document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
+            document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+            document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+            document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+            document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+            document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+            document.documentElement.style.setProperty('--color-text-pseudo-bl', '%@');\
+            document.documentElement.style.setProperty('--border-header', '%@');\
+            </script>",
+                            sCssStyle, customFontSize, doubleSmileysCSS, myRawContent,
+                            [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                            [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
+                            [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
+                            [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1], // -color-message-header-me-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], // color-message-mequoted-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:1],  //--color-message-mequoted-borderleft
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                            /*[ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.7], //--color-message-background
+                             [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8], // --color-message-header-me-background
+                             [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:0.6],  //--color-message-mequoted-borderleft
+                             [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0],  //--color-message-mequoted-borderother*/
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.4], //--color-message-header-love-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.3], // --color-message-header-me-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:1 addBrightness:1],  //--color-message-mequoted-borderleft
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1 addSaturation:1], //--color-message-mequoted-borderother
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
                             [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                             [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                             [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.9], //--color-searchintra-nextresults
                             sAvatarImageFile,
                             sLoadInfoImageFile,
                             [ThemeColors getColorBorderQuotation:theme],
                             [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
                             [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],
                             sBorderHeader];
 
 	HTMLString = [HTMLString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];

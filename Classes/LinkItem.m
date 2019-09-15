@@ -26,7 +26,10 @@
     BOOL bIsPostBL = NO;
     if ([[BlackList shared] isBL:[self name]]) {
         bIsPostBL = YES;
-    } else {
+    }
+    /* NOT WORKING
+     
+    else {
         NSDateFormatter * df = [[NSDateFormatter alloc] init];
         [df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
         NSDate *dNow = [[NSDate alloc] init];
@@ -35,7 +38,7 @@
         if (secondsBetween < 60*[[NSUserDefaults standardUserDefaults] integerForKey:@"hiderecentposts"]) {
             bIsPostBL = YES;
         }
-    }
+    }*/
     
     // Get current own pseudo
     MultisManager *manager = [MultisManager sharedManager];

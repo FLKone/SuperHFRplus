@@ -17,6 +17,8 @@
 
 @implementation PlusSettingsViewController
 
+@synthesize spinner;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -49,6 +51,10 @@
     self.neverShowPrivacySettings = YES;
     [self.tableView setDelegate:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
+    self.spinner = [[UIActivityIndicatorView alloc]
+                                     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [self.navigationController.view addSubview:spinner];
+
 }
 
 -(void)viewWillAppear:(BOOL)animated   {
@@ -250,6 +256,8 @@
         //Post it to the default notification center
         [[NSNotificationCenter defaultCenter] postNotification:myNotification];
     } else if([notification.userInfo objectForKey:@"mpstorage_active"]) {
+        [self.spinner startAnimating];
+        NSLog(@"notification.userInfo objectForKey:@mpstorage_active]");
         if (![[MultisManager sharedManager] getCurrentPseudo]) {
             [HFRAlertView DisplayAlertViewWithTitle:@"MPstorage" andMessage:@"Vous devez être identifié sur le forum pour activer la fonctionnalité." forDuration:(long)2];
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"mpstorage_active"];
@@ -260,7 +268,8 @@
 
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
             // MPStorage : Init (find topic Id at first startup), then do nothing
-            if ([[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]]) {
+            
+            if ([[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo] fromView:self.view]) {
                 [self showCell:@"mpstorage_last_rw"];
                 [self hideCell:@"mpstorage_reset"];
             }
@@ -271,6 +280,7 @@
         }
     }
 
+    [self.spinner stopAnimating];
 
     [self.tableView reloadData];
 }
