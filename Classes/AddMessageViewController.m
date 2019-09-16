@@ -917,7 +917,14 @@
 }
 
 -(void)segmentToBlue {
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7,0")) {
+    if (@available(iOS 13.0, *)) {
+        [self.segmentControler setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
+        [self.segmentControler setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
+        [self.segmentControlerPage setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
+        [self.segmentControlerPage setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
+        [self.segmentControler setSelectedSegmentTintColor:[ThemeColors tintColor:[[ThemeManager sharedManager] theme]]];
+        [self.segmentControlerPage setSelectedSegmentTintColor:[ThemeColors tintColor:[[ThemeManager sharedManager] theme]]];
+    } else {
         self.segmentControler.tintColor = self.segmentControlerPage.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
     }
 }
