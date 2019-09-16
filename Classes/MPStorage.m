@@ -474,7 +474,15 @@ static MPStorage *_shared = nil;    // static instance variable
     [arequest setPostValue:@"0" forKey:@"smiley"];
     [arequest setPostValue:@"0" forKey:@"owntopic"];
     [arequest setPostValue:@"" forKey:@"numrep"];
-    [arequest setPostValue:[mainCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
+    
+    if([mainCompte objectForKey:HASH_KEY]){
+        [arequest setPostValue:[mainCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
+    }else{
+        [arequest setPostValue:[[HFRplusAppDelegate sharedAppDelegate] hash_check] forKey:@"hash_check"];
+        // Set hash_check for compte
+        [[MultisManager sharedManager] setHashForCompte:mainCompte andHash:[[HFRplusAppDelegate sharedAppDelegate] hash_check]];
+    }
+    
     [arequest setPostValue:@"prive" forKey:@"cat"];
     [arequest setPostValue:@"0" forKey:@"wysiwyg"];
     [arequest setPostValue:@"1" forKey:@"page"];
