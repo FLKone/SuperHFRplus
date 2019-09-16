@@ -51,6 +51,8 @@
         [self setSelectedIndex:[tab intValue]];
     }
     
+    self.tabBar.unselectedItemTintColor = [UIColor colorWithRed:143.0/255.0 green:143.0/255.0 blue:143.0/255.0 alpha:1.0];
+    
     
     if([((HFRNavigationController *)self.viewControllers[0]).topViewController isKindOfClass:[ForumsTableViewController class]]){
         ((ForumsTableViewController *)((HFRNavigationController *)self.viewControllers[0]).topViewController).reloadOnAppear = YES;
