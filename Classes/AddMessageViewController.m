@@ -307,6 +307,12 @@
     } else {
         segmentedControl.selectedSegmentIndex = 2;
     }
+    
+    if (@available(iOS 13.0, *)) {
+        [segmentedControl setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
+        [segmentedControl setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
+        [segmentedControl setSelectedSegmentTintColor:[ThemeColors tabBackgroundColor:[[ThemeManager sharedManager] theme]]];
+    }
 
     // Label
     UILabel *bbcodeLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 56, headerWidth*1/4, 30)];
