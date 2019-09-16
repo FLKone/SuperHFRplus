@@ -710,30 +710,34 @@
     NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
 
     NSString *baseElem = @"window.getSelection().anchorNode";
+    int iProtection = 0;
     while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
         //NSLog(@"baseElem %@", baseElem);
         //NSLog(@"%@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]]);
-        
+        iProtection++;
+        if (iProtection > 100) return;
         baseElem = [baseElem stringByAppendingString:@".parentElement"];
     }
     NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
     int curMsg = [[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]] intValue];
 
+
     NSLog(@"theSelectedText %@", theSelectedText);
     
-    //int curMsg = [[NSNumber numberWithInt:curPostID] intValue];
-        
-    [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
+    if (curMsg < 100) { // Id post BL sont >= 100
+        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
+    }
 }
 
 -(void)textQuoteBold:(id)sender {
     NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
-    
     NSString *baseElem = @"window.getSelection().anchorNode";
+    int iProtection = 0;
     while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
         //NSLog(@"baseElem %@", baseElem);
         //NSLog(@"%@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]]);
-        
+        iProtection++;
+        if (iProtection > 100) return;
         baseElem = [baseElem stringByAppendingString:@".parentElement"];
     }
     NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
@@ -741,11 +745,9 @@
 
     NSLog(@"theSelectedText Bold %@", theSelectedText);
     
-    //int curMsg = [[NSNumber numberWithInt:curPostID] intValue];
-    
-    [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText withBold:YES];
-    
-
+    if (curMsg < 100) { // Id post BL sont >= 100
+        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText withBold:YES];
+    }
 }
 
 - (void)editMenuHidden:(id)sender {
@@ -2175,7 +2177,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 	else if (navigationType == UIWebViewNavigationTypeOther) {
 		if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdodetails"]) {
             int iPostId = [[[aRequest.URL absoluteString] lastPathComponent] intValue];
-            if (iPostId < 1000) {
+            if (iPostId < 100) {
                 [self didSelectMessage:iPostId];
             }
 			return NO;
