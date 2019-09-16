@@ -12,6 +12,7 @@
 		1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755421FE249300A5F7E1 /* PlusCellView.xib */; };
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
 		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
+		15167EB12330210600D64651 /* Heart-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15167EB02330210600D64651 /* Heart-20@2x.png */; };
 		153D295C23043CB200000505 /* style-liste-light.css in Resources */ = {isa = PBXBuildFile; fileRef = 153D295B23043CB200000505 /* style-liste-light.css */; };
 		1543743522EC672F00AF00A5 /* ColorPickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1543743422EC672F00AF00A5 /* ColorPickerViewController.xib */; };
 		1543743722ECAE3100AF00A5 /* ThemeColorCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1543743622ECAE3100AF00A5 /* ThemeColorCellView.xib */; };
@@ -775,6 +776,7 @@
 		1503755721FF794200A5F7E1 /* PlusCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusCellView.m; sourceTree = "<group>"; };
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
+		15167EB02330210600D64651 /* Heart-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Heart-20@2x.png"; sourceTree = "<group>"; };
 		153D295B23043CB200000505 /* style-liste-light.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "style-liste-light.css"; sourceTree = "<group>"; };
 		1543743422EC672F00AF00A5 /* ColorPickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ColorPickerViewController.xib; sourceTree = "<group>"; };
 		1543743622ECAE3100AF00A5 /* ThemeColorCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThemeColorCellView.xib; sourceTree = "<group>"; };
@@ -2168,6 +2170,7 @@
 		4CB132A91B9094BD0081B44D /* MenuItem */ = {
 			isa = PBXGroup;
 			children = (
+				15167EB02330210600D64651 /* Heart-20@2x.png */,
 				15A1238C22D659CB00C3DFEC /* Heart-20.png */,
 				1512A7922232F6C8000C9B1D /* 08-chat-20.png */,
 				158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */,
@@ -3175,6 +3178,7 @@
 				4C59E0841FA9D56C00C902F8 /* Icon-REDFACE@2x.png in Resources */,
 				CA7C6FFA185EF50E00B348BA /* whistle.gif in Resources */,
 				CA7C6FFB185EF50E00B348BA /* FavoritesTableViewController.xib in Resources */,
+				15167EB12330210600D64651 /* Heart-20@2x.png in Resources */,
 				4C39038D1BCAD0C700FD6F1F /* MWPhotoBrowser.bundle in Resources */,
 				CA7C6FFC185EF50E00B348BA /* upsmall7.png in Resources */,
 				CA7C6FFD185EF50E00B348BA /* alert-overlay.png in Resources */,
