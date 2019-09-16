@@ -193,7 +193,7 @@
                     NSString* sQuoteAuthor = [sFullTextAuthor substringToIndex:[sFullTextAuthor length]-10];
                     //NSLog(@"=======================================> QUOTE : %@", sFullTextAuthor);
                     // Check for own post
-                    if ([sQuoteAuthor isEqualToString:currentPseudoLowercase]) {
+                    if ([[sQuoteAuthor lowercaseString] isEqualToString:currentPseudoLowercase]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_me_quoted"];
                     } else if ([[BlackList shared] isWL:[sQuoteAuthor lowercaseString]]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_whitelist"];
