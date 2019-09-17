@@ -159,15 +159,36 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString * sOpennedUrl = nil;
+    
+    // Try to get URL from MPStorage
+    NSString *sPost = nil;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
-        sOpennedUrl = [[MPStorage shared] getUrlFlagForTopidId:[[arrayData objectAtIndex:indexPath.row] postID]];
+        // Get post id from URL
+        Topic *t = [arrayData objectAtIndex:indexPath.row];
+        for (NSString *qs in [t.aURL componentsSeparatedByString:@"&"]) {
+            // Get the parameter name
+            NSString *key = [[qs componentsSeparatedByString:@"="] objectAtIndex:0];
+            // Get the parameter value
+            if ([key isEqualToString:@"post"]) {
+                sPost = [[qs componentsSeparatedByString:@"="] objectAtIndex:1];
+            }
+        }
     }
+    
+    if (sPost) {
+        sOpennedUrl = [[MPStorage shared] getUrlFlagForTopidId:[sPost intValue]];
+        if ([sOpennedUrl hasPrefix:@"https://forum.hardware.fr"]) {
+            sOpennedUrl = [sOpennedUrl substringWithRange:NSMakeRange(25, [sOpennedUrl length]-25)];
+        }
+    }
+    
+    // If nothing, only get URL of last page
     if (sOpennedUrl == nil) {
-        sOpennedUrl = [[arrayData objectAtIndex:indexPath.row] aURLOfLastPage];
+        sOpennedUrl = [[arrayData objectAtIndex:indexPath.row] aURLOfLastPost];
     }
-	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row] aURLOfLastPost] displaySeparator:YES];
+    
+	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:sOpennedUrl displaySeparator:YES];
 	self.messagesTableViewController = aView;
-
 	
 	//setup the URL
 	self.messagesTableViewController.topicName = [[arrayData objectAtIndex:indexPath.row] aTitle];	
