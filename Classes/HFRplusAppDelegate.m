@@ -452,9 +452,9 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
     }
-    
-    [self setTheme:[[ThemeManager sharedManager] theme]];*/
-    //[[ThemeManager sharedManager] refreshTheme];
+    */
+    [self setTheme:[[ThemeManager sharedManager] theme]];
+    [[ThemeManager sharedManager] refreshTheme];
     /*
     if (cestNoel) {
         // Popup retry
