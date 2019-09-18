@@ -230,6 +230,20 @@
         [[UINavigationBar appearance] setBackgroundImage:navBG forBarMetrics:UIBarMetricsDefault];
     }
     [[UINavigationBar appearance] setBarTintColor:[ThemeColors navBackgroundColor:theme]];
+    
+     if (@available(iOS 13.0, *)) {
+         switch ([ThemeManager currentTheme]) {
+             case ThemeLight:
+                 self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+                 break;
+             case ThemeDark:
+                 self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
+                 break;
+             default:
+                self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleUnspecified;
+                 break;
+         }
+     }
 }
 
 
