@@ -670,6 +670,7 @@
 		D89AB2E11FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */; };
 		D89AF55E1E55DE120096504F /* ThorHammerGrey-20.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55B1E55DE120096504F /* ThorHammerGrey-20.png */; };
 		D89AF5601E55DE120096504F /* ThorHammerGrey-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */; };
+		D89FB5AF2332380800023213 /* HeartBlack-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D89FB5AE2332380800023213 /* HeartBlack-20@2x.png */; };
 		D8A61745215E82E3006E9248 /* UIScrollView+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */; };
 		D8B4EDE521C184970042C392 /* snow11.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD121C184970042C392 /* snow11.png */; };
 		D8B4EDE621C184970042C392 /* snow10.png in Resources */ = {isa = PBXBuildFile; fileRef = D8B4EDD221C184970042C392 /* snow10.png */; };
@@ -1542,6 +1543,7 @@
 		D89AB2E01FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImpactFeedbackGenerator+UserDefaults.m"; sourceTree = "<group>"; };
 		D89AF55B1E55DE120096504F /* ThorHammerGrey-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThorHammerGrey-20.png"; sourceTree = "<group>"; };
 		D89AF55C1E55DE120096504F /* ThorHammerGrey-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThorHammerGrey-20@2x.png"; sourceTree = "<group>"; };
+		D89FB5AE2332380800023213 /* HeartBlack-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HeartBlack-20@2x.png"; sourceTree = "<group>"; };
 		D8A61742215E82C6006E9248 /* UIScrollView+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Theme.h"; sourceTree = "<group>"; };
 		D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Theme.m"; sourceTree = "<group>"; };
 		D8B4EDD121C184970042C392 /* snow11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow11.png; sourceTree = "<group>"; };
@@ -2726,6 +2728,7 @@
 		CA7472D317E14D4500B45E15 /* iOS7 */ = {
 			isa = PBXGroup;
 			children = (
+				D89FB5AE2332380800023213 /* HeartBlack-20@2x.png */,
 				1556409422D92D4F0018A619 /* HeartBlack-23.png */,
 				1556409522D92D4F0018A619 /* HeartWhite-23.png */,
 				156246DC2182310000F5B8DC /* arrowback.svg */,
@@ -2991,7 +2994,7 @@
 				LastUpgradeCheck = 1020;
 				TargetAttributes = {
 					CA7C6FA3185EF50E00B348BA = {
-						DevelopmentTeam = QMG83DG7YP;
+						DevelopmentTeam = NCJNK4ZZ54;
 						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -3243,6 +3246,7 @@
 				D8B4EDE521C184970042C392 /* snow11.png in Resources */,
 				CA7C701C185EF50E00B348BA /* arrowbegin.png in Resources */,
 				D8DDF2AF1E58810A002F1484 /* ToolBarFastRewind_on_tinted@2x.png in Resources */,
+				D89FB5AF2332380800023213 /* HeartBlack-20@2x.png in Resources */,
 				D82690441E585CAC006971C3 /* style-liste-dark.css in Resources */,
 				CA7C701D185EF50E00B348BA /* flagyellow@2x.png in Resources */,
 				4C80A4FB1CF1B0E60093CF9B /* ResistorFilled-40.png in Resources */,
@@ -3795,7 +3799,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -3843,7 +3847,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MACH_O_TYPE = mh_execute;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "";
@@ -3861,10 +3865,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 63;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3883,7 +3888,7 @@
 				);
 				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
 				INFOPLIST_FILE = "SuperHFRplus-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3891,7 +3896,7 @@
 					"$(PROJECT_DIR)/**",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super5;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
@@ -3908,10 +3913,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 63;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3928,7 +3934,7 @@
 				);
 				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
 				INFOPLIST_FILE = "SuperHFRplus-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3936,7 +3942,7 @@
 					"$(PROJECT_DIR)/**",
 				);
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super5;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";

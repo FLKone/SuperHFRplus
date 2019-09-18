@@ -312,7 +312,7 @@
 		</dict>
 		<dict>
 			<key>IASKCellImage</key>
-			<string>HeartBlack-23</string>
+			<string>HeartBlack-20</string>
 			<key>IASKViewControllerClass</key>
 			<string>WhiteListTableViewController</string>
 			<key>Title</key>

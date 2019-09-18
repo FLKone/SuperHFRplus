@@ -776,9 +776,9 @@
 + (UIImage *)heart:(Theme)theme{
     switch (theme) {
         case ThemeLight:
-            return [UIImage imageNamed:@"HeartBlack-23"];
+            return [UIImage imageNamed:@"HeartBlack-20"];
         case ThemeDark:
-            return [UIImage imageNamed:@"HeartWhite-23"];
+            return [UIImage imageNamed:@"Heart-20"];
     }
 }
 
