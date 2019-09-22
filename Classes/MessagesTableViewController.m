@@ -1995,6 +1995,25 @@
 {
 	NSLog(@"== webViewDidStartLoad");
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    
+    // Update flag
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"] && self.isSearchInstra == NO) {
+        NSNumber* nPage = [NSNumber numberWithInt: self.pageNumber];
+        NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
+
+        NSInteger nPageCurrentFlag = [[MPStorage shared] getPageFlagForTopidId:[nPost intValue]];
+        // Only update flag if page is more recent
+        if (self.pageNumber >= nPageCurrentFlag ) {
+            NSString* sTPostID = [[self.arrayData lastObject] postID];
+            NSString* sP = self.arrayInputData[@"p"];
+            NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
+            //NSLog(@"====================================================================");
+            //NSLog(@"UPDATE FLAG: nPage %@, nPageCurrentFlag %d", nPage, nPageCurrentFlag);
+            //NSLog(@"====================================================================");
+            NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sURI, @"uri", nil];
+            [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
+        }
+    }
 }
 
 - (void)webViewDidFinishPreLoadDOM {
@@ -2050,6 +2069,7 @@
         [self.messagesWebView stringByEvaluatingJavaScriptFromString:jsString];
         return;
     }
+        
     NSLog(@"== DOMed");
     
 }
@@ -2068,17 +2088,6 @@
     [webView.scrollView setContentSize: CGSizeMake(webView.frame.size.width, webView.scrollView.contentSize.height)];
 
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
-        NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
-        NSString* sP = self.arrayInputData[@"p"];
-        NSNumber* nPage = [NSNumber numberWithInt: [self.arrayInputData[@"page"] intValue]];
-        NSString* sTPostID = [[self.arrayData lastObject] postID];
-        NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
-
-        NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sURI, @"uri", nil];
-        [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
-    }
 }
 /*
 https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179&page=57043&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t57321037*/

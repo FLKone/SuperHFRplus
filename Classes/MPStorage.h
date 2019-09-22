@@ -35,5 +35,6 @@
 - (BOOL)removeBlackListSynchronous:(NSString*)pseudo;
 - (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag;
 - (NSString*)getUrlFlagForTopidId:(int)topicID;
+- (NSInteger)getPageFlagForTopidId:(int)topicID;
 - (void)reloadMPStorageAsynchronous;
 @end

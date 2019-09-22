@@ -362,6 +362,27 @@ static MPStorage *_shared = nil;    // static instance variable
     return retUrl;
 }
 
+- (NSInteger)getPageFlagForTopidId:(int)iTopicId {
+    NSInteger retPage = -1;
+    
+    if ([dData[@"data"][0][@"mpFlags"][@"list"] count] > 0) {
+        // Check if topic  exists in list
+        for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
+            NSInteger post = [[dFlag valueForKey:@"post"] integerValue];
+            if (post == iTopicId) {
+                 @try {
+                     NSString* val = [dFlag valueForKey:@"page"];
+                     retPage = [val integerValue];
+                 }
+                @catch (NSException * e) {}
+                break;
+            }
+        }
+    }
+    return retPage;
+}
+
+
 // --------------------------------------------------------------------------------
 // MPstorage general handling methods
 // --------------------------------------------------------------------------------
