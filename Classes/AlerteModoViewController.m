@@ -19,6 +19,9 @@
 @synthesize textView, delegate, url;
 @synthesize request, loadingView, accessoryView, arrayInputData, formSubmit;
 
+NSString *const PLACEHOLDER = @"Attention : le message que vous écrivez ici sera envoyé directement chez les modérateurs via message privé ou e-mail.\n\nCe formulaire est destiné UNIQUEMENT à demander aux modérateurs de venir sur le sujet lorsqu'il y a un problème.\n\nIl ne sert pas à appeler à l'aide parce que personne ne répond à vos questions.\nIl ne sert pas non plus à ajouter un message sur le sujet, pour cela il y a le menu 'Répondre' (s'il est absent c'est que le sujet a été cloturé).";
+
+
 #pragma mark -
 #pragma mark Download
 
@@ -119,13 +122,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
-    [self.textView setPlaceholder:@"Attention : le message que vous écrivez ici sera envoyé directement chez les modérateurs via message privé ou e-mail.\n\nCe formulaire est destiné UNIQUEMENT à demander aux modérateurs de venir sur le sujet lorsqu'il y a un problème.\n\nIl ne sert pas à appeler à l'aide parce que personne ne répond à vos questions.\nIl ne sert pas non plus à ajouter un message sur le sujet, pour cela il y a le menu 'Répondre' (s'il est absent c'est que le sujet a été cloturé)."];
-    self.textView.placeholderColor = [UIColor lightGrayColor]; // optional
-    [self.textView setText:@""];
+
+    self.textView.text = PLACEHOLDER;
+    self.textView.textColor = [UIColor lightGrayColor];
+    
     self.textView.backgroundColor = [ThemeColors greyBackgroundColor];
-    self.textView.textColor = [ThemeColors cellTextColor];
     self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     [self.navigationController.navigationBar setTranslucent:NO];
+
 
     
     [self fetchContent];
@@ -175,7 +179,7 @@
 #pragma mark Action
 
 - (IBAction)cancel {
-    if ([self.textView text].length > 0) {
+    if ([self.textView text].length > 0 && ![self.textView.text isEqualToString:PLACEHOLDER]) {
         [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Attention !" andMessage:@"Vous allez perdre le contenu de votre alerte" handlerOK: ^(UIAlertAction * action){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
             [self.delegate alertModoViewControllerDidFinish:self];
@@ -268,6 +272,26 @@
     }
     
 }
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:PLACEHOLDER]) {
+         textView.text = @"";
+         textView.textColor = [ThemeColors cellTextColor];
+    }
+    [textView becomeFirstResponder];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:@""]) {
+        textView.text = PLACEHOLDER;
+        textView.textColor = [UIColor lightGrayColor];
+    }
+    [textView resignFirstResponder];
+}
+
+
 #pragma mark -
 #pragma mark Responding to keyboard events
 

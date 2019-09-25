@@ -257,7 +257,6 @@
 		4CC3C7511B99BB6F001B8632 /* DeleteMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC3C74F1B99BB6F001B8632 /* DeleteMessageViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		4CC3C75A1B99BC18001B8632 /* AlerteModoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC3C7571B99BC18001B8632 /* AlerteModoViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		4CC3C75C1B99BC18001B8632 /* AlerteModoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CC3C7581B99BC18001B8632 /* AlerteModoViewController.xib */; };
-		4CC3C7671B9A1513001B8632 /* UITextView+Placeholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC3C7651B9A1513001B8632 /* UITextView+Placeholder.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4CC814FE1BAC86ED00F8BB81 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC814FC1BAC86ED00F8BB81 /* UIColor+Extension.m */; };
 		4CCF76681FB5CE12008CF525 /* InAppSettingsKit+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCF76671FB5CE12008CF525 /* InAppSettingsKit+Theme.m */; };
 		4CD6B8811B977E0E007FC29E /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD6B87F1B977E06007FC29E /* SafariServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -1084,8 +1083,6 @@
 		4CC3C7561B99BC18001B8632 /* AlerteModoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlerteModoViewController.h; sourceTree = "<group>"; };
 		4CC3C7571B99BC18001B8632 /* AlerteModoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AlerteModoViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4CC3C7581B99BC18001B8632 /* AlerteModoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlerteModoViewController.xib; sourceTree = "<group>"; };
-		4CC3C7641B9A1513001B8632 /* UITextView+Placeholder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Placeholder.h"; sourceTree = "<group>"; };
-		4CC3C7651B9A1513001B8632 /* UITextView+Placeholder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Placeholder.m"; sourceTree = "<group>"; };
 		4CC814FB1BAC86ED00F8BB81 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
 		4CC814FC1BAC86ED00F8BB81 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
 		4CCF76661FB5CE12008CF525 /* InAppSettingsKit+Theme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InAppSettingsKit+Theme.h"; sourceTree = "<group>"; };
@@ -2354,8 +2351,6 @@
 				CA00C46917C302610067B457 /* UITableViewController+Ext.m */,
 				CA00C46A17C302610067B457 /* UIWebView+Tools.h */,
 				CA00C46B17C302610067B457 /* UIWebView+Tools.m */,
-				4CC3C7641B9A1513001B8632 /* UITextView+Placeholder.h */,
-				4CC3C7651B9A1513001B8632 /* UITextView+Placeholder.m */,
 				4CC814FB1BAC86ED00F8BB81 /* UIColor+Extension.h */,
 				4CC814FC1BAC86ED00F8BB81 /* UIColor+Extension.m */,
 				4C1793891E93B78B007EA6CB /* UINavigationBar+Helper.h */,
@@ -2996,7 +2991,7 @@
 					CA7C6FA3185EF50E00B348BA = {
 						DevelopmentTeam = NCJNK4ZZ54;
 						LastSwiftMigration = 0910;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -3694,7 +3689,6 @@
 				CA7C70BC185EF50E00B348BA /* UIWebView+Tools.m in Sources */,
 				D82690401E5856A5006971C3 /* HFRUIImagePickerController.m in Sources */,
 				CA7C70F4185EF50E00B348BA /* UITableViewController+Ext.m in Sources */,
-				4CC3C7671B9A1513001B8632 /* UITextView+Placeholder.m in Sources */,
 				4C3903951BCAD0C700FD6F1F /* MWZoomingScrollView.m in Sources */,
 				CA7C7117185EF50E00B348BA /* NSDictionary+Merging.m in Sources */,
 				CA7C7119185EF50E00B348BA /* AKSingleSegmentedControl.m in Sources */,
@@ -3865,12 +3859,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 64;
-				DEVELOPMENT_TEAM = "";
+				CURRENT_PROJECT_VERSION = 66;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3895,10 +3889,11 @@
 					"$(SRCROOT)/**",
 					"$(PROJECT_DIR)/**",
 				);
+				MARKETING_VERSION = 2.1.9;
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus App Store";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -3913,12 +3908,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 64;
-				DEVELOPMENT_TEAM = "";
+				CURRENT_PROJECT_VERSION = 66;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3941,10 +3936,11 @@
 					"$(SRCROOT)/**",
 					"$(PROJECT_DIR)/**",
 				);
+				MARKETING_VERSION = 2.1.9;
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "SuperHFRplus App Store";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
