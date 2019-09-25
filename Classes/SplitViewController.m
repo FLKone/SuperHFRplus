@@ -47,7 +47,7 @@
         //[self setPresentsWithGesture:NO];
     }
 
-//    [self setPreferredDisplayMode:UISpli];
+    //[self setPreferredDisplayMode:UISplitViewControllerDisplayModeAllVisible];
 }
 
 - (void)viewDidUnload

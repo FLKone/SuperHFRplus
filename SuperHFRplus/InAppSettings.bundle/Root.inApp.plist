@@ -80,16 +80,16 @@
 				<string>1</string>
 			</array>
 		</dict>
-        <dict>
-            <key>DefaultValue</key>
-            <true/>
-            <key>Key</key>
-            <string>sujets_avec_cat</string>
-            <key>Title</key>
-            <string>Favoris triés par catégories</string>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-        </dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>sujets_avec_cat</string>
+			<key>Title</key>
+			<string>Favoris triés par catégories</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>super</string>
@@ -102,9 +102,9 @@
 				<string>Classique</string>
 				<string>Super</string>
 				<string>REDFACE</string>
-                <string>Beta</string>
-                <string>Blue</string>
-                <string>White</string>
+				<string>Beta</string>
+				<string>Blue</string>
+				<string>White</string>
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
@@ -113,9 +113,9 @@
 				<string>classic</string>
 				<string>super</string>
 				<string>redface</string>
-                <string>beta</string>
-                <string>blue</string>
-                <string>white</string>
+				<string>beta</string>
+				<string>blue</string>
+				<string>white</string>
 			</array>
 		</dict>
 		<dict>
@@ -150,9 +150,41 @@
 			<key>Key</key>
 			<string>auto_theme</string>
 			<key>Title</key>
-			<string>Thème auto (beta)</string>
+			<string>Changement de thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Manuel</string>
+				<string>Automatique</string>
+				<string>Heure fixe</string>
+			</array>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>theme_style</string>
+			<key>Title</key>
+			<string>Style du thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Classique</string>
+				<string>Moderne</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+			</array>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
@@ -160,51 +192,7 @@
 			<key>Key</key>
 			<string>theme</string>
 			<key>Title</key>
-			<string>Thème</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
-				<string>Sombre OLED</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<integer>0</integer>
-			<key>Key</key>
-			<string>auto_theme_day</string>
-			<key>Title</key>
-			<string>Thème Jour</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
-				<string>Sombre OLED</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<integer>1</integer>
-			<key>Key</key>
-			<string>auto_theme_night</string>
-			<key>Title</key>
-			<string>Thème Nuit</string>
+			<string>Luminosité du thème</string>
 			<key>Titles</key>
 			<array>
 				<string>Clair</string>
@@ -220,51 +208,91 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<false/>
+			<string>07:00</string>
 			<key>Key</key>
-			<string>theme_noel_disabled</string>
+			<string>auto_theme_day_time</string>
 			<key>Title</key>
-			<string>Arrêter la magie de noël</string>
+			<string>Heure du thème jour</string>
+			<key>Titles</key>
+			<array>
+				<string>5h</string>
+				<string>5h30</string>
+				<string>6h</string>
+				<string>6h30</string>
+				<string>7h</string>
+				<string>7h30</string>
+				<string>8h</string>
+				<string>8h30</string>
+				<string>9h</string>
+				<string>9h30</string>
+				<string>10h</string>
+			</array>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>05:00</string>
+				<string>05:30</string>
+				<string>06:00</string>
+				<string>06:30</string>
+				<string>07:00</string>
+				<string>07:30</string>
+				<string>08:00</string>
+				<string>08:30</string>
+				<string>09:00</string>
+				<string>09:30</string>
+				<string>10:00</string>
+			</array>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<false/>
+			<string>20:00</string>
 			<key>Key</key>
-			<string>theme_dark_adjust</string>
+			<string>auto_theme_night_time</string>
 			<key>Title</key>
-			<string>Ajustement thème sombre</string>
+			<string>Heure du thème nuit</string>
+			<key>Titles</key>
+			<array>
+				<string>17h</string>
+				<string>17h30</string>
+				<string>18h</string>
+				<string>18h30</string>
+				<string>19h</string>
+				<string>19h30</string>
+				<string>20h</string>
+				<string>20h30</string>
+				<string>21h</string>
+				<string>21h30</string>
+				<string>22h</string>
+				<string>22h30</string>
+				<string>23h</string>
+			</array>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>17:00</string>
+				<string>17:30</string>
+				<string>18:00</string>
+				<string>18:30</string>
+				<string>19:00</string>
+				<string>19:30</string>
+				<string>20:00</string>
+				<string>20:30</string>
+				<string>21:00</string>
+				<string>21:30</string>
+				<string>22:00</string>
+				<string>22:30</string>
+				<string>23:00</string>
+			</array>
 		</dict>
 		<dict>
+			<key>Title</key>
+			<string>Ajustement de thème</string>
 			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-			<key>Key</key>
-			<string>theme_dark_color1</string>
-			<key>DefaultValue</key>
-			<integer>100</integer>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>MaximumValue</key>
-			<integer>130</integer>
-			<key>MinimumValueImage</key>
-			<string>Contrast</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-			<key>Key</key>
-			<string>theme_dark_color2</string>
-			<key>DefaultValue</key>
-			<integer>33</integer>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>MaximumValue</key>
-			<integer>360</integer>
-			<key>MinimumValueImage</key>
-			<string>ColorWheel</string>
+			<string>PSChildPaneSpecifier</string>
+			<key>IASKViewControllerClass</key>
+			<string>ThemeSettingsViewController</string>
 		</dict>
 		<dict>
 			<key>Title</key>
@@ -279,6 +307,16 @@
 			<string>BlackListTableViewController</string>
 			<key>Title</key>
 			<string>Liste noire</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>IASKCellImage</key>
+			<string>HeartBlack-20</string>
+			<key>IASKViewControllerClass</key>
+			<string>WhiteListTableViewController</string>
+			<key>Title</key>
+			<string>Love list</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -376,9 +414,9 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>http</string>
-			<key>Key</key>
 			<string>internal</string>
+			<key>Key</key>
+			<string>default_web</string>
 			<key>Title</key>
 			<string>Ouvrir les liens</string>
 			<key>Titles</key>
@@ -396,16 +434,98 @@
 				<string>internal</string>
 			</array>
 		</dict>
-        <dict>
-            <key>DefaultValue</key>
-            <true/>
-            <key>Key</key>
-            <string>notify_poll_not_answered</string>
-            <key>Title</key>
-            <string>Notifier un sondage non répondu</string>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-        </dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>notify_poll_not_answered</string>
+			<key>Title</key>
+			<string>Notifier un sondage non répondu</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<!--dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>hiderecentposts</string>
+			<key>Title</key>
+			<string>Masquer les posts récents</string>
+			<key>Titles</key>
+			<array>
+				<string>Non</string>
+				<string>&lt; 1 min</string>
+				<string>&lt; 2 min</string>
+				<string>&lt; 3 min</string>
+				<string>&lt; 4 min</string>
+				<string>&lt; 5 min</string>
+				<string>&lt; 6 min</string>
+				<string>&lt; 7 min</string>
+				<string>&lt; 8 min</string>
+				<string>&lt; 9 min</string>
+				<string>&lt; 10 min</string>
+				<string>&lt; 15 min</string>
+				<string>&lt; 20 min</string>
+				<string>&lt; 25 min</string>
+				<string>&lt; 30 min</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+				<integer>4</integer>
+				<integer>5</integer>
+				<integer>6</integer>
+				<integer>7</integer>
+				<integer>8</integer>
+				<integer>9</integer>
+				<integer>10</integer>
+				<integer>15</integer>
+				<integer>20</integer>
+				<integer>25</integer>
+				<integer>30</integer>
+			</array>
+		</dict-->
+		<dict>
+			<key>FooterText</key>
+			<string>Permet de synchroniser certaines données (Drapeaux MP, Blacklist) avec le script équivalent GreaseMonkey.</string>
+			<key>Title</key>
+			<string>Stockage MP</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Activer le stockage MP</string>
+			<key>Key</key>
+			<string>mpstorage_active</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>-</string>
+			<key>Key</key>
+			<string>mpstorage_last_rw</string>
+			<key>Title</key>
+			<string>Dernier acces réussi</string>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>IASKButtonSpecifier</string>
+			<key>Title</key>
+			<string>Réinitialiser le MP de stockage</string>
+			<key>Key</key>
+			<string>mpstorage_reset</string>
+		</dict>
 		<dict>
 			<key>Title</key>
 			<string>Maintenance</string>

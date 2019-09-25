@@ -9,7 +9,9 @@
 @import InAppSettingsKit;
 
 @interface PlusSettingsViewController : IASKAppSettingsViewController <IASKSettingsDelegate, UIAlertViewDelegate, UITableViewDelegate> {
-    
+
 }
+
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 @end

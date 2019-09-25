@@ -55,7 +55,13 @@ typedef enum
 //Gets the attribute value matching tha name
 -(NSString*)getAttributeNamed:(NSString*)name;
 NSString * getAttributeNamed(xmlNode * node, const char * nameStr);
+
+// Sets the attribute value matching tha name
+-(void)setAttributeNamed:(NSString*)name withValue:(NSString*)value;
 void setAttributeNamed(xmlNode * node, const char * nameStr, const char * value);
+
+-(void)addAttributeNamed:(NSString*)name withValue:(NSString*)value;
+void addAttributeNamed(xmlNode * node, const char * nameStr, const char * value);
 
 //Find childer with the specified tag name
 -(NSArray*)findChildTags:(NSString*)tagName;

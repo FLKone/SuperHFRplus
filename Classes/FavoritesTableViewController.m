@@ -652,7 +652,13 @@
         self.arrayCategoriesHiddenOrder = [[NSMutableArray alloc] init];
     }
     
-    self.idPostSuperFavorites = [[NSMutableArray alloc] init];
+    // Get Ids super favorites if presents
+    if ([[[defaults dictionaryRepresentation] allKeys] containsObject:@"SuperFavoritesIds"]) {
+        self.idPostSuperFavorites = [[defaults arrayForKey:@"SuperFavoritesIds"] mutableCopy];
+    } else {
+        // If not, create en empty array
+        self.idPostSuperFavorites = [[NSMutableArray alloc] init];
+    }
     
 	self.statusMessage = [[NSString alloc] init];
 	
@@ -1094,7 +1100,13 @@
             tmpTopic = [self.arrayTopics objectAtIndex:indexPath.row];
             NSLog(@"Topic sans cat, row=%ld",indexPath.row);
         }
-            
+
+        if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]]) {
+            cell.isSuperFavorite = YES;
+        } else {
+            cell.isSuperFavorite = NO;
+        }
+
         // Configure the cell...
         UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
         if ([tmpTopic isViewed]) {
@@ -1134,7 +1146,7 @@
                 [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
                 break;
         }
-
+        
         // Badge
         int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
         if (iPageNumber == 0) {
@@ -1151,7 +1163,9 @@
                 iWidth = 23;
             } else if (iPageNumber < 1000) {
                 iWidth = 30;
-            } if (iPageNumber > 9999) {
+            } else if (iPageNumber <= 9999) {
+                iWidth = 38;
+            } else if (iPageNumber > 9999) {
                 iPageNumber = 9999;
                 iWidth = 38;
             }
@@ -1159,21 +1173,6 @@
             cell.labelBadge.layer.cornerRadius = 16 / 2;
             [cell.labelBadge setText:[NSString stringWithFormat:@"%d", iPageNumber]];
             cell.labelBadgeWidth.constant = iWidth;
-            /*
-            [cell.labelBadge sizeToFit];
-             labelBadgeWidth
-            // Width constraint
-            NSArray* constraints1 = [cell.labelBadge constraints];
-            [cell.labelBadge addConstraint:[NSLayoutConstraint constraintWithItem:cell.labelBadge
-                                                              attribute:NSLayoutAttributeWidth
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:nil
-                                                              attribute: NSLayoutAttributeNotAnAttribute
-                                                             multiplier:1
-                                                               constant:iWidth]];
-            NSArray* constraints2 = [cell.labelBadge constraints];
-            NSLog(@"Constraints b/a:%d/%d", constraints1.count, constraints2.count);*/
-            cell.labelBadge.backgroundColor = [ThemeColors tintColor];
         }
         
         [cell setShowsReorderControl:NO];
@@ -1360,7 +1359,11 @@
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la dernière réponse", @"lastPostAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la page numéro...", @"chooseTopicPage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
-        
+
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        /* Evol onglet sticky (gardée au cas où)
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Nouvel onglet", @"newTabBar", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]]; */
+
 
         topicActionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         
@@ -1379,7 +1382,16 @@
             }]];
         }
         
-        
+        // Super favorites handling
+        Topic *tmpTopic = [self getTopicAtIndexPath:self.pressedIndexPath];
+        UIAlertAction* uiAction = [UIAlertAction actionWithTitle:@"Super favori" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self setTopicSuperFavoriteWithIndex:self.pressedIndexPath];
+        }];
+        if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]])
+        {
+            [uiAction setValue:@true forKey:@"checked"];
+        }
+        [topicActionAlert addAction:uiAction];
 		
         
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
@@ -1388,7 +1400,7 @@
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
             [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
                 [self dismissViewControllerAnimated:YES completion:nil];
             }]];
@@ -1551,19 +1563,26 @@
 
 
 -(void)setTopicSuperFavoriteWithIndex:(NSIndexPath *)indexPath {
-    if(self.arrayData.count > 0){
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
+    [self.favoritesTableView setEditing:NO animated:NO];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         // Go to URL in BG
-        Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
         if ([self.idPostSuperFavorites containsObject:[NSNumber numberWithInt:tmpTopic.postID]])
         {
+            NSLog(@"Topic is NO more favorite %d", tmpTopic.postID);
             [self.idPostSuperFavorites removeObject:[NSNumber numberWithInt:tmpTopic.postID]];
+            tmpTopic.isSuperFavorite = NO;
         }
         else
         {
+            NSLog(@"Topic is super favorite %d", tmpTopic.postID);
             [self.idPostSuperFavorites addObject:[NSNumber numberWithInt:tmpTopic.postID]];
+            tmpTopic.isSuperFavorite = YES;
         }
-        tmpTopic.isSuperFavorite = YES;
-    }
+        [[NSUserDefaults standardUserDefaults] setObject:self.idPostSuperFavorites forKey:@"SuperFavoritesIds"];
+        [self.favoritesTableView reloadData];
+    });
 }
 
 #pragma mark -
@@ -1607,7 +1626,7 @@
     
     [[ThemeManager sharedManager] applyThemeToAlertController:alertController];
     [self presentViewController:alertController animated:YES completion:^{
-        if([[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED){
+        if([[ThemeManager sharedManager] theme] == ThemeDark){
             for (UIView* textfield in alertController.textFields) {
                 UIView *container = textfield.superview;
                 UIView *effectView = container.superview.subviews[0];
@@ -1620,6 +1639,30 @@
         }
     }];
 }
+
+/* Evol onglet sticky (gardée au cas où)
+-(void)newTabBar {
+    // First, create your view controller
+    //ProfileVC *profile = loadViewController(TabbarSB, VC_Profile);
+    Topic *aTopic = [self getTopicAtIndexPath:self.pressedIndexPath];
+    NSString * newUrl = [[aTopic aURL] stringByRemovingAnchor];
+    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:newUrl];
+
+    // then embed it to a navigation controller
+    // this is not required, only if you need it
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:aView];
+    nav.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelFetchContent)];
+     
+    // Get viewControllers array and add navigation controller
+    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.tabBarController.viewControllers];
+    [viewControllers insertObject:nav atIndex:2];
+    
+    // Set back the array
+    [self.tabBarController setViewControllers:viewControllers animated:YES];
+    
+    // Switch to this new tab
+    [self.tabBarController setSelectedIndex:2];
+}*/
 
 -(void)goToPage:(int)number {
     Topic *aTopic = [self getTopicAtIndexPath:self.pressedIndexPath];

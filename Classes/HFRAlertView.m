@@ -72,13 +72,18 @@
 
 + (void) DisplayOKCancelAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage handlerOK:(void (^ __nullable)(UIAlertAction *action))handlerOK {
     
+    [HFRAlertView DisplayOKCancelAlertViewWithTitle:sTitle andMessage:sMessage handlerOK:handlerOK handlerCancel:nil];
+}
+
++ (void) DisplayOKCancelAlertViewWithTitle:(NSString*)sTitle andMessage:(NSString*)sMessage handlerOK:(void (^ __nullable)(UIAlertAction *action))handlerOK handlerCancel:(void (^ __nullable)(UIAlertAction *action))handlerCancel{
+    
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:sTitle
                                                                    message:sMessage
                                                             preferredStyle:UIAlertControllerStyleAlert];
     
     UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:handlerOK];
-    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:handlerCancel];
     [alert addAction:defaultAction];
     [alert addAction:cancelAction];
     [activeVC presentViewController:alert animated:YES completion:nil];

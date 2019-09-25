@@ -12,6 +12,7 @@
 #import "AQCellView.h"
 #import "ASIHTTPRequest.h"
 #import "Constants.h"
+#import "MultisManager.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "UIScrollView+SVPullToRefresh.h"
@@ -368,7 +369,21 @@
         [mdictXMLPart setObject:sDateAQ forKey:elementName];
     }
     if ([elementName isEqualToString:@"item"]) {
-        [marrXMLData addObject:mdictXMLPart];
+        // Get current own pseudo
+        MultisManager *manager = [MultisManager sharedManager];
+        NSDictionary *mainCompte = [manager getMainCompte];
+        NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
+        
+        if(mainCompte == nil || [currentPseudoLowercase isEqualToString:@"applereview"]) {
+            // Filter unwanted results
+            NSString* sLink = [mdictXMLPart objectForKey:@"link"];
+                if (![sLink containsString:@"&cat=25&post"]) {
+                [marrXMLData addObject:mdictXMLPart];
+            }
+        }
+        else {
+            [marrXMLData addObject:mdictXMLPart];
+        }
     }
     mstrXMLString = nil;
 }

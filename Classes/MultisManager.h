@@ -18,6 +18,7 @@
 - (void)addCompteWithPseudo:(NSString *)pseudo andCookies:(NSArray *)cookies andAvatar:(nullable NSString *)avatar andHash:(NSString *)hash;
 - (void)setPseudoAsMain:(NSString *)pseudo;
 - (NSDictionary *)getMainCompte;
+- (NSString *)getCurrentPseudo;
 - (void)deletePseudoAtIndex:(NSInteger *)index;
 - (UIImage *)getAvatarForCompte:(NSDictionary *)compte;
 - (void)forceCookiesForCompte:(NSDictionary *)compte;

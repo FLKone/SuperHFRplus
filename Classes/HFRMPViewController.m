@@ -15,6 +15,7 @@
 
 #import "ThemeManager.h"
 #import "ThemeColors.h"
+#import "MPStorage.h"
 
 @implementation HFRMPViewController
 @synthesize reloadOnAppear, actionButton, reloadButton;
@@ -34,6 +35,13 @@
 - (void)loadView {
 }
 */
+
+- (void)fetchContent
+{
+    [super fetchContent];
+    [[MPStorage shared] reloadMPStorageAsynchronous];
+}
+
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -150,10 +158,37 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row] aURLOfLastPost] displaySeparator:YES];
+    NSString * sOpennedUrl = nil;
+    
+    // Try to get URL from MPStorage
+    NSString *sPost = nil;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
+        // Get post id from URL
+        Topic *t = [arrayData objectAtIndex:indexPath.row];
+        for (NSString *qs in [t.aURL componentsSeparatedByString:@"&"]) {
+            // Get the parameter name
+            NSString *key = [[qs componentsSeparatedByString:@"="] objectAtIndex:0];
+            // Get the parameter value
+            if ([key isEqualToString:@"post"]) {
+                sPost = [[qs componentsSeparatedByString:@"="] objectAtIndex:1];
+            }
+        }
+    }
+    
+    if (sPost) {
+        sOpennedUrl = [[MPStorage shared] getUrlFlagForTopidId:[sPost intValue]];
+        if ([sOpennedUrl hasPrefix:@"https://forum.hardware.fr"]) {
+            sOpennedUrl = [sOpennedUrl substringWithRange:NSMakeRange(25, [sOpennedUrl length]-25)];
+        }
+    }
+    
+    // If nothing, only get URL of last page
+    if (sOpennedUrl == nil) {
+        sOpennedUrl = [[arrayData objectAtIndex:indexPath.row] aURLOfLastPost];
+    }
+    
+	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:sOpennedUrl displaySeparator:YES];
 	self.messagesTableViewController = aView;
-
 	
 	//setup the URL
 	self.messagesTableViewController.topicName = [[arrayData objectAtIndex:indexPath.row] aTitle];	
@@ -210,7 +245,7 @@
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
             [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
                 [self dismissViewControllerAnimated:YES completion:nil];
             }]];
@@ -288,7 +323,7 @@
 	
 	[super fetchContentComplete:theRequest];
 
-    //NSLog(@"%d", self.status);
+    
     
 	switch (self.status) {
 		case kMaintenance:
@@ -300,6 +335,9 @@
             [self statusBarButton:kNewTopic enable:YES];
 			break;
 	}
+    
+    // TODOMP
+    // Start asynchronous request for MP drapals
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest

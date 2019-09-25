@@ -17,6 +17,8 @@
 
 #import "ASIHTTPRequest.h"
 #import "BlackList.h"
+#import "MultisManager.h"
+
 
 @interface ParseMessagesOperation ()
 @property (nonatomic, weak) id <ParseMessagesOperationDelegate> delegate;
@@ -129,7 +131,7 @@
 	NSArray * messagesNodes = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messagetable" allowPartial:NO]; //Get all the <img alt="" />
 
 	//NSLog(@"%f message %d", [thenT timeIntervalSinceNow] * -1000.0, [messagesNodes count]);
-	
+    int indexNode = 0;
 	for (HTMLNode * messageNode2 in messagesNodes) { //Loop through all the tags
 		
 		//NSAutoreleasePool * pool2 = [[NSAutoreleasePool alloc] init];
@@ -155,9 +157,7 @@
 			}
 
 			
-			
 			fasTest.postID = [[[messageNode firstChild] firstChild] getAttributeNamed:@"name"];
-			
 			fasTest.name = [authorNode allContents];
 			fasTest.name = [fasTest.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			//fasTest.name = [[fasTest.name componentsSeparatedByCharactersInSet:[[NSCharacterSet letterCharacterSet] invertedSet]] componentsJoinedByString:@""];
@@ -167,23 +167,53 @@
 				continue;
 			}
             
-            if ([[BlackList shared] isBL:fasTest.name]) {
-                [fasTest setIsBL:YES];
-            }
-            
 			HTMLNode * avatarNode = [messageNode findChildWithAttribute:@"class" matchingName:@"avatar_center" allowPartial:NO];
 			HTMLNode * contentNode = [messageNode findChildWithAttribute:@"id" matchingName:@"para" allowPartial:YES];
-            fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
             
-            if (![fasTest isBL]) {
-                for (NSDictionary *dic in [[BlackList shared] getAll]) {
-                    if ([fasTest.dicoHTML rangeOfString:[dic objectForKey:@"word"] options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                        [fasTest setIsBL:YES];
-                        break;
-                    }
-                }
+
+            // Find "Citations"
+            // Get current own pseudo
+            MultisManager *manager = [MultisManager sharedManager];
+            NSDictionary *mainCompte = [manager getMainCompte];
+            NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
+
+            // For class oldcitation to citation
+            NSArray *oldquoteArray = [messageNode findChildrenWithAttribute:@"class" matchingName:@"oldcitation" allowPartial:NO];
+            for (HTMLNode * quoteNode in oldquoteArray) {
+                [quoteNode setAttributeNamed:@"class" withValue:@"citation"];
             }
             
+            NSArray *quoteArray = [messageNode findChildrenWithAttribute:@"class" matchingName:@"citation" allowPartial:NO];
+            
+            int quoteIndex = 1;
+            for (HTMLNode * quoteNode in quoteArray) {
+                HTMLNode *subQuoteNode = [quoteNode findChildWithAttribute:@"class" matchingName:@"Topic" allowPartial:NO];
+                NSString* sFullTextAuthor = [subQuoteNode allContents];
+                if ([sFullTextAuthor length] > 10) {
+                    NSString* sQuoteAuthor = [sFullTextAuthor substringToIndex:[sFullTextAuthor length]-10];
+                    //NSLog(@"=======================================> QUOTE : %@", sFullTextAuthor);
+                    // Check for own post
+                    if ([[sQuoteAuthor lowercaseString] isEqualToString:currentPseudoLowercase]) {
+                        [quoteNode setAttributeNamed:@"class" withValue:@"citation_me_quoted"];
+                    } else if ([[BlackList shared] isWL:[sQuoteAuthor lowercaseString]]) {
+                        [quoteNode setAttributeNamed:@"class" withValue:@"citation_whitelist"];
+                    } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
+                        [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
+                        NSString* sPostId = [fasTest.postID substringFromIndex:1];
+                        [quoteNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
+                        [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
+                        [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
+                        
+                        HTMLNode *pNode = [quoteNode findChildTag:@"p"];
+                        [pNode addAttributeNamed:@"class" withValue:@"pbl"];
+                        [pNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
+                    }
+                    quoteIndex++;
+                } 
+            }
+            
+            fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
+            NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", fasTest.dicoHTML);
             
             //recherche
             NSArray * nodesInMsg = [[messageNode findChildOfClass:@"messCase2"] children];
@@ -191,18 +221,6 @@
                 fasTest.dicoHTML = [rawContentsOfNode([[nodesInMsg objectAtIndex:1] _node], [myParser _doc]) stringByAppendingString:fasTest.dicoHTML];
             }
             
-			//NSDate *then1 = [NSDate date]; // Create a current date
-
-			/* OLD SLOW
-			HTMLNode * quoteNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"answer" allowPartial:NO] parent];
-			NSString *linkQuoteUnCrypted = [[quoteNode className] decodeSpanUrlFromString];
-			
-			HTMLNode * editNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"edit" allowPartial:NO] parent];
-			NSString *linkEditUnCrypted = [[editNode className] decodeSpanUrlFromString];
-
-			fasTest.urlQuote = linkQuoteUnCrypted;
-			fasTest.urlEdit = linkEditUnCrypted;
-			*/
 			// NEW FAST
 			HTMLNode * quoteNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"answer" allowPartial:NO] parent];
 			fasTest.urlQuote = [quoteNode className];
@@ -345,6 +363,7 @@
 		//[pool2 drain];
 		
 		//break;
+        indexNode++;
 	}
 
 	//NSDate *nowT = [NSDate date]; // Create a current date

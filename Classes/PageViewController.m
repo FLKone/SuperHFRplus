@@ -273,6 +273,7 @@
 	else if (([alertView tag] == 668)) {
 		//NSLog(@"keud");
 	}
+    /* TO DELETE
     else if (([alertView tag] == 6666) || ([alertView tag] == kAlertBlackListOK)) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [alertView dismissWithClickedButtonIndex:0 animated:YES];
@@ -283,7 +284,7 @@
             [alertView dismissWithClickedButtonIndex:0 animated:YES];
         });
     }
-	
+	*/
 	
 }
 

@@ -307,6 +307,12 @@
     } else {
         segmentedControl.selectedSegmentIndex = 2;
     }
+    
+    if (@available(iOS 13.0, *)) {
+        [segmentedControl setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
+        [segmentedControl setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
+        [segmentedControl setSelectedSegmentTintColor:[ThemeColors tabBackgroundColor:[[ThemeManager sharedManager] theme]]];
+    }
 
     // Label
     UILabel *bbcodeLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 56, headerWidth*1/4, 30)];
@@ -530,7 +536,12 @@
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
     self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-
+    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_text"] isEqualToString:@"sys"]) {
+        CGFloat userFontSize = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody].pointSize;
+        //userFontSize = floorf(userFontSize*0.90);
+        [self.textView setFont:[UIFont systemFontOfSize:userFontSize]];
+    }
+    
     [self.rehostTableView reloadData];
     [self.commonTableView reloadData];
 
@@ -771,17 +782,17 @@
 }
 
 - (IBAction)done {
-    //NSLog(@"done %@", self.formSubmit);
+    NSLog(@"formSubmit:%@", self.formSubmit);
     
     ASIFormDataRequest  *arequest =
     [[ASIFormDataRequest  alloc]  initWithURL:[NSURL URLWithString:self.formSubmit]];
     //delete
     NSString *key;
     for (key in self.arrayInputData) {
-        //NSLog(@"POST: %@ : %@", key, [self.arrayInputData objectForKey:key]);
         if ([key isEqualToString:@"allowvisitor"] || [key isEqualToString:@"have_sondage"] || [key isEqualToString:@"sticky"] || [key isEqualToString:@"sticky_everywhere"]) {
             if ([[self.arrayInputData objectForKey:key] isEqualToString:@"1"]) {
                 [arequest setPostValue:[self.arrayInputData objectForKey:key] forKey:key];
+                NSLog(@"POST: >%@< : >%@<", key, [self.arrayInputData objectForKey:key]);
             }
         }
         else if ([key isEqualToString:@"delete"]) {
@@ -791,32 +802,41 @@
         }
         else if ([key isEqualToString:@"pseudo"]) {
                 [arequest setPostValue:[selectedCompte objectForKey:PSEUDO_DISPLAY_KEY] forKey:@"pseudo"];
+                NSLog(@"POST: >%@< : >%@<", @"pseudo", [selectedCompte objectForKey:PSEUDO_DISPLAY_KEY]);
         }else if ([key isEqualToString:@"hash_check"]) {
             if([selectedCompte objectForKey:HASH_KEY]){
                 [arequest setPostValue:[selectedCompte objectForKey:HASH_KEY] forKey:@"hash_check"];
+                NSLog(@"POST: >%@< : >%@<", @"hash_check", [selectedCompte objectForKey:HASH_KEY]);
             }else{
                 [arequest setPostValue:[[HFRplusAppDelegate sharedAppDelegate] hash_check] forKey:@"hash_check"];
+                NSLog(@"POST: >%@< : >%@<", @"hash_check", [[HFRplusAppDelegate sharedAppDelegate] hash_check]);
+
                 // Set hash_check for compte
                 [[MultisManager sharedManager] setHashForCompte:selectedCompte andHash:[[HFRplusAppDelegate sharedAppDelegate] hash_check]];
             }
         }
-        else
+        else {
             [arequest setPostValue:[self.arrayInputData objectForKey:key] forKey:key];
+            NSLog(@"POST: >%@< : >%@<", key, [self.arrayInputData objectForKey:key]);
+        }
     }
     
     NSString* txtTW = [[textView text] removeEmoji];
     txtTW = [txtTW stringByReplacingOccurrencesOfString:@"\n" withString:@"\r\n"];
     
     [arequest setPostValue:txtTW forKey:@"content_form"];
-    
+    NSLog(@"POST: >%@< : >%@<", @"content_form", txtTW);
     if (self.haveTitle) {
         [arequest setPostValue:[textFieldTitle text] forKey:@"sujet"];
+        NSLog(@"POST: >%@< : >%@<", @"sujet", [textFieldTitle text]);
     }
     if (self.haveCategory) {
         [arequest setPostValue:[textFieldCat text] forKey:@"subcat"];
+        NSLog(@"POST: >%@< : >%@<", @"subcat", [textFieldCat text]);
     }
     if (self.haveTo) {
         [arequest setPostValue:[textFieldTo text] forKey:@"dest"];
+        NSLog(@"POST: >%@< : >%@<", @"dest", [textFieldTo text]);
     }
     
     // Set selected compte cookies
@@ -903,7 +923,14 @@
 }
 
 -(void)segmentToBlue {
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7,0")) {
+    if (@available(iOS 13.0, *)) {
+        [self.segmentControler setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
+        [self.segmentControler setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
+        [self.segmentControlerPage setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
+        [self.segmentControlerPage setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
+        [self.segmentControler setSelectedSegmentTintColor:[ThemeColors tintColor:[[ThemeManager sharedManager] theme]]];
+        [self.segmentControlerPage setSelectedSegmentTintColor:[ThemeColors tintColor:[[ThemeManager sharedManager] theme]]];
+    } else {
         self.segmentControler.tintColor = self.segmentControlerPage.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
     }
 }

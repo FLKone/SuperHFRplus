@@ -42,6 +42,7 @@
 #import "ThemeColors.h"
 #import "MultisManager.h"
 #import "HFRAlertView.h"
+#import "MPStorage.h"
 
 @implementation MessagesTableViewController
 @synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
@@ -709,30 +710,34 @@
     NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
 
     NSString *baseElem = @"window.getSelection().anchorNode";
+    int iProtection = 0;
     while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
         //NSLog(@"baseElem %@", baseElem);
         //NSLog(@"%@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]]);
-        
+        iProtection++;
+        if (iProtection > 100) return;
         baseElem = [baseElem stringByAppendingString:@".parentElement"];
     }
     NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
     int curMsg = [[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]] intValue];
 
+
     NSLog(@"theSelectedText %@", theSelectedText);
     
-    //int curMsg = [[NSNumber numberWithInt:curPostID] intValue];
-        
-    [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
+    if (curMsg < 100) { // Id post BL sont >= 100
+        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
+    }
 }
 
 -(void)textQuoteBold:(id)sender {
     NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
-    
     NSString *baseElem = @"window.getSelection().anchorNode";
+    int iProtection = 0;
     while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
         //NSLog(@"baseElem %@", baseElem);
         //NSLog(@"%@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]]);
-        
+        iProtection++;
+        if (iProtection > 100) return;
         baseElem = [baseElem stringByAppendingString:@".parentElement"];
     }
     NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
@@ -740,11 +745,9 @@
 
     NSLog(@"theSelectedText Bold %@", theSelectedText);
     
-    //int curMsg = [[NSNumber numberWithInt:curPostID] intValue];
-    
-    [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText withBold:YES];
-    
-
+    if (curMsg < 100) { // Id post BL sont >= 100
+        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText withBold:YES];
+    }
 }
 
 - (void)editMenuHidden:(id)sender {
@@ -784,7 +787,25 @@
         [navItem setLeftBarButtonItem:((SplitViewController *)self.splitViewController).mybarButtonItem animated:YES];
         [navItem setLeftItemsSupplementBackButton:YES];
     }
+    /* Evol onglet sticky (gardée au cas où)
+
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(removeTabBar)];*/
 }
+
+/* Evol onglet sticky (gardée au cas où)
+-(void)removeTabBar {
+    [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Onglet additionnel"
+                                          andMessage:@"Fermer l'onglet ?"
+                                          handlerOK:^(UIAlertAction * action) { [self removeTabBarConfirmed];}];
+}
+
+- (void)removeTabBarConfirmed {
+    // Get viewControllers array and remove MessagesTable controller at index 2
+    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.tabBarController.viewControllers];
+    [viewControllers removeObjectAtIndex:2];
+    [self.tabBarController setViewControllers:viewControllers animated:YES];
+    [self.tabBarController setSelectedIndex:0];
+*/
 
 
 - (void)viewDidLoad {
@@ -1030,7 +1051,7 @@
     // cancelButtonStyle not needed on iPad
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+        UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
         [styleAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
             [self dismissViewControllerAnimated:YES completion:nil];
         }]];
@@ -1377,12 +1398,12 @@
 	//NSLog(@"%@", [[arrayData objectAtIndex:index] toHTML:index]);
 	//NSLog(@"selectedURL %@", selectedURL);
     // Ego quote not applyed on MP
-    BOOL bEgoQuote = YES;
+    BOOL bIsMP = YES;
     if ([self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
-        bEgoQuote = NO;
+        bIsMP = NO;
     }
 
-	HTMLParser * myParser = [[HTMLParser alloc] initWithString:[[arrayData objectAtIndex:index] toHTML:index egoQuote:bEgoQuote] error:NULL];
+	HTMLParser * myParser = [[HTMLParser alloc] initWithString:[[arrayData objectAtIndex:index] toHTML:index isMP:bIsMP] error:NULL];
 	HTMLNode * msgNode = [myParser doc]; //Find the body tag
 
 	NSArray * tmpImageArray =  [msgNode findChildrenWithAttribute:@"class" matchingName:@"hfrplusimg" allowPartial:NO];
@@ -1457,15 +1478,10 @@
 }
 
 -(void)searchNewMessages {
-	
 	[self searchNewMessages:kNewMessageFromUnkwn];
-    
 }
 
 - (void)fetchContentinBackground:(id)from {
-    
-    
-    
         int intfrom = [from intValue];
         
         switch (intfrom) {
@@ -1484,7 +1500,6 @@
         }
         
         [self fetchContent:intfrom];
-	
 }
 
 #pragma mark -
@@ -1684,13 +1699,13 @@
         //NSLog(@"==============");
         
         // Ego quote not applyed on MP
-        BOOL bEgoQuote = YES;
+        BOOL bIsMP = YES;
         if ([self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
-            bEgoQuote = NO;
+            bIsMP = NO;
         }
         
         for (i = 0; i < [self.arrayData count]; i++) { //Loop through all the tags
-            NSString* sNewMessage = [[self.arrayData objectAtIndex:i] toHTML:i egoQuote:bEgoQuote];
+            NSString* sNewMessage = [[self.arrayData objectAtIndex:i] toHTML:i isMP:bIsMP];
             tmpHTML = [tmpHTML stringByAppendingString:sNewMessage];
 
             if (!ifCurrentFlag) {
@@ -1817,13 +1832,19 @@
         <link type='text/css' rel='stylesheet %@' href='style-liste-oled.css' id='oled-styles'/>\
         <link type='text/css' rel='stylesheet %@' href='style-liste-retina-oled.css' id='oled-styles-retina' media='all and (-webkit-min-device-pixel-ratio: 2)'/>\ */
 
+        
+        NSString* sCssStyle = @"style-liste.css";
+        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"theme_style"] == 1) {
+            sCssStyle = @"style-liste-light.css";
+        }
+
         // Default value for light theme
         NSString *sAvatarImageFile = @"url(avatar_male_gray_on_light_48x48.png)";
         NSString *sLoadInfoImageFile = @"url(loadinfo.gif)";
         NSString* sBorderHeader = @"none";
         
         // Modified in theme Dark or OLED
-        if (theme == ThemeDark || theme == ThemeOLED) {
+        if (theme == ThemeDark) {
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
         }
@@ -1837,7 +1858,7 @@
                                 <script type='text/javascript' src='jquery.doubletap.js'></script>\
                                 <script type='text/javascript' src='jquery.base64.js'></script>\
                                 <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
-                                <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+                                <link type='text/css' rel='stylesheet' href='%@' id='light-styles'/>\
                                 <style type='text/css'>\
                                 %@\
                                 </style>\
@@ -1857,6 +1878,7 @@
                                 document.addEventListener('DOMContentLoaded', loadedML);\
                                 document.addEventListener('touchstart', touchstart);\
                                 function loadedML() { setTimeout(function() {document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded';},700); };\
+                                function toggleDiv(id) { $(id).slideToggle('slow'); };\
                                 function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
                                 function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
                                 function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
@@ -1870,6 +1892,12 @@
                                 document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
                                 document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                                document.documentElement.style.setProperty('--color-message-header-love-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-love-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-love-borderleft', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-love-borderother', '%@');\
+                                document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
+                                document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
                                 document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
                                 document.documentElement.style.setProperty('--color-text', '%@');\
                                 document.documentElement.style.setProperty('--color-text2', '%@');\
@@ -1880,18 +1908,29 @@
                                 document.documentElement.style.setProperty('--color-border-quotation', '%@');\
                                 document.documentElement.style.setProperty('--color-border-avatar', '%@');\
                                 document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                                document.documentElement.style.setProperty('--color-text-pseudo-bl', '%@');\
                                 document.documentElement.style.setProperty('--border-header', '%@');\
                                 </script>\
                                 </body></html>",
-                                customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
+                                sCssStyle, customFontSize,doubleSmileysCSS, display_sig_css, tmpHTML, refreshBtn, tooBar,
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
                                 [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                                 [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
                                 [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
-                                [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-background
-                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
-                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1], // -color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], // color-message-mequoted-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:1],  //--color-message-mequoted-borderleft
                                 [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                                /*[ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.7], //--color-message-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8], // --color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:0.6],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0],  //--color-message-mequoted-borderother*/
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.4], //--color-message-header-love-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.3], // --color-message-header-me-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:1 addBrightness:1],  //--color-message-mequoted-borderleft
+                                [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1 addSaturation:1], //--color-message-mequoted-borderother
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                                 [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                                 [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
@@ -1902,6 +1941,7 @@
                                 [ThemeColors getColorBorderQuotation:theme],
                                 [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
                                 [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                                [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],
                                 sBorderHeader
                                 ];
         
@@ -2029,9 +2069,19 @@
 
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-    //NSLog(@"== webViewDidFinishLoad OK");
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
+        NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
+        NSString* sP = self.arrayInputData[@"p"];
+        NSNumber* nPage = [NSNumber numberWithInt: [self.arrayInputData[@"page"] intValue]];
+        NSString* sTPostID = [[self.arrayData lastObject] postID];
+        NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
 
+        NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sURI, @"uri", nil];
+        [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
+    }
 }
+/*
+https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179&page=57043&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t57321037*/
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     NSLog(@"MTV %@ nbS=%lu", NSStringFromSelector(action), [UIMenuController sharedMenuController].menuItems.count);
@@ -2054,7 +2104,7 @@
     return NO;
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)aRequest navigationType:(UIWebViewNavigationType)navigationType {
-	NSLog(@"expected:%ld, got:%ld | url:%@", (long)UIWebViewNavigationTypeLinkClicked, (long)navigationType, aRequest.URL);
+	//NSLog(@"expected:%ld, got:%ld | url:%@", (long)UIWebViewNavigationTypeLinkClicked, (long)navigationType, aRequest.URL);
 	
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
                     
@@ -2126,8 +2176,10 @@
 	}
 	else if (navigationType == UIWebViewNavigationTypeOther) {
 		if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdodetails"]) {
-            //NSLog(@"details ==========");
-			[self didSelectMessage:[[[aRequest.URL absoluteString] lastPathComponent] intValue]];
+            int iPostId = [[[aRequest.URL absoluteString] lastPathComponent] intValue];
+            if (iPostId < 100) {
+                [self didSelectMessage:iPostId];
+            }
 			return NO;
 		}
 		else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdotouch"]) {
@@ -2224,11 +2276,11 @@
         answString = @"Rép.";
     }
     
-    //UIImage *menuImgBan = [UIImage imageNamed:@"RemoveUserFilled-20"];
     UIImage *menuImgBan = [UIImage imageNamed:@"ThorHammer-20"];
     if ([[BlackList shared] isBL:[[arrayData objectAtIndex:curMsg] name]]) {
         menuImgBan = [UIImage imageNamed:@"ThorHammerFilled-20"];
     }
+    UIImage *menuImgWL = [UIImage imageNamed:@"Heart-20"];
 
     UIImage *menuImgEdit = [UIImage imageNamed:@"EditColumnFilled-20"];
     UIImage *menuImgProfil = [UIImage imageNamed:@"ContactCardFilled-20"];
@@ -2304,6 +2356,7 @@
         }
         
         [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Blacklist", @"actionBL", menuImgBan, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
+        [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Whitelist", @"actionWL", menuImgWL, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
     }
     
     // AQ (sauf dans les MPs)
@@ -2317,7 +2370,7 @@
 	NSMutableArray *menuAction = [[NSMutableArray alloc] init];
     
 	for (id tmpAction in self.arrayAction) {
-		//NSLog(@"%@", [tmpAction objectForKey:@"code"]);
+		NSLog(@"%@", [tmpAction objectForKey:@"code"]);
 		
         if ([tmpAction objectForKey:@"image"] != nil) {
             UIMenuItem *tmpMenuItem2 = [[UIMenuItem alloc] initWithTitle:[tmpAction valueForKey:@"title"] action:NSSelectorFromString([tmpAction objectForKey:@"code"]) image:(UIImage *)[tmpAction objectForKey:@"image"]];
@@ -2668,28 +2721,49 @@
 }
 
 -(void) actionBL:(NSNumber *)curMsgN {
-    
     int curMsg = [curMsgN intValue];
-    
-    NSString *username = [[arrayData objectAtIndex:curMsg] name];
+    NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
     NSString *promptMsg = @"";
     
-    if ([[BlackList shared] removeWord:username]) {
-        promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", username];
+    if ([[BlackList shared] isBL:pseudo]) {
+        BOOL ret = [[BlackList shared] removeFromBlackList:pseudo andSave:YES];
+        if (ret) {
+            promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", pseudo];
+        } else {
+            promptMsg = [NSString stringWithFormat:@"Erreur! %@ n'a pas pu être supprimé de la liste noire", pseudo];
+        }
     }
     else {
-        [[BlackList shared] add:username];
-        promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", username];
+        BOOL ret = [[BlackList shared] addToBlackList:pseudo andSave:YES];
+        if (ret > 0) {
+            promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
+        }
+        else {
+            promptMsg = [NSString stringWithFormat:@"Erreur! %@ n'a pas pu être ajouté à la liste noire", pseudo];
+        }
     }
     
+    [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
+}
+
+-(void) actionWL:(NSNumber *)curMsgN {
+    int curMsg = [curMsgN intValue];
+    NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
+    NSString *promptMsg = @"";
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:promptMsg
-                                                   delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-    alert.tag = kAlertBlackListOK;
-    [alert show];
+    if ([[BlackList shared] isWL:pseudo]) {
+        [[BlackList shared] removeFromWhiteList:pseudo];
+        promptMsg = [NSString stringWithFormat:@"OH NOES ! %@ a été supprimé de la love list", pseudo];
+    }
+    else {
+        [[BlackList shared] addToWhiteList:pseudo];
+        promptMsg = [NSString stringWithFormat:@"BOUM BOUM ! %@ ajouté à la love list \u2665", pseudo];
+    }
 
     
+    [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
 }
+
 
 -(void)actionMessage:(NSNumber *)curMsgN {
 	if (self.isAnimating) {
@@ -2854,6 +2928,10 @@
     [self actionBL:[NSNumber numberWithInt:curPostID]];
     
 }
+-(void)actionWL {
+    [self actionWL:[NSNumber numberWithInt:curPostID]];
+    
+}
 -(void)actionAlerter {
     [self actionAlerter:[NSNumber numberWithInt:curPostID]];
     
@@ -2909,7 +2987,7 @@
     NSString* sBorderHeader = @"none";
     
     // Modified in theme Dark or OLED
-    if (theme == ThemeDark || theme == ThemeOLED) {
+    if (theme == ThemeDark) {
         sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
         sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
     }
@@ -2923,25 +3001,42 @@
                     document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
                     document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
                     document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+                    document.documentElement.style.setProperty('--color-message-header-love-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-love-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-love-borderleft', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-love-borderother', '%@');\
+                    document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
+                    document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
                     document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
-                    document.documentElement.style.setProperty('--color-text', '%@');\
-                    document.documentElement.style.setProperty('--color-text2', '%@');\
-                    document.documentElement.style.setProperty('--color-background-bars', '%@');\
-                    document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
-                    document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-                    document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
-                    document.documentElement.style.setProperty('--color-border-quotation', '%@');\
-                    document.documentElement.style.setProperty('--color-border-avatar', '%@');\
-                    document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
-                    document.documentElement.style.setProperty('--border-header', '%@');",
+                        document.documentElement.style.setProperty('--color-text', '%@');\
+                        document.documentElement.style.setProperty('--color-text2', '%@');\
+                        document.documentElement.style.setProperty('--color-background-bars', '%@');\
+                        document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
+                        document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+                        document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+                        document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+                        document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+                        document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+                        document.documentElement.style.setProperty('--color-text-pseudo-bl', '%@');\
+                        document.documentElement.style.setProperty('--border-header', '%@');",
                         [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
                         [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
                         [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
-                        [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
-                        [ThemeColors hexFromUIColor:[ThemeColors messageHeaderMeBackgroundColor:theme]], //--color-message-background
+                        [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-modo-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1], //--color-message-header-me-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], //--color-message-mequoted-background
-                        [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.6],  //--color-message-mequoted-borderleft
+                        [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:1],  //--color-message-mequoted-borderleft
                         [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                        /*[ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.7], //--color-message-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8], // --color-message-header-me-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:0.6],  //--color-message-mequoted-borderleft
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0],  //--color-message-mequoted-borderother*/
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.4], //--color-message-header-love-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.3], // --color-message-header-me-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:1 addBrightness:1],  //--color-message-lovecolor-borderleft
+                        [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1 addSaturation:1], //--color-message-mequoted-borderother
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
                         [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
                         [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                         [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
@@ -2952,6 +3047,7 @@
                         [ThemeColors getColorBorderQuotation:theme],
                         [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
                         [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                        [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],
                         sBorderHeader];
 
     [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];

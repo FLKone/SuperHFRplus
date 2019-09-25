@@ -18,6 +18,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *labelMessageNumber;
 @property (strong, nonatomic) IBOutlet UILabel *labelDate;
 @property (strong, nonatomic) IBOutlet UILabel *labelBadge;
+@property BOOL isSuperFavorite;
 
 @end
     

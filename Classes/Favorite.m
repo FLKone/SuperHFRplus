@@ -118,6 +118,7 @@
     
     NSString *maDate = [linkLastRepNode contents];
     NSDateFormatter * df = [[NSDateFormatter alloc] init];
+    [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier: @"fr_FR"]];
     [df setDateFormat:@"dd-MM-yyyy à HH:mm"];
     aTopic.dDateOfLastPost = [df dateFromString:maDate];
     if ([theDate isEqual:[maDate substringToIndex:10]])

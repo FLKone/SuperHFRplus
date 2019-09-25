@@ -9,16 +9,25 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     --color-url: #2470d8; /* Couleur des url dans les messages ET ?? */
     --color-message-background:white; /* Fond des messages */
     --color-message-modo-background:#FEE; /* Fond des messages de modération */
-    --color-message-header-me-background:#FEE; /* Fond du header de mes messages*/
-    --color-message-mequoted-background:#FEE; /* Fond des messages dans lesquels je suis quoted */
-    --color-message-mequoted-borderleft:#FEE;
-    --color-message-mequoted-borderother:#FEE;
+    --color-message-header-me-background:#EEE; /* Fond du header de mes messages*/
+    --color-message-mequoted-background:#EEE; /* Fond des messages dans lesquels je suis quoted */
+    --color-message-mequoted-borderleft:#EEE;
+    --color-message-mequoted-borderother:#EEE;
+    --color-message-header-love-background:#EEE;
+    --color-message-quoted-love-background:#EEE;
+    --color-message-quoted-love-borderleft:#EEE;
+    --color-message-quoted-love-borderother::#EEE;
+    --color-message-quoted-bl-background:#EEE;
+    --color-message-header-bl-background::#EEE;
+    
+    
     --color-separator-new-message:rgba(0,0,0,0.4);
     --color-background-bars:#F5F5F5;
     --color-searchintra-nextresults:rgba(240,240,240,0.9);
     --color-text:#202020;
     --color-text2:#202020;
     --color-text-pseudo:#202020;
+    --color-text-pseudo-bl:#202020;
     --imagefile-avatar:url(avatar_male_gray_on_light_48x48.png); /* Image d'avatar */
     --imagefile-loadinfo:url(loadinfo.gif);
     --color-border-quotation:silver;
@@ -33,7 +42,7 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
 	padding:0 !important;
 
 	font-family:-apple-system !important;
-    color:var(--color-text);
+    color:var(--color-text); 
 	-webkit-text-size-adjust: none;
 }
 
@@ -41,6 +50,9 @@ style='margin:0;padding:0;font-size:12;font-family:Helvetica;'
     padding-bottom:54px !important;
 }
 
+.s1 .bl_quote_left {
+    color: gray;
+}
 
 .clear {
 	clear:both;
@@ -228,10 +240,16 @@ background:-webkit-gradient(
     font-family: blisslight !important;
     font-weight: bold;
     
-    
-    
+}
 
-	
+.message .hidepost {
+    font-size: 15px !important;
+    color: var(--color-action);
+    font-family: blisslight !important;
+    /*font-weight: bold;*/
+    float:right;
+    padding: 7px !important;
+    padding-right: 11px !important;
 }
 
 .message .header .right a.small.awesome, .message .header .right a.small.awesome:visited {
@@ -314,6 +332,19 @@ table.code, table.fixed, table.quote, table.citation, table.oldcitation {
     border-left: 2px solid var(--color-border-quotation);
 }
 
+table.citation_blacklist {
+    table-layout:fixed;
+    border: none;
+    border-left: 2px solid var(--color-border-quotation);
+    background: var(--color-message-quoted-bl-background);
+}
+
+table.bl_quote_show {
+    table-layout:fixed;
+    border: none;
+    background: var(--color-message-quoted-bl-background);
+}
+
 table.citation_me_quoted {
     table-layout:fixed;
     border-left: 2px solid var(--color-action);
@@ -322,6 +353,16 @@ table.citation_me_quoted {
     border-right: 1px solid var(--color-message-mequoted-borderother);
     border-bottom: 1px solid var(--color-message-mequoted-borderother);
     border-top: 1px solid var(--color-message-mequoted-borderother);
+}
+
+table.citation_whitelist {
+    table-layout:fixed;
+    border-left: 2px solid var(--color-action);
+    background: var(--color-message-quoted-love-background);
+    border-left: 2px solid var(--color-message-quoted-love-borderleft);
+    border-right: 1px solid var(--color-message-quoted-love-borderother);
+    border-bottom: 1px solid var(--color-message-quoted-love-borderother);
+    border-top: 1px solid var(--color-message-quoted-love-borderother);
 }
 
 hr {
@@ -591,6 +632,19 @@ body.ios7 {
     border-bottom: var(--border-header);
 }
 
+
+.ios7 .message .header.bl {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: var(--color-message-header-bl-background);
+    color: rgba(109, 109, 114, 1);/* ?? */
+    border:none;
+    border-top: var(--border-header);
+    border-bottom: var(--border-header);
+}
+
+
 .ios7 .message.me .header {
     margin-top:0 !important;
     padding-top: 5px !important;
@@ -599,28 +653,188 @@ body.ios7 {
     border-left: 2px solid var(--color-message-mequoted-borderleft);
 }
 
-.ios7 .message .header .left {
+.ios7 .message.whitelist .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: var(--color-message-header-love-background);
+    border-left: 2px solid var(--color-message-quoted-love-borderleft);
+}
+
+/*
+.ios7 .message.mode .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: rgba(143, 0, 0, 0.6);
+    border-left: 2px solid rgba(255, 18, 18, 1);
+}*/
+
+/* Color of keywork in cpp area */
+.olcode .span {
+    color: var(--color-action);
+}
+
+.ios7 .message.blacklist .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: #F8F8F8;
+    border:none;
+}
+
+.ios7 .message.headerblacklist {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    padding-left: 10px !important;
+    background: var(--color-message-header-bl-background);
+    border:none;
+}
+.ios7 .message.headerblacklist .blavatar {
+    text-align:left;
+    
+    float:left;
+    width:56px;
+    height:30px;
+    margin-top:1px !important;
+    
+    border:1px solid var(--color-border-avatar);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position:center;
+    background-image:var(--imagefile-avatar);
+    opacity: 0.5;
+}
+
+.ios7 .message.headerblacklist .blpseudo {
+    text-align:left;
+    float:left;
+    color: var(--color-text-pseudo-bl);  /*texte nom pseudo bl*/
+    font-weight: bolder;
+    font-size: 13px !important;
+    margin-top: 9px !important;
+    margin-left: 10px !important;
+}
+
+
+.ios7 .message.headerblacklist .right{
+    float: right;
+    padding:7px !important;
+    margin-right : 15px !important;
+    font-size: 15px;
+}
+
+.ios7 .message.headerblacklist .left .a {
+    color:var(--color-action);
+}
+
+.message.headerblacklist .right .a {
+    color:var(--color-action);
+}
+
+.message.whitelist .right {
+    color:var(--color-message-quoted-love-borderleft);
+}
+
+.bl_quote_right .a {
+    color:var(--color-border-quotation);
+}
+
+.buttonshow {
+    color:var(--color-border-quotation) !important;
+}
+
+.buttonhide {
+    color:var(--color-border-quotation) !important;
+}
+
+.message.separator {
+    height: 10px !important;
+    background:var(--color-message-background);
+}
+
+.ios7 .message .bl_quote_left {
+    text-align: left;
+    color:var(--color-border-quotation);
+}
+
+.ios7 .message .bl_quote_right {
+    float: right;
+    color:var(--color-border-quotation);
+    margin-top: 2px !important;
+    margin-right: 9px !important;
+}
+
+/* TO DELETE
+.ios7 .message .bl_quote_show {
+    background: var(--color-message-quoted-bl-background);
+    border: none;
+}
+*/
+
+.ios7 .message .bl_quote_show .a {
+    color: #A0A0A0;
+}
+
+
+.ios7 .message .bl_quote_hide {
+    background: var(--color-message-quoted-bl-background);
+    border: none;
+    border-left: 2px solid var(--color-border-quotation);
+}
+
+
+/*
+.ios7 .message.blacklist .header .leftdate {
+    display: none;
+}*/
+.ios7 .message .header .left, .ios7 .message .header.bl .left {
     color: var(--color-text-pseudo);  /*texte nom pseudo*/
     text-shadow:none;
 }
 
-.ios7 .message .header .leftdate {
+.ios7 .message .header .leftdate, .ios7 .message .header.bl .leftdate {
     color: var(--color-text-pseudo); /*text date message ;*/
     text-shadow:none;
 }
 
-.ios7 .message .header .leftdate {
+.ios7 .message .header .leftdate, .ios7 .message .header.bl .leftdate {
     font-weight:normal
 }
 
-.ios7 .message .header .right { /* bouton/texte plus */
+.ios7 .message .header .right, .ios7 .message .header.bl .right { /* bouton/texte plus */
     height: 32px;
     width: 25px;
     float: right;
 }
 
-.ios7 .message .header .right a.awesome {
+.ios7 .message .header .right a.awesome, .ios7 .message .header.bl .right a.awesome {
     display:none;
+}
+/*
+.ios7 .message .header {
+    margin-top:0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    background: var(--color-background-bars);
+    color: rgba(109, 109, 114, 1);
+    border:none;
+    border-top: var(--border-header);
+    border-bottom: var(--border-header);
+}*/
+
+.ios7 .blacklist_showhidetext {
+    margin-right:10px !important;
+    padding:5px !important;
+    text-align: right;
+}
+
+.ios7 .blacklist_group {
+    background: #FFF;
+}
+.ios7 .blacklist_content {
+    display: none;
 }
 
 .ios7 #toolbarpage {

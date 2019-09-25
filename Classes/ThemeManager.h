@@ -10,12 +10,16 @@
 #import "Constants.h"
 #import "LuminosityHandler.h"
 
+#define AUTO_THEME_MANUAL 0
+#define AUTO_THEME_AUTO_CAMERA 1
+#define AUTO_THEME_AUTO_TIME 2
+
+
 @interface ThemeManager : NSObject <LuminosityHandlerDelegate>  {
     Theme theme;
 }
 
 @property Theme theme;
-@property BOOL autoTheme;
 @property LuminosityHandler *luminosityHandler;
     
 + (id)sharedManager;
@@ -26,5 +30,7 @@
 - (void)switchTheme;
 - (void)changeAutoTheme:(BOOL)autoTheme;
 - (void)refreshTheme;
-
+- (void)checkTheme;
+- (void)setThemeManually:(Theme)newTheme;
+- (Theme)getThemeFromCurrentTime;
 @end

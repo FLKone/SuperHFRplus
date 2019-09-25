@@ -20,7 +20,8 @@
 #import "ThemeManager.h"
 
 #import "MultisManager.h"
-
+#import "MPStorage.h"
+#import "BlackList.h"
 #import "WEBPURLProtocol.h"
 #import "WEBPDemoDecoder.h"
 
@@ -60,7 +61,6 @@
 - (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 
     NSLog(@"didFinishLaunchingWithOptions");
-
     
     [WEBPURLProtocol registerWebP:[WEBPDemoDecoder new]];
 
@@ -134,11 +134,11 @@
     [window makeKeyAndVisible];
 
     periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
-                                                                 target:self
-                                                               selector:@selector(periodicMaintenance)
-                                                               userInfo:nil
-                                                                repeats:YES];
-    
+                                                                target:self
+                                                              selector:@selector(periodicMaintenance)
+                                                              userInfo:nil
+                                                               repeats:YES];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(setThemeFromNotification:) //note the ":" - should take an NSNotification as parameter
@@ -147,6 +147,12 @@
     
     [[MultisManager sharedManager] updateAllAccounts];
     
+    // Blacklist : init blacklist / lovelist lists
+    [BlackList shared];
+
+    // MPStorage : Update Blacklist from MPStorage
+    [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
+
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] refreshTheme];
 
@@ -199,7 +205,8 @@
 }
 
 -(void)setTheme:(Theme)theme{
-    
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
+
     if ([self.window respondsToSelector:@selector(setTintColor:)]) {
         self.window.tintColor = [ThemeColors tintColor:theme];
     }
@@ -223,6 +230,20 @@
         [[UINavigationBar appearance] setBackgroundImage:navBG forBarMetrics:UIBarMetricsDefault];
     }
     [[UINavigationBar appearance] setBarTintColor:[ThemeColors navBackgroundColor:theme]];
+    
+     if (@available(iOS 13.0, *)) {
+         switch ([ThemeManager currentTheme]) {
+             case ThemeLight:
+                 self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+                 break;
+             case ThemeDark:
+                 self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
+                 break;
+             default:
+                self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleUnspecified;
+                 break;
+         }
+     }
 }
 
 
@@ -235,30 +256,27 @@
         return;
     }
     
+    // Main settings, root
     NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[settingsBundle stringByAppendingPathComponent:@"Root.inApp.plist"]];
     NSArray *preferences = [settings objectForKey:@"PreferenceSpecifiers"];
-    
     NSMutableDictionary *defaultsToRegister = [[NSMutableDictionary alloc] initWithCapacity:[preferences count]];
     for(NSDictionary *prefSpecification in preferences) {
         NSString *key = [prefSpecification objectForKey:@"Key"];
-        
-        if(key && [prefSpecification objectForKey:@"DefaultValue"]) {
-            //NSLog(@"Reg %@ = %@", key, [prefSpecification objectForKey:@"DefaultValue"]);
+        if (key && [prefSpecification objectForKey:@"DefaultValue"]) {
             [defaultsToRegister setObject:[prefSpecification objectForKey:@"DefaultValue"] forKey:key];
         }
     }
 
+    // ActionsMessages settings
     NSDictionary *settings2 = [NSDictionary dictionaryWithContentsOfFile:[settingsBundle stringByAppendingPathComponent:@"ActionsMessages.plist"]];
     NSArray *preferences2 = [settings2 objectForKey:@"PreferenceSpecifiers"];
-    
     for(NSDictionary *prefSpecification in preferences2) {
         NSString *key = [prefSpecification objectForKey:@"Key"];
-        
-        if(key && [prefSpecification objectForKey:@"DefaultValue"]) {
+        if (key && [prefSpecification objectForKey:@"DefaultValue"]) {
             [defaultsToRegister setObject:[prefSpecification objectForKey:@"DefaultValue"] forKey:key];
         }
-    }    
-    
+    }
+
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsToRegister];    
 }
 
@@ -283,7 +301,7 @@
      */
     NSLog(@"applicationDidEnterBackground");
     [periodicMaintenanceTimer invalidate];
-    periodicMaintenanceTimer = nil;    
+    periodicMaintenanceTimer = nil;
 }
 
 
@@ -294,27 +312,23 @@
     NSLog(@"applicationWillEnterForeground");
 
     periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
-                                                                 target:self
-                                                               selector:@selector(periodicMaintenance)
-                                                               userInfo:nil
-                                                                repeats:YES];    
+                                                                target:self
+                                                              selector:@selector(periodicMaintenance)
+                                                              userInfo:nil
+                                                               repeats:YES];
+    
+    // MPStorage : Update Blacklist from MPStorage
+    [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
+    [[ThemeManager sharedManager] checkTheme];
 }
 
 - (void)periodicMaintenance
 {
-    //NSLog(@"periodicMaintenance");
-    
-
-    
     [self performSelectorInBackground:@selector(periodicMaintenanceBack) withObject:nil];
-    
-    
-
 }
 
 - (void)periodicMaintenanceBack
 {
-    
     @autoreleasepool {
     
     //NSLog(@"periodicMaintenanceBack");
@@ -417,13 +431,13 @@
 
 }
 
-
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
     
     // Noel
+    /*
     NSDate * now = [NSDate date];
     NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];
     [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
@@ -452,9 +466,10 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
     }
-    
+    */
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] refreshTheme];
+    /*
     if (cestNoel) {
         // Popup retry
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
@@ -468,7 +483,7 @@
         [activeVC presentViewController:alert animated:YES completion:nil];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         
-    }
+    }*/
 
 }
 
@@ -787,12 +802,6 @@
 - (void)dealloc {
     [periodicMaintenanceTimer invalidate];
     periodicMaintenanceTimer = nil;
-    //[periodicMaintenanceOperation release], periodicMaintenanceOperation = nil;
-    //[ioQueue release], ioQueue = nil;
-    
-    
-    
-    
 }
 
 
