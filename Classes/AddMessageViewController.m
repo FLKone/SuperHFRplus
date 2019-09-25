@@ -1656,23 +1656,25 @@
         //if (firstSmile > 0 || lastSmile < [self.smileyArray count]) {
         //NSLog(@"pagination needed");
         
-        [self.segmentControler setAlpha:0];
-        [self.segmentControlerPage setAlpha:1];
         
-        if (firstSmile > 0) {
-            [self.segmentControlerPage setEnabled:YES forSegmentAtIndex:0];
-        }
-        else {
-            [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:0];
-        }
-        
-        if (lastSmile < [localsmileyArray count]) {
-            [self.segmentControlerPage setEnabled:YES forSegmentAtIndex:2];
-        }
-        else {
-            [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
-        }
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.segmentControler setAlpha:0];
+            [self.segmentControlerPage setAlpha:1];
+
+            if (firstSmile > 0) {
+                    [self.segmentControlerPage setEnabled:YES forSegmentAtIndex:0];
+            }
+            else {
+                [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:0];
+            }
+            
+            if (lastSmile < [localsmileyArray count]) {
+                [self.segmentControlerPage setEnabled:YES forSegmentAtIndex:2];
+            }
+            else {
+                [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
+            }
+        });
         
         //}
         
