@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "ASIHTTPRequest.h"
-#import "UITextView+Placeholder.h"
 
 @protocol AlerteModoViewControllerDelegate;
 
