@@ -2670,15 +2670,8 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = [NSString stringWithFormat:@"%@%@#%@", [k RealForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]];
-    
-
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Lien copié dans le presse-papiers"
-                                                   delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-    alert.tag = kAlertPasteBoardOK;
-    
-    
-    [alert show];
-    
+        
+    [HFRAlertView DisplayAlertViewWithTitle:@"Lien copié dans le presse-papiers" forDuration:(long)1];
 }
 
 -(void) actionAlerter:(NSNumber *)curMsgN {
