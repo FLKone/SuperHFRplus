@@ -2010,7 +2010,7 @@
     }
     
     if (!self.loaded) {
-        NSLog(@"== First DOM");
+        //NSLog(@"== First DOM");
         self.loaded = YES;
 
         NSString* jsString2 = @"";

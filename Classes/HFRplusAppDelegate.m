@@ -24,8 +24,11 @@
 #import "BlackList.h"
 #import "WEBPURLProtocol.h"
 #import "WEBPDemoDecoder.h"
+#import "HTMLParser.h"
 
 #import <SafariServices/SafariServices.h>
+#import <BackgroundTasks/BackgroundTasks.h>
+#import <UserNotifications/UserNotifications.h>
 
 @implementation HFRplusAppDelegate
 
@@ -156,7 +159,82 @@
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] refreshTheme];
 
+    
+    // Register background fetch
+    [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.hfrplus.beta5.refresh" usingQueue:nil
+                                     launchHandler:^(__kindof BGTask * _Nonnull task) {
+        [self performFetch:(BGAppRefreshTask *)task];
+    }];
+    //[application setMinimumBackgroundFetchInterval:60];
+    
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
+       completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
+    }];
+    
     return YES;
+}
+
+-(void)performFetch:(BGAppRefreshTask *)task {
+    [self scheduleAppRefresh];
+    
+    NSLog(@"Background fetch started...");
+    NSString *task_desc = task.description;
+    [task setExpirationHandler:^{
+        NSLog(@"\n\nExpired task: %@", task_desc);
+    }];
+    NSURL *url = [NSURL URLWithString:@"https://forum.hardware.fr/forum1f.php?config=hfr.inc&owntopic=1&new=0&nojs=0"];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    request.timeOutSeconds = 5;
+    [request startSynchronous];
+    if (![request error]) {
+        @try {
+            NSError *error;
+            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request responseString] error:&error];
+            HTMLNode *bodyNode = [myParser body]; //Find the body tag
+            HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
+            NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
+            if (temporaryMPArray.count == 3) {
+                NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";
+                NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
+                NSLog(@"Background check successful. %@ unread MPs", myMPNumber);
+                //[UIApplication sharedApplication].applicationIconBadgeNumber = [myMPNumber intValue];
+                [self scheduleNotification:myMPNumber];
+            }
+            /*
+             UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+             localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:60];
+             localNotification.alertBody = [NSString stringWithFormat:@"Checked for new posts in %f seconds", timeElapsed];
+             localNotification.timeZone = [NSTimeZone defaultTimeZone];
+             [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+
+             */
+            //---set the flag that data is successfully downloaded---
+        }
+        @catch (NSException * e) {
+            NSLog(@"Error in parsing the result of the background fetch: %@", e);
+        }
+    }
+    [task setTaskCompletedWithSuccess:TRUE];
+    NSLog(@"Background fetch completed with task: %@", task.description);
+}
+
+- (void)scheduleNotification:(NSString*)sNbNewMPs {
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+    content.title = @"iOS Fathers";
+    content.body = @"Test notification with thread 1";
+    content.threadIdentifier = @"thread1";
+    
+    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:3.0 repeats:NO];
+    
+    NSString* requestId = [NSUUID UUID].UUIDString;
+    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:requestId content:content trigger:trigger];
+    
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center addNotificationRequest:request withCompletionHandler:^(NSError *error) {
+        NSLog(@"Notification request error: %@", error);
+    }];
 }
 
 -(void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
@@ -286,10 +364,32 @@
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
     NSLog(@"applicationDidEnterBackground");
+    [self scheduleAppRefresh];
+    NSLog(@"Schedule done");
     [periodicMaintenanceTimer invalidate];
     periodicMaintenanceTimer = nil;
 }
 
+- (void) scheduleAppRefresh {
+    BGAppRefreshTaskRequest *request = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:@"com.hfrplus.beta5.refresh"];
+    [request setEarliestBeginDate:[[NSDate date] dateByAddingTimeInterval:30]];
+    //request.requiresNetworkConnectivity = YES;
+    
+    __autoreleasing NSError *error;
+    @try {
+        //NSLog(@"\n\nSubmitting task request: %@", request.description);
+        [[BGTaskScheduler sharedScheduler] submitTaskRequest:request error:&error];
+    } @catch (NSException *exception) {
+        NSLog(@"\n\nCannot submit task request: %@", exception.description);
+    } @finally {
+        if (error)
+        {
+            NSLog(@"\n\nFailed to submit task request:\n%@\n%@", request.description, error.description);
+        } else {
+            NSLog(@"\n\nSubmitted task request %@", request.description);
+        }
+    }
+}
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     /*

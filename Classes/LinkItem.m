@@ -264,11 +264,12 @@
         tempHTML = [sShowPostDiv stringByAppendingString:tempHTML];
     }
     
-
+    /*
     NSLog(@"----------------> OUTPUT  <---------------------");
     NSLog(@"%@", tempHTML);
     NSLog(@"----------------> /OUTPUT <---------------------");
-
+    */
+    
 	return tempHTML;
 }
 
