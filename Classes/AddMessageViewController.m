@@ -538,7 +538,9 @@
     self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_text"] isEqualToString:@"sys"]) {
         CGFloat userFontSize = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody].pointSize;
-        //userFontSize = floorf(userFontSize*0.90);
+        /*NSLog(@"SYSTEM FONT FOR TEXTVIEW %f",userFontSize);
+        userFontSize = userFontSize * 0.85;
+        NSLog(@"SYSTEM FONT FOR TEXTVIEW    -> %f",userFontSize); // 14 -> 12 (11 trop petit -> 14?) // 23 -> 19 (0.85 / ok)*/
         [self.textView setFont:[UIFont systemFontOfSize:userFontSize]];
     }
     
