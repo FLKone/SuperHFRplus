@@ -146,13 +146,14 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<false/>
+			<integer>3</integer>
 			<key>Key</key>
 			<string>auto_theme</string>
 			<key>Title</key>
 			<string>Changement de thème</string>
 			<key>Titles</key>
 			<array>
+				<string>Apparence iOS</string>
 				<string>Manuel</string>
 				<string>Automatique</string>
 				<string>Heure fixe</string>
@@ -161,6 +162,7 @@
 			<string>PSMultiValueSpecifier</string>
 			<key>Values</key>
 			<array>
+				<integer>3</integer>
 				<integer>0</integer>
 				<integer>1</integer>
 				<integer>2</integer>
@@ -350,36 +352,36 @@
 				<string>sys</string>
 			</array>
 		</dict>
-        <dict>
-            <key>DefaultValue</key>
-            <integer>14</integer>
-            <key>Key</key>
-            <string>size_text_reply</string>
-            <key>Title</key>
-            <string>Taille du texte de réponse</string>
-            <key>Titles</key>
-            <array>
-                <string>12 pt</string>
-                <string>13 pt</string>
-                <string>14 pt</string>
-                <string>15 pt</string>
-                <string>16 pt</string>
-                <string>18 pt</string>
-                <string>20 pt</string>
-            </array>
-            <key>Type</key>
-            <string>PSMultiValueSpecifier</string>
-            <key>Values</key>
-            <array>
-                <integer>12</integer>
-                <integer>13</integer>
-                <integer>14</integer>
-                <integer>15</integer>
-                <integer>16</integer>
-                <integer>18</integer>
-                <integer>20</integer>
-            </array>
-        </dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>14</integer>
+			<key>Key</key>
+			<string>size_text_reply</string>
+			<key>Title</key>
+			<string>Taille du texte de réponse</string>
+			<key>Titles</key>
+			<array>
+				<string>12 pt</string>
+				<string>13 pt</string>
+				<string>14 pt</string>
+				<string>15 pt</string>
+				<string>16 pt</string>
+				<string>18 pt</string>
+				<string>20 pt</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>12</integer>
+				<integer>13</integer>
+				<integer>14</integer>
+				<integer>15</integer>
+				<integer>16</integer>
+				<integer>18</integer>
+				<integer>20</integer>
+			</array>
+		</dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>default</string>
@@ -474,52 +476,6 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
-		<!--dict>
-			<key>DefaultValue</key>
-			<integer>0</integer>
-			<key>Key</key>
-			<string>hiderecentposts</string>
-			<key>Title</key>
-			<string>Masquer les posts récents</string>
-			<key>Titles</key>
-			<array>
-				<string>Non</string>
-				<string>&lt; 1 min</string>
-				<string>&lt; 2 min</string>
-				<string>&lt; 3 min</string>
-				<string>&lt; 4 min</string>
-				<string>&lt; 5 min</string>
-				<string>&lt; 6 min</string>
-				<string>&lt; 7 min</string>
-				<string>&lt; 8 min</string>
-				<string>&lt; 9 min</string>
-				<string>&lt; 10 min</string>
-				<string>&lt; 15 min</string>
-				<string>&lt; 20 min</string>
-				<string>&lt; 25 min</string>
-				<string>&lt; 30 min</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-				<integer>3</integer>
-				<integer>4</integer>
-				<integer>5</integer>
-				<integer>6</integer>
-				<integer>7</integer>
-				<integer>8</integer>
-				<integer>9</integer>
-				<integer>10</integer>
-				<integer>15</integer>
-				<integer>20</integer>
-				<integer>25</integer>
-				<integer>30</integer>
-			</array>
-		</dict-->
 		<dict>
 			<key>FooterText</key>
 			<string>Permet de synchroniser certaines données (Drapeaux MP, Blacklist) avec le script équivalent GreaseMonkey.</string>

@@ -75,6 +75,10 @@
         [self showCell:@"theme"];
         [self showCell:@"auto_theme_day_time"];
         [self showCell:@"auto_theme_night_time"];
+    } else if (autoThemeEnabled == AUTO_THEME_AUTO_IOS) {
+        [self showCell:@"theme"];
+        [self hideCell:@"auto_theme_day_time"];
+        [self hideCell:@"auto_theme_night_time"];
     } else {
         [self showCell:@"theme"];
         [self hideCell:@"auto_theme_day_time"];
@@ -157,6 +161,20 @@
             [self showCell:@"auto_theme_night_time"];
             [[ThemeManager sharedManager] changeAutoTheme:NO];
             [[ThemeManager sharedManager] setTheme:[[ThemeManager  sharedManager] getThemeFromCurrentTime]];
+        } else if (iAutoTheme == AUTO_THEME_AUTO_IOS) {
+            if (@available(iOS 13.0, *)) {
+                [self showCell:@"theme"];
+                [self hideCell:@"auto_theme_day_time"];
+                [self hideCell:@"auto_theme_night_time"];
+                [[ThemeManager sharedManager] changeAutoTheme:NO];
+                if (UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                    [[ThemeManager sharedManager] setTheme:ThemeDark];
+                } else {
+                    [[ThemeManager sharedManager] setTheme:ThemeLight];
+                }
+            } else {
+                [HFRAlertView DisplayAlertViewWithTitle:@"Theme iOS" andMessage:@"Vous devez être sur iOS 13 et suppérieur pour activer la fonctionnalité." forDuration:(long)2];
+            }
         } else {
             [self showCell:@"theme"];
             [self hideCell:@"auto_theme_day_time"];
@@ -166,50 +184,7 @@
     } else if([notification.userInfo objectForKey:@"auto_theme_day_time"] || [notification.userInfo objectForKey:@"auto_theme_night_time"] ) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"force_manual_theme"];
         [[ThemeManager sharedManager] checkTheme];
-    } /*else if([notification.userInfo objectForKey:@"theme_day_adjust"]) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_day_adjust"]) {
-            [self showCell:@"theme_day_tintcolor"];
-            [self showCell:@"theme_day_color_superfavori"];
-            [self showCell:@"theme_day_color_love"];
-            
-            [ThemeColors setDayTintColor:(int)[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_day_tintcolor"]];
-            [ThemeColors setDayColorSuperFavori:(int)[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_day_color_superfavori"]];
-            [ThemeColors setDayColorLove:(int)[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_day_color_love"]];
-        } else {
-            [self hideCell:@"theme_day_tintcolor"];
-            [self hideCell:@"theme_day_color_superfavori"];
-            [self hideCell:@"theme_day_color_love"];
-            // Back to default
-            [ThemeColors setDayTintColor:33];
-            [ThemeColors setDayColorSuperFavori:33];
-            [ThemeColors setDayColorLove:33];
-        }
-        [[ThemeManager sharedManager] refreshTheme];
-    } else if([notification.userInfo objectForKey:@"theme_night_adjust"]) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_night_adjust"]) {
-            [self showCell:@"theme_night_brightness"];
-            [self showCell:@"theme_night_tintcolor"];
-            [self showCell:@"theme_night_color_superfavori"];
-            [self showCell:@"theme_night_color_love"];
-
-            [ThemeColors setNightBrightness:(int)[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_night_brightness"]];
-            [ThemeColors setNightTintColor:(int)[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_night_tintcolor"]];
-            [ThemeColors setNightColorSuperFavori:(int)[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_night_color_superfavori"]];
-            [ThemeColors setNightColorLove:(int)[[NSUserDefaults standardUserDefaults] integerForKey:@"theme_night_color_love"]];
-            [[ThemeManager sharedManager] refreshTheme];
-        } else {
-            [self hideCell:@"theme_night_brightness"];
-            [self hideCell:@"theme_night_tintcolor"];
-            [self hideCell:@"theme_night_color_superfavori"];
-            [self hideCell:@"theme_night_color_love"];
-            // Back to default
-            [ThemeColors setNightBrightness:100];
-            [ThemeColors setNightTintColor:33];
-            [ThemeColors setNightColorSuperFavori:33];
-            [ThemeColors setNightColorLove:33];
-        }
-        [[ThemeManager sharedManager] refreshTheme];
-    }*/
+    }
     else if([notification.userInfo objectForKey:@"theme_noel_disabled"]) {
         [[ThemeManager sharedManager] refreshTheme];
     }

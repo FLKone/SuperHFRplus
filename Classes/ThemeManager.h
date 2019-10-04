@@ -13,6 +13,7 @@
 #define AUTO_THEME_MANUAL 0
 #define AUTO_THEME_AUTO_CAMERA 1
 #define AUTO_THEME_AUTO_TIME 2
+#define AUTO_THEME_AUTO_IOS 3
 
 
 @interface ThemeManager : NSObject <LuminosityHandlerDelegate>  {
