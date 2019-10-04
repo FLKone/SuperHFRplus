@@ -186,12 +186,13 @@
     }];
     NSURL *url = [NSURL URLWithString:@"https://forum.hardware.fr/forum1f.php?config=hfr.inc&owntopic=1&new=0&nojs=0"];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    request.timeOutSeconds = 5;
+    request.timeOutSeconds = 15;
     [request startSynchronous];
     if (![request error]) {
         @try {
             NSError *error;
-            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request responseString] error:&error];
+            /*
+            HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
             HTMLNode *bodyNode = [myParser body]; //Find the body tag
             HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
             NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
@@ -199,9 +200,12 @@
                 NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";
                 NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
                 NSLog(@"Background check successful. %@ unread MPs", myMPNumber);
-                //[UIApplication sharedApplication].applicationIconBadgeNumber = [myMPNumber intValue];
                 [self scheduleNotification:myMPNumber];
+                //[UIApplication sharedApplication].applicationIconBadgeNumber = [myMPNumber intValue];
             }
+             
+            */
+            [self scheduleNotification:@"3"];
             /*
              UILocalNotification* localNotification = [[UILocalNotification alloc] init];
              localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:60];

@@ -536,6 +536,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
     @try {
         NSError *error;
+        NSLog(@"\n----------------------------------------------------\n%@\n----------------------------------------------------", content);
         HTMLParser *myParser = [[HTMLParser alloc] initWithString:content error:&error];
         HTMLNode * bodyNode = [myParser body]; //Find the body tag
         HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
