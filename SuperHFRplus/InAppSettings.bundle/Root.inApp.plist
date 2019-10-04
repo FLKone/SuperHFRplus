@@ -350,6 +350,36 @@
 				<string>sys</string>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>14</integer>
+            <key>Key</key>
+            <string>size_text_reply</string>
+            <key>Title</key>
+            <string>Taille du texte de réponse</string>
+            <key>Titles</key>
+            <array>
+                <string>12 pt</string>
+                <string>13 pt</string>
+                <string>14 pt</string>
+                <string>15 pt</string>
+                <string>16 pt</string>
+                <string>18 pt</string>
+                <string>20 pt</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>12</integer>
+                <integer>13</integer>
+                <integer>14</integer>
+                <integer>15</integer>
+                <integer>16</integer>
+                <integer>18</integer>
+                <integer>20</integer>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>default</string>
