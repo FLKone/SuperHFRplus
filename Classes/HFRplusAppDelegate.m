@@ -499,6 +499,19 @@
     
 }
 
+- (void)hidePrimaryPanelOnIpad {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad /*&& [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait*/) {
+        UISplitViewController* splitViewController = [[HFRplusAppDelegate sharedAppDelegate] splitViewController];
+        if (self.splitViewController.displayMode == UISplitViewControllerDisplayModePrimaryOverlay) {
+            [UIView animateWithDuration:0.3 animations:^{
+                splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModePrimaryHidden;
+            } completion:^(BOOL finished){
+                splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
+            }];
+        }
+    }
+}
+
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
 {
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);

@@ -1342,7 +1342,6 @@
         
         //NSLog(@"push message liste");
         [self pushTopic];
-        
     }
 }
 
@@ -1495,6 +1494,8 @@
     
     [self setTopicViewed];
     
+    // Close left panel on ipad in portrait mode
+    [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
 }
 
 -(void)setTopicViewed {
