@@ -56,7 +56,7 @@
 
 	if ([[self name] isEqualToString:@"Modération"]) {
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message mode"];
-	} else if (bIsMP == YES && [[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
+	} else if ([[[self name] lowercaseString] isEqualToString:currentPseudoLowercase]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message me"];
     } else if ([[BlackList shared] isWL:[self name]]) {
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"class=\"message" withString:@"class=\"message whitelist"];
@@ -88,9 +88,15 @@
     
     // Add "Show quote" button
     NSString* sShowQuoteJS = [NSString stringWithFormat:@"document.getElementById($1).style.display = ''; document.getElementById(1$1).style.display = 'none'; document.getElementById(1$1).style.display = 'none'; document.getElementById(3$1).style.display = '';"];
-    NSString *sShowQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_show\" id=\"1$1\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>$2 a écrit :</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\">&#9660;</a></div></div></td></tr></table>", sShowQuoteJS];
-
-    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:@"<table class=\"citation_blacklist\" id=\"([0-9]+)\" auteur=\"([^\"]+)\""
+    
+    NSString* sTextePseudo = @"$2 a écrit :";
+    NSString* sRegExpQuoteBL = @"<table class=\"citation_blacklist\" id=\"([0-9]+)\" auteur=\"([^\"]+)\"";
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"blacklist_hide_pseudo"]) {
+        sTextePseudo = @"Citation masquée";
+        sRegExpQuoteBL = @"<table class=\"citation_blacklist\" id=\"([0-9]+)\" auteur=\"[^\"]+\"";
+    }
+    NSString *sShowQuote = [NSString stringWithFormat:@"<table class=\"bl_quote_show\" id=\"1$1\"><tr class=\"none\"><td><b class=\"s1\"><div class=\"bl_quote_left\" style=\"float: left;\"><b>%@</b></div></td><td><div class=\"bl_quote_right\" style=\"float: right;\"><a class=\"buttonshow\" target=\"_blank\" onclick=\"%@\">&#9660;</a></div></div></td></tr></table>", sTextePseudo, sShowQuoteJS];
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:sRegExpQuoteBL
                                                           withString:[NSString stringWithFormat:@"%@<table class=\"citation_blacklist\" id=\"$1\"", sShowQuote]];
 
     // Add "Hide quote" button
@@ -260,7 +266,12 @@
         tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"<div class=\"right\"> + </div>" withString:sHidePostDiv];
         
         NSString* sShowPostJS = [NSString stringWithFormat:@"event.stopPropagation(); document.getElementById(%d).style.height = 'auto'; document.getElementById(10%d).style.display = 'none'; document.getElementById(20%d).style.display = 'none';", index, index, index];
-        NSString* sShowPostDiv = [NSString stringWithFormat: @"<div class=\"message headerblacklist\" id=\"10%d\" style=\"display='block'\"><div class=\"blavatar\"></div><div class=\"blpseudo\">%@</div><div class=\"right\" onclick=\"%@\"><a class=\"buttonhide\"> &#9660; </a></div></div><div class=\"message separator\" id=\"20%d\"></div>", index, name, sShowPostJS, index];
+        
+        NSString* sPseudoToDisplay = name;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"blacklist_hide_pseudo"]) {
+            sPseudoToDisplay = @"";
+        }
+        NSString* sShowPostDiv = [NSString stringWithFormat: @"<div class=\"message headerblacklist\" id=\"10%d\" style=\"display='block'\"><div class=\"blavatar\"></div><div class=\"blpseudo\">%@</div><div class=\"right\" onclick=\"%@\"><a class=\"buttonhide\"> &#9660; </a></div></div><div class=\"message separator\" id=\"20%d\"></div>", index, sPseudoToDisplay, sShowPostJS, index];
         tempHTML = [sShowPostDiv stringByAppendingString:tempHTML];
     }
     

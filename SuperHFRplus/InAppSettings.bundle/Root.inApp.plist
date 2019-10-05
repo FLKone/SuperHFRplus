@@ -312,6 +312,16 @@
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Masquer les pseudos</string>
+            <key>Key</key>
+            <string>blacklist_hide_pseudo</string>
+            <key>DefaultValue</key>
+            <false/>
+        </dict>
 		<dict>
 			<key>IASKCellImage</key>
 			<string>HeartBlack-20</string>
