@@ -139,7 +139,6 @@
         }
     }
 
-    NSLog(@"SETTHEME> self.tabBar.items.count - %d", self.tabBar.items.count);
     for (int i=0; i<self.tabBar.items.count; i++) {
         UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
         int iShift = 0;

@@ -259,8 +259,10 @@ int nightDelay;
     } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_IOS) {
         if (@available(iOS 13.0, *)) {
             if (UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                NSLog(@"=============== UITraitCollection DARK =============== ");
                 [self setTheme:ThemeDark];
             } else {
+                NSLog(@"............... UITraitCollection light .............. ");
                 [self setTheme:ThemeLight];
             }
         }

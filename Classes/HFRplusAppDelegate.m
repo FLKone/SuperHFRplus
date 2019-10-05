@@ -319,7 +319,6 @@
     
     // MPStorage : Update Blacklist from MPStorage
     [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
-    [[ThemeManager sharedManager] checkTheme];
 }
 
 - (void)periodicMaintenance
@@ -467,7 +466,11 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
     }
     */
+    
+    
+    NSLog(@"applicationDidBecomeActive");
     [self setTheme:[[ThemeManager sharedManager] theme]];
+    [[ThemeManager sharedManager] checkTheme];
     [[ThemeManager sharedManager] refreshTheme];
     /*
     if (cestNoel) {
