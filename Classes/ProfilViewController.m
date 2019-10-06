@@ -352,6 +352,7 @@
     self.loadingLabel.textColor = self.maintenanceView.textColor = [ThemeColors cellTextColor:theme];
     self.loadingLabel.shadowColor = self.maintenanceView.shadowColor = [UIColor clearColor];
     [self.loadingIndicator setColor:[ThemeColors cellTextColor:theme]];
+    [self.navigationController.navigationBar setTranslucent:NO];
 }
 
 
