@@ -87,7 +87,7 @@
     return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -121,6 +121,12 @@
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 3:
+            cell.titleLabel.text = @"Favoris hors ligne";
+            cell.titleImage.image = [UIImage imageNamed:@"offline"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
+            break;
+        case 4:
             cell.titleLabel.text = @"Crédits";
             cell.titleImage.image = [UIImage imageNamed:@"AboutFilled-25"];
             cell.badgeLabel.text = @"";
