@@ -35,6 +35,7 @@
 #import "PullToRefreshErrorViewController.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
+#import "OfflineStorage.h"
 
 #define SECTION_CAT_VISIBLE 0
 #define SECTION_CAT_HIDDEN 1
@@ -1135,15 +1136,20 @@
         if (tmpTopic.isPoll) {
             sPoll = @" \U00002263";
         }
+        NSString* sOffline = @"";
+        if ([[OfflineStorage shared] isOfflineTopic:tmpTopic]) {
+            sOffline = @" \U000025CF";
+        }
+
         switch (vos_sujets) {
             case 0:
-                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ ⚑%@ %d/%d", sOffline, sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage]]];
                 break;
             case 1:
-                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"★%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ ★%@ %d/%d", sOffline, sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage]]];
                 break;
             default:
-                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage] ]];
+                [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ ⚑%@ %d/%d", sOffline, sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage]]];
                 break;
         }
         
@@ -1390,13 +1396,23 @@
             [uiAction setValue:@true forKey:@"checked"];
         }
         [topicActionAlert addAction:uiAction];
-		
         
+        // Offline favorites handling
+        UIAlertAction* uiActionOffline = [UIAlertAction actionWithTitle:@"Favori hors ligne" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self setTopicOfflineFavoriteWithIndex:self.pressedIndexPath];
+        }];
+        if ([[OfflineStorage shared] isOfflineTopic:tmpTopic])
+        {
+            [uiActionOffline setValue:@true forKey:@"checked"];
+        }
+        [topicActionAlert addAction:uiActionOffline];
+        
+
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
         
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
             UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
             [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
@@ -1584,6 +1600,18 @@
         [self.favoritesTableView reloadData];
     });
 }
+
+-(void)setTopicOfflineFavoriteWithIndex:(NSIndexPath *)indexPath {
+    Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
+    [self.favoritesTableView setEditing:NO animated:NO];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        // Go to URL in BG
+        [[OfflineStorage shared] toggleOfflineTopics:tmpTopic];
+        [self.favoritesTableView reloadData];
+    });
+}
+
 
 #pragma mark -
 #pragma mark chooseTopicPage

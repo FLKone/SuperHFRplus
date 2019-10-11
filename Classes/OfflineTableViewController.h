@@ -16,26 +16,13 @@
 @class ASIHTTPRequest;
 
 @interface OfflineTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate, NSXMLParserDelegate> {
-    IBOutlet UITableView *offlineTableView;
-    IBOutlet UIView *loadingView;
-    int iNumberNewOffline;
-    MessagesTableViewController *messagesTableViewController;
-
-    ASIHTTPRequest *request;
 }
 
-@property (nonatomic, strong) IBOutlet UITableView *OfflineTableView;
+@property (nonatomic, strong) IBOutlet UITableView *offlineTableView;
 //@property (nonatomic, strong) IBOutlet UIView *loadingView;
 
-@property (strong, nonatomic) ASIHTTPRequest *request;
-@property (nonatomic, strong) NSMutableDictionary *dictData;
-@property (nonatomic,strong) NSMutableArray *marrXMLData;
-@property (nonatomic,strong) NSMutableString *mstrXMLString;
-@property (nonatomic,strong) NSMutableDictionary *mdictXMLPart;
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
-@property int *iNumberNewOffline;
-
-
+@property (nonatomic, strong) NSArray* listOfflineTopicsKeys;
 @end
 
 

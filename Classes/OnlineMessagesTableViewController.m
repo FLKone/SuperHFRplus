@@ -1,5 +1,5 @@
 //
-//  MessagesTableViewController.m
+//  OnlineMessagesTableViewController.m
 //  HFRplus
 //
 //  Created by FLK on 07/07/10.
@@ -7,7 +7,7 @@
 
 #import <unistd.h>
 
-#import "MessagesTableViewController.h"
+#import "OnlineMessagesTableViewController.h"
 #import "MessagesSearchTableViewController.h"
 #import "MessageDetailViewController.h"
 #import "TopicsTableViewController.h"
@@ -44,48 +44,438 @@
 #import "HFRAlertView.h"
 #import "MPStorage.h"
 
-@implementation MessagesTableViewController
-@synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
-@synthesize swipeLeftRecognizer, swipeRightRecognizer, overview, arrayActionsMessages, lastStringFlagTopic;
-@synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported, isSeparatorNewMessages;
-
-@synthesize queue; //v3
-@synthesize stringFlagTopic;
-@synthesize editFlagTopic;
-@synthesize arrayInputData;
-@synthesize aToolbar, styleAlert;
-
-@synthesize isFavoritesOrRead, isRedFlagged, isUnreadable, isAnimating, isViewed;
-
-@synthesize request, arrayAction, curPostID;
-
-@synthesize firstDate;
-@synthesize actionCreateAQ;
-
-- (void)setTopicName:(NSString *)n {
-    _topicName = [n filterTU];
-    
-    
-}
-//Getter method
-- (NSString*) topicName {
-    //NSLog(@"Returning name: %@", _aTitle);
-    return _topicName;
-}
-
+@implementation OnlineMessagesTableViewController
 
 
 #pragma mark -
 #pragma mark Data lifecycle
 
-- (void)setProgress:(float)newProgress{
-	//NSLog(@"Progress %f%", newProgress*100);
-}
+
 
 #pragma mark -
 #pragma mark View lifecycle
 
 
+-(void)setupScrollAndPage
+{
+	//NSLog(@"topicName: %@", self.topicName);
+	
+	//On vire le '#t09707987987'
+	NSRange rangeFlagPage;
+	rangeFlagPage =  [[self currentUrl] rangeOfString:@"#" options:NSBackwardsSearch];
+	
+    
+    if (self.stringFlagTopic.length == 0) {
+        if (!(rangeFlagPage.location == NSNotFound)) {
+            self.stringFlagTopic = [[self currentUrl] substringFromIndex:rangeFlagPage.location];
+        }
+        else {
+            self.stringFlagTopic = @"";
+        }
+    }
+    
+	if (!(rangeFlagPage.location == NSNotFound)) {
+		self.currentUrl = [[self currentUrl] substringToIndex:rangeFlagPage.location];
+    }    
+	//--
+
+
+    /* else */
+    
+    {
+        //On check si y'a page=2323
+        NSString *regexString  = @".*page=([^&]+).*";
+        NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
+        NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
+        NSError  *error2        = NULL;
+        
+        matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
+        
+        if (matchedRange.location == NSNotFound) {
+            NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
+            if (rangeNumPage.location == NSNotFound) {
+                //
+                NSLog(@"something went wrong");
+                return;
+                //[self.navigationController popViewControllerAnimated:YES];
+            }
+            else {
+                self.pageNumber = [[self.currentUrl substringWithRange:rangeNumPage] intValue];
+            }
+        }
+        else {
+            self.pageNumber = [[self.currentUrl substringWithRange:matchedRange] intValue];
+            
+        }
+        //On check si y'a page=2323
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+    }
+
+    //NSLog(@"pageNumber %d", self.pageNumber);
+
+    if (self.isSearchInstra) {
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Recherche | %@", self.topicName]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+        
+    }
+    
+	//self.title = [NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber];
+    
+	//[self navigationItem].titleView.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
+	
+}
+
+-(void)setupPageToolbar:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser;
+{
+    if (!self.pageNumber && !self.errorReported) {
+        self.errorReported = YES;
+        
+        dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+        dispatch_async(backgroundQueue, ^{
+            // Do your long running code
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        });
+        
+        return;
+    }
+	//NSLog(@"setupPageToolbar");
+    //Titre
+	HTMLNode *titleNode = [[bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2Title" allowPartial:YES] findChildTag:@"h3"]; //Get all the <img alt="" />
+	if ([titleNode allContents] && self.topicName.length == 0) {
+		//NSLog(@"setupPageToolbar titleNode %@", [titleNode allContents]);
+		self.topicName = [titleNode allContents];
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+
+        //self.title = [NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber];
+
+		//[self navigationItem].titleView.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
+	}
+    //Titre
+    
+    
+	HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2PagesHaut" allowPartial:YES];
+	
+	if(pagesTrNode)
+	{
+        
+		HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
+		
+		if (pagesLinkNode) {
+			//NSLog(@"pages %@", rawContentsOfNode([pagesLinkNode _node], [myParser _doc]));
+			
+			//NSArray *temporaryNumPagesArray = [[NSArray alloc] init];
+			NSArray *temporaryNumPagesArray = [pagesLinkNode children];
+            
+			[self setFirstPageNumber:[[[temporaryNumPagesArray objectAtIndex:2] contents] intValue]];
+			
+            //NSLog(@"num %d = %d", [self pageNumber], [self firstPageNumber]);
+
+            
+			if ([self pageNumber] == [self firstPageNumber]) {
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+			else {
+                NSLog(@"[temporaryNumPagesArray objectAtIndex:2] %@", [temporaryNumPagesArray objectAtIndex:2]);
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray objectAtIndex:2] getAttributeNamed:@"href"]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+			
+
+			[self setLastPageNumber:[[[temporaryNumPagesArray lastObject] contents] intValue]];
+
+			
+			if ([self pageNumber] == [self lastPageNumber]) {
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+			else {
+                //NSLog(@"lastObject %@", [[temporaryNumPagesArray lastObject] allContents]);
+                
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray lastObject] getAttributeNamed:@"href"]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+
+			/*
+			 NSLog(@"premiere %d", [self firstPageNumber]);			
+			 NSLog(@"premiere url %@", [self firstPageUrl]);
+			 
+			 NSLog(@"premiere %d", [self lastPageNumber]);			
+			 NSLog(@"premiere url %@", [self lastPageUrl]);		
+			 */
+			
+			//TableFooter
+			UIToolbar *tmptoolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+			tmptoolbar.barStyle = UIBarStyleDefault;
+			[tmptoolbar sizeToFit];
+			
+			//Add buttons
+			UIBarButtonItem *systemItem1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
+																						 target:self
+																						 action:@selector(firstPage:)];
+			if ([self pageNumber] == [self firstPageNumber]) {
+				[systemItem1 setEnabled:NO];
+			}
+			
+			UIBarButtonItem *systemItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
+																						 target:self
+																						 action:@selector(lastPage:)];
+
+			if ([self pageNumber] == [self lastPageNumber]) {
+				[systemItem2 setEnabled:NO];
+			}		
+			
+			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 44)];
+			[label setFont:[UIFont boldSystemFontOfSize:15.0]];
+			[label setAdjustsFontSizeToFitWidth:YES];
+			[label setBackgroundColor:[UIColor clearColor]];
+			[label setTextAlignment:NSTextAlignmentCenter];
+			[label setLineBreakMode:NSLineBreakByTruncatingMiddle];
+			[label setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
+			
+			[label setTextColor:[UIColor whiteColor]];
+			[label setNumberOfLines:0];
+			[label setTag:666];
+			[label setText:[NSString stringWithFormat:@"%d/%d", [self pageNumber], [self lastPageNumber]]];
+			
+			UIBarButtonItem *systemItem3 = [[UIBarButtonItem alloc] initWithCustomView:label];
+			
+			
+			
+			
+			
+			//Use this to put space in between your toolbox buttons
+			UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+																					  target:nil
+																					  action:nil];
+
+			//Add buttons to the array
+			NSArray *items = [NSArray arrayWithObjects: systemItem1, flexItem, systemItem3, flexItem, systemItem2, nil];
+			
+			//release buttons
+			
+			//add array of buttons to toolbar
+			[tmptoolbar setItems:items animated:NO];
+			
+			self.aToolbar = tmptoolbar;
+			
+		}
+		else {
+			self.aToolbar = nil;
+			//NSLog(@"pas de pages");
+            [self setFirstPageNumber:1];
+            [self setLastPageNumber:1];
+		}
+		
+		//--
+		
+		
+		//NSArray *temporaryPagesArray = [[NSArray alloc] init];
+		
+		NSArray *temporaryPagesArray = [pagesTrNode findChildrenWithAttribute:@"class" matchingName:@"pagepresuiv" allowPartial:YES];
+		
+        if (self.isSearchInstra) {
+            [self.view addGestureRecognizer:swipeLeftRecognizer];
+        }
+		else if(temporaryPagesArray.count != 3)
+		{
+			//NSLog(@"pas 3");
+			//[self.view removeGestureRecognizer:swipeLeftRecognizer];
+			//[self.view removeGestureRecognizer:swipeRightRecognizer];
+		}
+		else {
+            HTMLNode *nextUrlNode = [[temporaryPagesArray objectAtIndex:0] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+            
+            if (nextUrlNode) {
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                [self.view addGestureRecognizer:swipeLeftRecognizer];
+                self.nextPageUrl = [[nextUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"nextPageUrl = %@", nextPageUrl);
+                
+            }
+            else {
+                self.nextPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeLeftRecognizer];
+            }
+            
+            HTMLNode *previousUrlNode = [[temporaryPagesArray objectAtIndex:1] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+            
+            if (previousUrlNode) {
+                //previousPageUrl = [[topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber - 1)]] retain];
+                [self.view addGestureRecognizer:swipeRightRecognizer];
+                self.previousPageUrl = [[previousUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"previousPageUrl = %@", previousPageUrl);
+                
+            }
+            else {
+                self.previousPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeRightRecognizer];
+                
+                
+            }
+		}
+	}
+	else {
+		self.aToolbar = nil;
+	}
+	//NSLog(@"Fin setupPageToolbar");
+
+	//--Pages
+}
+
+-(void)setupPoll:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
+    self.pollNode = nil;
+    self.pollParser = nil;
+    self.isNewPoll = NO;
+    
+	HTMLNode * tmpPollNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"sondage" allowPartial:NO];
+	if(tmpPollNode)
+    {
+        //NSLog(@"Raw Poll %@", rawContentsOfNode([tmpPollNode _node], [myParser _doc]));
+        [self setPollNode:tmpPollNode];
+        [self setPollParser:myParser];
+        
+        // Adapt action button of navigation bar
+        HTMLNode * tmpPollNodeInput = [tmpPollNode findChildTag:@"input"];
+        if (tmpPollNodeInput) {
+            self.isNewPoll = YES;
+        }
+    }
+}
+
+-(void)setupIntrSearch:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
+    HTMLNode * tmpSearchNode = [bodyNode findChildWithAttribute:@"action" matchingName:@"/transsearch.php" allowPartial:NO];
+    if(tmpSearchNode)
+    {
+        [self.searchInputData removeAllObjects];
+        
+        
+        NSArray *wantedArr = [NSArray arrayWithObjects:@"hash_check", @"p", @"post", @"cat", @"firstnum", @"currentnum", @"word", @"spseudo", @"filter", nil];
+        //NSLog(@"INTRA");
+        //hidden input for URL          post | cat | currentnum
+        //hidden input for URL          word | spseudo | filter
+        
+        NSArray *arrInput = [tmpSearchNode findChildTags:@"input"];
+        for (HTMLNode *no in arrInput) {
+            //NSLog(@"%@ = %@", [no getAttributeNamed:@"name"], [no getAttributeNamed:@"value"]);
+            
+            if ([no getAttributeNamed:@"name"] && [wantedArr indexOfObject: [no getAttributeNamed:@"name"]] != NSNotFound) {
+                
+                //NSLog(@"WANTED %lu", (unsigned long)[wantedArr indexOfObject: [no getAttributeNamed:@"name"]]);
+                if (![[no getAttributeNamed:@"type"] isEqualToString:@"checkbox"] || ([[no getAttributeNamed:@"type"] isEqualToString:@"checkbox"] && [[no getAttributeNamed:@"checked"] isEqualToString:@"checked"])) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:[no getAttributeNamed:@"name"]];
+                }
+                
+                if ([[no getAttributeNamed:@"name"] isEqualToString:@"word"]) {
+                    [self.searchKeyword setText:[no getAttributeNamed:@"value"]];
+                }
+                else if ([[no getAttributeNamed:@"name"] isEqualToString:@"spseudo"]) {
+                    [self.searchPseudo setText:[no getAttributeNamed:@"value"]];
+                }
+                else if ([[no getAttributeNamed:@"name"] isEqualToString:@"filter"]) {
+                    //NSLog(@"name %@ = %@", [no getAttributeNamed:@"name"], [no getAttributeNamed:@"checked"]);
+                    if ([[no getAttributeNamed:@"checked"] isEqualToString:@"checked"]) {
+                        NSLog(@"FILTER ON");
+                        [self.searchFilter setOn:YES animated:NO];
+                    }
+                    else {
+                        NSLog(@"FILTER OFF");
+                        [self.searchFilter setOn:NO animated:NO];
+                    }
+                }
+                else if ([[no getAttributeNamed:@"name"] isEqualToString:@"currentnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_currentnum"];
+                    [self.searchFromFP setOn:NO animated:NO];
+                }else if ([[no getAttributeNamed:@"name"] isEqualToString:@"firstnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_firstnum"];
+                    [self.searchFromFP setOn:NO animated:NO];
+                }
+            }
+        }
+        
+    }
+    else if (self.searchInputData.count) {
+        if ([self.searchInputData valueForKey:@"word"]) {
+            [self.searchKeyword setText:[self.searchInputData valueForKey:@"word"]];
+        }
+        
+        if ([self.searchInputData valueForKey:@"spseudo"]) {
+            [self.searchPseudo setText:[self.searchInputData valueForKey:@"spseudo"]];
+        }
+        
+        if ([self.searchInputData valueForKey:@"filter"]) {
+            [self.searchFilter setOn:YES animated:NO];
+        }
+        
+        if (![self.searchInputData valueForKey:@"currentnum"] && ![self.searchInputData valueForKey:@"firstnum"]) {
+            [self.searchFromFP setOn:YES animated:NO];
+        }
+        else {
+            [self.searchFromFP setOn:NO animated:NO];
+        }
+    }
+}
+
+
+
+
+-(void)loadDataInTableView:(HTMLParser *)myParser
+{    
+	[self setupScrollAndPage];
+
+	//NSLog(@"name topicName %@", self.topicName);
+	
+	HTMLNode * bodyNode = [myParser body]; //Find the body tag
+
+	//MP
+	BOOL needToUpdateMP = NO;
+	HTMLNode *MPNode = [bodyNode findChildOfClass:@"none"]; //Get links for cat	
+	NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
+	//NSLog(@"temporaryMPArray count %d", temporaryMPArray.count);
+	
+	if (temporaryMPArray.count == 3) {
+		//NSLog(@"MPNode allContents %@", [[temporaryMPArray objectAtIndex:1] allContents]);
+		
+		NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";			
+		NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP
+																										  withString:@"$1"];
+		
+		[[HFRplusAppDelegate sharedAppDelegate] updateMPBadgeWithString:myMPNumber];
+	}
+	else {
+		needToUpdateMP = YES;
+	}
+	
+	//MP
+
+	//Answer Topic URL
+	HTMLNode * topicAnswerNode = [bodyNode findChildWithAttribute:@"id" matchingName:@"repondre_form" allowPartial:NO];
+	topicAnswerUrl = [[NSString alloc] init];
+	topicAnswerUrl = [[topicAnswerNode findChildTag:@"a"] getAttributeNamed:@"href"];
+	//NSLog(@"new answer: %@", topicAnswerUrl);
+	
+	//form to fast answer
+	[self setupFastAnswer:bodyNode];
+
+    //prep' Poll view
+    [self setupPoll:bodyNode andP:myParser];
+    [self setupIntrSearch:bodyNode andP:myParser];
+
+	//if(topicAnswerUrl.length > 0) 
+	//-	
+
+	//--Pages
+	[self setupPageToolbar:bodyNode andP:myParser];
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+}
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl {
@@ -108,50 +498,6 @@
     return [self initWithNibName:nibNameOrNil bundle:nibBundleOrNil andUrl:theTopicUrl];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-	//NSLog(@"viewWillDisappear");
-	
-    [super viewWillDisappear:animated];
-	self.isAnimating = YES;
-    
-    
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    //NSLog(@"viewDidAppear");
-    
-	[super viewDidAppear:animated];
-	self.isAnimating = NO;
-    
-}
-
-- (void)VisibilityChanged:(NSNotification *)notification {
-    NSLog(@"VisibilityChanged %@", notification);
-  /*  NSLog(@"TINT 1 %ld", (long)[[HFRplusAppDelegate sharedAppDelegate].window tintAdjustmentMode]);
-
-    [[HFRplusAppDelegate sharedAppDelegate].window setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
-    [[HFRplusAppDelegate sharedAppDelegate].window setTintColor:[UIColor greenColor]];
-    [[HFRplusAppDelegate sharedAppDelegate].window setTintAdjustmentMode:UIViewTintAdjustmentModeAutomatic];
-    
-    NSLog(@"TINT 2 %ld", (long)[[HFRplusAppDelegate sharedAppDelegate].window tintAdjustmentMode]);
-*/
-//
-
-
-//    NSLog(@"TINT 2 %@", [[HFRplusAppDelegate sharedAppDelegate].window tintColor]);
-
-    
-    if ([[notification valueForKey:@"object"] isEqualToString:@"SHOW"]) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerDidHideMenuNotification object:nil];
-    }
-    else
-    {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerDidHideMenuNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editMenuHidden:) name:UIMenuControllerDidHideMenuNotification object:nil];
-        [self editMenuHidden:nil];
-    }
-    //[self resignFirstResponder];
-}
 
 -(void)textQuote:(id)sender {
     NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
@@ -1575,7 +1921,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             
             if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
 
-                MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
+                OnlineMessagesTableViewController *aView = [[OnlineMessagesTableViewController alloc] initWithNibName:@"OnlineMessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
                 self.messagesTableViewController = aView;
                 
                 //setup the URL
@@ -1619,7 +1965,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             NSLog(@"%@", sUrl);
 
             
-            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
+            OnlineMessagesTableViewController *aView = [[OnlineMessagesTableViewController alloc] initWithNibName:@"OnlineMessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
             self.messagesTableViewController = aView;
             
             //setup the URL
@@ -1715,10 +2061,10 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 
 -(NSString*) backBarButtonTitle {
     int iCount = 0;
-    // Compte le nombre de controllers MessagesTableViewController en partant de la fin
+    // Compte le nombre de controllers OnlineMessagesTableViewController en partant de la fin
     for (UIViewController* vc in [[self.navigationController viewControllers] reverseObjectEnumerator])
     {
-        if ([vc isKindOfClass:[MessagesTableViewController class]]) {
+        if ([vc isKindOfClass:[OnlineMessagesTableViewController class]]) {
             iCount++;
         } else {
             // Stop counting when different controller
@@ -2765,7 +3111,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
         [self fetchContent:kNewMessageFromUnkwn];
     }
     else {
-        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:baseURL];
+        OnlineMessagesTableViewController *aView = [[OnlineMessagesTableViewController alloc] initWithNibName:@"OnlineMessagesTableViewController" bundle:nil andUrl:baseURL];
         self.messagesTableViewController = aView;
         
         //setup the URL

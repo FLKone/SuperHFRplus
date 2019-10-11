@@ -1,5 +1,5 @@
 //
-//  MessagesTableViewController.m
+//  OfflineMessagesTableViewController.m
 //  HFRplus
 //
 //  Created by FLK on 07/07/10.
@@ -7,26 +7,17 @@
 
 #import <unistd.h>
 
-#import "MessagesTableViewController.h"
+#import "OfflineMessagesTableViewController.h"
 #import "MessagesSearchTableViewController.h"
 #import "MessageDetailViewController.h"
 #import "TopicsTableViewController.h"
 #import "PollTableViewController.h"
 
-//#import "HFR_EditorViewController.h"
-
-
 #import "RegexKitLite.h"
 #import "HTMLParser.h"
-#import "ASIHTTPRequest.h"
-#import "ASIFormDataRequest.h"
-
-#import "ASIDownloadCache.h"
-
 #import "UIWebView+Tools.h"
 
 #import "ShakeView.h"
-//#import "UIImageView+WebCache.h"
 #import "RangeOfCharacters.h"
 #import "NSData+Base64.h"
 
@@ -44,8 +35,9 @@
 #import "HFRAlertView.h"
 #import "MPStorage.h"
 
-@implementation MessagesTableViewController
-@synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
+@implementation OfflineMessagesTableViewController
+
+@synthesize offlineMessagesTableViewController, loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, pollNode, pollParser, isNewPoll;
 @synthesize swipeLeftRecognizer, swipeRightRecognizer, overview, arrayActionsMessages, lastStringFlagTopic;
 @synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported, isSeparatorNewMessages;
 
@@ -62,18 +54,6 @@
 @synthesize firstDate;
 @synthesize actionCreateAQ;
 
-- (void)setTopicName:(NSString *)n {
-    _topicName = [n filterTU];
-    
-    
-}
-//Getter method
-- (NSString*) topicName {
-    //NSLog(@"Returning name: %@", _aTitle);
-    return _topicName;
-}
-
-
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -82,10 +62,466 @@
 	//NSLog(@"Progress %f%", newProgress*100);
 }
 
+- (void)cancelFetchContent
+{
+    [self.request cancel];
+    [self setRequest:nil];
+}
+
+- (void)fetchContent:(int)from
+{
+    //self.firstDate = [NSDate date];
+    self.errorReported = NO;
+	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
+    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=1711&page=301&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t530526";
+    
+    
+    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=5925&page=1&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t535660";
+    
+    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&subcat=525&post=5145&page=87&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t540188";
+    
+    NSLog(@"URL %@", [self currentUrl]);
+    
+    //NSLog(@"[self currentUrl] %@", [self currentUrl]);
+    //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
+
+    self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
+
+	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
+	[request setDelegate:self];
+    [request setShowAccurateProgress:YES];
+    
+	//[request setCachePolicy:ASIReloadIfDifferentCachePolicy];
+	//[request setDownloadCache:[ASIDownloadCache sharedCache]];
+	
+    [request setDownloadProgressDelegate:self];
+    
+	[request setDidStartSelector:@selector(fetchContentStarted:)];
+	[request setDidFinishSelector:@selector(fetchContentComplete:)];
+	[request setDidFailSelector:@selector(fetchContentFailed:)];
+    
+	[self.view removeGestureRecognizer:swipeLeftRecognizer];
+	[self.view removeGestureRecognizer:swipeRightRecognizer];
+	
+	if ([NSThread isMainThread]) {
+        //[self.messagesWebView setHidden:YES];
+    }
+
+    //NSLog(@"from %d", from);
+    
+    [self.errorLabelView setHidden:YES];
+
+    if(from == kNewMessageFromNext) self.stringFlagTopic = @"#bas";
+    
+    switch (from) {
+        case kNewMessageFromShake:
+        case kNewMessageFromUpdate:
+        case kNewMessageFromEditor:
+            //NSLog(@"hidden");
+            [self.loadingView setHidden:YES];
+            break;
+        default:
+            //NSLog(@"not hidden");
+            [self.loadingView setHidden:NO];
+            [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML = \"\";"];
+            break;
+    }
+    
+	[request startAsynchronous];
+}
+
+
+- (void)fetchContent
+{
+    [self fetchContent:kNewMessageFromUnkwn];
+}
+
+- (void)fetchContentStarted:(ASIHTTPRequest *)theRequest
+{
+	//--
+	//NSLog(@"fetchContentStarted");
+    
+    if (![self.currentUrl isEqualToString:[theRequest.url.absoluteString stringByReplacingOccurrencesOfString:[k ForumURL] withString:@""]]) {
+        //NSLog(@"not equal ==");
+        self.currentUrl = [theRequest.url.absoluteString stringByReplacingOccurrencesOfString:[k ForumURL] withString:@""];
+    }
+
+}
+
+- (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
+{
+	//NSLog(@"fetchContentComplete");
+	
+	// create the queue to run our ParseOperation
+    self.queue = [[NSOperationQueue alloc] init];
+
+    // create an ParseOperation (NSOperation subclass) to parse the RSS feed data so that the UI is not blocked
+    // "ownership of appListData has been transferred to the parse operation and should no longer be
+    // referenced in this thread.
+    //
+	
+	//MaJ de la puce MP
+	if (!self.isViewed) {
+		//NSLog(@"pas lu");
+		[[HFRplusAppDelegate sharedAppDelegate] readMPBadge];
+	}
+	
+	
+	//MaJ de la puce MP
+	
+    //NSLog(@"%@", [request responseString]);
+    
+    ParseMessagesOperation *parser = [[ParseMessagesOperation alloc] initWithData:[request responseData] index:0 reverse:NO delegate:self];
+	
+    [queue addOperation:parser]; // this will start the "ParseOperation"
+    [self cancelFetchContent];
+}
+
+- (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
+{
+	[self.loadingView setHidden:YES];
+	
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
 #pragma mark -
 #pragma mark View lifecycle
 
 
+-(void)setupScrollAndPage
+{
+	//NSLog(@"topicName: %@", self.topicName);
+	
+	//On vire le '#t09707987987'
+	NSRange rangeFlagPage;
+	rangeFlagPage =  [[self currentUrl] rangeOfString:@"#" options:NSBackwardsSearch];
+	
+    
+    if (self.stringFlagTopic.length == 0) {
+        if (!(rangeFlagPage.location == NSNotFound)) {
+            self.stringFlagTopic = [[self currentUrl] substringFromIndex:rangeFlagPage.location];
+        }
+        else {
+            self.stringFlagTopic = @"";
+        }
+    }
+    
+	if (!(rangeFlagPage.location == NSNotFound)) {
+		self.currentUrl = [[self currentUrl] substringToIndex:rangeFlagPage.location];
+    }    
+	//--
+
+
+    /* else */
+    
+    {
+        //On check si y'a page=2323
+        NSString *regexString  = @".*page=([^&]+).*";
+        NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
+        NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
+        NSError  *error2        = NULL;
+        
+        matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
+        
+        if (matchedRange.location == NSNotFound) {
+            NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
+            if (rangeNumPage.location == NSNotFound) {
+                //
+                NSLog(@"something went wrong");
+                return;
+                //[self.navigationController popViewControllerAnimated:YES];
+            }
+            else {
+                self.pageNumber = [[self.currentUrl substringWithRange:rangeNumPage] intValue];
+            }
+        }
+        else {
+            self.pageNumber = [[self.currentUrl substringWithRange:matchedRange] intValue];
+            
+        }
+        //On check si y'a page=2323
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+    }
+
+    //NSLog(@"pageNumber %d", self.pageNumber);
+
+    if (self.isSearchInstra) {
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Recherche | %@", self.topicName]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+        
+    }
+    
+	//self.title = [NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber];
+    
+	//[self navigationItem].titleView.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
+	
+}
+
+-(void)setupPageToolbar:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser;
+{
+    if (!self.pageNumber && !self.errorReported) {
+        self.errorReported = YES;
+        
+        dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+        dispatch_async(backgroundQueue, ^{
+            // Do your long running code
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        });
+        
+        return;
+    }
+	//NSLog(@"setupPageToolbar");
+    //Titre
+	HTMLNode *titleNode = [[bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2Title" allowPartial:YES] findChildTag:@"h3"]; //Get all the <img alt="" />
+	if ([titleNode allContents] && self.topicName.length == 0) {
+		//NSLog(@"setupPageToolbar titleNode %@", [titleNode allContents]);
+		self.topicName = [titleNode allContents];
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+
+        //self.title = [NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber];
+
+		//[self navigationItem].titleView.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
+	}
+    //Titre
+    
+    
+	HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2PagesHaut" allowPartial:YES];
+	
+	if(pagesTrNode)
+	{
+        
+		HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
+		
+		if (pagesLinkNode) {
+			//NSLog(@"pages %@", rawContentsOfNode([pagesLinkNode _node], [myParser _doc]));
+			
+			//NSArray *temporaryNumPagesArray = [[NSArray alloc] init];
+			NSArray *temporaryNumPagesArray = [pagesLinkNode children];
+            
+			[self setFirstPageNumber:[[[temporaryNumPagesArray objectAtIndex:2] contents] intValue]];
+			
+            //NSLog(@"num %d = %d", [self pageNumber], [self firstPageNumber]);
+
+            
+			if ([self pageNumber] == [self firstPageNumber]) {
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+			else {
+                NSLog(@"[temporaryNumPagesArray objectAtIndex:2] %@", [temporaryNumPagesArray objectAtIndex:2]);
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray objectAtIndex:2] getAttributeNamed:@"href"]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+			
+
+			[self setLastPageNumber:[[[temporaryNumPagesArray lastObject] contents] intValue]];
+
+			
+			if ([self pageNumber] == [self lastPageNumber]) {
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+			else {
+                //NSLog(@"lastObject %@", [[temporaryNumPagesArray lastObject] allContents]);
+                
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray lastObject] getAttributeNamed:@"href"]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+
+			/*
+			 NSLog(@"premiere %d", [self firstPageNumber]);			
+			 NSLog(@"premiere url %@", [self firstPageUrl]);
+			 
+			 NSLog(@"premiere %d", [self lastPageNumber]);			
+			 NSLog(@"premiere url %@", [self lastPageUrl]);		
+			 */
+			
+			//TableFooter
+			UIToolbar *tmptoolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+			tmptoolbar.barStyle = UIBarStyleDefault;
+			[tmptoolbar sizeToFit];
+			
+			//Add buttons
+			UIBarButtonItem *systemItem1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
+																						 target:self
+																						 action:@selector(firstPage:)];
+			if ([self pageNumber] == [self firstPageNumber]) {
+				[systemItem1 setEnabled:NO];
+			}
+			
+			UIBarButtonItem *systemItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
+																						 target:self
+																						 action:@selector(lastPage:)];
+
+			if ([self pageNumber] == [self lastPageNumber]) {
+				[systemItem2 setEnabled:NO];
+			}		
+			
+			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 44)];
+			[label setFont:[UIFont boldSystemFontOfSize:15.0]];
+			[label setAdjustsFontSizeToFitWidth:YES];
+			[label setBackgroundColor:[UIColor clearColor]];
+			[label setTextAlignment:NSTextAlignmentCenter];
+			[label setLineBreakMode:NSLineBreakByTruncatingMiddle];
+			[label setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
+			
+			[label setTextColor:[UIColor whiteColor]];
+			[label setNumberOfLines:0];
+			[label setTag:666];
+			[label setText:[NSString stringWithFormat:@"%d/%d", [self pageNumber], [self lastPageNumber]]];
+			
+			UIBarButtonItem *systemItem3 = [[UIBarButtonItem alloc] initWithCustomView:label];
+			
+			
+			
+			
+			
+			//Use this to put space in between your toolbox buttons
+			UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+																					  target:nil
+																					  action:nil];
+
+			//Add buttons to the array
+			NSArray *items = [NSArray arrayWithObjects: systemItem1, flexItem, systemItem3, flexItem, systemItem2, nil];
+			
+			//release buttons
+			
+			//add array of buttons to toolbar
+			[tmptoolbar setItems:items animated:NO];
+			
+			self.aToolbar = tmptoolbar;
+			
+		}
+		else {
+			self.aToolbar = nil;
+			//NSLog(@"pas de pages");
+            [self setFirstPageNumber:1];
+            [self setLastPageNumber:1];
+		}
+		
+		//--
+		
+		
+		//NSArray *temporaryPagesArray = [[NSArray alloc] init];
+		
+		NSArray *temporaryPagesArray = [pagesTrNode findChildrenWithAttribute:@"class" matchingName:@"pagepresuiv" allowPartial:YES];
+		
+        if (self.isSearchInstra) {
+            [self.view addGestureRecognizer:swipeLeftRecognizer];
+        }
+		else if(temporaryPagesArray.count != 3)
+		{
+			//NSLog(@"pas 3");
+			//[self.view removeGestureRecognizer:swipeLeftRecognizer];
+			//[self.view removeGestureRecognizer:swipeRightRecognizer];
+		}
+		else {
+            HTMLNode *nextUrlNode = [[temporaryPagesArray objectAtIndex:0] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+            
+            if (nextUrlNode) {
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                [self.view addGestureRecognizer:swipeLeftRecognizer];
+                self.nextPageUrl = [[nextUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"nextPageUrl = %@", nextPageUrl);
+                
+            }
+            else {
+                self.nextPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeLeftRecognizer];
+            }
+            
+            HTMLNode *previousUrlNode = [[temporaryPagesArray objectAtIndex:1] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+            
+            if (previousUrlNode) {
+                //previousPageUrl = [[topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber - 1)]] retain];
+                [self.view addGestureRecognizer:swipeRightRecognizer];
+                self.previousPageUrl = [[previousUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"previousPageUrl = %@", previousPageUrl);
+                
+            }
+            else {
+                self.previousPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeRightRecognizer];
+                
+                
+            }
+		}
+	}
+	else {
+		self.aToolbar = nil;
+	}
+	//NSLog(@"Fin setupPageToolbar");
+
+	//--Pages
+}
+
+-(void)setupPoll:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
+    self.pollNode = nil;
+    self.pollParser = nil;
+    self.isNewPoll = NO;
+    
+	HTMLNode * tmpPollNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"sondage" allowPartial:NO];
+	if(tmpPollNode)
+    {
+        //NSLog(@"Raw Poll %@", rawContentsOfNode([tmpPollNode _node], [myParser _doc]));
+        [self setPollNode:tmpPollNode];
+        [self setPollParser:myParser];
+        
+        // Adapt action button of navigation bar
+        HTMLNode * tmpPollNodeInput = [tmpPollNode findChildTag:@"input"];
+        if (tmpPollNodeInput) {
+            self.isNewPoll = YES;
+        }
+    }
+}
+
+
+- (void)loadDataInTableView:(HTMLParser *)myParser
+{    
+	[self setupScrollAndPage];
+
+	//NSLog(@"name topicName %@", self.topicName);
+	
+	HTMLNode * bodyNode = [myParser body]; //Find the body tag
+
+	//Answer Topic URL
+	HTMLNode * topicAnswerNode = [bodyNode findChildWithAttribute:@"id" matchingName:@"repondre_form" allowPartial:NO];
+	topicAnswerUrl = [[NSString alloc] init];
+	topicAnswerUrl = [[topicAnswerNode findChildTag:@"a"] getAttributeNamed:@"href"];
+	//NSLog(@"new answer: %@", topicAnswerUrl);
+	
+	//form to fast answer
+	[self setupFastAnswer:bodyNode];
+
+    //prep' Poll view
+    [self setupPoll:bodyNode andP:myParser];
+
+	//if(topicAnswerUrl.length > 0) 
+	//-	
+
+	//--Pages
+	[self setupPageToolbar:bodyNode andP:myParser];
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+}
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl {
@@ -170,10 +606,6 @@
 
 
     NSLog(@"theSelectedText %@", theSelectedText);
-    
-    if (curMsg < 100) { // Id post BL sont >= 100
-        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
-    }
 }
 
 -(void)textQuoteBold:(id)sender {
@@ -192,9 +624,6 @@
 
     NSLog(@"theSelectedText Bold %@", theSelectedText);
     
-    if (curMsg < 100) { // Id post BL sont >= 100
-        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText withBold:YES];
-    }
 }
 
 - (void)editMenuHidden:(id)sender {
@@ -239,22 +668,6 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(removeTabBar)];*/
 }
 
-/* Evol onglet sticky (gardée au cas où)
--(void)removeTabBar {
-    [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Onglet additionnel"
-                                          andMessage:@"Fermer l'onglet ?"
-                                          handlerOK:^(UIAlertAction * action) { [self removeTabBarConfirmed];}];
-}
-
-- (void)removeTabBarConfirmed {
-    // Get viewControllers array and remove MessagesTable controller at index 2
-    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.tabBarController.viewControllers];
-    [viewControllers removeObjectAtIndex:2];
-    [self.tabBarController setViewControllers:viewControllers animated:YES];
-    [self.tabBarController setSelectedIndex:0];
-*/
-
-
 - (void)viewDidLoad {
 	//NSLog(@"viewDidLoad %@", self.topicName);
     [super viewDidLoad];
@@ -264,14 +677,8 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(VisibilityChanged:) name:@"VisibilityChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editMenuHidden:) name:UIMenuControllerDidHideMenuNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userThemeDidChange)
-                                                 name:kThemeChangedNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(smileysSizeDidChange)
-                                                 name:kSmileysSizeChangedNotification
-                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userThemeDidChange) name:kThemeChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(smileysSizeDidChange) name:kSmileysSizeChangedNotification object:nil];
     
     if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userTextSizeDidChange) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -292,52 +699,23 @@
     [label setTextAlignment:NSTextAlignmentCenter];
     [label setLineBreakMode:NSLineBreakByTruncatingMiddle];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [label setTextColor:[UIColor blackColor]];
-        
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            [label setFont:[UIFont boldSystemFontOfSize:13.0]];
-        }
-        else {
-            [label setFont:[UIFont boldSystemFontOfSize:17.0]];
-        }
-    }
-    else
-    {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            [label setTextColor:[UIColor whiteColor]];
-            label.shadowColor = [UIColor darkGrayColor];
-            [label setFont:[UIFont boldSystemFontOfSize:13.0]];
-            label.shadowOffset = CGSizeMake(0.0, -1.0);
-            
-            
-        }
-        else {
-            [label setTextColor:[UIColor colorWithRed:113/255.f green:120/255.f blue:128/255.f alpha:1.00]];
-            label.shadowColor = [UIColor whiteColor];
-            [label setFont:[UIFont boldSystemFontOfSize:19.0]];
-            label.shadowOffset = CGSizeMake(0.0, 0.5f);
-            
-        }
-        
-    }
+    [label setTextColor:[UIColor blackColor]];
     
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        [label setFont:[UIFont boldSystemFontOfSize:13.0]];
+    }
+    else {
+        [label setFont:[UIFont boldSystemFontOfSize:17.0]];
+    }
+
     [label setNumberOfLines:2];
-    
     [label setText:self.topicName];
     [label adjustFontSizeToFit];
     [self.navigationItem setTitleView:label];
 
     // fond blanc WebView
     [self.messagesWebView hideGradientBackground];
-    
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        [self.messagesWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
-    }
-    else
-    {
-        [self.messagesWebView setBackgroundColor:[UIColor whiteColor]];
-    }
+    [self.messagesWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
     
 	//Gesture
 	UIGestureRecognizer *recognizer;
@@ -355,7 +733,7 @@
 
 
 	//Bouton Repondre message
-    
+    /*
     if (self.isSearchInstra) {
         UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchTopic)];
         optionsBarItem.enabled = NO;
@@ -371,7 +749,7 @@
         NSMutableArray *myButtonArray = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
         
         self.navigationItem.rightBarButtonItems = myButtonArray;
-    }
+    }*/
     
 
 	[(ShakeView*)self.view setShakeDelegate:self];
@@ -513,56 +891,7 @@
     [[ThemeManager sharedManager] applyThemeToAlertController:styleAlert];
 }
 
--(void)showPoll:(id)sender {
-    [self showPoll];
-}
-
--(void)showPoll {
-    
-    PollTableViewController *pollVC = [[PollTableViewController alloc] initWithPollNode:self.pollNode andParser:self.pollParser];
-    pollVC.delegate = self;
-    
-    // Set options
-    pollVC.wantsFullScreenLayout = YES; // Decide if you want the photo browser full screen, i.e. whether the status bar is affected (defaults to YES)
-
-    HFRNavigationController *nc = [[HFRNavigationController alloc] initWithRootViewController:pollVC];
-    //nc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    nc.modalPresentationStyle = UIModalPresentationFormSheet;
-
-    [self presentModalViewController:nc animated:YES];
-    
-    
-    //[self.navigationController pushViewController:browser animated:YES];
-    
-    
-}
-
--(void)markUnread {
-    ASIHTTPRequest  *delrequest =  
-    [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], self.isFavoritesOrRead]]];
-    //delete
-    
-    [delrequest startSynchronous];
-    
-    //NSLog(@"arequest: %@", [arequest url]);
-    
-    if (delrequest) {
-        if ([delrequest error]) {
-            //NSLog(@"error: %@", [[arequest error] localizedDescription]);
-        }
-        else if ([delrequest responseString])
-        {
-            //NSLog(@"responseString: %@", [arequest responseString]);
-            
-            //[self reload];
-            [[[HFRplusAppDelegate sharedAppDelegate] messagesNavController] popViewControllerAnimated:YES];
-            [(TopicsTableViewController *)[[[HFRplusAppDelegate sharedAppDelegate] messagesNavController] visibleViewController] fetchContent];
-        }
-    }
-    //NSLog(@"nonlu %@", self.isFavoritesOrRead);
-}
-
--(void)goToPagePosition:(NSString *)position{
+- (void)goToPagePosition:(NSString *)position{
     NSString *script;
     
     if ([position isEqualToString:@"top"])
@@ -576,143 +905,21 @@
     [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
 }
     
--(void)goToPagePositionTop{
+- (void)goToPagePositionTop{
     [self goToPagePosition:@"top"];
 }
--(void)goToPagePositionBottom{
+- (void)goToPagePositionBottom{
     [self goToPagePosition:@"bottom"];    
-}
-
-
--(void)answerTopic
-{
-	
-	while (self.isAnimating) {
-        //NSLog(@"isAnimating");
-		//return;
-	}
-    NSLog(@"answerTopic isOK");
-
-    HFRNavigationController *navigationController;
-    
-     {
-        NewMessageViewController *addMessageViewController = [[NewMessageViewController alloc]
-                                                              initWithNibName:@"AddMessageViewController" bundle:nil];
-         
-         NSLog(@"answerTopic isOK 2");
-
-         
-        addMessageViewController.delegate = self;
-        [addMessageViewController setUrlQuote:[NSString stringWithFormat:@"%@%@", [k ForumURL], topicAnswerUrl]];
-        addMessageViewController.title = @"Nouv. Réponse";
-
-        navigationController = [[HFRNavigationController alloc]
-                                                         initWithRootViewController:addMessageViewController];
-         
-         NSLog(@"answerTopic isOK 3");
-
-    }
-		
-	
-	// Create the navigation controller and present it modally.
-
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-    NSLog(@"answerTopic isOK 4");
-
-	[self presentModalViewController:navigationController animated:YES];
-    
-
-	// The navigation controller is now owned by the current view controller
-	// and the root view controller is owned by the navigation controller,
-	// so both objects should be released to prevent over-retention.
-
-	//[[HFR_AppDelegate sharedAppDelegate] openURL:[NSString stringWithFormat:@"http://forum.hardware.fr%@", topicAnswerUrl]];
-
-	//[[UIApplication sharedApplication] open-URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]];
-	
-/*
-	HFR_AppDelegate *mainDelegate = (HFR_AppDelegate *)[[UIApplication sharedApplication] delegate];
-	[[mainDelegate rootController] setSelectedIndex:3];		
-	[[(BrowserViewController *)[[mainDelegate rootController] selectedViewController] webView] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]]];		
- */
-    
-    NSLog(@"answerTopic isOK END");
-
-}
-
-
-
--(void)searchTopic {
-
-    // Animate the resize of the text view's frame in sync with the keyboard's appearance.
-    
-
-    [self toggleSearch];
-
-}
-
--(void)quoteMessage:(NSString *)quoteUrl andSelectedText:(NSString *)selected withBold:(BOOL)boldSelection {
-    if (self.isAnimating) {
-        return;
-    }
-    
-    QuoteMessageViewController *quoteMessageViewController = [[QuoteMessageViewController alloc]
-                                                              initWithNibName:@"AddMessageViewController" bundle:nil];
-    quoteMessageViewController.delegate = self;
-    [quoteMessageViewController setUrlQuote:quoteUrl];
-    [quoteMessageViewController setTextQuote:selected];
-    [quoteMessageViewController setBoldQuote:boldSelection];
-    
-    // Create the navigation controller and present it modally.
-    HFRNavigationController *navigationController = [[HFRNavigationController alloc]
-                                                     initWithRootViewController:quoteMessageViewController];
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self presentModalViewController:navigationController animated:YES];
-    
-    // The navigation controller is now owned by the current view controller
-    // and the root view controller is owned by the navigation controller,
-    // so both objects should be released to prevent over-retention.
-}
-
--(void)quoteMessage:(NSString *)quoteUrl andSelectedText:(NSString *)selected {
-    [self quoteMessage:quoteUrl andSelectedText:selected withBold:NO];
-}
-
--(void)quoteMessage:(NSString *)quoteUrl
-{
-    [self quoteMessage:quoteUrl andSelectedText:@""];
-}
-
--(void)editMessage:(NSString *)editUrl
-{
-	if (self.isAnimating) {
-		return;
-	}
-	
-	EditMessageViewController *editMessageViewController = [[EditMessageViewController alloc]
-															  initWithNibName:@"AddMessageViewController" bundle:nil];
-	editMessageViewController.delegate = self;
-	[editMessageViewController setUrlQuote:editUrl];
-	
-	// Create the navigation controller and present it modally.
-	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
-													initWithRootViewController:editMessageViewController];
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-	[self presentModalViewController:navigationController animated:YES];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	
 	if(self.detailViewController) self.detailViewController = nil;
-	if(self.messagesTableViewController) self.messagesTableViewController = nil;
+	if(self.offlineMessagesTableViewController) self.offlineMessagesTableViewController = nil;
     
     Theme theme = [[ThemeManager sharedManager] theme];
-    self.view.backgroundColor = self.messagesTableViewController.view.backgroundColor = self.messagesWebView.backgroundColor = self.loadingView.backgroundColor = self.loadingViewLabel.backgroundColor = self.loadingViewIndicator.backgroundColor = self.searchBox.backgroundColor = [ThemeColors greyBackgroundColor:theme];
+    self.view.backgroundColor = self.offlineMessagesTableViewController.view.backgroundColor = self.messagesWebView.backgroundColor = self.loadingView.backgroundColor = self.loadingViewLabel.backgroundColor = self.loadingViewIndicator.backgroundColor = self.searchBox.backgroundColor = [ThemeColors greyBackgroundColor:theme];
     self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:theme];
     self.loadingViewLabel.shadowColor = nil;
@@ -1575,12 +1782,12 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             
             if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
 
-                MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
-                self.messagesTableViewController = aView;
+                OfflineMessagesTableViewController *aView = [[OfflineMessagesTableViewController alloc] initWithNibName:@"OfflineMessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
+                self.offlineMessagesTableViewController = aView;
                 
                 //setup the URL
-                self.messagesTableViewController.topicName = @"";
-                self.messagesTableViewController.isViewed = YES;	
+                self.offlineMessagesTableViewController.topicName = @"";
+                self.offlineMessagesTableViewController.isViewed = YES;
 
                 self.navigationItem.backBarButtonItem =
                 [[UIBarButtonItem alloc] initWithTitle:[self backBarButtonTitle]
@@ -1588,7 +1795,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
                                                 target:nil
                                                 action:nil];
                 
-                [self.navigationController pushViewController:messagesTableViewController animated:YES];
+                [self.navigationController pushViewController:offlineMessagesTableViewController animated:YES];
             }
             
 
@@ -1619,12 +1826,12 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             NSLog(@"%@", sUrl);
 
             
-            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
-            self.messagesTableViewController = aView;
+            OfflineMessagesTableViewController *aView = [[OfflineMessagesTableViewController alloc] initWithNibName:@"OfflineMessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
+            self.offlineMessagesTableViewController = aView;
             
             //setup the URL
-            self.messagesTableViewController.topicName = @"";
-            self.messagesTableViewController.isViewed = YES;
+            self.offlineMessagesTableViewController.topicName = @"";
+            self.offlineMessagesTableViewController.isViewed = YES;
 
             self.navigationItem.backBarButtonItem =
             [[UIBarButtonItem alloc] initWithTitle:[self backBarButtonTitle]
@@ -1632,7 +1839,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
                                             target:nil
                                             action:nil];
             
-            [self.navigationController pushViewController:messagesTableViewController animated:YES];
+            [self.navigationController pushViewController:offlineMessagesTableViewController animated:YES];
 
             return NO;
         }
@@ -1715,10 +1922,10 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 
 -(NSString*) backBarButtonTitle {
     int iCount = 0;
-    // Compte le nombre de controllers MessagesTableViewController en partant de la fin
+    // Compte le nombre de controllers OfflineMessagesTableViewController en partant de la fin
     for (UIViewController* vc in [[self.navigationController viewControllers] reverseObjectEnumerator])
     {
-        if ([vc isKindOfClass:[MessagesTableViewController class]]) {
+        if ([vc isKindOfClass:[OfflineMessagesTableViewController class]]) {
             iCount++;
         } else {
             // Stop counting when different controller
@@ -1950,79 +2157,6 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     [self presentModalViewController:nc animated:YES];
 }
 
-- (void)actionAQ:(NSNumber *)curMsgN {
-    NSString* sTPostID = [[arrayData objectAtIndex:[curMsgN intValue]] postID];
-    NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
-    NSString* sTopicId = self.arrayInputData[@"post"];
-    NSString *sRequest = [NSString stringWithFormat:@"http://alerte-qualitay.toyonos.info/api/getAlertesByTopic.php5?topic_id=%@", sTopicId];
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:sRequest]
-                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                                       timeoutInterval:2];
-
-    NSURLResponse * response = nil;
-    NSError * error = nil;
-    NSData * dataReq = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
-    
-    if (error != nil) {
-        [HFRAlertView DisplayAlertViewWithTitle:@"Erreur réseau" andMessage:@"Création d'AQ impossible" forDuration:1];
-        return;
-    }
-    
-    // Parse data
-    //TODO
-    //http://alerte-qualitay.toyonos.info/api/getAlertesByTopic.php5?topic_id=25135
-    /*
-     <alertes>
-     <alerte id="13331" nom="Test" pseudoInitiateur="ezzz" date="05-03-2019" postsIds="5934515"/>
-     <alerte id="13330" nom="Best of photos 2018" pseudoInitiateur="ezzz" date="04-03-2019" postsIds="5934515"/>
-     </alertes>
-     */
-    NSString* sData = [[NSString alloc] initWithData:dataReq encoding:NSUTF8StringEncoding];
-    if ([sData containsString:sPostId]) {
-        [HFRAlertView DisplayAlertViewWithTitle:@"Post déjà signalé" andMessage:nil forDuration:1];
-        return;
-    }
-    
-    int curMsg = [curMsgN intValue];
-    NSLog("AQ link URL = %@%@#%@", [k ForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]);
-    
-    NSString* sAuthor = [[arrayData objectAtIndex:curMsg] name];
-    NSString* sMessage = [NSString stringWithFormat:@"Créer une Alerte Qualitay sur le post de %@", sAuthor];
-    // Popup retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Alerte Qualitay ?" message:sMessage
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = @"Ajoutez un titre";
-        textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        [textField addTarget:self action:@selector(textDidChange:) forControlEvents:UIControlEventEditingChanged];
-        [[ThemeManager sharedManager] applyThemeToTextField:textField];
-        textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-        //ftextField.borderStyle = UITextBorderStyleNone;
-    }];
-
-
-    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) { }];
-    self.actionCreateAQ = [UIAlertAction actionWithTitle:@"Créer" style:UIAlertActionStyleDefault
-                                                 handler:^(UIAlertAction * action) {
-                                                     NSString* sTitle = alert.textFields.firstObject.text;
-                                                     [self createAQ:curMsgN withTitle:sTitle]; }];
-    [alert addAction:actionCancel];
-    [alert addAction:self.actionCreateAQ];
-    [self.actionCreateAQ setEnabled:false];
-
-    [self presentViewController:alert animated:YES completion:nil];
-    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-    for (UIView* textfield in alert.textFields) {
-        UIView *container = textfield.superview;
-        UIView *effectView = container.superview.subviews[0];
-        
-        if (effectView && [effectView class] == [UIVisualEffectView class]){
-            container.backgroundColor = [UIColor clearColor];
-            [effectView removeFromSuperview];
-        }
-    }
-}
 
 -(void)textDidChange:(UITextField *)textField {
     if (textField.text.length > 0) {
@@ -2031,95 +2165,6 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
         [self.actionCreateAQ setEnabled:NO];
     }
 }
-
--(void)createAQ:(NSNumber *)curMsgN withTitle:(NSString*) sTitle {
-    NSString* sAuthor = [[arrayData objectAtIndex:[curMsgN intValue]] name];
-    NSString* sComment = [NSString stringWithFormat:@"post de %@", sAuthor];
-    NSString* sTPostID = [[arrayData objectAtIndex:[curMsgN intValue]] postID];
-    NSString* sURL = [NSString stringWithFormat:@"%@%@#%@", [k ForumURL], self.currentUrl, sTPostID];
-    MultisManager *manager = [MultisManager sharedManager];
-    NSDictionary *mainCompte = [manager getMainCompte];
-    NSString *sCurrentPseudo = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
-    NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
-
-    NSLog("====================================== AQ =======================================");
-    NSLog("nom (titre AQ): %@", sTitle);
-    NSLog("topic_id: %@", self.arrayInputData[@"post"]);
-    NSLog("topic_titre: %@", self.topicName);
-    NSLog("pseudo: %@", sCurrentPseudo);
-    NSLog("post_id: %@", sPostId);
-    NSLog("post_url: %@", sURL);
-    NSLog("commentaire: %@", sComment);
-
-    NSString *sParametersCreateAQ = [NSString stringWithFormat:@"alerte_qualitay_id=-1&nom=%@&topic_id=%@&topic_titre=%@&pseudo=%@&post_id=%@&post_url=%@&commentaire=%@",
-                             [self addPercentEncodingURL:sTitle],
-                             [self addPercentEncodingURL:self.arrayInputData[@"post"]],
-                             [self addPercentEncodingURL:self.topicName],
-                             [self addPercentEncodingURL:sCurrentPseudo],
-                             [self addPercentEncodingURL:sPostId],
-                             [self addPercentEncodingURL:sURL],
-                             [self addPercentEncodingURL:sComment]];
-
-    
-
-    NSLog("====================================== Req AQ ===================================");
-    NSLog("parameters: %@", sParametersCreateAQ);
-    NSLog("====================================== Post AQ ==================================");
-
-    /*alerte_qualitay_id: -1 <- l'id d'une aq existante (pour signaler plusieurs fois le même message) ou -1 pour une nouvelle aq (le premier champ de la popup de création dans le script)
-     nom: test1 <- le titre de l'aq à créer (le deuxième champ de la popup de création) texte libre
-     topic_id: 61999 <- le numero du topic (dans sa cat)
-     topic_titre: BashHFr <- le titre du topic (il recup le titre dans le h3 de la case sujet de la table des messages)
-     pseudo: roger21 <- il recup le pseudal mais rien n'est sécurisé, n'importe qui peut faire une aq au nom de n'importe qui ...
-     post_id: 55767559 <- le numéro du message à aq
-     post_url: https%3A%2F%2Fforum.hardware.fr%2Fforum2.php%3Fconfig%3Dhfr.inc%26cat%3D13%26subcat%3D432%26post%3D61999%26page%3D2681%26p%3D1%26sondage%3D0%26owntopic%3D1%26trash%3D0%26trash_post%3D0%26print%3D0%26numreponse%3D0%26quote_only%3D0%26new%3D0%26nojs%3D0%23t55767559 <- l'url complète du message à aq (tout bien encodée là)
-     commentaire: test2 <- le commentaire (le 3eme champ de la popup de création) texte libre aussi*/
-    /*
-     URL:http://alerte-qualitay.toyonos.info/api/addAlerte.php5?
-    
-     Parameters example:
-        alerte_qualitay_id=-1&
-        nom=Best%20of%20photos%202018&
-        topic_id=25135&
-        topic_titre=%5BTU%5D%20Best%20of%202018&
-        pseudo=kapitain&
-        post_id=5934515&
-        post_url=https%3A%2F%2Fforum.hardware.fr%2Fhfr%2FPhotonumerique%2FPhotos%2Funique-best-2018-sujet_25135_1.htm%23t5934515&
-        commentaire=post%20de%20deniks
-    */
-    
-    NSData *postData = [sParametersCreateAQ dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-    NSString *postLength = [NSString stringWithFormat:@"%ld",[postData length]];
-    NSURL *url = [NSURL URLWithString:@"http://alerte-qualitay.toyonos.info/api/addAlerte.php5"];
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-                                                              cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                                          timeoutInterval:5];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:postData];
-    NSError *error;
-    NSHTTPURLResponse* urlResponse = nil;
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request
-                                                 returningResponse:&urlResponse
-                                                             error:&error];
-    
-    NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
-    NSLog("response: %@ (1=OK)", responseString);
-    NSLog("====================================== /AQ ======================================");
-
-    if ([responseString isEqualToString:@"1"]) {
-        [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:@"Alerte Qualitay créée." forDuration:(long)1];
-    } else {
-        NSString* sMessage = [NSString stringWithFormat:@"Code erreur %@", responseString];
-        [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:sMessage forDuration:(long)1];
-    }
-}
-
- - (NSString*)addPercentEncodingURL:(NSString*) sURL {
-     return [sURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-"]];
- }
 
 -(void)actionLink:(NSNumber *)curMsgN {
     int curMsg = [curMsgN intValue];
@@ -2136,311 +2181,18 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     [HFRAlertView DisplayAlertViewWithTitle:@"Lien copié dans le presse-papiers" forDuration:(long)1];
 }
 
--(void) actionAlerter:(NSNumber *)curMsgN {
-    NSLog(@"actionAlerter %@", curMsgN);
-    if (self.isAnimating) {
-        return;
-    }
-    
-    int curMsg = [curMsgN intValue];
-    
-    NSString *alertUrl = [NSString stringWithFormat:@"%@%@", [k ForumURL], [[arrayData objectAtIndex:curMsg] urlAlert]];
-    
-    AlerteModoViewController *alerteMessageViewController = [[AlerteModoViewController alloc]
-                                                             initWithNibName:@"AlerteModoViewController" bundle:nil];
-    alerteMessageViewController.delegate = self;
-    [alerteMessageViewController setUrl:alertUrl];
-    
-    HFRNavigationController *navigationController = [[HFRNavigationController alloc]
-                                                     initWithRootViewController:alerteMessageViewController];
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self presentModalViewController:navigationController animated:YES];
-
-    
-    
-}
--(void) actionSupprimer:(NSNumber *)curMsgN {
-    NSLog(@"actionSupprimer %@", curMsgN);
-    if (self.isAnimating) {
-        return;
-    }
-
-    int curMsg = [curMsgN intValue];
-    
-    NSString *editUrl = [NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlEdit] decodeSpanUrlFromString]];
-    NSLog(@"DEL editUrl = %@", editUrl);
-    
-    DeleteMessageViewController *delMessageViewController = [[DeleteMessageViewController alloc]
-                                                              initWithNibName:@"AddMessageViewController" bundle:nil];
-    delMessageViewController.delegate = self;
-    [delMessageViewController setUrlQuote:editUrl];
-    
-    HFRNavigationController *navigationController = [[HFRNavigationController alloc]
-                                                     initWithRootViewController:delMessageViewController];
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self presentModalViewController:navigationController animated:YES];
-
-}
-
--(void) actionBL:(NSNumber *)curMsgN {
-    int curMsg = [curMsgN intValue];
-    NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
-    NSString *promptMsg = @"";
-    
-    if ([[BlackList shared] isBL:pseudo]) {
-        BOOL ret = [[BlackList shared] removeFromBlackList:pseudo andSave:YES];
-        if (ret) {
-            promptMsg = [NSString stringWithFormat:@"%@ a été supprimé de la liste noire", pseudo];
-        } else {
-            promptMsg = [NSString stringWithFormat:@"Erreur! %@ n'a pas pu être supprimé de la liste noire", pseudo];
-        }
-    }
-    else {
-        BOOL ret = [[BlackList shared] addToBlackList:pseudo andSave:YES];
-        if (ret > 0) {
-            promptMsg = [NSString stringWithFormat:@"BIM! %@ ajouté à la liste noire", pseudo];
-        }
-        else {
-            promptMsg = [NSString stringWithFormat:@"Erreur! %@ n'a pas pu être ajouté à la liste noire", pseudo];
-        }
-    }
-    
-    [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
-}
-
--(void) actionWL:(NSNumber *)curMsgN {
-    int curMsg = [curMsgN intValue];
-    NSString *pseudo = [[arrayData objectAtIndex:curMsg] name];
-    NSString *promptMsg = @"";
-    
-    if ([[BlackList shared] isWL:pseudo]) {
-        [[BlackList shared] removeFromWhiteList:pseudo];
-        promptMsg = [NSString stringWithFormat:@"OH NOES ! %@ a été supprimé de la love list", pseudo];
-    }
-    else {
-        [[BlackList shared] addToWhiteList:pseudo];
-        promptMsg = [NSString stringWithFormat:@"BOUM BOUM ! %@ ajouté à la love list \u2665", pseudo];
-    }
-
-    
-    [HFRAlertView DisplayAlertViewWithTitle:promptMsg forDuration:(long)1];
-}
-
-
--(void)actionMessage:(NSNumber *)curMsgN {
-	if (self.isAnimating) {
-		return;
-	}
-	
-	int curMsg = [curMsgN intValue];
-	
-	//NSLog(@"actionMessage %d = %@", curMsg, curMsgN);
-	//[[HFRplusAppDelegate sharedAppDelegate] openURL:[NSString stringWithFormat:@"http://forum.hardware.fr%@", forumNewTopicUrl]];
-	
-	NewMessageViewController *editMessageViewController = [[NewMessageViewController alloc]
-														   initWithNibName:@"AddMessageViewController" bundle:nil];
-	editMessageViewController.delegate = self;
-	[editMessageViewController setUrlQuote:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[arrayData objectAtIndex:curMsg] MPUrl]]];
-	editMessageViewController.title = @"Nouv. Message";
-	// Create the navigation controller and present it modally.
-	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
-													initWithRootViewController:editMessageViewController];
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-	[self presentModalViewController:navigationController animated:YES];
-    
-	// The navigation controller is now owned by the current view controller
-	// and the root view controller is owned by the navigation controller,
-	// so both objects should be released to prevent over-retention.
-}
-
--(void) EcrireCookie:(NSString *)nom withVal:(NSString *)valeur {
-	//NSLog(@"EcrireCookie");
-	
-	NSMutableDictionary *	outDict = [NSMutableDictionary dictionaryWithCapacity:5];
-	[outDict setObject:nom forKey:NSHTTPCookieName];
-	[outDict setObject:valeur forKey:NSHTTPCookieValue];
-	[outDict setObject:[[NSDate date] dateByAddingTimeInterval:(60*60)] forKey:NSHTTPCookieExpires];
-	[outDict setObject:@".hardware.fr" forKey:NSHTTPCookieDomain];
-	[outDict setObject:@"/" forKey:@"Path"];		// This does work.
-	
-	NSHTTPCookie	*	cookie = [NSHTTPCookie cookieWithProperties:outDict];
-	
-	NSHTTPCookieStorage *cookShared = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-	[cookShared setCookie:cookie];
-}
-
--(NSString *)LireCookie:(NSString *)nom {
-	//NSLog(@"LireCookie");
-	
-	
-	NSHTTPCookieStorage *cookShared = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-	NSArray *cookies = [cookShared cookies];
-	
-	for (NSHTTPCookie *aCookie in cookies) {
-		if ([[aCookie name] isEqualToString:nom]) {
-			
-			if ([[NSDate date] timeIntervalSinceDate:[aCookie expiresDate]] <= 0) {
-				return [aCookie value];
-			}
-			
-		}
-		
-	}
-	
-	return @"";
-	
-}
--(void)  EffaceCookie:(NSString *)nom {
-	//NSLog(@"EffaceCookie");
-	
-	NSHTTPCookieStorage *cookShared = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-	NSArray *cookies = [cookShared cookies];
-	
-	for (NSHTTPCookie *aCookie in cookies) {
-		if ([[aCookie name] isEqualToString:nom]) {
-			[cookShared deleteCookie:aCookie];
-		}
-		
-	}
-	
-	return;
-}
-
-
--(void)actionCiter:(NSNumber *)curMsgN {
-	//NSLog(@"actionCiter %@", curMsgN);
-	
-	int curMsg = [curMsgN intValue];
-	NSString *components = [[[arrayData objectAtIndex:curMsg] quoteJS] substringFromIndex:7];
-	components = [components stringByReplacingOccurrencesOfString:@"); return false;" withString:@""];
-	components = [components stringByReplacingOccurrencesOfString:@"'" withString:@""];
-	
-	NSArray *quoteComponents = [components componentsSeparatedByString:@","];
-	
-	NSString *nameCookie = [NSString stringWithFormat:@"quotes%@-%@-%@", [quoteComponents objectAtIndex:0], [quoteComponents objectAtIndex:1], [quoteComponents objectAtIndex:2]];
-	NSString *quotes = [self LireCookie:nameCookie];
-	
-	//NSLog(@"quotes APRES LECTURE %@", quotes);
-	
-	if ([quotes rangeOfString:[NSString stringWithFormat:@"|%@", [quoteComponents objectAtIndex:3]]].location == NSNotFound) {
-		quotes = [quotes stringByAppendingString:[NSString stringWithFormat:@"|%@", [quoteComponents objectAtIndex:3]]];
-	}
-	else {
-		quotes = [quotes stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"|%@", [quoteComponents objectAtIndex:3]] withString:@""];
-	}
-	
-	
-	if (quotes.length == 0) {
-		//
-		//NSLog(@"quote vide");
-		[self EffaceCookie:nameCookie];
-	}
-	else
-	{
-		//NSLog(@"nameCookie %@", nameCookie);
-		//NSLog(@"quotes %@", quotes);
-		[self EcrireCookie:nameCookie withVal:quotes];
-	}
-	
-	//[self.messageView stringByEvaluatingJavaScriptFromString:@"quoter('hardwarefr','prive',1556872,1962548600);"];
-	//NSLog(@"actionCiter %@", [NSDate date]);
-	
-	//NSHTTPCookieStorage *cookShared = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-	//NSArray *cookies = [cookShared cookies];
-	
-	//for (NSHTTPCookie *aCookie in cookies) {
-	//	NSLog(@"%@", aCookie);
-	//}
-	
-	
-}
-
--(void)EditMessage:(NSNumber *)curMsgN {
-	int curMsg = [curMsgN intValue];
-	
-	[self setEditFlagTopic:[[arrayData objectAtIndex:curMsg] postID]];
-	[self editMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlEdit] decodeSpanUrlFromString]]];
-	
-}
-
--(void)QuoteMessage:(NSNumber *)curMsgN {
-	int curMsg = [curMsgN intValue];
-	
-	[self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]]];
-}
-
--(void)actionFavoris {
-	[self actionFavoris:[NSNumber numberWithInt:curPostID]];
-	
-}
--(void)actionProfil {
-    [self actionProfil:[NSNumber numberWithInt:curPostID]];
-    
-}
--(void)actionAQ {
-    [self actionAQ:[NSNumber numberWithInt:curPostID]];
-    
-}
--(void)actionMessage {
-	[self actionMessage:[NSNumber numberWithInt:curPostID]];
-	
-}
--(void)actionBL {
-    [self actionBL:[NSNumber numberWithInt:curPostID]];
-    
-}
--(void)actionWL {
-    [self actionWL:[NSNumber numberWithInt:curPostID]];
-    
-}
--(void)actionAlerter {
-    [self actionAlerter:[NSNumber numberWithInt:curPostID]];
-    
-}
--(void)actionSupprimer {
-    [self actionSupprimer:[NSNumber numberWithInt:curPostID]];
-    
-}
-
--(void)actionCiter {
-	[self actionCiter:[NSNumber numberWithInt:curPostID]];
-}
-
--(void)actionLink {
-    [self actionLink:[NSNumber numberWithInt:curPostID]];
-}
-
--(void)EditMessage {
-	[self EditMessage:[NSNumber numberWithInt:curPostID]];	
-}
-
--(void)QuoteMessage
-{
-	[self QuoteMessage:[NSNumber numberWithInt:curPostID]];
-}
-
 - (NSString *) userTextSizeDidChange {
     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_text"] isEqualToString:@"sys"]) {
         if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {
             CGFloat userFontSize = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody].pointSize;
             userFontSize = floorf(userFontSize*0.90);
             NSString *script = [NSString stringWithFormat:@"$('.message .content .right').css('cssText', 'font-size:%fpx !important');", userFontSize];
-            //        script = [script stringByAppendingString:[NSString stringWithFormat:@"$('.message .content .right table.code *').css('cssText', 'font-size:%fpx !important');", floor(userFontSize*0.75)]];
-            //        script = [script stringByAppendingString:[NSString stringWithFormat:@"$('.message .content .right p.editedhfrlink').css('cssText', 'font-size:%fpx !important');", floor(userFontSize*0.75)]];
-            
             [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
-            
             return [NSString stringWithFormat:@".message .content .right { font-size:%fpx !important; }", userFontSize];
-            
-            //NSLog(@"userFontSize %@", script);
         }
     }
     
     return @"";
-    
 }
 
 - (NSString *) userThemeDidChange {
@@ -2586,243 +2338,21 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 	//[self.arrayData removeAllObjects];
 	self.arrayData = nil;
 	self.updatedArrayData = nil;
-
-	
-	
-    
-    
-		
-	
-    
-    
-	
 }
 
 #pragma mark -
-#pragma mark Search Lifecycle
+#pragma mark Getter methods
 
--(void)handleTap:(id)sender{
-    [self toggleSearch:NO];
-}
-
-- (void)toggleSearch {
+- (void)setTopicName:(NSString *)n {
+    _topicName = [n filterTU];
     
-    if (self.searchBg.alpha && !self.searchBg.hidden)
-        [self toggleSearch:NO];
-    else
-        [self toggleSearch:YES];
     
 }
-
-- (void)toggleSearch:(BOOL) active {
-    //NSLog(@"toggleSearchtoggleSearchtoggleSearchtoggleSearch");
-    if (!active) {
-        //NSLog(@"RESIGN");
-        CGRect oldframe = self.searchBox.frame;
-        //NSLog(@"oldframe %@", NSStringFromCGRect(oldframe));
-        
-        CGRect newframe = oldframe;
-        newframe.origin.y = 0 - oldframe.size.height;
-        
-        [self.searchKeyword resignFirstResponder];
-        [self.searchPseudo resignFirstResponder];
-        
-        [UIView beginAnimations:@"FadeOut" context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.searchBg setAlpha:0];
-        self.searchBox.frame = newframe;
-        
-        [UIView commitAnimations];
-
-    } else {
-        //NSLog(@"BECOME");
-        CGRect oldframe = self.searchBox.frame;
-        //NSLog(@"oldframe %@", NSStringFromCGRect(oldframe));
-        
-        CGRect newframe = oldframe;
-        newframe.origin.y = 0 - oldframe.size.height;
-        oldframe.origin.y = 0;
-        self.searchBox.frame = newframe;
-        [self.searchBox setHidden:NO];
-        [self.searchBg setAlpha:0];
-        [self.searchBg setHidden:NO];
-        
-        [UIView animateWithDuration:0.2 animations:^{
-            [self.searchBg setAlpha:0.7];
-            self.searchBox.frame = oldframe;
-        } completion:^(BOOL finished){
-            [self.searchKeyword becomeFirstResponder];
-        }];
-
-    }
-}
-
-- (IBAction)searchNext:(UITextField *)sender {
-    //NSLog(@"searchNext %@", sender);
-        if ([sender isEqual:self.searchKeyword]) {
-            //NSLog(@"searchKeyword");
-            [self.searchKeyword resignFirstResponder];
-            [self.searchPseudo becomeFirstResponder];
-        }
-        else if ([sender isEqual:self.searchPseudo] && (self.searchPseudo.text.length > 0 || self.searchKeyword.text.length > 0)) {
-            //NSLog(@"searchPseudo");
-            [self.searchPseudo resignFirstResponder];
-            
-            [self searchSubmit:nil];
-        }
-}
-
-- (IBAction)searchFilterChanged:(UISwitch *)sender {
-    //NSLog(@"Filter %lu", (unsigned long)sender.isOn);
-    
-    if (sender.isOn) {
-      [self.searchInputData setValue:[NSString stringWithFormat:@"%d", sender.isOn] forKey:@"filter"];
-    }
-    else {
-        [self.searchInputData removeObjectForKey:@"filter"];
-    }
-}
-
-- (IBAction)searchFromFPChanged:(UISwitch *)sender {
-    //NSLog(@"searchFromFPChanged %lu", (unsigned long)sender.isOn);
-    
-    if (sender.isOn) {
-        [self.searchInputData removeObjectForKey:@"currentnum"];
-        [self.searchInputData removeObjectForKey:@"firstnum"];
-    }else{
-        if([self.searchInputData valueForKey:@"tmp_currentnum"]){
-            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_currentnum"] forKey:@"currentnum"];
-        }
-        if([self.searchInputData valueForKey:@"tmp_firstnum"]){
-            [self.searchInputData setValue:[self.searchInputData valueForKey:@"tmp_firstnum"] forKey:@"firstnum"];
-        }
-    }
-}
-
-- (IBAction)searchPseudoChanged:(UITextField *)sender {
-    //NSLog(@"searchPseudoChanged %@", sender.text);
-    if ([sender.text length]) {
-        [self.searchInputData setValue:[NSString stringWithFormat:@"%@", sender.text] forKey:@"spseudo"];
-    }
-    else {
-        [self.searchInputData setValue:@"" forKey:@"spseudo"];
-    }
-    
-}
-
-- (IBAction)searchKeywordChanged:(UITextField *)sender {
-    //NSLog(@"searchKeywordChanged %@", sender.text);
-    if ([sender.text length]) {
-        [self.searchInputData setValue:[NSString stringWithFormat:@"%@", sender.text] forKey:@"word"];
-    }
-    else {
-        [self.searchInputData setValue:@"" forKey:@"word"];
-    }
-
-}
-
-- (IBAction)searchSubmit:(UIBarButtonItem *)sender {
-    NSLog(@"searchSubmit");
-    
-    //NSString *baseURL = [NSString stringWithFormat:@"/forum2.php?%@", [self serializeParams:self.searchInputData]];
-
-    ASIFormDataRequest  *arequest = [[ASIFormDataRequest  alloc]  initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/transsearch.php", [k ForumURL]]]];
-    
-    for (NSString *key in self.searchInputData) {
-        [arequest setPostValue:[self.searchInputData objectForKey:key] forKey:key];
-        //NSLog(@"POST: %@ : %@", key, [self.searchInputData objectForKey:key]);
-    }
-    
-    [arequest setShouldRedirect:NO];
-    [arequest startSynchronous];
-    
-    NSString *baseURL = @"";
-    
-    if (arequest) {
-        NSString *Location = [[arequest responseHeaders] objectForKey:@"Location"];
-        NSLog(@"responseHeaders: %@", [arequest responseHeaders]);
-        NSLog(@"requestHeaders: %@", [arequest requestHeaders]);
-
-        if ([arequest error]) {
-            NSLog(@"error: %@", [[arequest error] localizedDescription]);
-        }
-        else if ([arequest responseString])
-        {
-            baseURL = Location;
-            //NSLog(@"responseString %@", [arequest responseString]);
-        }
-    }
-    
-    if (!baseURL) {
-        [HFRAlertView DisplayAlertViewWithTitle:@"Aucune réponse n'a été trouvée" forDuration:1];
-        return;
-    }
-    
-    [self toggleSearch:NO];
-
-    if (self.isSearchInstra) {
-        self.currentUrl = baseURL;
-        [self fetchContent:kNewMessageFromUnkwn];
-    }
-    else {
-        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:baseURL];
-        self.messagesTableViewController = aView;
-        
-        //setup the URL
-        [self.messagesTableViewController setTopicName:[NSString stringWithString:self.topicName]];
-        self.messagesTableViewController.isViewed = YES;
-        self.messagesTableViewController.isSearchInstra = YES;
-        [self.messagesTableViewController setSearchInputData:[NSMutableDictionary dictionaryWithDictionary:self.searchInputData]];
-        
-        self.navigationItem.backBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:[self backBarButtonTitle]
-                                         style: UIBarButtonItemStylePlain
-                                        target:nil
-                                        action:nil];
-        
-        [self.navigationController pushViewController:messagesTableViewController animated:YES];
-    }
-
+//Getter method
+- (NSString*) topicName {
+    //NSLog(@"Returning name: %@", _aTitle);
+    return _topicName;
 }
 
 
--(NSString *)serializeParams:(NSDictionary *)params {
-    /*
-     
-     Convert an NSDictionary to a query string
-     
-     */
-    
-    NSMutableArray* pairs = [NSMutableArray array];
-    for (NSString* key in [params keyEnumerator]) {
-        id value = [params objectForKey:key];
-        if ([value isKindOfClass:[NSDictionary class]]) {
-            for (NSString *subKey in value) {
-                NSString* escaped_value = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                                              (CFStringRef)[value objectForKey:subKey],
-                                                                                              NULL,
-                                                                                              (CFStringRef)@"!*'();:@&=+$,/?%#[]",
-                                                                                              kCFStringEncodingUTF8));
-                [pairs addObject:[NSString stringWithFormat:@"%@[%@]=%@", key, subKey, escaped_value]];
-            }
-        } else if ([value isKindOfClass:[NSArray class]]) {
-            for (NSString *subValue in value) {
-                NSString* escaped_value = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                                              (CFStringRef)subValue,
-                                                                                              NULL,
-                                                                                              (CFStringRef)@"!*'();:@&=+$,/?%#[]",
-                                                                                              kCFStringEncodingUTF8));
-                [pairs addObject:[NSString stringWithFormat:@"%@[]=%@", key, escaped_value]];
-            }
-        } else {
-            NSString* escaped_value = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                                          (CFStringRef)[params objectForKey:key],
-                                                                                          NULL,
-                                                                                          (CFStringRef)@"!*'();:@&=+$,/?%#[]",
-                                                                                          kCFStringEncodingUTF8));
-            [pairs addObject:[NSString stringWithFormat:@"%@=%@", key, escaped_value]];
-        }
-    }
-    return [pairs componentsJoinedByString:@"&"];
-}
 @end
