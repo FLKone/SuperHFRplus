@@ -19,7 +19,7 @@
 #import "FavoriteCellView.h"
 
 @implementation OfflineTableViewController;
-@synthesize offlineTableView, listOfflineTopicsKeys;
+@synthesize offlineTableView, listOfflineTopicsKeys, alertProgress, progressView;
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -35,7 +35,7 @@
     //Supprime les lignes vides à la fin de la liste
     self.offlineTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
     // Add PullToRefresh function to tableview
     //__weak OfflineTableViewController *self_ = self;
@@ -67,11 +67,79 @@
 {
 }
 
--(void)reload
+
+-(void) actionMenu {
+    UIAlertController *actionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Actualiser" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self reload]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Mettre à jour le cache" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self refreshCache]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Vider le cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCache]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) { }]];
+
+    [self presentViewController:actionAlert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:actionAlert];
+}
+
+- (void)reload
 {
     listOfflineTopicsKeys = [[OfflineStorage shared].dicOfflineTopics allKeys];
     //[self.OfflineTableView triggerPullToRefresh];
 }
+
+- (void)refreshCache
+{
+    [self addProgressBar];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self loadOfflineTopicsToCache];
+    });
+
+}
+-(void) loadOfflineTopicsToCache {
+    listOfflineTopicsKeys = [[OfflineStorage shared].dicOfflineTopics allKeys];
+    int total = (int)[listOfflineTopicsKeys count];
+    int c = 0;
+    for (NSNumber* keyTopidID in listOfflineTopicsKeys)
+    {
+        Topic *tmpTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:keyTopidID];
+        NSLog(@"Loading topic %@", keyTopidID);
+        [[OfflineStorage shared] loadTopicToCache:tmpTopic];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.progressView.progress = ((float)c)/total;
+        });
+
+        c++;
+    }
+    self.progressView.progress = 1.0;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) addProgressBar {
+    self.alertProgress = [UIAlertController alertControllerWithTitle:@"Téléchargement des topics" message:@"50%" preferredStyle:UIAlertControllerStyleAlert];
+    [self.alertProgress addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }]];
+
+    UIView *alertView = self.alertProgress.view;
+
+    self.progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+    self.progressView.progress = 0.0;
+    self.progressView.translatesAutoresizingMaskIntoConstraints = false;
+    [alertView addSubview:self.progressView];
+
+
+    NSLayoutConstraint *bottomConstraint = [self.progressView.bottomAnchor constraintEqualToAnchor:alertView.bottomAnchor];
+    [bottomConstraint setActive:YES];
+    bottomConstraint.constant = -45; // How to constraint to Cancel button?
+
+    [[self.progressView.leftAnchor constraintEqualToAnchor:alertView.leftAnchor] setActive:YES];
+    [[self.progressView.rightAnchor constraintEqualToAnchor:alertView.rightAnchor] setActive:YES];
+
+    [self presentViewController:self.alertProgress animated:true completion:nil];
+}
+
+
+- (void)deleteCache
+{
+}
+
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
@@ -125,8 +193,9 @@
     if (tmpTopic.isPoll) {
         sPoll = @" \U00002263";
     }
-    
-    [cell.labelMessageNumber setText:[NSString stringWithFormat:@"⚑%@ %d/%d", sPoll, [tmpTopic curTopicPage], [tmpTopic maxTopicPage]]];
+    NSString* sRondPlein = @" \U000025CF";
+    NSString* sRondVide = @" \U000025CF";
+    [cell.labelMessageNumber setText:[NSString stringWithFormat:@"\U000025CF %d -> %d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage]]];
     
     // Badge
     int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
@@ -167,14 +236,13 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    /*
-    NSString *sTopicUrl = [[marrXMLData objectAtIndex:indexPath.row] valueForKey:@"link"];
-    NSString *sFormattedUrl = [[sTopicUrl stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
-
-    // set AQ as no more new
-    [[marrXMLData objectAtIndex:indexPath.row] setObject:[NSNumber numberWithBool:NO] forKey:@"is_new"];
-
-    self.messagesTableViewController = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:sFormattedUrl displaySeparator:YES];;
+    NSNumber* topicID = [listOfflineTopicsKeys objectAtIndex:(NSUInteger)indexPath.row];
+    Topic *topic = [[OfflineStorage shared].dicOfflineTopics objectForKey:topicID];
+    if (![[OfflineStorage shared] checkTopicOffline:topic]) {
+        // TBD AlertView
+        return;
+    }
+    self.messagesTableViewController = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andOfflineTopic:topic];
 
     // Open topic
     // Sur iPhone
@@ -182,9 +250,11 @@
         [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ||
         [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
 
-        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"AQ" style: UIBarButtonItemStylePlain target:nil action:nil];
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hors ligne" style: UIBarButtonItemStylePlain target:nil action:nil];
         [self.navigationController pushViewController:self.messagesTableViewController animated:YES];
-    } else { //iPad
+    }
+    /* TBD IPAD*
+    else { //iPad
         [[[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] viewControllers] objectAtIndex:1] popToRootViewControllerAnimated:NO];
         
         [[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] setViewControllers:[NSMutableArray arrayWithObjects:self.messagesTableViewController, nil] animated:YES];
@@ -196,8 +266,7 @@
     }
     
     // Close left panel on ipad in portrait mode
-    [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
-    */
+    [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];*/
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {

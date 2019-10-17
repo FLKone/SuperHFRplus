@@ -43,6 +43,7 @@
 #import "MultisManager.h"
 #import "HFRAlertView.h"
 #import "MPStorage.h"
+#import "OfflineStorage.h"
 
 @implementation MessagesTableViewController
 @synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
@@ -82,17 +83,557 @@
 	//NSLog(@"Progress %f%", newProgress*100);
 }
 
+- (void)cancelFetchContent
+{
+    [self.request cancel];
+    [self setRequest:nil];
+}
+
+- (void)fetchContent:(int)from
+{
+    //self.firstDate = [NSDate date];
+    self.errorReported = NO;
+	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
+    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=1711&page=301&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t530526";
+    
+    
+    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=5925&page=1&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t535660";
+    
+    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&subcat=525&post=5145&page=87&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t540188";
+    
+    NSLog(@"URL %@", [self currentUrl]);
+    
+    //NSLog(@"[self currentUrl] %@", [self currentUrl]);
+    //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
+
+    self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
+
+	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
+	[request setDelegate:self];
+    [request setShowAccurateProgress:YES];
+    
+	//[request setCachePolicy:ASIReloadIfDifferentCachePolicy];
+	//[request setDownloadCache:[ASIDownloadCache sharedCache]];
+	
+    [request setDownloadProgressDelegate:self];
+    
+	[request setDidStartSelector:@selector(fetchContentStarted:)];
+	[request setDidFinishSelector:@selector(fetchContentComplete:)];
+	[request setDidFailSelector:@selector(fetchContentFailed:)];
+    
+	[self.view removeGestureRecognizer:swipeLeftRecognizer];
+	[self.view removeGestureRecognizer:swipeRightRecognizer];
+	
+	if ([NSThread isMainThread]) {
+        //[self.messagesWebView setHidden:YES];
+    }
+
+    //NSLog(@"from %d", from);
+    
+    [self.errorLabelView setHidden:YES];
+
+    if(from == kNewMessageFromNext) self.stringFlagTopic = @"#bas";
+    
+    switch (from) {
+        case kNewMessageFromShake:
+        case kNewMessageFromUpdate:
+        case kNewMessageFromEditor:
+            //NSLog(@"hidden");
+            [self.loadingView setHidden:YES];
+            break;
+        default:
+            //NSLog(@"not hidden");
+            [self.loadingView setHidden:NO];
+            [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML = \"\";"];
+            break;
+    }
+    
+	[request startAsynchronous];
+}
+
+
+- (void)fetchContent
+{
+    if ([self isModeOffline]) {
+        NSData* data = [[OfflineStorage shared] getDataFromTopicOffline:self.currentOfflineTopic page:self.currentOfflineTopic.curTopicPage];
+        self.pageNumber = self.currentOfflineTopic.curTopicPage;
+        [self startParseDataHtml:data];
+    }
+    else {
+        [self fetchContent:kNewMessageFromUnkwn];
+    }
+}
+
+- (void)fetchContentStarted:(ASIHTTPRequest *)theRequest
+{
+	//--
+	//NSLog(@"fetchContentStarted");
+    
+    if (![self.currentUrl isEqualToString:[theRequest.url.absoluteString stringByReplacingOccurrencesOfString:[k ForumURL] withString:@""]]) {
+        //NSLog(@"not equal ==");
+        self.currentUrl = [theRequest.url.absoluteString stringByReplacingOccurrencesOfString:[k ForumURL] withString:@""];
+    }
+
+}
+
+- (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
+{
+    //MaJ de la puce MP
+	if (!self.isViewed) {
+		//NSLog(@"pas lu");
+		[[HFRplusAppDelegate sharedAppDelegate] readMPBadge];
+	}
+	
+    [self startParseDataHtml:[request responseData]];
+    
+    [self cancelFetchContent];
+}
+
+- (void)startParseDataHtml:(NSData*)data {
+    // create the queue to run our ParseOperation
+    self.queue = [[NSOperationQueue alloc] init];
+    ParseMessagesOperation *parser = [[ParseMessagesOperation alloc] initWithData:data index:0 reverse:NO delegate:self];
+    [queue addOperation:parser]; // this will start the "ParseOperation"
+}
+
+- (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
+{
+	[self.loadingView setHidden:YES];
+	
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
 #pragma mark -
 #pragma mark View lifecycle
 
 
+-(void)setupScrollAndPage
+{
+	//NSLog(@"topicName: %@", self.topicName);
+	
+	//On vire le '#t09707987987'
+	NSRange rangeFlagPage;
+	rangeFlagPage =  [[self currentUrl] rangeOfString:@"#" options:NSBackwardsSearch];
+	
+    
+    if (self.stringFlagTopic.length == 0) {
+        if (!(rangeFlagPage.location == NSNotFound)) {
+            self.stringFlagTopic = [[self currentUrl] substringFromIndex:rangeFlagPage.location];
+        }
+        else {
+            self.stringFlagTopic = @"";
+        }
+    }
+    
+	if (!(rangeFlagPage.location == NSNotFound)) {
+		self.currentUrl = [[self currentUrl] substringToIndex:rangeFlagPage.location];
+    }
+	//--
+
+
+    /* else */
+    
+    {
+        if (![self isModeOffline]) {
+            //On check si y'a page=2323
+            NSString *regexString  = @".*page=([^&]+).*";
+            NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
+            NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
+            NSError  *error2        = NULL;
+            
+            matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
+            
+            if (matchedRange.location == NSNotFound) {
+                NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
+                if (rangeNumPage.location == NSNotFound) {
+                    //
+                    NSLog(@"something went wrong");
+                    return;
+                    //[self.navigationController popViewControllerAnimated:YES];
+                }
+                else {
+                    self.pageNumber = [[self.currentUrl substringWithRange:rangeNumPage] intValue];
+                }
+            }
+            else {
+                self.pageNumber = [[self.currentUrl substringWithRange:matchedRange] intValue];
+                
+            }
+        }
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+    }
+
+    //NSLog(@"pageNumber %d", self.pageNumber);
+
+    if (self.isSearchInstra) {
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Recherche | %@", self.topicName]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+        
+    }
+    
+	//self.title = [NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber];
+    
+	//[self navigationItem].titleView.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
+	
+}
+
+-(void)setupPageToolbar:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser;
+{
+    if (!self.pageNumber && !self.errorReported) {
+        self.errorReported = YES;
+        
+        dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+        dispatch_async(backgroundQueue, ^{
+            // Do your long running code
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        });
+        
+        return;
+    }
+	//NSLog(@"setupPageToolbar");
+    //Titre
+	HTMLNode *titleNode = [[bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2Title" allowPartial:YES] findChildTag:@"h3"]; //Get all the <img alt="" />
+	if ([titleNode allContents] && self.topicName.length == 0) {
+		//NSLog(@"setupPageToolbar titleNode %@", [titleNode allContents]);
+		self.topicName = [titleNode allContents];
+        
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+	}
+    
+    // Boutons bas de page
+    if ([self isModeOffline]) {
+    }
+    else {
+
+    
+	HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2PagesHaut" allowPartial:YES];
+	if(pagesTrNode)
+	{
+		HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
+        
+		if (![self isModeOffline] && pagesLinkNode) {
+			NSArray *temporaryNumPagesArray = [pagesLinkNode children];
+			[self setFirstPageNumber:[[[temporaryNumPagesArray objectAtIndex:2] contents] intValue]];
+            
+			if ([self pageNumber] == [self firstPageNumber]) {
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+			else {
+                NSLog(@"[temporaryNumPagesArray objectAtIndex:2] %@", [temporaryNumPagesArray objectAtIndex:2]);
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray objectAtIndex:2] getAttributeNamed:@"href"]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+
+			[self setLastPageNumber:[[[temporaryNumPagesArray lastObject] contents] intValue]];
+			
+			if ([self pageNumber] == [self lastPageNumber]) {
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+			else {
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray lastObject] getAttributeNamed:@"href"]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+
+			/*
+			 NSLog(@"premiere %d", [self firstPageNumber]);
+			 NSLog(@"premiere url %@", [self firstPageUrl]);
+			 
+			 NSLog(@"premiere %d", [self lastPageNumber]);
+			 NSLog(@"premiere url %@", [self lastPageUrl]);
+			 */
+			
+			//TableFooter
+			UIToolbar *tmptoolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+			tmptoolbar.barStyle = UIBarStyleDefault;
+			[tmptoolbar sizeToFit];
+			
+			//Add buttons
+			UIBarButtonItem *systemItem1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
+																						 target:self
+																						 action:@selector(firstPage:)];
+			if ([self pageNumber] == [self firstPageNumber]) {
+				[systemItem1 setEnabled:NO];
+			}
+			
+			UIBarButtonItem *systemItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
+																						 target:self
+																						 action:@selector(lastPage:)];
+
+			if ([self pageNumber] == [self lastPageNumber]) {
+				[systemItem2 setEnabled:NO];
+			}
+			
+			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 44)];
+			[label setFont:[UIFont boldSystemFontOfSize:15.0]];
+			[label setAdjustsFontSizeToFitWidth:YES];
+			[label setBackgroundColor:[UIColor clearColor]];
+			[label setTextAlignment:NSTextAlignmentCenter];
+			[label setLineBreakMode:NSLineBreakByTruncatingMiddle];
+			[label setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
+			
+			[label setTextColor:[UIColor whiteColor]];
+			[label setNumberOfLines:0];
+			[label setTag:666];
+			[label setText:[NSString stringWithFormat:@"%d/%d", [self pageNumber], [self lastPageNumber]]];
+			
+			UIBarButtonItem *systemItem3 = [[UIBarButtonItem alloc] initWithCustomView:label];
+			
+			
+			
+			
+			
+			//Use this to put space in between your toolbox buttons
+			UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+																					  target:nil
+																					  action:nil];
+
+			//Add buttons to the array
+			NSArray *items = [NSArray arrayWithObjects: systemItem1, flexItem, systemItem3, flexItem, systemItem2, nil];
+			
+			//release buttons
+			
+			//add array of buttons to toolbar
+			[tmptoolbar setItems:items animated:NO];
+			
+			self.aToolbar = tmptoolbar;
+			
+		}
+		else {
+			self.aToolbar = nil;
+			//NSLog(@"pas de pages");
+            [self setFirstPageNumber:1];
+            [self setLastPageNumber:1];
+		}
+		
+		//--
+		
+		
+		//NSArray *temporaryPagesArray = [[NSArray alloc] init];
+		
+		NSArray *temporaryPagesArray = [pagesTrNode findChildrenWithAttribute:@"class" matchingName:@"pagepresuiv" allowPartial:YES];
+		
+        if (self.isSearchInstra) {
+            [self.view addGestureRecognizer:swipeLeftRecognizer];
+        }
+		else if(temporaryPagesArray.count != 3)
+		{
+			//NSLog(@"pas 3");
+			//[self.view removeGestureRecognizer:swipeLeftRecognizer];
+			//[self.view removeGestureRecognizer:swipeRightRecognizer];
+		}
+		else {
+            HTMLNode *nextUrlNode = [[temporaryPagesArray objectAtIndex:0] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+            
+            if (nextUrlNode) {
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                [self.view addGestureRecognizer:swipeLeftRecognizer];
+                self.nextPageUrl = [[nextUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"nextPageUrl = %@", nextPageUrl);
+                
+            }
+            else {
+                self.nextPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeLeftRecognizer];
+            }
+            
+            HTMLNode *previousUrlNode = [[temporaryPagesArray objectAtIndex:1] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+            
+            if (previousUrlNode) {
+                //previousPageUrl = [[topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber - 1)]] retain];
+                [self.view addGestureRecognizer:swipeRightRecognizer];
+                self.previousPageUrl = [[previousUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"previousPageUrl = %@", previousPageUrl);
+                
+            }
+            else {
+                self.previousPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeRightRecognizer];
+                
+                
+            }
+		}
+	}
+	else {
+		self.aToolbar = nil;
+	}
+	//NSLog(@"Fin setupPageToolbar");
+
+	//--Pages
+}
+
+-(void)setupPoll:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
+    self.pollNode = nil;
+    self.pollParser = nil;
+    self.isNewPoll = NO;
+    
+	HTMLNode * tmpPollNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"sondage" allowPartial:NO];
+	if(tmpPollNode)
+    {
+        //NSLog(@"Raw Poll %@", rawContentsOfNode([tmpPollNode _node], [myParser _doc]));
+        [self setPollNode:tmpPollNode];
+        [self setPollParser:myParser];
+        
+        // Adapt action button of navigation bar
+        HTMLNode * tmpPollNodeInput = [tmpPollNode findChildTag:@"input"];
+        if (tmpPollNodeInput) {
+            self.isNewPoll = YES;
+        }
+    }
+}
+
+-(void)setupIntrSearch:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
+    HTMLNode * tmpSearchNode = [bodyNode findChildWithAttribute:@"action" matchingName:@"/transsearch.php" allowPartial:NO];
+    if(tmpSearchNode)
+    {
+        [self.searchInputData removeAllObjects];
+        
+        
+        NSArray *wantedArr = [NSArray arrayWithObjects:@"hash_check", @"p", @"post", @"cat", @"firstnum", @"currentnum", @"word", @"spseudo", @"filter", nil];
+        //NSLog(@"INTRA");
+        //hidden input for URL          post | cat | currentnum
+        //hidden input for URL          word | spseudo | filter
+        
+        NSArray *arrInput = [tmpSearchNode findChildTags:@"input"];
+        for (HTMLNode *no in arrInput) {
+            //NSLog(@"%@ = %@", [no getAttributeNamed:@"name"], [no getAttributeNamed:@"value"]);
+            
+            if ([no getAttributeNamed:@"name"] && [wantedArr indexOfObject: [no getAttributeNamed:@"name"]] != NSNotFound) {
+                
+                //NSLog(@"WANTED %lu", (unsigned long)[wantedArr indexOfObject: [no getAttributeNamed:@"name"]]);
+                if (![[no getAttributeNamed:@"type"] isEqualToString:@"checkbox"] || ([[no getAttributeNamed:@"type"] isEqualToString:@"checkbox"] && [[no getAttributeNamed:@"checked"] isEqualToString:@"checked"])) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:[no getAttributeNamed:@"name"]];
+                }
+                
+                if ([[no getAttributeNamed:@"name"] isEqualToString:@"word"]) {
+                    [self.searchKeyword setText:[no getAttributeNamed:@"value"]];
+                }
+                else if ([[no getAttributeNamed:@"name"] isEqualToString:@"spseudo"]) {
+                    [self.searchPseudo setText:[no getAttributeNamed:@"value"]];
+                }
+                else if ([[no getAttributeNamed:@"name"] isEqualToString:@"filter"]) {
+                    //NSLog(@"name %@ = %@", [no getAttributeNamed:@"name"], [no getAttributeNamed:@"checked"]);
+                    if ([[no getAttributeNamed:@"checked"] isEqualToString:@"checked"]) {
+                        NSLog(@"FILTER ON");
+                        [self.searchFilter setOn:YES animated:NO];
+                    }
+                    else {
+                        NSLog(@"FILTER OFF");
+                        [self.searchFilter setOn:NO animated:NO];
+                    }
+                }
+                else if ([[no getAttributeNamed:@"name"] isEqualToString:@"currentnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_currentnum"];
+                    [self.searchFromFP setOn:NO animated:NO];
+                }else if ([[no getAttributeNamed:@"name"] isEqualToString:@"firstnum"]) {
+                    [self.searchInputData setValue:[no getAttributeNamed:@"value"] forKey:@"tmp_firstnum"];
+                    [self.searchFromFP setOn:NO animated:NO];
+                }
+            }
+        }
+        
+    }
+    else if (self.searchInputData.count) {
+        if ([self.searchInputData valueForKey:@"word"]) {
+            [self.searchKeyword setText:[self.searchInputData valueForKey:@"word"]];
+        }
+        
+        if ([self.searchInputData valueForKey:@"spseudo"]) {
+            [self.searchPseudo setText:[self.searchInputData valueForKey:@"spseudo"]];
+        }
+        
+        if ([self.searchInputData valueForKey:@"filter"]) {
+            [self.searchFilter setOn:YES animated:NO];
+        }
+        
+        if (![self.searchInputData valueForKey:@"currentnum"] && ![self.searchInputData valueForKey:@"firstnum"]) {
+            [self.searchFromFP setOn:YES animated:NO];
+        }
+        else {
+            [self.searchFromFP setOn:NO animated:NO];
+        }
+    }
+}
+
+
+
+
+-(void)loadDataInTableView:(HTMLParser *)myParser
+{    
+	[self setupScrollAndPage];
+
+	//NSLog(@"name topicName %@", self.topicName);
+	
+	HTMLNode * bodyNode = [myParser body]; //Find the body tag
+
+	//MP
+	BOOL needToUpdateMP = NO;
+	HTMLNode *MPNode = [bodyNode findChildOfClass:@"none"]; //Get links for cat	
+	NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
+	//NSLog(@"temporaryMPArray count %d", temporaryMPArray.count);
+	
+	if (temporaryMPArray.count == 3) {
+		//NSLog(@"MPNode allContents %@", [[temporaryMPArray objectAtIndex:1] allContents]);
+		
+		NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";			
+		NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP
+																										  withString:@"$1"];
+		
+		[[HFRplusAppDelegate sharedAppDelegate] updateMPBadgeWithString:myMPNumber];
+	}
+	else {
+		needToUpdateMP = YES;
+	}
+	
+	//MP
+
+	//Answer Topic URL
+	HTMLNode * topicAnswerNode = [bodyNode findChildWithAttribute:@"id" matchingName:@"repondre_form" allowPartial:NO];
+	topicAnswerUrl = [[NSString alloc] init];
+	topicAnswerUrl = [[topicAnswerNode findChildTag:@"a"] getAttributeNamed:@"href"];
+	//NSLog(@"new answer: %@", topicAnswerUrl);
+	
+	//form to fast answer
+	[self setupFastAnswer:bodyNode];
+
+    //prep' Poll view
+    [self setupPoll:bodyNode andP:myParser];
+    [self setupIntrSearch:bodyNode andP:myParser];
+
+	//if(topicAnswerUrl.length > 0) 
+	//-	
+
+	//--Pages
+	[self setupPageToolbar:bodyNode andP:myParser];
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+}
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl {
 	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
 		// Custom initialization
         //NSLog(@"init %@", theTopicUrl);
-		self.currentUrl = [theTopicUrl copy];	
+		self.currentUrl = [theTopicUrl copy];
+        self.currentOfflineTopic = nil;
 		self.loaded = NO;
 		self.isViewed = YES;
         [self setIsSearchInstra:NO];
@@ -101,6 +642,22 @@
 	}
 	return self;
 }
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andOfflineTopic:(Topic *)thetopic {
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        // Custom initialization
+        //NSLog(@"init %@", theTopicUrl);
+        self.currentUrl = nil;
+        self.currentOfflineTopic = thetopic;
+        self.loaded = NO;
+        self.isViewed = YES;
+        [self setIsSearchInstra:NO];
+        self.errorReported = NO;
+
+    }
+    return self;
+}
+
 
 // Overidden to add a separator in the webview for some cases
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages {
@@ -309,41 +866,26 @@
             label.shadowColor = [UIColor darkGrayColor];
             [label setFont:[UIFont boldSystemFontOfSize:13.0]];
             label.shadowOffset = CGSizeMake(0.0, -1.0);
-            
-            
         }
         else {
             [label setTextColor:[UIColor colorWithRed:113/255.f green:120/255.f blue:128/255.f alpha:1.00]];
             label.shadowColor = [UIColor whiteColor];
             [label setFont:[UIFont boldSystemFontOfSize:19.0]];
             label.shadowOffset = CGSizeMake(0.0, 0.5f);
-            
         }
-        
     }
     
     [label setNumberOfLines:2];
-    
     [label setText:self.topicName];
     [label adjustFontSizeToFit];
     [self.navigationItem setTitleView:label];
 
     // fond blanc WebView
     [self.messagesWebView hideGradientBackground];
+    [self.messagesWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        [self.messagesWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
-    }
-    else
-    {
-        [self.messagesWebView setBackgroundColor:[UIColor whiteColor]];
-    }
-    
-	//Gesture
-	UIGestureRecognizer *recognizer;
-
-	//De Gauche à droite
-	recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeToRight:)];
+	//Gesture de Gauche à droite
+	UIGestureRecognizer* recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeToRight:)];
 	self.swipeRightRecognizer = (UISwipeGestureRecognizer *)recognizer;
 	
 	//De Droite à gauche
@@ -351,29 +893,21 @@
 	self.swipeLeftRecognizer = (UISwipeGestureRecognizer *)recognizer;
     swipeLeftRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
     self.swipeLeftRecognizer = (UISwipeGestureRecognizer *)recognizer;
-	//-- Gesture
-
-
-	//Bouton Repondre message
-    
+	
+    //Bouton Repondre message
     if (self.isSearchInstra) {
         UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchTopic)];
         optionsBarItem.enabled = NO;
-        
         NSMutableArray *myButtonArray = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
-        
         self.navigationItem.rightBarButtonItems = myButtonArray;
     }
     else {
         UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
         optionsBarItem.enabled = NO;
-        
         NSMutableArray *myButtonArray = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
-        
         self.navigationItem.rightBarButtonItems = myButtonArray;
     }
     
-
 	[(ShakeView*)self.view setShakeDelegate:self];
 	
 	self.arrayAction = [[NSMutableArray alloc] init];
@@ -395,14 +929,11 @@
         self.searchInputData = [[NSMutableDictionary alloc] init];
     }
 
-    
 	[self setEditFlagTopic:nil];
 	[self setStringFlagTopic:@""];
-
 	[self fetchContent];
     [self editMenuHidden:nil];
     [self forceButtonMenu];
-    //self.messagesWebView.controll = self;
 }
 
 -(void)fullScreen {
@@ -933,16 +1464,16 @@
         
         switch (intfrom) {
             case kNewMessageFromShake:
-                [self setStringFlagTopic:[[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
+                [self setStringFlagTopic:[(LinkItem*)[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
                 break;
             case kNewMessageFromUpdate:
-                [self setStringFlagTopic:[[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
+                [self setStringFlagTopic:[(LinkItem*)[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
                 break;
             case kNewMessageFromEditor:
                 // le flag est mis à jour depuis l'editeur.
                 break;
             default:
-                [self setStringFlagTopic:[[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
+                [self setStringFlagTopic:[(LinkItem*)[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
                 break;
         }
         
@@ -1128,6 +1659,8 @@
         [self toggleSearch:YES];
     }
     else {
+        NSString *refreshBtn = @"";
+
         int i;
         NSLog(@"OLD %@", self.stringFlagTopic);
 
@@ -1156,7 +1689,7 @@
             tmpHTML = [tmpHTML stringByAppendingString:sNewMessage];
 
             if (!ifCurrentFlag) {
-                int tmpFlagValue = [[[[self.arrayData objectAtIndex:i] postID] stringByTrimmingCharactersInSet:nonDigits] intValue];
+                int tmpFlagValue = [[[(LinkItem*)[self.arrayData objectAtIndex:i] postID] stringByTrimmingCharactersInSet:nonDigits] intValue];
 
                 if (tmpFlagValue == currentFlagValue) {
                     if (self.isSeparatorNewMessages == YES) {
@@ -1190,32 +1723,35 @@
         }
         
         NSLog(@"NEW %@", self.stringFlagTopic);
+        
+        if (![self isModeOffline]) {
+            // On ajoute le bouton de notif de sondage
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
+                UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+                UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
+                self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
+            } else {
+                UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+                self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
+            }
+            
+            //on ajoute le bouton actualiser si besoin
+            if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
+                //NSLog(@"premiere et unique ou dernier");
+                //'before'
+                refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
 
-        // On ajoute le bouton de notif de sondage
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
-            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
-            UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
-            self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
-        } else {
-            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
-            self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
+            }
+            else {
+                //NSLog(@"autre");
+            }
         }
-        
-        NSString *refreshBtn = @"";
-        //on ajoute le bouton actualiser si besoin
-        if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
-            //NSLog(@"premiere et unique ou dernier");
-            //'before'
-            refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
-
+        else { // Offline
+            refreshBtn = @"";
         }
-        else {
-            //NSLog(@"autre");
-        }
-        
-        NSString *tooBar = @"";
-        
+            
         //Toolbar;
+        NSString *tooBar = @"";
         if (self.aToolbar && !self.isSearchInstra) {
             NSString *buttonBegin, *buttonEnd;
             NSString *buttonPrevious, *buttonNext;
@@ -1403,13 +1939,13 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
 
-        /*
+        
         NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);
         NSLog(@"======================================================================================================");
         NSLog(@"baseURL %@", baseURL);
         NSLog(@"======================================================================================================");
-        */
+        
         self.loaded = NO;
         [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         
@@ -1451,7 +1987,7 @@
         NSInteger nPageCurrentFlag = [[MPStorage shared] getPageFlagForTopidId:[nPost intValue]];
         // Only update flag if page is more recent
         if (self.pageNumber >= nPageCurrentFlag ) {
-            NSString* sTPostID = [[self.arrayData lastObject] postID];
+            NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
             NSString* sP = self.arrayInputData[@"p"];
             NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
             //NSLog(@"====================================================================");
@@ -1491,8 +2027,12 @@
         }
         else {
             jsString2 = @"window.scrollTo(0,document.getElementById('endofpagetoolbar').offsetTop);";
-            jsString3 = [NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
-
+            if ([self isModeOffline]) {
+                jsString3 = @"window.scrollTo(0,document.getElementById('top').offsetTop);";
+            }
+            else {
+                jsString3 = [NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
+            }
         }
         //Position du Flag
         
@@ -1951,7 +2491,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 }
 
 - (void)actionAQ:(NSNumber *)curMsgN {
-    NSString* sTPostID = [[arrayData objectAtIndex:[curMsgN intValue]] postID];
+    NSString* sTPostID = [(LinkItem*)[arrayData objectAtIndex:[curMsgN intValue]] postID];
     NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
     NSString* sTopicId = self.arrayInputData[@"post"];
     NSString *sRequest = [NSString stringWithFormat:@"http://alerte-qualitay.toyonos.info/api/getAlertesByTopic.php5?topic_id=%@", sTopicId];
@@ -1984,7 +2524,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     }
     
     int curMsg = [curMsgN intValue];
-    NSLog("AQ link URL = %@%@#%@", [k ForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]);
+    NSLog("AQ link URL = %@%@#%@", [k ForumURL], self.currentUrl, [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]);
     
     NSString* sAuthor = [[arrayData objectAtIndex:curMsg] name];
     NSString* sMessage = [NSString stringWithFormat:@"Créer une Alerte Qualitay sur le post de %@", sAuthor];
@@ -2035,7 +2575,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 -(void)createAQ:(NSNumber *)curMsgN withTitle:(NSString*) sTitle {
     NSString* sAuthor = [[arrayData objectAtIndex:[curMsgN intValue]] name];
     NSString* sComment = [NSString stringWithFormat:@"post de %@", sAuthor];
-    NSString* sTPostID = [[arrayData objectAtIndex:[curMsgN intValue]] postID];
+    NSString* sTPostID = [(LinkItem*)[arrayData objectAtIndex:[curMsgN intValue]] postID];
     NSString* sURL = [NSString stringWithFormat:@"%@%@#%@", [k ForumURL], self.currentUrl, sTPostID];
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
@@ -2125,13 +2665,13 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     int curMsg = [curMsgN intValue];
     
     //NSLog("actionLink ID = %@", [[arrayData objectAtIndex:curMsg] postID]);
-    NSLog("actionLink URL = %@%@#%@", [k ForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]);
+    NSLog("actionLink URL = %@%@#%@", [k ForumURL], self.currentUrl, [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]);
     
     
     //Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
     
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = [NSString stringWithFormat:@"%@%@#%@", [k RealForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]];
+    pasteboard.string = [NSString stringWithFormat:@"%@%@#%@", [k RealForumURL], self.currentUrl, [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]];
         
     [HFRAlertView DisplayAlertViewWithTitle:@"Lien copié dans le presse-papiers" forDuration:(long)1];
 }
@@ -2361,7 +2901,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 -(void)EditMessage:(NSNumber *)curMsgN {
 	int curMsg = [curMsgN intValue];
 	
-	[self setEditFlagTopic:[[arrayData objectAtIndex:curMsg] postID]];
+	[self setEditFlagTopic:[(LinkItem*)[arrayData objectAtIndex:curMsg] postID]];
 	[self editMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlEdit] decodeSpanUrlFromString]]];
 	
 }

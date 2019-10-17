@@ -23,6 +23,9 @@
 
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
 @property (nonatomic, strong) NSArray* listOfflineTopicsKeys;
+
+@property (nonatomic, strong) UIAlertController *alertProgress;
+@property (nonatomic, strong) UIProgressView *progressView;
 @end
 
 

@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Topic : NSObject {
+@interface Topic : NSObject <NSCoding>  {
 	//NSString *_aTitle;
 	NSString *aURL;
 
@@ -43,7 +43,6 @@
 }
 
 @property (nonatomic, strong) NSString *_aTitle;
-- (void)setATitle:(NSString *)n;
 @property (nonatomic, strong) NSString *aURL;
 
 @property int aRepCount;
@@ -74,4 +73,6 @@
 @property bool isClosed;
 
 - (NSString*) aTitle;
+- (void)setATitle:(NSString *)n;
+- (NSString*) getURLforPage:(int)iPage;
 @end

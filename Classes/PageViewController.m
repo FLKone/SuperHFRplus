@@ -13,7 +13,7 @@
 
 @implementation PageViewController
 @synthesize previousPageUrl, nextPageUrl;
-@synthesize currentUrl, pageNumber;
+@synthesize currentUrl, currentOfflineTopic, pageNumber;
 @synthesize firstPageNumber, lastPageNumber;
 @synthesize firstPageUrl, lastPageUrl;
 
@@ -26,9 +26,17 @@
 		self.previousPageUrl = [[NSString alloc] init];
 		
 		self.firstPageUrl = [[NSString alloc] init];
-		self.lastPageUrl = [[NSString alloc] init];		
+		self.lastPageUrl = [[NSString alloc] init];
+        self.currentOfflineTopic = nil;
     }
     return self;
+}
+
+- (BOOL)isModeOffline {
+    if (self.currentOfflineTopic == nil) {
+        return NO;
+    }
+    return YES;
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -49,10 +57,6 @@
     if([titleView respondsToSelector:@selector(setTextColor:)]){
         [titleView setTextColor:[ThemeColors titleTextAttributesColor:theme]];
     }
-}
-
--(void)fetchContent{
-	
 }
 
 -(void)choosePage {

@@ -10,6 +10,7 @@
 #import "RangeOfCharacters.h"
 #import "RegexKitLite.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Topic.h"
 
 @interface PageViewController : UIViewController <UITextFieldDelegate, UIAlertViewDelegate> {
 	NSString *currentUrl;	
@@ -27,6 +28,7 @@
 }
 
 @property (nonatomic, strong) NSString *currentUrl;
+@property (nonatomic, strong) Topic *currentOfflineTopic;
 @property int pageNumber;
 
 @property int firstPageNumber;
@@ -37,7 +39,7 @@
 @property (nonatomic, strong) NSString *nextPageUrl;
 @property (nonatomic, strong) NSString *previousPageUrl;
 
-
+-(BOOL)isModeOffline;
 -(void)choosePage;
 -(void)goToPage:(NSString *)pageType;
 -(void)gotoPageNumber:(int)number;

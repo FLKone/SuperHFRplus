@@ -21,8 +21,11 @@
 
 
 // To activate / deactivate offline mode for a topic
-- (void)toggleOfflineTopics:(Topic*)topicID;
-- (void)addTopicToOfflineTopics:(Topic*)topicID withPage:(Topic*)page;
-- (void)removeTopicFromOfflineTopics:(Topic*)topicID;
+- (void)toggleOfflineTopics:(Topic*)topic;
+- (void)addTopicToOfflineTopics:(Topic*)topic withPage:(Topic*)page;
+- (void)removeTopicFromOfflineTopics:(Topic*)topic;
+- (BOOL)loadTopicToCache:(Topic*)topic;
+- (BOOL)checkTopicOffline:(Topic*)topic;
+- (NSData*)getDataFromTopicOffline:(Topic*)topic page:(int)iPage;
 
 @end

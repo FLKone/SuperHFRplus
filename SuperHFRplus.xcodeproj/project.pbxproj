@@ -19,7 +19,6 @@
 		15357D6B234BA7F7002D5C2E /* OfflineTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15357D6A234BA7F7002D5C2E /* OfflineTableViewController.m */; };
 		15357D6D234BA82B002D5C2E /* OfflineTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15357D6C234BA82B002D5C2E /* OfflineTableView.xib */; };
 		15357D75234E437C002D5C2E /* OfflineStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 15357D74234E437C002D5C2E /* OfflineStorage.m */; };
-		15357D78234E4515002D5C2E /* OfflineMessagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15357D76234E4514002D5C2E /* OfflineMessagesTableViewController.m */; };
 		15357D7D2350F216002D5C2E /* OfflineCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15357D7C2350F216002D5C2E /* OfflineCellView.xib */; };
 		15357D802350F245002D5C2E /* OfflineCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15357D7F2350F245002D5C2E /* OfflineCellView.m */; };
 		153D295C23043CB200000505 /* style-liste-light.css in Resources */ = {isa = PBXBuildFile; fileRef = 153D295B23043CB200000505 /* style-liste-light.css */; };
@@ -794,8 +793,6 @@
 		15357D6C234BA82B002D5C2E /* OfflineTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfflineTableView.xib; sourceTree = "<group>"; };
 		15357D73234E42EC002D5C2E /* OfflineStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OfflineStorage.h; sourceTree = "<group>"; };
 		15357D74234E437C002D5C2E /* OfflineStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OfflineStorage.m; sourceTree = "<group>"; };
-		15357D76234E4514002D5C2E /* OfflineMessagesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineMessagesTableViewController.m; sourceTree = "<group>"; };
-		15357D7A234E452B002D5C2E /* OfflineMessagesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineMessagesTableViewController.h; sourceTree = "<group>"; };
 		15357D7C2350F216002D5C2E /* OfflineCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfflineCellView.xib; sourceTree = "<group>"; };
 		15357D7E2350F234002D5C2E /* OfflineCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OfflineCellView.h; sourceTree = "<group>"; };
 		15357D7F2350F245002D5C2E /* OfflineCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OfflineCellView.m; sourceTree = "<group>"; };
@@ -1661,8 +1658,6 @@
 				013F0E9A121E117800BEBEB1 /* MessageDetailViewController.h */,
 				013F0E9B121E117800BEBEB1 /* MessageDetailViewController.m */,
 				013F0E9C121E117900BEBEB1 /* MessageDetailViewController.xib */,
-				15357D7A234E452B002D5C2E /* OfflineMessagesTableViewController.h */,
-				15357D76234E4514002D5C2E /* OfflineMessagesTableViewController.m */,
 				CA228CEF125CFD4500DDCD2E /* MessageDetailViewControllerv2.xib */,
 			);
 			name = Messages;
@@ -3724,7 +3719,6 @@
 				D8835E961E5F13C70073398C /* UIButton+WebCache.m in Sources */,
 				CAC7FCD1190DBD450083BB4E /* PollResultTableViewCell.m in Sources */,
 				D86ED58520445F5C00A2D541 /* UIImage+BezierPath.m in Sources */,
-				15357D78234E4515002D5C2E /* OfflineMessagesTableViewController.m in Sources */,
 				4CB132A81B908EC00081B44D /* UIMenuItem+CXAImageSupport.m in Sources */,
 				CA7C70D3185EF50E00B348BA /* UIImage+Resize.m in Sources */,
 				D8835E941E5F13C70073398C /* SDWebImagePrefetcher.m in Sources */,
