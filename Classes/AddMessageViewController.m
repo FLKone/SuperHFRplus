@@ -75,8 +75,7 @@
         
         self.sBrouillon = [[NSUserDefaults standardUserDefaults] stringForKey:@"brouillon"];
         if (self.sBrouillon == nil) self.sBrouillon = [[NSString alloc] init];
-        self.bBrouillonUtilise = NO;
-        self.bTexteModifie = NO;
+        self.sBrouillonUtilise = NO;
         
         self.title = @"Nouv. message";
     }
@@ -487,11 +486,9 @@
 {
     if ([ftextView text].length > 0) {
         [self.navigationItem.rightBarButtonItem setEnabled:YES];
-        self.bTexteModifie = YES;
     }
     else {
         [self.navigationItem.rightBarButtonItem setEnabled:NO];
-        self.bTexteModifie = NO;
     }
     
     CGRect line = [ftextView caretRectForPosition:ftextView.selectedTextRange.start];
@@ -555,9 +552,7 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    self.bBrouillonUtilise = NO;
-    self.bTexteModifie = NO;
-    
+    self.sBrouillonUtilise = NO;
     // Popup brouillon (partout sauf en mode edition)
     if (self.sBrouillon && self.sBrouillon.length > 0) {
         
@@ -566,7 +561,7 @@
         UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               [self.textView setText:self.sBrouillon];
-                                                              self.bBrouillonUtilise = YES;
+                                                              self.sBrouillonUtilise = YES;
                                                               [self.navigationItem.rightBarButtonItem setEnabled:YES];
                                                           }];
         UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
@@ -602,12 +597,8 @@
     //NSLog(@"viewWillDisappear");
     [super viewWillDisappear:animated];
     
-    // Save into draft
-    if (self.bTexteModifie && !self.isDeleteMode) {
-        [self modifyBrouillon:textView.text];
-    }
-
     [self.view endEditing:YES];
+    
 }
 
 /* for iOS6 support */
@@ -703,8 +694,47 @@
         
         //NSLog(@"====== 777777");
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-    [self.delegate addMessageViewControllerDidFinish:self];
+    else {
+        if ([self.textView text].length > 0 && !self.isDeleteMode) {
+            NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
+            NSString *messageBrouillon=nil;
+            BOOL remplacerBrouillon = NO;
+            if (self.sBrouillon.length > 0) {
+                alertTitle = @"Remplacer le brouillon ?";
+                messageBrouillon = [self getBrouillonExtract];
+                remplacerBrouillon = YES;
+            }
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                           message:messageBrouillon
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* yesAction = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                      [self modifyBrouillon:[self.textView text]];
+                                                                      [self finishMe];
+                                                                  }];
+            UIAlertAction* noAction = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                    if (!remplacerBrouillon) [self modifyBrouillon:@""];
+                                                                      [self finishMe];
+                                                                  }];
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) {
+                                                                     [self.textView becomeFirstResponder];
+                                                                 }];
+
+            [alert addAction:yesAction];
+            [alert addAction:noAction];
+            [alert addAction:cancelAction];
+            [self presentViewController:alert animated:YES completion:^{}];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        }
+        else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+            [self.delegate addMessageViewControllerDidFinish:self];
+        }
+    }
 }
 
 - (void)modifyBrouillon:(NSString*) sNewText {
@@ -843,7 +873,7 @@
             }
             else {
                 // On efface automatiquement le brouillon quand il a été utilisé et que le post du message est OK
-                if (self.bBrouillonUtilise) {
+                if (self.sBrouillonUtilise) {
                     [self modifyBrouillon:@""];
                 }
                 

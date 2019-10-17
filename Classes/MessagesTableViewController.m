@@ -1139,70 +1139,28 @@
 
 -(void)answerTopic
 {
-	
 	while (self.isAnimating) {
-        //NSLog(@"isAnimating");
-		//return;
 	}
-    NSLog(@"answerTopic isOK");
-
+    
     HFRNavigationController *navigationController;
-    
-     {
-        NewMessageViewController *addMessageViewController = [[NewMessageViewController alloc]
-                                                              initWithNibName:@"AddMessageViewController" bundle:nil];
-         
-         NSLog(@"answerTopic isOK 2");
+    NewMessageViewController *addMessageViewController = [[NewMessageViewController alloc] initWithNibName:@"AddMessageViewController" bundle:nil];
+    addMessageViewController.delegate = self;
+    [addMessageViewController setUrlQuote:[NSString stringWithFormat:@"%@%@", [k ForumURL], topicAnswerUrl]];
+    addMessageViewController.title = @"Nouv. Réponse";
+     if (@available(iOS 13.0, *)) {
+         [addMessageViewController setModalPresentationStyle: UIModalPresentationFullScreen];
+     }
 
-         
-        addMessageViewController.delegate = self;
-        [addMessageViewController setUrlQuote:[NSString stringWithFormat:@"%@%@", [k ForumURL], topicAnswerUrl]];
-        addMessageViewController.title = @"Nouv. Réponse";
-
-        navigationController = [[HFRNavigationController alloc]
-                                                         initWithRootViewController:addMessageViewController];
-         
-         NSLog(@"answerTopic isOK 3");
-
-    }
-		
-	
-	// Create the navigation controller and present it modally.
-
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-    NSLog(@"answerTopic isOK 4");
-
-	[self presentModalViewController:navigationController animated:YES];
-    
-
-	// The navigation controller is now owned by the current view controller
-	// and the root view controller is owned by the navigation controller,
-	// so both objects should be released to prevent over-retention.
-
-	//[[HFR_AppDelegate sharedAppDelegate] openURL:[NSString stringWithFormat:@"http://forum.hardware.fr%@", topicAnswerUrl]];
-
-	//[[UIApplication sharedApplication] open-URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]];
-	
-/*
-	HFR_AppDelegate *mainDelegate = (HFR_AppDelegate *)[[UIApplication sharedApplication] delegate];
-	[[mainDelegate rootController] setSelectedIndex:3];		
-	[[(BrowserViewController *)[[mainDelegate rootController] selectedViewController] webView] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]]];		
- */
-    
-    NSLog(@"answerTopic isOK END");
-
+    navigationController = [[HFRNavigationController alloc] initWithRootViewController:addMessageViewController];
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentModalViewController:navigationController animated:YES];
 }
 
 
 
 -(void)searchTopic {
-
     // Animate the resize of the text view's frame in sync with the keyboard's appearance.
-    
-
     [self toggleSearch];
-
 }
 
 -(void)quoteMessage:(NSString *)quoteUrl andSelectedText:(NSString *)selected withBold:(BOOL)boldSelection {
@@ -1221,7 +1179,7 @@
     HFRNavigationController *navigationController = [[HFRNavigationController alloc]
                                                      initWithRootViewController:quoteMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentModalViewController:navigationController animated:YES];
     
     // The navigation controller is now owned by the current view controller
@@ -1253,7 +1211,7 @@
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
 	[self presentModalViewController:navigationController animated:YES];
     
 }
@@ -2732,7 +2690,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     HFRNavigationController *navigationController = [[HFRNavigationController alloc]
                                                      initWithRootViewController:delMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentModalViewController:navigationController animated:YES];
 
 }
@@ -2801,7 +2759,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
 	[self presentModalViewController:navigationController animated:YES];
     
 	// The navigation controller is now owned by the current view controller
