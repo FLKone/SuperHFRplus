@@ -1569,9 +1569,6 @@
 
 - (void)addMessageViewControllerDidFinishOK:(AddMessageViewController *)controller {
 	NSLog(@"addMessageViewControllerDidFinishOK");
-    
-    [self.navigationController popToViewController:self animated:NO];
-
     [self dismissViewControllerAnimated:NO completion:^{
         if (self.arrayData.count > 0) {
             //NSLog(@"curid %d", self.curPostID);
@@ -1590,21 +1587,28 @@
     }];
 
     // Check if user is teletubbiesed
-    NSLog(@"TT test? response is :%@", controller.statusMessage);
     if (controller.statusMessage != nil && [controller.statusMessage rangeOfString:@"télétubbies"].location != NSNotFound) {
-        [HFRAlertView DisplayAlertViewWithTitle:@"Tu es TT !" andMessage:controller.statusMessage forDuration:2 completion:^{
-                [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];}];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Tu es TT !"
+                                                                       message:controller.statusMessage
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+
+        [self presentViewController:alert animated:YES completion:^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
+            });
+        }];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
     } else {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Hooray !"
                                                                        message:controller.statusMessage
                                                                 preferredStyle:UIAlertControllerStyleAlert];
+
         [self presentViewController:alert animated:YES completion:^{
-            dispatch_after(250000, dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [alert dismissViewControllerAnimated:YES completion:nil];
             });
         }];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-
     }
 }
 
@@ -1704,11 +1708,13 @@
 
         // On ajoute le bouton de notif de sondage
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
-            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
+            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
             UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
             self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
         } else {
-            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
+            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
             self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
         }
         
