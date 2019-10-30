@@ -833,40 +833,21 @@
     
     [arequest setUseCookiePersistence:NO];
     [arequest setRequestCookies:[selectedCompte objectForKey:COOKIES_KEY]];
-    
     [arequest startSynchronous];
     
-    
-
-    
-    
-    if (arequest) {
-        if ([arequest error]) {
-            // Set main compte cookies
-            
-            [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
-
-            // Popup erreur
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
-                                                                 handler:^(UIAlertAction * action) { }];
-            [alert addAction:actionCancel];
-            [self presentViewController:alert animated:YES completion:nil];
-            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        }
-        else if ([arequest responseString])
-        {
+    if ([arequest error]) {
+        [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:@"Erreur de connexion..."];
+    }
+    else if ([arequest responseString])
+    {
+        @try {
             // Set main compte cookies
             [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
             
             NSError * error = nil;
             HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
-            
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
-            
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
-            
             
             if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
                 [HFRAlertView DisplayOKAlertViewWithTitle:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] andMessage:nil];
@@ -886,11 +867,9 @@
                 if ([self isDeleteMode]) {
                     //recup de l'ID du message supprimé pour positionner le scroll.
                     urlArray = [((QuoteMessageViewController *)self).urlQuote arrayOfCaptureComponentsMatchedByRegex:@"numreponse=([0-9]+)&"];
-                    
                 }
                 else {
                     urlArray = [[arequest responseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"[^#]+([^\"]*)\" />"];
-                    
                 }
                 
                 if (urlArray.count > 0) {
@@ -903,7 +882,13 @@
                 [self.delegate addMessageViewControllerDidFinishOK:self];
             }
         }
+        @catch (NSException * e) {
+            NSLog(@"Exception: %@", e);
+            [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:@"Erreur de réponse du serveur. Votre message a peut être été posté malgré tout."];
+        }
+        @finally {}
     }
+    
 }
 
 -(void)segmentToWhite {
