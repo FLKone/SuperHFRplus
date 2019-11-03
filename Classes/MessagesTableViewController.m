@@ -1593,8 +1593,10 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
 
         [self presentViewController:alert animated:YES completion:^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [alert dismissViewControllerAnimated:YES completion:^{
+                    [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
+                }];
             });
         }];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
@@ -1604,7 +1606,7 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
 
         [self presentViewController:alert animated:YES completion:^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [alert dismissViewControllerAnimated:YES completion:nil];
             });
         }];
