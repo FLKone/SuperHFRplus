@@ -75,7 +75,8 @@
         
         self.sBrouillon = [[NSUserDefaults standardUserDefaults] stringForKey:@"brouillon"];
         if (self.sBrouillon == nil) self.sBrouillon = [[NSString alloc] init];
-        self.sBrouillonUtilise = NO;
+        self.bBrouillonUtilise = NO;
+        self.bTexteModifie = NO;
         
         self.title = @"Nouv. message";
     }
@@ -486,37 +487,31 @@
 {
     if ([ftextView text].length > 0) {
         [self.navigationItem.rightBarButtonItem setEnabled:YES];
+        self.bTexteModifie = YES;
     }
     else {
         [self.navigationItem.rightBarButtonItem setEnabled:NO];
+        self.bTexteModifie = NO;
     }
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7,0")) {
+    CGRect line = [ftextView caretRectForPosition:ftextView.selectedTextRange.start];
+    CGFloat overflow = line.origin.y + line.size.height
+    - ( ftextView.contentOffset.y + ftextView.bounds.size.height - ftextView.contentInset.bottom - ftextView.contentInset.top ) + self.offsetY;
+    
+    if ( overflow > 0 ) {
+        //NSLog(@"overflow %f", overflow);
+        // We are at the bottom of the visible text and introduced a line feed, scroll down (iOS 7 does not do it)
+        // Scroll caret to visible area
+        CGPoint offset = ftextView.contentOffset;
+        
+        //NSLog(@"offset %@", NSStringFromCGPoint(offset));
+        offset.y += overflow + 7; // leave 7 pixels margin
         
         
-        CGRect line = [ftextView caretRectForPosition:ftextView.selectedTextRange.start];
-        CGFloat overflow = line.origin.y + line.size.height
-        - ( ftextView.contentOffset.y + ftextView.bounds.size.height - ftextView.contentInset.bottom - ftextView.contentInset.top ) + self.offsetY;
-        
-        //NSLog(@"offsetY %d", self.offsetY);
-        
-        
-        if ( overflow > 0 ) {
-            //NSLog(@"overflow %f", overflow);
-            // We are at the bottom of the visible text and introduced a line feed, scroll down (iOS 7 does not do it)
-            // Scroll caret to visible area
-            CGPoint offset = ftextView.contentOffset;
-            
-            //NSLog(@"offset %@", NSStringFromCGPoint(offset));
-            offset.y += overflow + 7; // leave 7 pixels margin
-            
-            
-            // Cannot animate with setContentOffset:animated: or caret will not appear
-            [UIView animateWithDuration:.2 animations:^{
-                [ftextView setContentOffset:offset];
-            }];
-        }
-        
+        // Cannot animate with setContentOffset:animated: or caret will not appear
+        [UIView animateWithDuration:.2 animations:^{
+            [ftextView setContentOffset:offset];
+        }];
     }
 }
 
@@ -536,11 +531,8 @@
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
     self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_text"] isEqualToString:@"sys"]) {
-        CGFloat userFontSize = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody].pointSize;
-        //userFontSize = floorf(userFontSize*0.90);
-        [self.textView setFont:[UIFont systemFontOfSize:userFontSize]];
-    }
+    NSInteger iSizeTextReply = [[NSUserDefaults standardUserDefaults] integerForKey:@"size_text_reply"];
+    [self.textView setFont:[UIFont systemFontOfSize:iSizeTextReply]];
     
     [self.rehostTableView reloadData];
     [self.commonTableView reloadData];
@@ -563,7 +555,9 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    self.sBrouillonUtilise = NO;
+    self.bBrouillonUtilise = NO;
+    self.bTexteModifie = NO;
+    
     // Popup brouillon (partout sauf en mode edition)
     if (self.sBrouillon && self.sBrouillon.length > 0) {
         
@@ -572,7 +566,7 @@
         UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               [self.textView setText:self.sBrouillon];
-                                                              self.sBrouillonUtilise = YES;
+                                                              self.bBrouillonUtilise = YES;
                                                               [self.navigationItem.rightBarButtonItem setEnabled:YES];
                                                           }];
         UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
@@ -608,8 +602,12 @@
     //NSLog(@"viewWillDisappear");
     [super viewWillDisappear:animated];
     
+    // Save into draft
+    if (self.bTexteModifie && !self.isDeleteMode) {
+        [self modifyBrouillon:textView.text];
+    }
+
     [self.view endEditing:YES];
-    
 }
 
 /* for iOS6 support */
@@ -705,47 +703,8 @@
         
         //NSLog(@"====== 777777");
     }
-    else {
-        if ([self.textView text].length > 0 && !self.isDeleteMode) {
-            NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
-            NSString *messageBrouillon=nil;
-            BOOL remplacerBrouillon = NO;
-            if (self.sBrouillon.length > 0) {
-                alertTitle = @"Remplacer le brouillon ?";
-                messageBrouillon = [self getBrouillonExtract];
-                remplacerBrouillon = YES;
-            }
-            
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                           message:messageBrouillon
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* yesAction = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {
-                                                                      [self modifyBrouillon:[self.textView text]];
-                                                                      [self finishMe];
-                                                                  }];
-            UIAlertAction* noAction = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {
-                                                                    if (!remplacerBrouillon) [self modifyBrouillon:@""];
-                                                                      [self finishMe];
-                                                                  }];
-            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                                 handler:^(UIAlertAction * action) {
-                                                                     [self.textView becomeFirstResponder];
-                                                                 }];
-
-            [alert addAction:yesAction];
-            [alert addAction:noAction];
-            [alert addAction:cancelAction];
-            [self presentViewController:alert animated:YES completion:^{}];
-            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        }
-        else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-            [self.delegate addMessageViewControllerDidFinish:self];
-        }
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+    [self.delegate addMessageViewControllerDidFinish:self];
 }
 
 - (void)modifyBrouillon:(NSString*) sNewText {
@@ -884,7 +843,7 @@
             }
             else {
                 // On efface automatiquement le brouillon quand il a été utilisé et que le post du message est OK
-                if (self.sBrouillonUtilise) {
+                if (self.bBrouillonUtilise) {
                     [self modifyBrouillon:@""];
                 }
                 

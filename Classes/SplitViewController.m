@@ -71,20 +71,19 @@
 
 - (void)splitViewController:(UISplitViewController *)svc
     willChangeToDisplayMode:(UISplitViewControllerDisplayMode)displayMode {
-    
+    /*
     //NSLog(@"displayMode %ld", (long)displayMode);
-    return;
-        if (displayMode == UISplitViewControllerDisplayModePrimaryHidden || displayMode == UISplitViewControllerDisplayModePrimaryOverlay) {
-            //NSLog(@"IN");
-            UINavigationItem *navItem = [[[[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] viewControllers] objectAtIndex:0] navigationItem];
+    //return;
+    if (displayMode == UISplitViewControllerDisplayModePrimaryHidden || displayMode == UISplitViewControllerDisplayModePrimaryOverlay) {
+        //NSLog(@"IN");
+        UINavigationItem *navItem = [[[[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] viewControllers] objectAtIndex:0] navigationItem];
 
-            navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Menu" style:UIBarButtonItemStylePlain target:self.displayModeButtonItem.target action:self.displayModeButtonItem.action];
-        } else {
-            self.navigationItem.leftBarButtonItem = nil;
-        }
-
-    
+        navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Menu" style:UIBarButtonItemStylePlain target:self.displayModeButtonItem.target action:self.displayModeButtonItem.action];
+    } else {
+        self.navigationItem.leftBarButtonItem = nil;
+    }*/
 }
+
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
     //NSLog(@"collapseSecondaryViewController");
 

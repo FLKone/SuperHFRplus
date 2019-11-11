@@ -2090,7 +2090,8 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 /*
-https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179&page=57043&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t57321037*/
+https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179&page=57043&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t57321037
+ */
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     NSLog(@"MTV %@ nbS=%lu", NSStringFromSelector(action), [UIMenuController sharedMenuController].menuItems.count);
@@ -2114,9 +2115,11 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)aRequest navigationType:(UIWebViewNavigationType)navigationType {
 	//NSLog(@"expected:%ld, got:%ld | url:%@", (long)UIWebViewNavigationTypeLinkClicked, (long)navigationType, aRequest.URL);
-	
+
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-                    
+        NSString* sRegExUrlProfil = @"profil-[0-9]+.htm";
+        NSPredicate *testProfilUrl = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", sRegExUrlProfil];
+
 		if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoauto"]) {
 			[self goToPage:[[aRequest.URL absoluteString] lastPathComponent]];
 			return NO;
@@ -2150,8 +2153,20 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             
 			return NO;
 		}
-		else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
+        else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"] && [testProfilUrl evaluateWithObject: [[aRequest.URL pathComponents] objectAtIndex:2]]) {
+            ProfilViewController *profilVC = [[ProfilViewController alloc] initWithNibName:@"ProfilViewController" bundle:nil andUrl:[aRequest.URL path]];
             
+            // Set options
+            profilVC.wantsFullScreenLayout = YES;
+            
+            HFRNavigationController *nc = [[HFRNavigationController alloc] initWithRootViewController:profilVC];
+            nc.modalPresentationStyle = UIModalPresentationFormSheet;
+            
+            [self presentModalViewController:nc animated:YES];
+            return NO;
+        }
+        else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
+                
             NSLog(@"%@", aRequest.URL);
             NSString *sUrl = [[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
             NSLog(@"%@", sUrl);
@@ -2670,15 +2685,8 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = [NSString stringWithFormat:@"%@%@#%@", [k RealForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]];
-    
-
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Lien copié dans le presse-papiers"
-                                                   delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-    alert.tag = kAlertPasteBoardOK;
-    
-    
-    [alert show];
-    
+        
+    [HFRAlertView DisplayAlertViewWithTitle:@"Lien copié dans le presse-papiers" forDuration:(long)1];
 }
 
 -(void) actionAlerter:(NSNumber *)curMsgN {

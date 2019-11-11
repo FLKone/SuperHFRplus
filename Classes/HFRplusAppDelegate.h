@@ -60,7 +60,7 @@
 
 + (HFRplusAppDelegate *)sharedAppDelegate;
 - (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
-
+- (void)hidePrimaryPanelOnIpad;
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
 - (void)updatePlusBadgeWithString:(NSString *)badgeValue;
 - (void)readMPBadge;

@@ -255,17 +255,15 @@ int nightDelay;
     if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_TIME) {
         // Check if theme has been changed manually last time
         Theme calculatedTheme = (Theme)[self getThemeFromCurrentTime];
-        //NSLog(@"AUTO_THEME_AUTO_TIME > CHECKACTIVE current theme %d / calculated %d",self.theme, calculatedTheme);
-        if ([[NSUserDefaults standardUserDefaults]  objectForKey:@"force_manual_theme"] == nil) {
-            if (self.theme != calculatedTheme) {
-                [self setTheme:calculatedTheme];
-                //NSLog(@"AUTO_THEME_AUTO_TIME > changed theme to %d", calculatedTheme);
-            }
-        } else {
-            Theme manualTheme = (Theme)[[NSUserDefaults standardUserDefaults] integerForKey:@"force_manual_theme"];
-            if (manualTheme == calculatedTheme) {
-                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"force_manual_theme"];
-                //NSLog(@"AUTO_THEME_AUTO_TIME > removed manual force theme");
+        [self setTheme:calculatedTheme];
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_IOS) {
+        if (@available(iOS 13.0, *)) {
+            if (UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                NSLog(@"=============== UITraitCollection DARK =============== ");
+                [self setTheme:ThemeDark];
+            } else {
+                NSLog(@"............... UITraitCollection light .............. ");
+                [self setTheme:ThemeLight];
             }
         }
     }

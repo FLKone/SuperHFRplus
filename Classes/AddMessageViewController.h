@@ -68,7 +68,8 @@
     NSString *statusMessage;
     
     NSString *sBrouillon;
-    BOOL sBrouillonUtilise;
+    BOOL bBrouillonUtilise;
+    BOOL bTexteModifie;
 }
 
 @property (nonatomic, strong) IBOutlet UIView *loadingView;
@@ -127,7 +128,9 @@
 
 // Brouillon
 @property (nonatomic, strong) NSString *sBrouillon;
-@property (nonatomic) BOOL sBrouillonUtilise;
+@property (nonatomic) BOOL bBrouillonUtilise;
+@property (nonatomic) BOOL bTexteModifie;
+
 -(IBAction)cancel;
 -(IBAction)done;
 -(IBAction)segmentFilterAction:(id)sender;

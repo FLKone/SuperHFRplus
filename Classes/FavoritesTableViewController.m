@@ -1342,7 +1342,6 @@
         
         //NSLog(@"push message liste");
         [self pushTopic];
-        
     }
 }
 
@@ -1360,7 +1359,6 @@
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la page numéro...", @"chooseTopicPage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
 
-        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Copier le lien", @"copyLinkAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
         /* Evol onglet sticky (gardée au cas où)
         [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Nouvel onglet", @"newTabBar", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]]; */
 
@@ -1496,6 +1494,8 @@
     
     [self setTopicViewed];
     
+    // Close left panel on ipad in portrait mode
+    [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
 }
 
 -(void)setTopicViewed {

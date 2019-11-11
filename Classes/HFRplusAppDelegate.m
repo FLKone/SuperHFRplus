@@ -319,7 +319,6 @@
     
     // MPStorage : Update Blacklist from MPStorage
     [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
-    [[ThemeManager sharedManager] checkTheme];
 }
 
 - (void)periodicMaintenance
@@ -467,7 +466,11 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
     }
     */
+    
+    
+    NSLog(@"applicationDidBecomeActive");
     [self setTheme:[[ThemeManager sharedManager] theme]];
+    [[ThemeManager sharedManager] checkTheme];
     [[ThemeManager sharedManager] refreshTheme];
     /*
     if (cestNoel) {
@@ -494,6 +497,19 @@
      */
     
     
+}
+
+- (void)hidePrimaryPanelOnIpad {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad /*&& [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait*/) {
+        UISplitViewController* splitViewController = [[HFRplusAppDelegate sharedAppDelegate] splitViewController];
+        if (self.splitViewController.displayMode == UISplitViewControllerDisplayModePrimaryOverlay) {
+            [UIView animateWithDuration:0.3 animations:^{
+                splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModePrimaryHidden;
+            } completion:^(BOOL finished){
+                splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
+            }];
+        }
+    }
 }
 
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;

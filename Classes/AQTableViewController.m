@@ -147,8 +147,12 @@
         }
     }
     
+    // Close left panel on ipad in portrait mode
+    [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
+
 }
 
+/* UNUsED ?
 - (void)pushTopic {
     
     if (([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
@@ -176,7 +180,7 @@
         
     }
 }
-
+*/
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 0;
