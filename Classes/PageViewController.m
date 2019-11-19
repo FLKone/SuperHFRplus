@@ -216,23 +216,29 @@
 }
 
 -(void)nextPage:(id)sender {
-	
-	self.currentUrl = self.nextPageUrl;
-	[self fetchContent];	
-}
--(void)previousPage:(id)sender {
-	
-	self.currentUrl = self.previousPageUrl;
-    
-    if ([[self class] isSubclassOfClass:[MessagesTableViewController class]]) {
-        [self fetchContent:kNewMessageFromNext];
-
-    }
-    else {
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage++;
+        [self fetchContent];
+    } else {
+        self.currentUrl = self.nextPageUrl;
         [self fetchContent];
     }
-    
-    
+}
+-(void)previousPage:(id)sender {
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage++;
+        [self fetchContent];
+    } else {
+        self.currentUrl = self.previousPageUrl;
+        
+        if ([[self class] isSubclassOfClass:[MessagesTableViewController class]]) {
+            [self fetchContent:kNewMessageFromNext];
+
+        }
+        else {
+            [self fetchContent];
+        }
+    }
 }
 - (IBAction)searchSubmit:(UIBarButtonItem *)sender {
     

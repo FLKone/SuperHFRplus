@@ -25,6 +25,8 @@
 - (void)addTopicToOfflineTopics:(Topic*)topic withPage:(Topic*)page;
 - (void)removeTopicFromOfflineTopics:(Topic*)topic;
 - (BOOL)loadTopicToCache:(Topic*)topic;
+- (void)eraseAllTopicsInCache;
+- (void)verifyCacheIntegrity;
 - (BOOL)checkTopicOffline:(Topic*)topic;
 - (NSData*)getDataFromTopicOffline:(Topic*)topic page:(int)iPage;
 

@@ -33,6 +33,9 @@
     int maxTopicPage;
     int curTopicPage;
     
+    int minTopicPageLoaded;
+    int maxTopicPageLoaded;
+
 	int postID;
 	int catID;
     
@@ -63,6 +66,9 @@
 
 @property int maxTopicPage;
 @property int curTopicPage;
+
+@property int maxTopicPageLoaded;
+@property int minTopicPageLoaded;
 
 @property int postID;
 @property int catID;

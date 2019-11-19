@@ -31,6 +31,7 @@
 @synthesize aAuthorOrInter;
 
 @synthesize maxTopicPage, curTopicPage, aURLOfFirstPage;
+@synthesize maxTopicPageLoaded, minTopicPageLoaded;
 
 @synthesize postID, catID, isPoll, isSticky, isSuperFavorite, isClosed;
 

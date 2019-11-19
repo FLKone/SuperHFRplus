@@ -17,6 +17,15 @@
 #import "ThemeColors.h"
 #import "OfflineStorage.h"
 #import "FavoriteCellView.h"
+#import "HFRAlertView.h"
+#import "UIScrollView+SVPullToRefresh.h"
+
+#define  UNICODE_CIRCLE_FULL        @"\U000025CF"
+#define  UNICODE_CIRCLE_3QUARTERS   @"\U000025D4"
+#define  UNICODE_CIRCLE_HALF        @"\U000025D1"
+#define  UNICODE_CIRCLE_1QUARTER    @"\U000025D5"
+#define  UNICODE_CIRCLE_EMPTY       @"\U000025CB"
+
 
 @implementation OfflineTableViewController;
 @synthesize offlineTableView, listOfflineTopicsKeys, alertProgress, progressView;
@@ -37,11 +46,14 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
+    [[OfflineStorage shared] verifyCacheIntegrity];
+    
     // Add PullToRefresh function to tableview
-    //__weak OfflineTableViewController *self_ = self;
-    //[self.OfflineTableView addPullToRefreshWithActionHandler:^{
-    //    [self_ fetchContent];
-    //}];
+    /*
+    __weak OfflineTableViewController *self_ = self;
+    [self.offlineTableView addPullToRefreshWithActionHandler:^{
+        [self_ refreshContent];
+    }];*/
     //[self.OfflineTableView triggerPullToRefresh];
 }
 
@@ -55,11 +67,10 @@
     }
     
     /*
-    self.OfflineTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
-    self.OfflineTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
-    self.OfflineTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
+    self.offlineTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
+    self.offlineTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
+    self.offlineTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     */
-    
     [self.offlineTableView reloadData];
 }
 
@@ -82,7 +93,7 @@
 - (void)reload
 {
     listOfflineTopicsKeys = [[OfflineStorage shared].dicOfflineTopics allKeys];
-    //[self.OfflineTableView triggerPullToRefresh];
+    //[self.offlineTableView triggerPullToRefresh];
 }
 
 - (void)refreshCache
@@ -108,8 +119,10 @@
 
         c++;
     }
-    self.progressView.progress = 1.0;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressView.progress = 1.0;
+        [self dismissViewControllerAnimated:YES completion:nil];
+    });
 }
 
 -(void) addProgressBar {
@@ -136,8 +149,11 @@
 }
 
 
-- (void)deleteCache
-{
+- (void)deleteCache {
+    
+    [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Supprimer le contenu des topics en cache ?"
+                                          andMessage:nil
+                                          handlerOK:^(UIAlertAction * action) {[[OfflineStorage shared] eraseAllTopicsInCache]; /*[self.offlineTableView reloadData];*/}];    
 }
 
 
@@ -188,14 +204,21 @@
     [cell.labelTitle setAttributedText:finalString];
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSInteger vos_sujets = [defaults integerForKey:@"vos_sujets"];
     NSString* sPoll = @"";
     if (tmpTopic.isPoll) {
         sPoll = @" \U00002263";
     }
-    NSString* sRondPlein = @" \U000025CF";
-    NSString* sRondVide = @" \U000025CF";
-    [cell.labelMessageNumber setText:[NSString stringWithFormat:@"\U000025CF %d -> %d", [tmpTopic curTopicPage], [tmpTopic maxTopicPage]]];
+
+    if (tmpTopic.minTopicPageLoaded < 0) {
+        [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d -> %d", UNICODE_CIRCLE_EMPTY, tmpTopic.curTopicPage, tmpTopic.maxTopicPage]];
+    } else {
+        if (tmpTopic.maxTopicPageLoaded == tmpTopic.maxTopicPage) {
+            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ [%d -> (%d) -> %d]", UNICODE_CIRCLE_FULL, tmpTopic.minTopicPageLoaded, tmpTopic.curTopicPage, tmpTopic.maxTopicPageLoaded]];
+        } else {
+            //float fPropLoaded = (tmpTopic.maxTopicPage - tmpTopic.maxTopicPageLoaded)/(tmpTopic.maxTopicPage - tmpTopic.minTopicPageLoaded);
+            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ [%d -> (%d) -> %d] -> %d", UNICODE_CIRCLE_HALF, tmpTopic.minTopicPageLoaded, tmpTopic.curTopicPage, tmpTopic.maxTopicPageLoaded, tmpTopic.maxTopicPage]];
+        }
+    }
     
     // Badge
     int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
@@ -281,24 +304,9 @@
 #pragma mark -
 #pragma mark RSS xml parsing
 
-- (void)fetchContent
+- (void)refreshContent
 {
 }
-
-- (void)fetchContentStarted:(ASIHTTPRequest *)theRequest
-{
-    
-}
-
-- (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
-{
-}
-     
- - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
-{
-}
-
-
 
 @end
 

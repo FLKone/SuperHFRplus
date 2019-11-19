@@ -319,166 +319,175 @@
     
     // Boutons bas de page
     if ([self isModeOffline]) {
+        if (self.currentOfflineTopic.minTopicPageLoaded < self.currentOfflineTopic.maxTopicPageLoaded) {
+            [self setFirstPageNumber:self.currentOfflineTopic.minTopicPageLoaded];
+            [self setLastPageNumber:self.currentOfflineTopic.maxTopicPageLoaded];
+            [self addPageFooter];
+        }
     }
     else {
-
-    
-	HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2PagesHaut" allowPartial:YES];
-	if(pagesTrNode)
-	{
-		HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
-        
-		if (![self isModeOffline] && pagesLinkNode) {
-			NSArray *temporaryNumPagesArray = [pagesLinkNode children];
-			[self setFirstPageNumber:[[[temporaryNumPagesArray objectAtIndex:2] contents] intValue]];
+        HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2PagesHaut" allowPartial:YES];
+        if(pagesTrNode)
+        {
+            HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
             
-			if ([self pageNumber] == [self firstPageNumber]) {
-				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
-				[self setFirstPageUrl:newFirstPageUrl];
-			}
-			else {
-                NSLog(@"[temporaryNumPagesArray objectAtIndex:2] %@", [temporaryNumPagesArray objectAtIndex:2]);
-				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray objectAtIndex:2] getAttributeNamed:@"href"]];
-				[self setFirstPageUrl:newFirstPageUrl];
-			}
+            if (![self isModeOffline] && pagesLinkNode) {
+                NSArray *temporaryNumPagesArray = [pagesLinkNode children];
+                [self setFirstPageNumber:[[[temporaryNumPagesArray objectAtIndex:2] contents] intValue]];
+                
+                if ([self pageNumber] == [self firstPageNumber]) {
+                    NSString *newFirstPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+                    [self setFirstPageUrl:newFirstPageUrl];
+                }
+                else {
+                    NSLog(@"[temporaryNumPagesArray objectAtIndex:2] %@", [temporaryNumPagesArray objectAtIndex:2]);
+                    NSString *newFirstPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray objectAtIndex:2] getAttributeNamed:@"href"]];
+                    [self setFirstPageUrl:newFirstPageUrl];
+                }
 
-			[self setLastPageNumber:[[[temporaryNumPagesArray lastObject] contents] intValue]];
-			
-			if ([self pageNumber] == [self lastPageNumber]) {
-				NSString *newLastPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
-				[self setLastPageUrl:newLastPageUrl];
-			}
-			else {
-				NSString *newLastPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray lastObject] getAttributeNamed:@"href"]];
-				[self setLastPageUrl:newLastPageUrl];
-			}
-
-			/*
-			 NSLog(@"premiere %d", [self firstPageNumber]);
-			 NSLog(@"premiere url %@", [self firstPageUrl]);
-			 
-			 NSLog(@"premiere %d", [self lastPageNumber]);
-			 NSLog(@"premiere url %@", [self lastPageUrl]);
-			 */
-			
-			//TableFooter
-			UIToolbar *tmptoolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-			tmptoolbar.barStyle = UIBarStyleDefault;
-			[tmptoolbar sizeToFit];
-			
-			//Add buttons
-			UIBarButtonItem *systemItem1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
-																						 target:self
-																						 action:@selector(firstPage:)];
-			if ([self pageNumber] == [self firstPageNumber]) {
-				[systemItem1 setEnabled:NO];
-			}
-			
-			UIBarButtonItem *systemItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
-																						 target:self
-																						 action:@selector(lastPage:)];
-
-			if ([self pageNumber] == [self lastPageNumber]) {
-				[systemItem2 setEnabled:NO];
-			}
-			
-			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 44)];
-			[label setFont:[UIFont boldSystemFontOfSize:15.0]];
-			[label setAdjustsFontSizeToFitWidth:YES];
-			[label setBackgroundColor:[UIColor clearColor]];
-			[label setTextAlignment:NSTextAlignmentCenter];
-			[label setLineBreakMode:NSLineBreakByTruncatingMiddle];
-			[label setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-			
-			[label setTextColor:[UIColor whiteColor]];
-			[label setNumberOfLines:0];
-			[label setTag:666];
-			[label setText:[NSString stringWithFormat:@"%d/%d", [self pageNumber], [self lastPageNumber]]];
-			
-			UIBarButtonItem *systemItem3 = [[UIBarButtonItem alloc] initWithCustomView:label];
-			
-			
-			
-			
-			
-			//Use this to put space in between your toolbox buttons
-			UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-																					  target:nil
-																					  action:nil];
-
-			//Add buttons to the array
-			NSArray *items = [NSArray arrayWithObjects: systemItem1, flexItem, systemItem3, flexItem, systemItem2, nil];
-			
-			//release buttons
-			
-			//add array of buttons to toolbar
-			[tmptoolbar setItems:items animated:NO];
-			
-			self.aToolbar = tmptoolbar;
-			
-		}
-		else {
-			self.aToolbar = nil;
-			//NSLog(@"pas de pages");
-            [self setFirstPageNumber:1];
-            [self setLastPageNumber:1];
-		}
-		
-		//--
-		
-		
-		//NSArray *temporaryPagesArray = [[NSArray alloc] init];
-		
-		NSArray *temporaryPagesArray = [pagesTrNode findChildrenWithAttribute:@"class" matchingName:@"pagepresuiv" allowPartial:YES];
-		
-        if (self.isSearchInstra) {
-            [self.view addGestureRecognizer:swipeLeftRecognizer];
-        }
-		else if(temporaryPagesArray.count != 3)
-		{
-			//NSLog(@"pas 3");
-			//[self.view removeGestureRecognizer:swipeLeftRecognizer];
-			//[self.view removeGestureRecognizer:swipeRightRecognizer];
-		}
-		else {
-            HTMLNode *nextUrlNode = [[temporaryPagesArray objectAtIndex:0] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+                [self setLastPageNumber:[[[temporaryNumPagesArray lastObject] contents] intValue]];
+                
+                if ([self pageNumber] == [self lastPageNumber]) {
+                    NSString *newLastPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+                    [self setLastPageUrl:newLastPageUrl];
+                }
+                else {
+                    NSString *newLastPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray lastObject] getAttributeNamed:@"href"]];
+                    [self setLastPageUrl:newLastPageUrl];
+                }
+                
+                [self addPageFooter];
+            }
+            else {
+                self.aToolbar = nil;
+                //NSLog(@"pas de pages");
+                [self setFirstPageNumber:1];
+                [self setLastPageNumber:1];
+            }
             
-            if (nextUrlNode) {
-                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
-                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+            //--
+            
+            
+            //NSArray *temporaryPagesArray = [[NSArray alloc] init];
+            
+            NSArray *temporaryPagesArray = [pagesTrNode findChildrenWithAttribute:@"class" matchingName:@"pagepresuiv" allowPartial:YES];
+            
+            if (self.isSearchInstra) {
                 [self.view addGestureRecognizer:swipeLeftRecognizer];
-                self.nextPageUrl = [[nextUrlNode getAttributeNamed:@"href"] copy];
-                //NSLog(@"nextPageUrl = %@", nextPageUrl);
-                
             }
-            else {
-                self.nextPageUrl = @"";
+            else if(temporaryPagesArray.count != 3)
+            {
+                //NSLog(@"pas 3");
                 //[self.view removeGestureRecognizer:swipeLeftRecognizer];
-            }
-            
-            HTMLNode *previousUrlNode = [[temporaryPagesArray objectAtIndex:1] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
-            
-            if (previousUrlNode) {
-                //previousPageUrl = [[topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber - 1)]] retain];
-                [self.view addGestureRecognizer:swipeRightRecognizer];
-                self.previousPageUrl = [[previousUrlNode getAttributeNamed:@"href"] copy];
-                //NSLog(@"previousPageUrl = %@", previousPageUrl);
-                
+                //[self.view removeGestureRecognizer:swipeRightRecognizer];
             }
             else {
-                self.previousPageUrl = @"";
-                //[self.view removeGestureRecognizer:swipeRightRecognizer];
+                HTMLNode *nextUrlNode = [[temporaryPagesArray objectAtIndex:0] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
                 
+                if (nextUrlNode) {
+                    //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                    //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                    [self.view addGestureRecognizer:swipeLeftRecognizer];
+                    self.nextPageUrl = [[nextUrlNode getAttributeNamed:@"href"] copy];
+                    //NSLog(@"nextPageUrl = %@", nextPageUrl);
+                    
+                }
+                else {
+                    self.nextPageUrl = @"";
+                    //[self.view removeGestureRecognizer:swipeLeftRecognizer];
+                }
                 
+                HTMLNode *previousUrlNode = [[temporaryPagesArray objectAtIndex:1] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+                
+                if (previousUrlNode) {
+                    //previousPageUrl = [[topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber - 1)]] retain];
+                    [self.view addGestureRecognizer:swipeRightRecognizer];
+                    self.previousPageUrl = [[previousUrlNode getAttributeNamed:@"href"] copy];
+                    //NSLog(@"previousPageUrl = %@", previousPageUrl);
+                    
+                }
+                else {
+                    self.previousPageUrl = @"";
+                    //[self.view removeGestureRecognizer:swipeRightRecognizer];
+                    
+                    
+                }
             }
-		}
-	}
-	else {
-		self.aToolbar = nil;
-	}
+        }
+        else {
+            self.aToolbar = nil;
+        }
+    }
 	//NSLog(@"Fin setupPageToolbar");
 
 	//--Pages
+}
+
+- (void)addPageFooter {
+    //TableFooter
+    UIToolbar *tmptoolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    tmptoolbar.barStyle = UIBarStyleDefault;
+    [tmptoolbar sizeToFit];
+    
+    //Add buttons
+    UIBarButtonItem *systemItem1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
+                                                                                 target:self
+                                                                                 action:@selector(firstPage:)];
+    if ([self isModeOffline]) {
+        if (self.pageNumber == self.currentOfflineTopic.minTopicPageLoaded) {
+            [systemItem1 setEnabled:NO];
+        }
+    }
+    else if ([self pageNumber] == [self firstPageNumber]) {
+        [systemItem1 setEnabled:NO];
+    }
+    
+    UIBarButtonItem *systemItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
+                                                                                 target:self
+                                                                                 action:@selector(lastPage:)];
+
+    if ([self isModeOffline]) {
+        if (self.pageNumber == self.currentOfflineTopic.maxTopicPageLoaded) {
+            [systemItem2 setEnabled:NO];
+        }
+    }
+    else if ([self pageNumber] == [self lastPageNumber]) {
+        [systemItem2 setEnabled:NO];
+    }
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 44)];
+    [label setFont:[UIFont boldSystemFontOfSize:15.0]];
+    [label setAdjustsFontSizeToFitWidth:YES];
+    [label setBackgroundColor:[UIColor clearColor]];
+    [label setTextAlignment:NSTextAlignmentCenter];
+    [label setLineBreakMode:NSLineBreakByTruncatingMiddle];
+    [label setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
+    
+    [label setTextColor:[UIColor whiteColor]];
+    [label setNumberOfLines:0];
+    [label setTag:666];
+    [label setText:[NSString stringWithFormat:@"%d/%d", [self pageNumber], [self lastPageNumber]]];
+    
+    UIBarButtonItem *systemItem3 = [[UIBarButtonItem alloc] initWithCustomView:label];
+    
+    
+    
+    
+    
+    //Use this to put space in between your toolbox buttons
+    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                              target:nil
+                                                                              action:nil];
+
+    //Add buttons to the array
+    NSArray *items = [NSArray arrayWithObjects: systemItem1, flexItem, systemItem3, flexItem, systemItem2, nil];
+    
+    //release buttons
+    
+    //add array of buttons to toolbar
+    [tmptoolbar setItems:items animated:NO];
+    
+    self.aToolbar = tmptoolbar;
 }
 
 -(void)setupPoll:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
