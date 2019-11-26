@@ -11,6 +11,7 @@
 
 #import "HFRMPViewController.h"
 #import "FavoritesTableViewController.h"
+#import "OldFavoritesTableViewController.h"
 #import "ForumsTableViewController.h"
 
 #import "MKStoreManager.h"
@@ -156,6 +157,15 @@
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] refreshTheme];
 
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"old_favorites"] == NO) {
+        NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:rootController.viewControllers];
+        if (viewControllers.count == 5) {
+            [viewControllers removeObjectAtIndex:2];
+            [rootController setViewControllers:viewControllers animated:YES];
+        }
+    }
+
+    
     return YES;
 }
 
@@ -205,7 +215,7 @@
 }
 
 -(void)setTheme:(Theme)theme{
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
+    //[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
 
     if ([self.window respondsToSelector:@selector(setTintColor:)]) {
         self.window.tintColor = [ThemeColors tintColor:theme];
@@ -434,16 +444,16 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
-    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
+
     // Noel
-    /*
     NSDate * now = [NSDate date];
     NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];
     [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
     [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
     
-    NSDate* startNoelDate = [formatterLocal dateFromString:@"24 12 2018 - 00:00"];
-    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2019 - 00:00"];
+    NSDate* startNoelDate = [formatterLocal dateFromString:@"01 11 2019 - 00:00"];
+    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2020 - 00:00"];
     
     
     NSComparisonResult result1 = [now compare:startNoelDate];
@@ -451,13 +461,13 @@
     BOOL cestNoel = NO;
     if (result1 == NSOrderedDescending && result2 == NSOrderedAscending) {
         //C'est bientot Noel !!
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_period"];
-        NSObject* obj = [[NSUserDefaults standardUserDefaults] objectForKey:@"apply_noel"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_period"];        
+        NSObject* obj = [[NSUserDefaults standardUserDefaults] objectForKey:@"noel_first_time"];
         if (obj == nil) {
             // La première fois on force le thème de Noel
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
             // Mais plus les suivantes
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"apply_noel"];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"noel_first_time"];
             cestNoel = YES;
         }
     } else {
@@ -465,14 +475,12 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
     }
-    */
     
     
     NSLog(@"applicationDidBecomeActive");
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] checkTheme];
     [[ThemeManager sharedManager] refreshTheme];
-    /*
     if (cestNoel) {
         // Popup retry
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
@@ -486,7 +494,7 @@
         [activeVC presentViewController:alert animated:YES completion:nil];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         
-    }*/
+    }
 
 }
 

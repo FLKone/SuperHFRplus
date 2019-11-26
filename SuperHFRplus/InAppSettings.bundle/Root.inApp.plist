@@ -296,6 +296,16 @@
 			<key>IASKViewControllerClass</key>
 			<string>ThemeSettingsViewController</string>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <false/>
+            <key>Key</key>
+            <string>theme_noel_disabled</string>
+            <key>Title</key>
+            <string>Arrêter la magie de noël</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Sujets</string>
@@ -546,6 +556,16 @@
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Favoris ancienne version</string>
+            <key>Key</key>
+            <string>old_favorites</string>
+            <key>DefaultValue</key>
+            <false/>
+        </dict>
 		<dict>
 			<key>IASKCellImage</key>
 			<string>BugFilled-25</string>

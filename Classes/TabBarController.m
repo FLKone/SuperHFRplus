@@ -8,6 +8,7 @@
 #import "TabBarController.h"
 #import "HFRplusAppDelegate.h"
 #import "FavoritesTableViewController.h"
+#import "OldFavoritesTableViewController.h"
 #import "HFRMPViewController.h"
 #import "ForumsTableViewController.h"
 #import "HFRTabBar.h"
@@ -38,7 +39,7 @@
         switch (i+iShift) {
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
-            case 2: tabBarItem.title = @"Sticky"; break;
+            case 2: tabBarItem.title = @"Old Fav"; break;
             case 3: tabBarItem.title = @"Messages"; break;
             case 4: tabBarItem.title = @"Plus"; break;
         }
@@ -152,7 +153,7 @@
         switch (i+iShift) {
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
-            case 2: tabBarItem.title = @"Sticky"; break;
+            case 2: tabBarItem.title = @"Old Fav"; break;
             case 3: tabBarItem.title = @"Messages"; break;
             case 4: tabBarItem.title = @"Plus"; break;
         }
@@ -189,7 +190,11 @@
             [(FavoritesTableViewController *)nv.topViewController reload];
         }
         
-        if (tabBarController.selectedIndex == 2 && [nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
+        if (tabBarController.selectedIndex == 2 && [nv.topViewController isKindOfClass:[OldFavoritesTableViewController class]]) {
+            [(OldFavoritesTableViewController *)nv.topViewController reload];
+        }
+        
+        if (tabBarController.selectedIndex == 3 && [nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
             [(HFRMPViewController *)nv.topViewController fetchContent];
         }
 
@@ -272,9 +277,5 @@
         }
     }
 }
-
-- (void) removeStickyTopic {
-}
-
 
 @end

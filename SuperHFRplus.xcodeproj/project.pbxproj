@@ -11,6 +11,8 @@
 		1503755321FDF8D700A5F7E1 /* PlusTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755221FDF8D700A5F7E1 /* PlusTableView.xib */; };
 		1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1503755421FE249300A5F7E1 /* PlusCellView.xib */; };
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
+		151097C4238479AB0096E590 /* OldFavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151097C3238479AB0096E590 /* OldFavoritesTableViewController.m */; };
+		151097C72389D2C80096E590 /* OldFavoritesTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 151097C62389D2C80096E590 /* OldFavoritesTableViewController.xib */; };
 		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
 		15167EB12330210600D64651 /* Heart-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15167EB02330210600D64651 /* Heart-20@2x.png */; };
 		153D295C23043CB200000505 /* style-liste-light.css in Resources */ = {isa = PBXBuildFile; fileRef = 153D295B23043CB200000505 /* style-liste-light.css */; };
@@ -774,6 +776,9 @@
 		1503755421FE249300A5F7E1 /* PlusCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlusCellView.xib; sourceTree = "<group>"; };
 		1503755621FE26C900A5F7E1 /* PlusCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlusCellView.h; sourceTree = "<group>"; };
 		1503755721FF794200A5F7E1 /* PlusCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusCellView.m; sourceTree = "<group>"; };
+		151097C3238479AB0096E590 /* OldFavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldFavoritesTableViewController.m; sourceTree = "<group>"; };
+		151097C5238479BC0096E590 /* OldFavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldFavoritesTableViewController.h; sourceTree = "<group>"; };
+		151097C62389D2C80096E590 /* OldFavoritesTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OldFavoritesTableViewController.xib; sourceTree = "<group>"; };
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15167EB02330210600D64651 /* Heart-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Heart-20@2x.png"; sourceTree = "<group>"; };
@@ -1665,8 +1670,11 @@
 				0140ABAB121E011D001C35C4 /* Catcounter.h */,
 				0140ABAC121E011D001C35C4 /* Catcounter.m */,
 				0140ABAD121E011D001C35C4 /* FavoritesTableViewController.h */,
+				151097C5238479BC0096E590 /* OldFavoritesTableViewController.h */,
 				0140ABAE121E011D001C35C4 /* FavoritesTableViewController.m */,
+				151097C3238479AB0096E590 /* OldFavoritesTableViewController.m */,
 				0140ABD2121E034A001C35C4 /* FavoritesTableViewController.xib */,
+				151097C62389D2C80096E590 /* OldFavoritesTableViewController.xib */,
 			);
 			name = Favorites;
 			sourceTree = "<group>";
@@ -3286,6 +3294,7 @@
 				CA7C7030185EF50E00B348BA /* fou.gif in Resources */,
 				CA7C7031185EF50E00B348BA /* pt1cable.gif in Resources */,
 				CA7C7032185EF50E00B348BA /* 111-user@2x.png in Resources */,
+				151097C72389D2C80096E590 /* OldFavoritesTableViewController.xib in Resources */,
 				D8B4EDF721C184970042C392 /* snow18.png in Resources */,
 				4C0B8DE11BA4522900D329BA /* SmartphoneTabletFilled-40@2x.png in Resources */,
 				4C9C2B931BAE801700511853 /* QuestionsFilled-25.png in Resources */,
@@ -3703,6 +3712,7 @@
 				4CACF40D1FB3754E00A41CC6 /* MDNKit.swift in Sources */,
 				CA7C70D4185EF50E00B348BA /* RegexKitLite.m in Sources */,
 				D8A61745215E82E3006E9248 /* UIScrollView+Theme.m in Sources */,
+				151097C4238479AB0096E590 /* OldFavoritesTableViewController.m in Sources */,
 				CA7C70DE185EF50E00B348BA /* MKStoreObserver.m in Sources */,
 				4C3903571BCACEC200FD6F1F /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */,
 				D8C6A6E4216224F1003C6D59 /* MultisManager.m in Sources */,
