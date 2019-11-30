@@ -444,7 +444,7 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
+    //[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
 
     // Noel
     NSDate * now = [NSDate date];
@@ -524,26 +524,34 @@
 {
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
     dispatch_async(dispatch_get_main_queue(),
-                   ^{
-                       if ([badgeValue intValue] > 0) {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:badgeValue];
-                       }
-                       else {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:nil];
-                           
-                       }
-                   });
+    ^{
+        int shift = 0;
+        if ([[[[self rootController] tabBar] items] count] == 5) {
+            shift = 1;
+        }
+        if ([badgeValue intValue] > 0) {
+           [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:badgeValue];
+        }
+        else {
+           [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
+        }
+    });
 }
 
 - (void)updatePlusBadgeWithString:(NSString *)badgeValue;
 {
     dispatch_async(dispatch_get_main_queue(),
-                   ^{ if ([badgeValue intValue] > 0) {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:3] setBadgeValue:badgeValue];
-                       }
-                       else {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:3] setBadgeValue:nil];
-                       }});
+    ^{
+        int shift = 0;
+        if ([[[[self rootController] tabBar] items] count] == 5) {
+            shift = 1;
+        }
+        if ([badgeValue intValue] > 0) {
+            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:badgeValue];
+        }
+        else {
+            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
+    }});
 }
 
 
@@ -551,16 +559,20 @@
 {
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
     dispatch_async(dispatch_get_main_queue(), 
-                  ^{     
-    NSString *badgeValue = [[[[[self rootController] tabBar] items] objectAtIndex:2] badgeValue];
+    ^{
+        NSString *badgeValue = [[[[[self rootController] tabBar] items] objectAtIndex:2] badgeValue];
     
-    if ( ([badgeValue intValue] - 1) > 0) {
-        [self updateMPBadgeWithString:[NSString stringWithFormat:@"%d", [badgeValue intValue] - 1]];
-    }
-    else {
-        [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:nil];
-    }
-                  });    
+        if ( ([badgeValue intValue] - 1) > 0) {
+            [self updateMPBadgeWithString:[NSString stringWithFormat:@"%d", [badgeValue intValue] - 1]];
+        }
+        else {
+            int shift = 0;
+            if ([[[[self rootController] tabBar] items] count] == 5) {
+                shift = 1;
+            }
+            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
+        }
+    });
 }
 
 
