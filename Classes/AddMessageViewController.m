@@ -1406,9 +1406,16 @@
         NSString* sText = [(UITextField *)sender text];
         sText = [sText stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
         sText = [sText stringByReplacingOccurrencesOfString:@"\\" withString:@""];
-
-        self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"SELF contains[c] '%@'", sText]]];
-        [self.commonTableView reloadData];
+        @try {
+            NSPredicate * predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"SELF contains[c] '%@'", sText]];
+            self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] filteredArrayUsingPredicate:predicate];
+            [self.commonTableView reloadData];
+        }
+        @catch (NSException* exception) {
+            NSLog(@"exception %@", exception);
+            [HFRAlertView DisplayOKAlertViewWithTitle:@"Erreur de saisie !" andMessage:[NSString stringWithFormat:@"%@", [exception reason]]];
+            [(UITextField *)sender setText:@""];
+        }
         //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
     else {
