@@ -1047,6 +1047,7 @@
                     [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
                     [self.segmentControlerPage setTitle:@"Annuler" forSegmentAtIndex:1];
                     
+                    [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$('head > style').remove();"]];
                 }
                 else {
                     [self cancel];
