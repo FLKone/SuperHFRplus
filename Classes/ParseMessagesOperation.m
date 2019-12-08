@@ -125,9 +125,12 @@
 	}
 
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
+    NSLog(@"------------------------------------------------------------------------------------------");
+    NSLog(@"------------------------------------------------------------------------------------------");
+	NSLog(@"rawContentsOfNode bodyNode :\n%@", rawContentsOfNode([bodyNode _node], [myParser _doc]));
+    NSLog(@"------------------------------------------------------------------------------------------");
+    NSLog(@"------------------------------------------------------------------------------------------");
 
-	//NSLog(@"rawContentsOfNode bodyNode : %@", rawContentsOfNode([bodyNode _node], [myParser _doc]));
-	
 	NSArray * messagesNodes = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messagetable" allowPartial:NO]; //Get all the <img alt="" />
 
 	//NSLog(@"%f message %d", [thenT timeIntervalSinceNow] * -1000.0, [messagesNodes count]);
@@ -139,11 +142,8 @@
 		HTMLNode * messageNode = [messageNode2 firstChild];
 		
 		if (![self isCancelled]) {
-			//NSDate *then = [NSDate date]; // Create a current date
-			
-			//NSLog(@"====================================/nrawContentsOfNode messageNode : %@", rawContentsOfNode([messageNode2 _node], [myParser _doc]));
-
-
+			//NSDate *then = [NSDate date]; // Create a current date			
+            NSLog(@"====================================\nrawContentsOfNode messageNode : %@\n====================================\n", rawContentsOfNode([messageNode2 _node], [myParser _doc]));
 			
 			HTMLNode * authorNode = [messageNode findChildWithAttribute:@"class" matchingName:@"s2" allowPartial:NO];
 			

@@ -159,6 +159,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
                 HTMLNode * bodyNode = [myParser body]; //Find the body tag
                 NSArray *arrayMessages = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messCase2" allowPartial:NO];
                 int iImageNumber = 0;
+                
                 for (HTMLNode * nodeMessage in arrayMessages) { //Loop through all the images
                     if (nodeMessage.children.count >= 2) {
                         NSArray *arrayImages = [[nodeMessage.children objectAtIndex:1] findChildTags:@"img"];
@@ -167,7 +168,9 @@ static OfflineStorage *_shared = nil;    // static instance variable
                             NSString* sPathFilename = [topicDirectory stringByAppendingPathComponent:sFilename];
                             NSLog(@"Saving image: %@ to file %@", [imgNode getAttributeNamed:@"src"], sFilename);
                             if ([self loadImageWithName:[imgNode getAttributeNamed:@"src"] intoFilename:sPathFilename]) {
+                                NSLog(@"Before : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
                                 [imgNode setAttributeNamed:@"src" withValue:sFilename];
+                                NSLog(@"After : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
                             }
                             iImageNumber++;
                         }
@@ -175,12 +178,25 @@ static OfflineStorage *_shared = nil;    // static instance variable
                 }
                 
                 NSString* output = rawContentsOfNode([bodyNode _node], [myParser _doc]);
-                //NSLog(@"------------------------------------------------------");
-                //NSLog(@"Output %@", output);
-                //NSLog(@"------------------------------------------------------");
+                output = [output stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+                output = [output stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+                output = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head>%@</html>", output];
+                NSLog(@"------------------------------------------------------");
+                NSLog(@"Output %@", output);
+                NSLog(@"------------------------------------------------------");
 
                 NSLog(@"Writing file  %@", filename);
+                NSData* data = [output dataUsingEncoding:NSUTF8StringEncoding];
+                [data writeToFile:filename atomically:YES];// error:&errorWrite];
+                NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index_rp.html"];
                 [[request responseData] writeToFile:filename atomically:YES];
+                
+                NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:[request responseData]];
+                if (![xmlparser parse]){
+                   NSLog(@"Parsing Failed");
+                    return NO;
+                }
+                
             }
         } else {
             NSLog(@"error in request. Stopping.");
@@ -242,7 +258,8 @@ static OfflineStorage *_shared = nil;    // static instance variable
             iPageToCheck = topic.minTopicPageLoaded; // We start to check at first page loaded
         }
         while (iPageToCheck <= topic.maxTopicPage) { // up to the last known page of the topic
-            NSString *filename = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d.dat", topic.postID, iPageToCheck]];
+            NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPageToCheck]];
+            NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
             if (![fileManager fileExistsAtPath:filename]) {
                 break; // Search is finished for this topic
             } else {
@@ -267,7 +284,8 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
     int iPageToCheck = topic.curTopicPage;
     while (iPageToCheck <= topic.maxTopicPage) {
-        NSString *filename = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d.dat", topic.postID, iPageToCheck]];
+        NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPageToCheck]];
+        NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
         if (![fileManager fileExistsAtPath:filename]) {
             return NO;
         }
@@ -282,8 +300,9 @@ static OfflineStorage *_shared = nil;    // static instance variable
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     directory = [directory stringByAppendingPathComponent:@"cache"];
     directory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", topic.postID]];
-    NSString *filename = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d.dat", topic.postID, iPage]];
-    return [fileManager contentsAtPath:filename];
+    NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPage]];
+    NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
+    return  [fileManager contentsAtPath:filename];
 }
 
 
