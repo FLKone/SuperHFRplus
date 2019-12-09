@@ -67,7 +67,9 @@
 @property int maxTopicPage;
 @property int curTopicPage;
 
+@property BOOL isTopicLoadedInCache;
 @property int maxTopicPageLoaded;
+@property int curTopicPageLoaded;
 @property int minTopicPageLoaded;
 
 @property int postID;

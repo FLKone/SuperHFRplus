@@ -31,7 +31,7 @@
 @synthesize aAuthorOrInter;
 
 @synthesize maxTopicPage, curTopicPage, aURLOfFirstPage;
-@synthesize maxTopicPageLoaded, minTopicPageLoaded;
+@synthesize isTopicLoadedInCache, maxTopicPageLoaded, curTopicPageLoaded, minTopicPageLoaded;
 
 @synthesize postID, catID, isPoll, isSticky, isSuperFavorite, isClosed;
 
@@ -55,6 +55,7 @@
         self.aAuthorOfLastPost = [NSString string];
         
         self.aAuthorOrInter = [NSString string];
+        self.isTopicLoadedInCache = NO;
         self.isPoll = NO;
         self.isSticky = NO;
         self.isSuperFavorite = NO;
@@ -108,6 +109,10 @@
     [encoder encodeObject:aAuthorOrInter forKey:@"aAuthorOrInter"];
     [encoder encodeObject:[NSNumber numberWithInt:maxTopicPage] forKey:@"maxTopicPage"];
     [encoder encodeObject:[NSNumber numberWithInt:curTopicPage] forKey:@"curTopicPage"];
+    [encoder encodeBool:isTopicLoadedInCache forKey:@"isTopicLoadedInCache"];
+    [encoder encodeObject:[NSNumber numberWithInt:maxTopicPageLoaded] forKey:@"maxTopicPageLoaded"];
+    [encoder encodeObject:[NSNumber numberWithInt:curTopicPageLoaded] forKey:@"curTopicPageLoaded"];
+    [encoder encodeObject:[NSNumber numberWithInt:minTopicPageLoaded] forKey:@"minTopicPageLoaded"];
     [encoder encodeObject:[NSNumber numberWithInt:postID] forKey:@"postID"];
     [encoder encodeObject:[NSNumber numberWithInt:catID] forKey:@"catID"];
 }
@@ -130,6 +135,10 @@
         aAuthorOrInter = [decoder decodeObjectForKey:@"aAuthorOrInter"];
         maxTopicPage = [[decoder decodeObjectForKey:@"maxTopicPage"] intValue];
         curTopicPage = [[decoder decodeObjectForKey:@"curTopicPage"] intValue];
+        isTopicLoadedInCache = [decoder decodeBoolForKey:@"isTopicLoadedInCache"];
+        maxTopicPageLoaded = [[decoder decodeObjectForKey:@"maxTopicPageLoaded"] intValue];
+        curTopicPageLoaded = [[decoder decodeObjectForKey:@"curTopicPageLoaded"] intValue];
+        minTopicPageLoaded = [[decoder decodeObjectForKey:@"minTopicPageLoaded"] intValue];
         postID = [[decoder decodeObjectForKey:@"postID"] intValue];
         catID = [[decoder decodeObjectForKey:@"catID"] intValue];
         

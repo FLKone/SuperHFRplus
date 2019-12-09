@@ -1956,6 +1956,7 @@
         NSLog(@"======================================================================================================");
         
         self.loaded = NO;
+
         [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         
         [self.messagesWebView setUserInteractionEnabled:YES];

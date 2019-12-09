@@ -46,6 +46,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
 - (void)toggleOfflineTopics:(Topic*)topic {
     if ([self.dicOfflineTopics objectForKey:[NSNumber numberWithInt:topic.postID]]) {
         [self.dicOfflineTopics removeObjectForKey:[NSNumber numberWithInt:topic.postID]];
+        topic.isTopicLoadedInCache = NO;
         [self save];
     }
     else {
@@ -64,6 +65,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
 - (void)removeTopicFromOfflineTopics:(Topic*)topic {
     if (![self.dicOfflineTopics objectForKey:[NSNumber numberWithInt:topic.postID]]) {
         [self.dicOfflineTopics removeObjectForKey:[NSNumber numberWithInt:topic.postID]];
+        topic.isTopicLoadedInCache = NO;
         [self save];
     }
 }
@@ -167,9 +169,11 @@ static OfflineStorage *_shared = nil;    // static instance variable
                             NSString* sFilename = [NSString stringWithFormat:@"img%d",iImageNumber];
                             NSString* sPathFilename = [topicDirectory stringByAppendingPathComponent:sFilename];
                             NSLog(@"Saving image: %@ to file %@", [imgNode getAttributeNamed:@"src"], sFilename);
+                            //
                             if ([self loadImageWithName:[imgNode getAttributeNamed:@"src"] intoFilename:sPathFilename]) {
                                 NSLog(@"Before : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
-                                [imgNode setAttributeNamed:@"src" withValue:sFilename];
+                                NSString* sImgAttr = [NSString stringWithFormat:@"file://%@", sPathFilename];
+                                [imgNode setAttributeNamed:@"src" withValue:sImgAttr];
                                 NSLog(@"After : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
                             }
                             iImageNumber++;
@@ -188,15 +192,6 @@ static OfflineStorage *_shared = nil;    // static instance variable
                 NSLog(@"Writing file  %@", filename);
                 NSData* data = [output dataUsingEncoding:NSUTF8StringEncoding];
                 [data writeToFile:filename atomically:YES];// error:&errorWrite];
-                NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index_rp.html"];
-                [[request responseData] writeToFile:filename atomically:YES];
-                
-                NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:[request responseData]];
-                if (![xmlparser parse]){
-                   NSLog(@"Parsing Failed");
-                    return NO;
-                }
-                
             }
         } else {
             NSLog(@"error in request. Stopping.");
@@ -204,6 +199,8 @@ static OfflineStorage *_shared = nil;    // static instance variable
         }
 
         if (iPageToLoad == topic.curTopicPage) {
+            topic.isTopicLoadedInCache = YES;
+            topic.curTopicPageLoaded = iPageToLoad;
             topic.minTopicPageLoaded = iPageToLoad;
         }
         
@@ -238,11 +235,13 @@ static OfflineStorage *_shared = nil;    // static instance variable
     [fileManager removeItemAtPath:directory error:&error];
     if (error) {
         NSLog(@"Error erasing cache: %@ ", [error userInfo]);
-    } /*
-    else {
-        [self.dicOfflineTopics removeAllObjects];
-        [self save];
-    }*/
+    }
+    
+    for (NSNumber* keyTopidID in [dicOfflineTopics allKeys])
+    {
+        Topic *topic = [dicOfflineTopics objectForKey:keyTopidID];
+        topic.isTopicLoadedInCache = NO;
+    }
 }
 
 - (void)verifyCacheIntegrity {
@@ -287,6 +286,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
         NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPageToCheck]];
         NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
         if (![fileManager fileExistsAtPath:filename]) {
+            topic.isTopicLoadedInCache = NO;
             return NO;
         }
         iPageToCheck++;

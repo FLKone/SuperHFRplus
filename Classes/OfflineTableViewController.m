@@ -209,14 +209,22 @@
         sPoll = @" \U00002263";
     }
 
-    if (tmpTopic.minTopicPageLoaded < 0) {
-        [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d -> %d", UNICODE_CIRCLE_EMPTY, tmpTopic.curTopicPage, tmpTopic.maxTopicPage]];
-    } else {
-        if (tmpTopic.maxTopicPageLoaded == tmpTopic.maxTopicPage) {
-            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ [%d -> (%d) -> %d]", UNICODE_CIRCLE_FULL, tmpTopic.minTopicPageLoaded, tmpTopic.curTopicPage, tmpTopic.maxTopicPageLoaded]];
+    NSString* sSymbol = UNICODE_CIRCLE_EMPTY;
+    if (tmpTopic.isTopicLoadedInCache) {
+        if (tmpTopic.maxTopicPageLoaded < tmpTopic.maxTopicPage) {
+            sSymbol = UNICODE_CIRCLE_HALF;
         } else {
-            //float fPropLoaded = (tmpTopic.maxTopicPage - tmpTopic.maxTopicPageLoaded)/(tmpTopic.maxTopicPage - tmpTopic.minTopicPageLoaded);
-            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ [%d -> (%d) -> %d] -> %d", UNICODE_CIRCLE_HALF, tmpTopic.minTopicPageLoaded, tmpTopic.curTopicPage, tmpTopic.maxTopicPageLoaded, tmpTopic.maxTopicPage]];
+            sSymbol = UNICODE_CIRCLE_FULL;
+        }
+    }
+    
+    if (tmpTopic.isTopicLoadedInCache == NO) {
+        [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d / %d", sSymbol, tmpTopic.curTopicPage, tmpTopic.maxTopicPage]];
+    } else {
+        if (tmpTopic.maxTopicPageLoaded > tmpTopic.minTopicPageLoaded) {
+            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d / %d -> %d", sSymbol, tmpTopic.curTopicPageLoaded, tmpTopic.minTopicPageLoaded, tmpTopic.maxTopicPageLoaded]];
+        } else {
+            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d / %d", sSymbol, tmpTopic.curTopicPageLoaded, tmpTopic.maxTopicPageLoaded]];
         }
     }
     
