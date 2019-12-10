@@ -13,7 +13,7 @@
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
 		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
 		15167EB12330210600D64651 /* Heart-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15167EB02330210600D64651 /* Heart-20@2x.png */; };
-		15357D64234BA620002D5C2E /* offline@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D62234BA61F002D5C2E /* offline@2.png */; };
+		15357D64234BA620002D5C2E /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D62234BA61F002D5C2E /* offline@2x.png */; };
 		15357D65234BA620002D5C2E /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D63234BA620002D5C2E /* offline.png */; };
 		15357D67234BA712002D5C2E /* offline2@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D66234BA712002D5C2E /* offline2@2.png */; };
 		15357D6B234BA7F7002D5C2E /* OfflineTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15357D6A234BA7F7002D5C2E /* OfflineTableViewController.m */; };
@@ -785,7 +785,7 @@
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15167EB02330210600D64651 /* Heart-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Heart-20@2x.png"; sourceTree = "<group>"; };
-		15357D62234BA61F002D5C2E /* offline@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2.png"; sourceTree = "<group>"; };
+		15357D62234BA61F002D5C2E /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		15357D63234BA620002D5C2E /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
 		15357D66234BA712002D5C2E /* offline2@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline2@2.png"; sourceTree = "<group>"; };
 		15357D69234BA7DC002D5C2E /* OfflineTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OfflineTableViewController.h; sourceTree = "<group>"; };
@@ -2540,7 +2540,7 @@
 			children = (
 				15357D66234BA712002D5C2E /* offline2@2.png */,
 				15357D63234BA620002D5C2E /* offline.png */,
-				15357D62234BA61F002D5C2E /* offline@2.png */,
+				15357D62234BA61F002D5C2E /* offline@2x.png */,
 				1572FC4E22F384AA00D40789 /* reset-512.png */,
 				1572FC4C22F3826100D40789 /* icons8-reset-50.png */,
 				1572FC4822F37F3100D40789 /* Brightness-black-512.png */,
@@ -3359,7 +3359,7 @@
 				D87BB73F216266BA0079690C /* CompteTableViewCell.xib in Resources */,
 				4C193E741FA8820200434A37 /* Icons.xcassets in Resources */,
 				CA7C7046185EF50E00B348BA /* endhover.png in Resources */,
-				15357D64234BA620002D5C2E /* offline@2.png in Resources */,
+				15357D64234BA620002D5C2E /* offline@2x.png in Resources */,
 				4C052E1B1BA86C9400B61952 /* Flat-RedFlag-25.png in Resources */,
 				15AEF9FF223E9053005E6739 /* Icon-BLUE@2x.png in Resources */,
 				CA7C7047185EF50E00B348BA /* upsmall@2x.png in Resources */,

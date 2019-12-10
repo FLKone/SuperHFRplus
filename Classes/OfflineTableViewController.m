@@ -81,9 +81,10 @@
 
 -(void) actionMenu {
     UIAlertController *actionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Actualiser" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self reload]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Actualiser les topics" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self reload]; }]];
     [actionAlert addAction:[UIAlertAction actionWithTitle:@"Mettre à jour le cache" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self refreshCache]; }]];
     [actionAlert addAction:[UIAlertAction actionWithTitle:@"Vider le cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCache]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Tout supprimer" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCacheAndTopics]; }]];
     [actionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) { }]];
 
     [self presentViewController:actionAlert animated:YES completion:nil];
@@ -113,20 +114,22 @@
         Topic *tmpTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:keyTopidID];
         NSLog(@"Loading topic %@", keyTopidID);
         [[OfflineStorage shared] loadTopicToCache:tmpTopic];
+        c++;
         dispatch_async(dispatch_get_main_queue(), ^{
             self.progressView.progress = ((float)c)/total;
+            [self.alertProgress setMessage:[NSString stringWithFormat:@"%.f%%",((float)c)/total * 100.]];
         });
-
-        c++;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         self.progressView.progress = 1.0;
+        [self.alertProgress setMessage:@"100%"];
         [self dismissViewControllerAnimated:YES completion:nil];
+        [self.offlineTableView reloadData];
     });
 }
 
 -(void) addProgressBar {
-    self.alertProgress = [UIAlertController alertControllerWithTitle:@"Téléchargement des topics" message:@"50%" preferredStyle:UIAlertControllerStyleAlert];
+    self.alertProgress = [UIAlertController alertControllerWithTitle:@"Téléchargement des topics" message:@"0%" preferredStyle:UIAlertControllerStyleAlert];
     [self.alertProgress addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
     }]];
 
@@ -153,7 +156,14 @@
     
     [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Supprimer le contenu des topics en cache ?"
                                           andMessage:nil
-                                          handlerOK:^(UIAlertAction * action) {[[OfflineStorage shared] eraseAllTopicsInCache]; /*[self.offlineTableView reloadData];*/}];    
+                                          handlerOK:^(UIAlertAction * action) {[[OfflineStorage shared] eraseAllTopicsInCache]; [self.offlineTableView reloadData];}];
+}
+
+- (void)deleteCacheAndTopics {
+    
+    [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Supprimer le contenu des topics en cache ?"
+                                          andMessage:nil
+                                          handlerOK:^(UIAlertAction * action) {[[OfflineStorage shared] eraseAllTopics]; [self.offlineTableView reloadData];}];
 }
 
 

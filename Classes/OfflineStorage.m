@@ -199,7 +199,6 @@ static OfflineStorage *_shared = nil;    // static instance variable
         }
 
         if (iPageToLoad == topic.curTopicPage) {
-            topic.isTopicLoadedInCache = YES;
             topic.curTopicPageLoaded = iPageToLoad;
             topic.minTopicPageLoaded = iPageToLoad;
         }
@@ -208,6 +207,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
     }
     
     topic.maxTopicPageLoaded = topic.maxTopicPage;
+    topic.isTopicLoadedInCache = YES;
     
     [self save];
     
@@ -230,7 +230,6 @@ static OfflineStorage *_shared = nil;    // static instance variable
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     directory = [directory stringByAppendingPathComponent:@"cache"];
-    BOOL isDir = NO;
     NSError* error = nil;
     [fileManager removeItemAtPath:directory error:&error];
     if (error) {
@@ -243,6 +242,25 @@ static OfflineStorage *_shared = nil;    // static instance variable
         topic.isTopicLoadedInCache = NO;
     }
 }
+
+- (void)eraseAllTopics {
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    directory = [directory stringByAppendingPathComponent:@"cache"];
+    NSError* error = nil;
+    [fileManager removeItemAtPath:directory error:&error];
+    if (error) {
+        NSLog(@"Error erasing cache: %@ ", [error userInfo]);
+    }
+    
+    for (NSNumber* keyTopidID in [dicOfflineTopics allKeys])
+    {
+        Topic *topic = [dicOfflineTopics objectForKey:keyTopidID];
+        [self.dicOfflineTopics removeObjectForKey:[NSNumber numberWithInt:topic.postID]];
+    }
+    [self save];
+}
+
 
 - (void)verifyCacheIntegrity {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
@@ -266,6 +284,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
                     topic.minTopicPageLoaded = iPageToCheck;
                 }
                 topic.maxTopicPageLoaded = iPageToCheck; // maxTopicPageLoaded = last loaded page in cache
+                topic.isTopicLoadedInCache = YES;
             }
             iPageToCheck++;
         }
