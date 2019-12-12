@@ -19,6 +19,9 @@
 #import "FavoriteCellView.h"
 #import "HFRAlertView.h"
 #import "UIScrollView+SVPullToRefresh.h"
+#import "HTMLParser.h"
+#import "Favorite.h"
+#import "Forum.h"
 
 #define  UNICODE_CIRCLE_FULL        @"\U000025CF"
 #define  UNICODE_CIRCLE_3QUARTERS   @"\U000025D4"
@@ -28,7 +31,8 @@
 
 
 @implementation OfflineTableViewController;
-@synthesize offlineTableView, listOfflineTopicsKeys, alertProgress, progressView;
+@synthesize offlineTableView, maintenanceView, listOfflineTopicsKeys, alertProgress, progressView, request;
+@synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -60,7 +64,7 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.view.backgroundColor = self.offlineTableView.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.view.backgroundColor = self.offlineTableView.backgroundColor = self.maintenanceView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.offlineTableView.separatorColor = [ThemeColors cellBorderColor];
     if (self.offlineTableView.indexPathForSelectedRow) {
         [self.offlineTableView deselectRowAtIndexPath:self.offlineTableView.indexPathForSelectedRow animated:NO];
@@ -93,8 +97,158 @@
 
 - (void)reload
 {
-    listOfflineTopicsKeys = [[OfflineStorage shared].dicOfflineTopics allKeys];
-    //[self.offlineTableView triggerPullToRefresh];
+    //listOfflineTopicsKeys = [[OfflineStorage shared].dicOfflineTopics allKeys];
+    [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMini];
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"vos_sujets"]) {
+        case 0:
+            [self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/forum1f.php?owntopic=1", [k ForumURL]]]]];
+            break;
+        case 1:
+            [self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/forum1f.php?owntopic=3", [k ForumURL]]]]];
+            break;
+        default:
+            [self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/forum1f.php?owntopic=1", [k ForumURL]]]]];
+            break;
+    }
+    
+    [request setDelegate:self];
+
+    [request setDidStartSelector:@selector(fetchContentStarted:)];
+    [request setDidFinishSelector:@selector(fetchContentComplete:)];
+    [request setDidFailSelector:@selector(fetchContentFailed:)];
+    
+    [request startAsynchronous];
+}
+
+- (void)fetchContentStarted:(ASIHTTPRequest *)theRequest
+{
+    NSLog(@"fetchContentStarted");
+    //Bouton Stop
+
+    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelFetchContent)];
+    self.navigationItem.rightBarButtonItem = segmentBarItem;
+
+    //[self.favoritesTableView.pullToRefreshView stopAnimating];
+
+    [self.maintenanceView setHidden:YES];
+     /*
+    [self.favoritesTableView setHidden:YES];
+    [self.loadingView setHidden:NO];
+     */
+}
+
+- (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
+{
+    NSLog(@"fetchContentComplete");
+
+    //Bouton Reload
+    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
+    self.navigationItem.rightBarButtonItem = segmentBarItem;
+    
+    [self loadDataInTableView:[theRequest responseData]];
+    
+    [self.arrayData removeAllObjects];
+    self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];
+    [self.arrayNewData removeAllObjects];
+    
+    [self.offlineTableView reloadData];
+}
+
+-(void)loadDataInTableView:(NSData *)contentData
+{
+    NSLog(@"loadDataInTableView");
+    
+    [self.arrayCategories removeAllObjects];
+    [self.arrayCategoriesHidden removeAllObjects];
+    
+    HTMLParser * myParser = [[HTMLParser alloc] initWithData:contentData error:NULL];
+    HTMLNode * bodyNode = [myParser body];
+    //HTMLNode *hash_check = [bodyNode findChildWithAttribute:@"name" matchingName:@"hash_check" allowPartial:NO];
+    //[[HFRplusAppDelegate sharedAppDelegate] setHash_check:[hash_check getAttributeNamed:@"value"]];
+
+    HTMLNode *tableNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"main" allowPartial:NO]; //Get favs for cat
+    NSArray *temporaryFavoriteArray = [tableNode findChildTags:@"tr"];
+    
+    BOOL first = YES;
+    Favorite *aFavorite;
+    NSMutableArray* tmpTopics = [[NSMutableArray alloc] init];
+    
+    //Loop through all the tags
+    for (HTMLNode * trNode in temporaryFavoriteArray)
+    {
+        if ([[trNode className] rangeOfString:@"fondForum1fCat"].location != NSNotFound)
+        {
+            if (!first) {
+                // On rajoute la catégorie si elle est visible à la liste des sujets (cat  + topics)
+                if (aFavorite.topics.count > 0)
+                {
+                    //[self.arrayNewData addObject:aFavorite];
+                    [self addFavorite:aFavorite into:self.arrayNewData andTopicsInto:tmpTopics];
+                }
+            }
+
+            aFavorite = [[Favorite alloc] init];
+            [aFavorite parseNode:trNode];
+            first = NO;
+        }
+        else if ([[trNode className] rangeOfString:@"ligne_booleen"].location != NSNotFound) {
+            [aFavorite addTopicWithNode:trNode];
+        }
+    }
+    if (!first)
+    {
+        // On rajoute la catégorie si elle est visible à la liste des sujets (cat  + topics)
+        if (aFavorite.topics.count > 0)
+        {
+            //[self.arrayNewData addObject:aFavorite];
+            [self addFavorite:aFavorite into:self.arrayNewData andTopicsInto:tmpTopics];
+        }
+    }
+    
+    //self.arrayTopics
+    
+    //NSSortDescriptor *sortDescriptorDate = [[NSSortDescriptor alloc] initWithKey: @"dDateOfLastPost" ascending:NO selector:@selector(compare:)];
+    //self.arrayTopics = (NSMutableArray *)[tmpTopics sortedArrayUsingDescriptors: [NSMutableArray arrayWithObject:sortDescriptorDate]];
+    
+    for (Topic* t in tmpTopics) {
+        [[OfflineStorage shared] updateOfflineTopic:t];
+    }
+    
+    [self.offlineTableView reloadData];
+}
+
+- (void)addFavorite:(Favorite*)fav into:(NSMutableArray*)arrayDataLocal andTopicsInto:(NSMutableArray*)arrayTopicsLocal
+{
+    [arrayDataLocal addObject:fav];
+    for (Topic* topic in fav.topics)
+    {
+        [arrayTopicsLocal addObject:topic];
+    }
+}
+
+- (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
+{
+    NSLog(@"fetchContentFailed");
+    /*
+    //Bouton Reload
+    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
+    self.navigationItem.rightBarButtonItem = segmentBarItem;
+    */
+    
+    [self.maintenanceView setHidden:NO];
+
+    // Popup
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]  preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    [alert addAction:actionCancel];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 - (void)refreshCache

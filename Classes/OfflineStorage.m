@@ -55,6 +55,18 @@ static OfflineStorage *_shared = nil;    // static instance variable
     }
 }
 
+- (void)updateOfflineTopic:(Topic*)newTopic {
+    Topic* oldTopic = [self.dicOfflineTopics objectForKey:[NSNumber numberWithInt:newTopic.postID]];
+    if (oldTopic) {
+        newTopic.isTopicLoadedInCache = oldTopic.isTopicLoadedInCache;
+        newTopic.maxTopicPageLoaded = oldTopic.maxTopicPageLoaded;
+        newTopic.curTopicPageLoaded = oldTopic.curTopicPageLoaded;
+        newTopic.minTopicPageLoaded = oldTopic.minTopicPageLoaded;
+        [self.dicOfflineTopics setObject:newTopic forKey:[NSNumber numberWithInt:newTopic.postID]];
+        [self save];
+    }
+}
+
 - (void)addTopicToOfflineTopics:(Topic*)topic {
     if (![self.dicOfflineTopics objectForKey:[NSNumber numberWithInt:topic.postID]]) {
         [self.dicOfflineTopics setObject:topic forKey:[NSNumber numberWithInt:topic.postID]];
