@@ -33,6 +33,7 @@
 @implementation OfflineTableViewController;
 @synthesize offlineTableView, maintenanceView, listOfflineTopicsKeys, alertProgress, progressView, request;
 @synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
+@synthesize topicActionAlert, pressedIndexPath, selectedTopic;
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -143,10 +144,13 @@
     NSLog(@"fetchContentComplete");
 
     //Bouton Reload
+    /*
     self.navigationItem.rightBarButtonItem = nil;
     UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
     self.navigationItem.rightBarButtonItem = segmentBarItem;
-    
+    */
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
+
     [self loadDataInTableView:[theRequest responseData]];
     
     [self.arrayData removeAllObjects];
@@ -383,10 +387,15 @@
     }
     
     if (tmpTopic.isTopicLoadedInCache == NO) {
-        [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d / %d", sSymbol, tmpTopic.curTopicPage, tmpTopic.maxTopicPage]];
+        [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d \U00002192 %d", sSymbol, tmpTopic.curTopicPage, tmpTopic.maxTopicPage]];
+        cell.isFavoriteDisabled = YES;
+        cell.userInteractionEnabled = NO;
     } else {
+        cell.isFavoriteDisabled = NO;
+        cell.userInteractionEnabled = YES;
+
         if (tmpTopic.maxTopicPageLoaded > tmpTopic.minTopicPageLoaded) {
-            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d / %d -> %d", sSymbol, tmpTopic.curTopicPageLoaded, tmpTopic.minTopicPageLoaded, tmpTopic.maxTopicPageLoaded]];
+            [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d / %d \U00002192 %d", sSymbol, tmpTopic.curTopicPageLoaded, tmpTopic.minTopicPageLoaded, tmpTopic.maxTopicPageLoaded]];
         } else {
             [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@ %d / %d", sSymbol, tmpTopic.curTopicPageLoaded, tmpTopic.maxTopicPageLoaded]];
         }
@@ -394,6 +403,9 @@
     
     // Badge
     int iPageNumber = [tmpTopic maxTopicPage] - [tmpTopic curTopicPage];
+    if (tmpTopic.isTopicLoadedInCache == YES) {
+        iPageNumber = tmpTopic.maxTopicPageLoaded - tmpTopic.curTopicPageLoaded;
+    }
     if (iPageNumber == 0) {
         cell.labelBadge.clipsToBounds = YES;
         cell.labelBadge.layer.cornerRadius = 20 / 2;
@@ -430,11 +442,183 @@
     return cell;
 }
 
+-(void)handleLongPress:(UILongPressGestureRecognizer*)longPressRecognizer {
+    if (longPressRecognizer.state == UIGestureRecognizerStateBegan) {
+        CGPoint longPressLocation = [longPressRecognizer locationInView:self.offlineTableView];
+        self.pressedIndexPath = [[self.offlineTableView indexPathForRowAtPoint:longPressLocation] copy];
+
+        if (topicActionAlert != nil) {
+            topicActionAlert = nil;
+        }
+        NSMutableArray *arrayActionsMessages = [NSMutableArray array];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la dernière page", @"lastPageAction", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"la page numéro...", @"chooseTopicPage", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]];
+
+        /* Evol onglet sticky (gardée au cas où)
+        [arrayActionsMessages addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Nouvel onglet", @"newTabBar", nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", nil]]]; */
+
+
+        topicActionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        for( NSDictionary *dico in arrayActionsMessages) {
+            [topicActionAlert addAction:[UIAlertAction actionWithTitle:[dico valueForKey:@"title"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                if ([self respondsToSelector:NSSelectorFromString([dico valueForKey:@"code"])])
+                {
+                    //[self performSelector:];
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+                else {
+                    NSLog(@"CRASH not respondsToSelector %@", [dico valueForKey:@"code"]);
+                    
+                    [self performSelectorOnMainThread:NSSelectorFromString([dico valueForKey:@"code"]) withObject:nil waitUntilDone:NO];
+                }
+            }]];
+        }
+
+        CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
+        CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
+        
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }]];
+        } else {
+            // Required for UIUserInterfaceIdiomPad
+            topicActionAlert.popoverPresentationController.sourceView = [[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view];
+            topicActionAlert.popoverPresentationController.sourceRect = origFrame;
+            topicActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
+        }
+        
+        [self presentViewController:topicActionAlert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:topicActionAlert];
+        
+    }
+}
+
+-(void)lastPageAction{
+    NSIndexPath *indexPath = pressedIndexPath;
+    NSNumber* topicID = [listOfflineTopicsKeys objectAtIndex:(NSUInteger)indexPath.row];
+    Topic *topic = [[OfflineStorage shared].dicOfflineTopics objectForKey:topicID];
+    if (topic.isTopicLoadedInCache) {
+        topic.curTopicPage = topic.maxTopicPageLoaded;
+        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andOfflineTopic:topic];
+        self.messagesTableViewController = aView;
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hors ligne" style: UIBarButtonItemStylePlain target:nil action:nil];
+        [self.navigationController pushViewController:self.messagesTableViewController animated:YES];
+    }
+}
+
+-(void)chooseTopicPage {
+    //NSLog(@"chooseTopicPage Favs");
+
+    NSIndexPath *indexPath = self.pressedIndexPath;
+    NSNumber* topicID = [listOfflineTopicsKeys objectAtIndex:(NSUInteger)indexPath.row];
+    self.selectedTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:topicID];
+    if (!self.selectedTopic.isTopicLoadedInCache) {
+        return;
+    }
+    
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle: nil
+                                                                              message: nil
+                                                                       preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString * message = [[NSMutableAttributedString alloc] initWithString:@"Aller à la page"];
+    [message addAttribute:NSForegroundColorAttributeName value:[ThemeColors textColor:[[ThemeManager sharedManager] theme]] range:(NSRange){0, [message.string length]}];
+    [alertController setValue:message forKey:@"attributedTitle"];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = [NSString stringWithFormat:@"(numéro entre %d et %d)", self.selectedTopic.minTopicPageLoaded, self.selectedTopic.maxTopicPageLoaded];
+        [[ThemeManager sharedManager] applyThemeToTextField:textField];
+        textField.textAlignment = NSTextAlignmentCenter;
+        textField.delegate = self;
+        [textField addTarget:self action:@selector(textFieldTopicDidChange:) forControlEvents:UIControlEventEditingChanged];
+        textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+        
+    }];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSArray * textfields = alertController.textFields;
+        UITextField * pagefield = textfields[0];
+        int number = [[pagefield text] intValue];
+        [self goToPage:number];
+
+    }]];
+     [alertController addAction:[UIAlertAction actionWithTitle:@"Annuler"
+                                                           style:UIAlertActionStyleCancel
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                           [alertController dismissViewControllerAnimated:YES completion:nil];
+                                                       }]];
+    
+    [[ThemeManager sharedManager] applyThemeToAlertController:alertController];
+    [self presentViewController:alertController animated:YES completion:^{
+        if([[ThemeManager sharedManager] theme] == ThemeDark){
+            for (UIView* textfield in alertController.textFields) {
+                UIView *container = textfield.superview;
+                UIView *effectView = container.superview.subviews[0];
+                
+                if (effectView && [effectView class] == [UIVisualEffectView class]){
+                    container.backgroundColor = [UIColor clearColor];
+                    [effectView removeFromSuperview];
+                }
+            }
+        }
+    }];
+}
+
+-(void)textFieldTopicDidChange:(id)sender {
+    //NSLog(@"textFieldDidChange %d %@", [[(UITextField *)sender text] intValue], sender);
+    
+    
+    if ([[(UITextField *)sender text] length] > 0) {
+        int val;
+        if ([[NSScanner scannerWithString:[(UITextField *)sender text]] scanInt:&val]) {
+            //NSLog(@"int %d %@ %@", val, [(UITextField *)sender text], [NSString stringWithFormat:@"%d", val]);
+            
+            if (![[(UITextField *)sender text] isEqualToString:[NSString stringWithFormat:@"%d", val]]) {
+                //NSLog(@"pas int");
+                [sender setText:[NSString stringWithFormat:@"%d", val]];
+            }
+            else if ([[(UITextField *)sender text] intValue] < 1) {
+                //NSLog(@"ERROR WAS %d", [[(UITextField *)sender text] intValue]);
+                [sender setText:[NSString stringWithFormat:@"%d", self.selectedTopic.minTopicPageLoaded]];
+                //NSLog(@"ERROR NOW %d", [[(UITextField *)sender text] intValue]);
+                
+            }
+            else if ([[(UITextField *)sender text] intValue] > self.selectedTopic.maxTopicPageLoaded) {
+                //NSLog(@"ERROR WAS %d", [[(UITextField *)sender text] intValue]);
+                [sender setText:[NSString stringWithFormat:@"%d",  self.selectedTopic.maxTopicPageLoaded]];
+                //NSLog(@"ERROR NOW %d", [[(UITextField *)sender text] intValue]);
+                
+            }
+            else {
+                //NSLog(@"OK");
+            }
+        }
+        else {
+            [sender setText:@""];
+        }
+        
+        
+    }
+}
+
+-(void)goToPage:(int)newPage {
+    if (self.selectedTopic.isTopicLoadedInCache && newPage <= self.selectedTopic.maxTopicPageLoaded && newPage >= self.selectedTopic.minTopicPageLoaded) {
+        self.selectedTopic.curTopicPage = newPage;
+        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andOfflineTopic:self.selectedTopic];
+        self.messagesTableViewController = aView;
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hors ligne" style: UIBarButtonItemStylePlain target:nil action:nil];
+        [self.navigationController pushViewController:self.messagesTableViewController animated:YES];
+    }
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSNumber* topicID = [listOfflineTopicsKeys objectAtIndex:(NSUInteger)indexPath.row];
     Topic *topic = [[OfflineStorage shared].dicOfflineTopics objectForKey:topicID];
     if (![[OfflineStorage shared] checkTopicOffline:topic]) {
-        // TBD AlertView
         return;
     }
     self.messagesTableViewController = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andOfflineTopic:topic];
@@ -448,20 +632,20 @@
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hors ligne" style: UIBarButtonItemStylePlain target:nil action:nil];
         [self.navigationController pushViewController:self.messagesTableViewController animated:YES];
     }
-    /* TBD IPAD*
     else { //iPad
         [[[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] viewControllers] objectAtIndex:1] popToRootViewControllerAnimated:NO];
         
         [[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] setViewControllers:[NSMutableArray arrayWithObjects:self.messagesTableViewController, nil] animated:YES];
         
-        if ([messagesTableViewController.splitViewController respondsToSelector:@selector(displayModeButtonItem)]) {
-            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftBarButtonItem = messagesTableViewController.splitViewController.displayModeButtonItem;
+        if ([self.messagesTableViewController.splitViewController respondsToSelector:@selector(displayModeButtonItem)]) {
+            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftBarButtonItem = self.messagesTableViewController.splitViewController.displayModeButtonItem;
             [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftItemsSupplementBackButton = YES;
         }
+        
+        // Close left panel on ipad in portrait mode
+        [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
     }
     
-    // Close left panel on ipad in portrait mode
-    [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];*/
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {

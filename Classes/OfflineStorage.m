@@ -124,9 +124,11 @@ static OfflineStorage *_shared = nil;    // static instance variable
         }
     }
     
-    // TBD : remove pages < curTopicPage
-    
     int iPageToLoad = topic.curTopicPage;
+    // If already in cache, start from last page
+    if (topic.isTopicLoadedInCache) {
+        iPageToLoad = topic.maxTopicPageLoaded;
+    }
     while (iPageToLoad <= topic.maxTopicPage) {
         NSLog(@"Loading Topic %d (%@) - <<<<page %d>>>>", topic.postID, topic._aTitle, iPageToLoad);
         NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPageToLoad]];
@@ -152,7 +154,6 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
         [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
         NSString* sURL = [NSString stringWithFormat:@"https://forum.hardware.fr%@", [topic getURLforPage:iPageToLoad]];
-        NSLog(@"URL <%@>", sURL);
         ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:sURL]];
         [request setShouldRedirect:NO];
         [request setDelegate:self];
@@ -180,13 +181,13 @@ static OfflineStorage *_shared = nil;    // static instance variable
                         for (HTMLNode * imgNode in arrayImages) { //Loop through all the images
                             NSString* sFilename = [NSString stringWithFormat:@"img%d",iImageNumber];
                             NSString* sPathFilename = [topicDirectory stringByAppendingPathComponent:sFilename];
-                            NSLog(@"Saving image: %@ to file %@", [imgNode getAttributeNamed:@"src"], sFilename);
+                            //NSLog(@"Saving image: %@ to file %@", [imgNode getAttributeNamed:@"src"], sFilename);
                             //
                             if ([self loadImageWithName:[imgNode getAttributeNamed:@"src"] intoFilename:sPathFilename]) {
-                                NSLog(@"Before : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
+                                //NSLog(@"Before : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
                                 NSString* sImgAttr = [NSString stringWithFormat:@"file://%@", sPathFilename];
                                 [imgNode setAttributeNamed:@"src" withValue:sImgAttr];
-                                NSLog(@"After : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
+                                //NSLog(@"After : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
                             }
                             iImageNumber++;
                         }
@@ -197,11 +198,13 @@ static OfflineStorage *_shared = nil;    // static instance variable
                 output = [output stringByReplacingOccurrencesOfString:@"\n" withString:@""];
                 output = [output stringByReplacingOccurrencesOfString:@"\r" withString:@""];
                 output = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head>%@</html>", output];
-                NSLog(@"------------------------------------------------------");
+                /*
+                 NSLog(@"------------------------------------------------------");
                 NSLog(@"Output %@", output);
                 NSLog(@"------------------------------------------------------");
 
                 NSLog(@"Writing file  %@", filename);
+                 */
                 NSData* data = [output dataUsingEncoding:NSUTF8StringEncoding];
                 [data writeToFile:filename atomically:YES];// error:&errorWrite];
             }

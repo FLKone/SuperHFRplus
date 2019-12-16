@@ -37,6 +37,12 @@
         [self.labelBadge setTextColor:[ThemeColors cellBackgroundColor:theme]];
         self.labelBadge.backgroundColor = [ThemeColors tintColor];
     }
+    if (self.isFavoriteDisabled) {
+        [self.labelTitle setTextColor:[ThemeColors topicMsgTextColor:theme]];
+        [self.labelDate setTextColor:[ThemeColors topicMsgTextColor:theme]];
+        [self.labelDate setTextColor:[ThemeColors topicMsgTextColor:theme]];
+        self.labelBadge.backgroundColor = [ThemeColors topicMsgTextColor:theme];
+    }
 }
 
 

@@ -38,6 +38,10 @@
 @property (nonatomic, strong) NSMutableArray *arrayCategoriesVisibleOrder; // Ordre des catégories visibles: liste de Favorite.forum.aID (identifiant de catégorie)
 @property (nonatomic, strong) NSMutableArray *arrayCategoriesHiddenOrder; // Ordre des catégories masquées: liste de Favorite.forum.aID (identifiant de catégorie)
 
+@property (nonatomic, strong) UIAlertController *topicActionAlert;
+@property (nonatomic, strong) NSIndexPath *pressedIndexPath;
+@property (nonatomic, strong) Topic *selectedTopic;
+
 
 @end
 

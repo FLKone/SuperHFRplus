@@ -10,6 +10,7 @@
 #import "MessagesTableViewController.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "OfflineStorage.h"
 
 @implementation PageViewController
 @synthesize previousPageUrl, nextPageUrl;
@@ -143,39 +144,44 @@
 		return;
 	}
 	
-	//NSLog(@"Current URL %@", self.currentUrl);
-	
-	
-	NSString *newUrl = [NSString stringWithString:self.currentUrl];
-	
-	
-	
-	//On remplace le numéro de page dans le titre
-	NSString *regexString  = @".*page=([^&]+).*";
-	NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
-	NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
-	NSError  *error2        = NULL;
-	//int numPage;
-	
-	matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
-	
-	if (matchedRange.location == NSNotFound) {
-		NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
-		//NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]]);
-		newUrl = [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]];
-		//self.pageNumber = [[self.forumUrl substringWithRange:rangeNumPage] intValue];
-	}
-	else {
-		//NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]]);
-		newUrl = [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]];
-		//self.pageNumber = [[self.forumUrl substringWithRange:matchedRange] intValue];
-		
-	}	
-	
-    newUrl = [newUrl stringByRemovingAnchor];
-    
-	self.currentUrl = newUrl;
-	[self fetchContent];
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage = number;
+        // Update offline flag
+        if (self.currentOfflineTopic.curTopicPageLoaded < self.currentOfflineTopic.curTopicPage) {
+            self.currentOfflineTopic.curTopicPageLoaded = self.currentOfflineTopic.curTopicPage;
+            [[OfflineStorage shared] updateOfflineTopic:self.currentOfflineTopic];
+        }
+        [self fetchContent];
+    } else {
+        NSString *newUrl = [NSString stringWithString:self.currentUrl];
+        
+        //On remplace le numéro de page dans le titre
+        NSString *regexString  = @".*page=([^&]+).*";
+        NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
+        NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
+        NSError  *error2        = NULL;
+        //int numPage;
+        
+        matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
+        
+        if (matchedRange.location == NSNotFound) {
+            NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
+            //NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]]);
+            newUrl = [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]];
+            //self.pageNumber = [[self.forumUrl substringWithRange:rangeNumPage] intValue];
+        }
+        else {
+            //NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]]);
+            newUrl = [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]];
+            //self.pageNumber = [[self.forumUrl substringWithRange:matchedRange] intValue];
+            
+        }
+        
+        newUrl = [newUrl stringByRemovingAnchor];
+        
+        self.currentUrl = newUrl;
+        [self fetchContent];
+    }
 }
 
 -(void)textFieldDidChange:(id)sender {
@@ -191,7 +197,7 @@
 				//NSLog(@"pas int");
 				[sender setText:[NSString stringWithFormat:@"%d", val]];
 			}
-			else if ([[(UITextField *)sender text] intValue] < [self firstPageNumber]) {
+			else if ([[(UITextField *)sender text] intValue] < 1) {
 				//NSLog(@"ERROR WAS %d", [[(UITextField *)sender text] intValue]);
 				[sender setText:[NSString stringWithFormat:@"%d", [self firstPageNumber]]];
 				//NSLog(@"ERROR NOW %d", [[(UITextField *)sender text] intValue]);
@@ -217,8 +223,15 @@
 
 -(void)nextPage:(id)sender {
     if ([self isModeOffline]) {
-        self.currentOfflineTopic.curTopicPage++;
-        [self fetchContent];
+        if (self.currentOfflineTopic.curTopicPage < self.currentOfflineTopic.maxTopicPageLoaded) {
+            self.currentOfflineTopic.curTopicPage++;
+            // Update offline flag
+            if (self.currentOfflineTopic.curTopicPageLoaded < self.currentOfflineTopic.curTopicPage) {
+                self.currentOfflineTopic.curTopicPageLoaded = self.currentOfflineTopic.curTopicPage;
+                [[OfflineStorage shared] updateOfflineTopic:self.currentOfflineTopic];
+            }
+            [self fetchContent];
+        }
     } else {
         self.currentUrl = self.nextPageUrl;
         [self fetchContent];
@@ -226,8 +239,10 @@
 }
 -(void)previousPage:(id)sender {
     if ([self isModeOffline]) {
-        self.currentOfflineTopic.curTopicPage++;
-        [self fetchContent];
+        if (self.currentOfflineTopic.curTopicPage > self.currentOfflineTopic.minTopicPageLoaded) {
+            self.currentOfflineTopic.curTopicPage--;
+            [self fetchContent];
+        }
     } else {
         self.currentUrl = self.previousPageUrl;
         
@@ -255,17 +270,30 @@
     [self lastPage:nil];
 }
 -(void)firstPage:(id)sender {
-	
-	if(self.firstPageUrl.length > 0) self.currentUrl = self.firstPageUrl;
-	[self fetchContent];
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage = self.currentOfflineTopic.minTopicPageLoaded;
+        [self fetchContent];
+    } else {
+        if(self.firstPageUrl.length > 0) self.currentUrl = self.firstPageUrl;
+        [self fetchContent];
+    }
 }
 -(void)lastPage:(id)sender {
-	
-	if(self.lastPageUrl.length > 0) self.currentUrl = self.lastPageUrl;
-	[self fetchContent];	
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage = self.currentOfflineTopic.maxTopicPageLoaded;
+        // Update offline flag
+        if (self.currentOfflineTopic.curTopicPageLoaded < self.currentOfflineTopic.curTopicPage) {
+            self.currentOfflineTopic.curTopicPageLoaded = self.currentOfflineTopic.curTopicPage;
+            [[OfflineStorage shared] updateOfflineTopic:self.currentOfflineTopic];
+        }
+        [self fetchContent];
+    } else {
+        if(self.lastPageUrl.length > 0) self.currentUrl = self.lastPageUrl;
+        [self fetchContent];
+    }
 }
+
 -(void)lastAnswer {
-	
 	if(self.lastPageUrl.length > 0) self.currentUrl = [NSString stringWithFormat:@"%@#bas", self.lastPageUrl];
 	[self fetchContent];	
 }

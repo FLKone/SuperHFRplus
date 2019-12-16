@@ -1103,6 +1103,7 @@
     }
     else {
         FavoriteCellView *cell = (FavoriteCellView *)[tableView dequeueReusableCellWithIdentifier:@"FavoriteCellID"];
+        cell.isFavoriteDisabled = NO;
         
         UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
                                                              initWithTarget:self action:@selector(handleLongPress:)];
