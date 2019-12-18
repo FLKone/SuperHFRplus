@@ -240,7 +240,8 @@
 
 - (void) setBadgePlusTableView {
     // Set new AQ number into Plus tab
-    PlusTableViewController* plusVC = ((PlusTableViewController *)((UINavigationController *)[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers[3]).viewControllers[0]);
+    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:[[HFRplusAppDelegate sharedAppDelegate] rootController].viewControllers];
+    PlusTableViewController* plusVC = ((PlusTableViewController *)((UINavigationController *)viewControllers[viewControllers.count - 1]).viewControllers[0]);
     plusVC.iAQBadgeNumer = (int)iNumberNewAQ;
     [plusVC.plusTableView reloadData];
 }

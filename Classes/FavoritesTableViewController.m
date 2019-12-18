@@ -583,23 +583,6 @@
 	//NSLog(@"viewDidLoad ftv");
     [super viewDidLoad];
 
-    NSError *error = nil;
-    NSString *html =
-        @"<body>"
-            "<span class='spantext'/>"
-        "</body>";
-    
-    HTMLParser *parser = [[HTMLParser alloc] initWithString:html error:&error];
-
-    if (error) {
-        NSLog(@"Error: %@", error);
-        return;
-    }
-
-    HTMLNode *bodyNode = [parser body];
-    NSLog(@"Content : %@\n---------------------------\n", rawContentsOfNode([bodyNode _node], [parser _doc]));
-
-    
 	self.title = @"Favoris";
     self.showAll = NO;
     self.navigationController.navigationBar.translucent = NO;

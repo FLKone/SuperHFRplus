@@ -8,6 +8,7 @@
 #import "TabBarController.h"
 #import "HFRplusAppDelegate.h"
 #import "FavoritesTableViewController.h"
+#import "OldFavoritesTableViewController.h"
 #import "HFRMPViewController.h"
 #import "ForumsTableViewController.h"
 #import "HFRTabBar.h"
@@ -24,11 +25,11 @@
 	//NSLog(@"TBC viewDidLoad %@", self.tabBar);
     self.title = @"Menu";
 
-    NSLog(@"viewDidLoad> self.tabBar.items.count - %d", self.tabBar.items.count);
+    NSLog(@"viewDidLoad> self.tabBar.items.count - %lu", self.tabBar.items.count);
     for (int i=0; i<self.tabBar.items.count; i++) {
         UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
         int iShift = 0;
-        if (self.tabBar.items.count == 4 && i >= 2) {
+        if (self.tabBar.items.count == 5 && i >= 2) {
             iShift = 1;
         }
         tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i+iShift]]
@@ -38,7 +39,7 @@
         switch (i+iShift) {
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
-            case 2: tabBarItem.title = @"Sticky"; break;
+            case 2: tabBarItem.title = @"Old Fav"; break;
             case 3: tabBarItem.title = @"Messages"; break;
             case 4: tabBarItem.title = @"Plus"; break;
         }
@@ -152,7 +153,7 @@
         switch (i+iShift) {
             case 0: tabBarItem.title = @"Catégories"; break;
             case 1: tabBarItem.title = @"Favoris"; break;
-            case 2: tabBarItem.title = @"Sticky"; break;
+            case 2: tabBarItem.title = @"Old Fav"; break;
             case 3: tabBarItem.title = @"Messages"; break;
             case 4: tabBarItem.title = @"Plus"; break;
         }
@@ -177,19 +178,21 @@
 
     if ([viewController isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nv = (UINavigationController *)viewController;
-//      NSLog(@"curtab %lu", (unsigned long)tabBarController.selectedIndex);
-//      NSLog("class top : %@ !!!", [nv.topViewController class]);
         
         //actualisation si tap sur l'onglet
-        if (tabBarController.selectedIndex == 0 && [nv.topViewController isKindOfClass:[ForumsTableViewController class]]) {
+        if ([nv.topViewController isKindOfClass:[ForumsTableViewController class]]) {
             [(ForumsTableViewController *)nv.topViewController reload];
         }
         
-        if (tabBarController.selectedIndex == 1 && [nv.topViewController isKindOfClass:[FavoritesTableViewController class]]) {
+        if ([nv.topViewController isKindOfClass:[FavoritesTableViewController class]]) {
             [(FavoritesTableViewController *)nv.topViewController reload];
         }
         
-        if (tabBarController.selectedIndex == 2 && [nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
+        if ([nv.topViewController isKindOfClass:[OldFavoritesTableViewController class]]) {
+            [(OldFavoritesTableViewController *)nv.topViewController reload];
+        }
+        
+        if ([nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
             [(HFRMPViewController *)nv.topViewController fetchContent];
         }
 
@@ -272,9 +275,5 @@
         }
     }
 }
-
-- (void) removeStickyTopic {
-}
-
 
 @end

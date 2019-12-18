@@ -13,6 +13,8 @@
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
 		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
 		15167EB12330210600D64651 /* Heart-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15167EB02330210600D64651 /* Heart-20@2x.png */; };
+		151DE8D523AAC73D003E6D1B /* OldFavoritesTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */; };
+		151DE8D723AAC74D003E6D1B /* OldFavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */; };
 		15357D64234BA620002D5C2E /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D62234BA61F002D5C2E /* offline@2x.png */; };
 		15357D65234BA620002D5C2E /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D63234BA620002D5C2E /* offline.png */; };
 		15357D67234BA712002D5C2E /* offline2@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D66234BA712002D5C2E /* offline2@2.png */; };
@@ -785,6 +787,9 @@
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15167EB02330210600D64651 /* Heart-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Heart-20@2x.png"; sourceTree = "<group>"; };
+		151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OldFavoritesTableViewController.xib; sourceTree = "<group>"; };
+		151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldFavoritesTableViewController.m; sourceTree = "<group>"; };
+		151DE8D823AAC756003E6D1B /* OldFavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldFavoritesTableViewController.h; sourceTree = "<group>"; };
 		15357D62234BA61F002D5C2E /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		15357D63234BA620002D5C2E /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
 		15357D66234BA712002D5C2E /* offline2@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline2@2.png"; sourceTree = "<group>"; };
@@ -1678,6 +1683,9 @@
 		0140ABA6121E011D001C35C4 /* Favorites */ = {
 			isa = PBXGroup;
 			children = (
+				151DE8D823AAC756003E6D1B /* OldFavoritesTableViewController.h */,
+				151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */,
+				151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */,
 				0140ABA7121E011D001C35C4 /* FavoriteCell */,
 				CA8A79B015BB404700D8E9E7 /* Favorite.h */,
 				CA8A79B115BB404700D8E9E7 /* Favorite.m */,
@@ -3247,6 +3255,7 @@
 				CA7C700A185EF50E00B348BA /* ToolBarFastRewind_on@2x.png in Resources */,
 				4C0B8D991BA4522900D329BA /* QuestionsFilled-40@2x.png in Resources */,
 				CA7C700B185EF50E00B348BA /* style-aide.css in Resources */,
+				151DE8D523AAC73D003E6D1B /* OldFavoritesTableViewController.xib in Resources */,
 				4C21E95E1BA5C70400691D65 /* InvisibleFilled-20.png in Resources */,
 				4C0B8DA31BA4522900D329BA /* ShieldFilled-40@2x.png in Resources */,
 				CA7C700C185EF50E00B348BA /* bginput.png in Resources */,
@@ -3761,6 +3770,7 @@
 				4CC814FE1BAC86ED00F8BB81 /* UIColor+Extension.m in Sources */,
 				4C3903671BCACEC200FD6F1F /* PSTCollectionViewUpdateItem.m in Sources */,
 				1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */,
+				151DE8D723AAC74D003E6D1B /* OldFavoritesTableViewController.m in Sources */,
 				4C00313E1BD0404500F87F13 /* UIWebView+FLUIWebView.m in Sources */,
 				4C3903591BCACEC200FD6F1F /* PSTCollectionView.m in Sources */,
 				4C39036F1BCACEC200FD6F1F /* PSTGridLayoutSection.m in Sources */,

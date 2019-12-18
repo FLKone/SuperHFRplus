@@ -1126,70 +1126,28 @@
 
 -(void)answerTopic
 {
-	
 	while (self.isAnimating) {
-        //NSLog(@"isAnimating");
-		//return;
 	}
-    NSLog(@"answerTopic isOK");
-
+         
     HFRNavigationController *navigationController;
-    
-     {
-        NewMessageViewController *addMessageViewController = [[NewMessageViewController alloc]
-                                                              initWithNibName:@"AddMessageViewController" bundle:nil];
-         
-         NSLog(@"answerTopic isOK 2");
-
-         
+    NewMessageViewController *addMessageViewController = [[NewMessageViewController alloc] initWithNibName:@"AddMessageViewController" bundle:nil];
         addMessageViewController.delegate = self;
         [addMessageViewController setUrlQuote:[NSString stringWithFormat:@"%@%@", [k ForumURL], topicAnswerUrl]];
         addMessageViewController.title = @"Nouv. Réponse";
-
-        navigationController = [[HFRNavigationController alloc]
-                                                         initWithRootViewController:addMessageViewController];
-         
-         NSLog(@"answerTopic isOK 3");
-
+     if (@available(iOS 13.0, *)) {
+         [addMessageViewController setModalPresentationStyle: UIModalPresentationFullScreen];
     }
-		
-	
-	// Create the navigation controller and present it modally.
 
-    
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-    NSLog(@"answerTopic isOK 4");
-
+    navigationController = [[HFRNavigationController alloc] initWithRootViewController:addMessageViewController];
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
 	[self presentModalViewController:navigationController animated:YES];
-    
-
-	// The navigation controller is now owned by the current view controller
-	// and the root view controller is owned by the navigation controller,
-	// so both objects should be released to prevent over-retention.
-
-	//[[HFR_AppDelegate sharedAppDelegate] openURL:[NSString stringWithFormat:@"http://forum.hardware.fr%@", topicAnswerUrl]];
-
-	//[[UIApplication sharedApplication] open-URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]];
-	
-/*
-	HFR_AppDelegate *mainDelegate = (HFR_AppDelegate *)[[UIApplication sharedApplication] delegate];
-	[[mainDelegate rootController] setSelectedIndex:3];		
-	[[(BrowserViewController *)[[mainDelegate rootController] selectedViewController] webView] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]]];		
- */
-    
-    NSLog(@"answerTopic isOK END");
-
 }
 
 
 
 -(void)searchTopic {
-
     // Animate the resize of the text view's frame in sync with the keyboard's appearance.
-    
-
     [self toggleSearch];
-
 }
 
 -(void)quoteMessage:(NSString *)quoteUrl andSelectedText:(NSString *)selected withBold:(BOOL)boldSelection {
@@ -1208,7 +1166,7 @@
     HFRNavigationController *navigationController = [[HFRNavigationController alloc]
                                                      initWithRootViewController:quoteMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentModalViewController:navigationController animated:YES];
     
     // The navigation controller is now owned by the current view controller
@@ -1240,7 +1198,7 @@
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
 	[self presentModalViewController:navigationController animated:YES];
     
 }
@@ -1598,9 +1556,6 @@
 
 - (void)addMessageViewControllerDidFinishOK:(AddMessageViewController *)controller {
 	NSLog(@"addMessageViewControllerDidFinishOK");
-    
-    [self.navigationController popToViewController:self animated:NO];
-
     [self dismissViewControllerAnimated:NO completion:^{
         if (self.arrayData.count > 0) {
             //NSLog(@"curid %d", self.curPostID);
@@ -1619,21 +1574,30 @@
     }];
 
     // Check if user is teletubbiesed
-    NSLog(@"TT test? response is :%@", controller.statusMessage);
     if (controller.statusMessage != nil && [controller.statusMessage rangeOfString:@"télétubbies"].location != NSNotFound) {
-        [HFRAlertView DisplayAlertViewWithTitle:@"Tu es TT !" andMessage:controller.statusMessage forDuration:2 completion:^{
-                [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];}];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Tu es TT !"
+                                                                       message:controller.statusMessage
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+
+        [self presentViewController:alert animated:YES completion:^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [alert dismissViewControllerAnimated:YES completion:^{
+                    [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
+                }];
+            });
+        }];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
     } else {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Hooray !"
                                                                        message:controller.statusMessage
                                                                 preferredStyle:UIAlertControllerStyleAlert];
+
         [self presentViewController:alert animated:YES completion:^{
-            dispatch_after(250000, dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [alert dismissViewControllerAnimated:YES completion:nil];
             });
         }];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-
     }
 }
 
@@ -1736,11 +1700,13 @@
         if (![self isModeOffline]) {
             // On ajoute le bouton de notif de sondage
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
-                UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
+            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
                 UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
                 self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
             } else {
-                UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
+            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
                 self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
             }
             
@@ -2729,7 +2695,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     HFRNavigationController *navigationController = [[HFRNavigationController alloc]
                                                      initWithRootViewController:delMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentModalViewController:navigationController animated:YES];
 
 }
@@ -2798,7 +2764,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
 	[self presentModalViewController:navigationController animated:YES];
     
 	// The navigation controller is now owned by the current view controller

@@ -12,6 +12,7 @@
 #import "HFRAlertView.h"
 #import "MPStorage.h"
 #import "MultisManager.h"
+#import "OldFavoritesTableViewController.h"
 
 @import InAppSettingsKit;
 
@@ -252,6 +253,29 @@
         else {
             [self hideCell:@"mpstorage_last_rw"];
             [self hideCell:@"mpstorage_reset"];
+        }
+    } else if([notification.userInfo objectForKey:@"old_favorites"]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"old_favorites"]) {
+            OldFavoritesTableViewController *aView = [[OldFavoritesTableViewController alloc] initWithNibName:@"OldFavoritesTableViewController" bundle:nil];
+
+            // then embed it to a navigation controller
+            // this is not required, only if you need it
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:aView];
+            //nav.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelFetchContent)];
+            
+            // Get viewControllers array and add navigation controller
+            NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.tabBarController.viewControllers];
+            if (viewControllers.count == 4) {
+                [viewControllers insertObject:nav atIndex:2];
+                [self.tabBarController setViewControllers:viewControllers animated:YES];
+            }
+        }
+        else {
+            NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.tabBarController.viewControllers];
+            if (viewControllers.count == 5) {
+                [viewControllers removeObjectAtIndex:2];
+                [self.tabBarController setViewControllers:viewControllers animated:YES];
+            }
         }
     }
 

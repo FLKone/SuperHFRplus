@@ -75,8 +75,7 @@
         
         self.sBrouillon = [[NSUserDefaults standardUserDefaults] stringForKey:@"brouillon"];
         if (self.sBrouillon == nil) self.sBrouillon = [[NSString alloc] init];
-        self.bBrouillonUtilise = NO;
-        self.bTexteModifie = NO;
+        self.sBrouillonUtilise = NO;
         
         self.title = @"Nouv. message";
     }
@@ -487,11 +486,9 @@
 {
     if ([ftextView text].length > 0) {
         [self.navigationItem.rightBarButtonItem setEnabled:YES];
-        self.bTexteModifie = YES;
     }
     else {
         [self.navigationItem.rightBarButtonItem setEnabled:NO];
-        self.bTexteModifie = NO;
     }
     
     CGRect line = [ftextView caretRectForPosition:ftextView.selectedTextRange.start];
@@ -555,9 +552,7 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    self.bBrouillonUtilise = NO;
-    self.bTexteModifie = NO;
-    
+    self.sBrouillonUtilise = NO;
     // Popup brouillon (partout sauf en mode edition)
     if (self.sBrouillon && self.sBrouillon.length > 0) {
         
@@ -566,7 +561,7 @@
         UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               [self.textView setText:self.sBrouillon];
-                                                              self.bBrouillonUtilise = YES;
+                                                              self.sBrouillonUtilise = YES;
                                                               [self.navigationItem.rightBarButtonItem setEnabled:YES];
                                                           }];
         UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
@@ -602,12 +597,8 @@
     //NSLog(@"viewWillDisappear");
     [super viewWillDisappear:animated];
     
-    // Save into draft
-    if (self.bTexteModifie && !self.isDeleteMode) {
-        [self modifyBrouillon:textView.text];
-    }
-
     [self.view endEditing:YES];
+    
 }
 
 /* for iOS6 support */
@@ -703,8 +694,47 @@
         
         //NSLog(@"====== 777777");
     }
+    else {
+        if ([self.textView text].length > 0 && !self.isDeleteMode) {
+            NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
+            NSString *messageBrouillon=nil;
+            BOOL remplacerBrouillon = NO;
+            if (self.sBrouillon.length > 0) {
+                alertTitle = @"Remplacer le brouillon ?";
+                messageBrouillon = [self getBrouillonExtract];
+                remplacerBrouillon = YES;
+            }
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                           message:messageBrouillon
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* yesAction = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                      [self modifyBrouillon:[self.textView text]];
+                                                                      [self finishMe];
+                                                                  }];
+            UIAlertAction* noAction = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                    if (!remplacerBrouillon) [self modifyBrouillon:@""];
+                                                                      [self finishMe];
+                                                                  }];
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) {
+                                                                     [self.textView becomeFirstResponder];
+                                                                 }];
+
+            [alert addAction:yesAction];
+            [alert addAction:noAction];
+            [alert addAction:cancelAction];
+            [self presentViewController:alert animated:YES completion:^{}];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        }
+        else {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
     [self.delegate addMessageViewControllerDidFinish:self];
+        }
+    }
 }
 
 - (void)modifyBrouillon:(NSString*) sNewText {
@@ -803,47 +833,28 @@
     
     [arequest setUseCookiePersistence:NO];
     [arequest setRequestCookies:[selectedCompte objectForKey:COOKIES_KEY]];
-    
     [arequest startSynchronous];
     
-    
-
-    
-    
-    if (arequest) {
         if ([arequest error]) {
-            // Set main compte cookies
-            
-            [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
-
-            // Popup erreur
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Tant pis..." style:UIAlertActionStyleCancel
-                                                                 handler:^(UIAlertAction * action) { }];
-            [alert addAction:actionCancel];
-            [self presentViewController:alert animated:YES completion:nil];
-            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:@"Erreur de connexion..."];
         }
         else if ([arequest responseString])
         {
+        @try {
             // Set main compte cookies
             [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
             
             NSError * error = nil;
             HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
-            
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
-            
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
-            
             
             if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
                 [HFRAlertView DisplayOKAlertViewWithTitle:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] andMessage:nil];
             }
             else {
                 // On efface automatiquement le brouillon quand il a été utilisé et que le post du message est OK
-                if (self.bBrouillonUtilise) {
+                if (self.sBrouillonUtilise) {
                     [self modifyBrouillon:@""];
                 }
                 
@@ -856,11 +867,9 @@
                 if ([self isDeleteMode]) {
                     //recup de l'ID du message supprimé pour positionner le scroll.
                     urlArray = [((QuoteMessageViewController *)self).urlQuote arrayOfCaptureComponentsMatchedByRegex:@"numreponse=([0-9]+)&"];
-                    
                 }
                 else {
                     urlArray = [[arequest responseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"[^#]+([^\"]*)\" />"];
-                    
                 }
                 
                 if (urlArray.count > 0) {
@@ -873,7 +882,13 @@
                 [self.delegate addMessageViewControllerDidFinishOK:self];
             }
         }
+        @catch (NSException * e) {
+            NSLog(@"Exception: %@", e);
+            [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:@"Erreur de réponse du serveur. Votre message a peut être été posté malgré tout."];
+        }
+        @finally {}
     }
+    
 }
 
 -(void)segmentToWhite {
@@ -1032,6 +1047,7 @@
                     [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
                     [self.segmentControlerPage setTitle:@"Annuler" forSegmentAtIndex:1];
                     
+                    [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$('head > style').remove();"]];
                 }
                 else {
                     [self cancel];
@@ -1388,9 +1404,19 @@
 {
     //NSLog(@"textFieldSmileChange %@", [(UITextField *)sender text]);
     if ([(UITextField *)sender text].length > 0) {
-        //NSLog(@"text: %@", [[(UITextField *)sender text] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
-        self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"SELF contains[c] '%@'", [[(UITextField *)sender text] stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"]]]];
+        NSString* sText = [(UITextField *)sender text];
+        sText = [sText stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
+        sText = [sText stringByReplacingOccurrencesOfString:@"\\" withString:@""];
+        @try {
+            NSPredicate * predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"SELF contains[c] '%@'", sText]];
+            self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] filteredArrayUsingPredicate:predicate];
         [self.commonTableView reloadData];
+        }
+        @catch (NSException* exception) {
+            NSLog(@"exception %@", exception);
+            [HFRAlertView DisplayOKAlertViewWithTitle:@"Erreur de saisie !" andMessage:[NSString stringWithFormat:@"%@", [exception reason]]];
+            [(UITextField *)sender setText:@""];
+        }
         //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
     else {
