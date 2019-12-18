@@ -478,24 +478,26 @@
     
     
     NSLog(@"applicationDidBecomeActive");
-    [self setTheme:[[ThemeManager sharedManager] theme]];
-    [[ThemeManager sharedManager] checkTheme];
-    [[ThemeManager sharedManager] refreshTheme];
-    if (cestNoel) {
-        // Popup retry
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
-                                                                       message:@"Toute l'équipe de HFR+ vous souhaite de très bonnes fêtes de fin d'année !"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) { }];
-        [alert addAction:actionOK];
-        
-        UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
-        [activeVC presentViewController:alert animated:YES completion:nil];
-        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        
-    }
-
+    dispatch_after(0, dispatch_get_main_queue(), ^(void){
+        [self setTheme:[[ThemeManager sharedManager] theme]];
+         [[ThemeManager sharedManager] checkTheme];
+         [[ThemeManager sharedManager] refreshTheme];
+         if (cestNoel) {
+             // Popup retry
+             UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
+                                                                            message:@"Toute l'équipe de HFR+ vous souhaite de très bonnes fêtes de fin d'année !"
+                                                                     preferredStyle:UIAlertControllerStyleAlert];
+             UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
+                                                              handler:^(UIAlertAction * action) { }];
+             [alert addAction:actionOK];
+             
+             UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+             [activeVC presentViewController:alert animated:YES completion:nil];
+             [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+             
+         }
+    });
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
