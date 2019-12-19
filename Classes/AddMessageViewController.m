@@ -731,8 +731,8 @@
             [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
         else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-            [self.delegate addMessageViewControllerDidFinish:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+    [self.delegate addMessageViewControllerDidFinish:self];
         }
     }
 }
@@ -835,11 +835,11 @@
     [arequest setRequestCookies:[selectedCompte objectForKey:COOKIES_KEY]];
     [arequest startSynchronous];
     
-    if ([arequest error]) {
+        if ([arequest error]) {
         [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:@"Erreur de connexion..."];
-    }
-    else if ([arequest responseString])
-    {
+        }
+        else if ([arequest responseString])
+        {
         @try {
             // Set main compte cookies
             [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
@@ -1410,7 +1410,7 @@
         @try {
             NSPredicate * predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"SELF contains[c] '%@'", sText]];
             self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] filteredArrayUsingPredicate:predicate];
-            [self.commonTableView reloadData];
+        [self.commonTableView reloadData];
         }
         @catch (NSException* exception) {
             NSLog(@"exception %@", exception);

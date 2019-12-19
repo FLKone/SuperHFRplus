@@ -1,5 +1,5 @@
 //
-//  MessagesTableViewController.m
+//  OnlineMessagesTableViewController.m
 //  HFRplus
 //
 //  Created by FLK on 07/07/10.
@@ -7,7 +7,7 @@
 
 #import <unistd.h>
 
-#import "MessagesTableViewController.h"
+#import "OnlineMessagesTableViewController.h"
 #import "MessagesSearchTableViewController.h"
 #import "MessageDetailViewController.h"
 #import "TopicsTableViewController.h"
@@ -43,176 +43,14 @@
 #import "MultisManager.h"
 #import "HFRAlertView.h"
 #import "MPStorage.h"
-#import "OfflineStorage.h"
 
-@implementation MessagesTableViewController
-@synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
-@synthesize swipeLeftRecognizer, swipeRightRecognizer, overview, arrayActionsMessages, lastStringFlagTopic;
-@synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported, isSeparatorNewMessages;
-
-@synthesize queue; //v3
-@synthesize stringFlagTopic;
-@synthesize editFlagTopic;
-@synthesize arrayInputData;
-@synthesize aToolbar, styleAlert;
-
-@synthesize isFavoritesOrRead, isRedFlagged, isUnreadable, isAnimating, isViewed;
-
-@synthesize request, arrayAction, curPostID;
-
-@synthesize firstDate;
-@synthesize actionCreateAQ;
-
-- (void)setTopicName:(NSString *)n {
-    _topicName = [n filterTU];
-    
-    
-}
-//Getter method
-- (NSString*) topicName {
-    //NSLog(@"Returning name: %@", _aTitle);
-    return _topicName;
-}
-
+@implementation OnlineMessagesTableViewController
 
 
 #pragma mark -
 #pragma mark Data lifecycle
 
-- (void)setProgress:(float)newProgress{
-	//NSLog(@"Progress %f%", newProgress*100);
-}
 
-- (void)cancelFetchContent
-{
-    [self.request cancel];
-    [self setRequest:nil];
-}
-
-- (void)fetchContent:(int)from
-{
-    //self.firstDate = [NSDate date];
-    self.errorReported = NO;
-	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=1711&page=301&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t530526";
-    
-    
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=5925&page=1&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t535660";
-    
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&subcat=525&post=5145&page=87&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t540188";
-    
-    NSLog(@"URL %@", [self currentUrl]);
-    
-    //NSLog(@"[self currentUrl] %@", [self currentUrl]);
-    //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
-
-    self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
-
-	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
-	[request setDelegate:self];
-    [request setShowAccurateProgress:YES];
-    
-	//[request setCachePolicy:ASIReloadIfDifferentCachePolicy];
-	//[request setDownloadCache:[ASIDownloadCache sharedCache]];
-	
-    [request setDownloadProgressDelegate:self];
-    
-	[request setDidStartSelector:@selector(fetchContentStarted:)];
-	[request setDidFinishSelector:@selector(fetchContentComplete:)];
-	[request setDidFailSelector:@selector(fetchContentFailed:)];
-    
-	[self.view removeGestureRecognizer:swipeLeftRecognizer];
-	[self.view removeGestureRecognizer:swipeRightRecognizer];
-	
-	if ([NSThread isMainThread]) {
-        //[self.messagesWebView setHidden:YES];
-    }
-
-    //NSLog(@"from %d", from);
-    
-    [self.errorLabelView setHidden:YES];
-
-    if(from == kNewMessageFromNext) self.stringFlagTopic = @"#bas";
-    
-    switch (from) {
-        case kNewMessageFromShake:
-        case kNewMessageFromUpdate:
-        case kNewMessageFromEditor:
-            //NSLog(@"hidden");
-            [self.loadingView setHidden:YES];
-            break;
-        default:
-            //NSLog(@"not hidden");
-            [self.loadingView setHidden:NO];
-            [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML = \"\";"];
-            break;
-    }
-    
-	[request startAsynchronous];
-}
-
-
-- (void)fetchContent
-{
-    if ([self isModeOffline]) {
-        NSData* data = [[OfflineStorage shared] getDataFromTopicOffline:self.currentOfflineTopic page:self.currentOfflineTopic.curTopicPage];
-        self.pageNumber = self.currentOfflineTopic.curTopicPage;
-        [self startParseDataHtml:data];
-    }
-    else {
-        [self fetchContent:kNewMessageFromUnkwn];
-    }
-}
-
-- (void)fetchContentStarted:(ASIHTTPRequest *)theRequest
-{
-	//--
-	//NSLog(@"fetchContentStarted");
-    
-    if (![self.currentUrl isEqualToString:[theRequest.url.absoluteString stringByReplacingOccurrencesOfString:[k ForumURL] withString:@""]]) {
-        //NSLog(@"not equal ==");
-        self.currentUrl = [theRequest.url.absoluteString stringByReplacingOccurrencesOfString:[k ForumURL] withString:@""];
-    }
-
-}
-
-- (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
-{
-    //MaJ de la puce MP
-	if (!self.isViewed) {
-		//NSLog(@"pas lu");
-		[[HFRplusAppDelegate sharedAppDelegate] readMPBadge];
-	}
-	
-    [self startParseDataHtml:[request responseData]];
-    
-    [self cancelFetchContent];
-}
-
-- (void)startParseDataHtml:(NSData*)data {
-    // create the queue to run our ParseOperation
-    self.queue = [[NSOperationQueue alloc] init];
-    ParseMessagesOperation *parser = [[ParseMessagesOperation alloc] initWithData:data index:0 reverse:NO delegate:self];
-    [queue addOperation:parser]; // this will start the "ParseOperation"
-}
-
-- (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
-{
-	[self.loadingView setHidden:YES];
-	
-    // Popup retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
-    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
-                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
-    [alert addAction:actionCancel];
-    [alert addAction:actionRetry];
-    
-    [self presentViewController:alert animated:YES completion:nil];
-    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-}
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -238,39 +76,38 @@
     
 	if (!(rangeFlagPage.location == NSNotFound)) {
 		self.currentUrl = [[self currentUrl] substringToIndex:rangeFlagPage.location];
-    }
+    }    
 	//--
 
 
     /* else */
     
     {
-        if (![self isModeOffline]) {
-            //On check si y'a page=2323
-            NSString *regexString  = @".*page=([^&]+).*";
-            NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
-            NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
-            NSError  *error2        = NULL;
-            
-            matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
-            
-            if (matchedRange.location == NSNotFound) {
-                NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
-                if (rangeNumPage.location == NSNotFound) {
-                    //
-                    NSLog(@"something went wrong");
-                    return;
-                    //[self.navigationController popViewControllerAnimated:YES];
-                }
-                else {
-                    self.pageNumber = [[self.currentUrl substringWithRange:rangeNumPage] intValue];
-                }
+        //On check si y'a page=2323
+        NSString *regexString  = @".*page=([^&]+).*";
+        NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
+        NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
+        NSError  *error2        = NULL;
+        
+        matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
+        
+        if (matchedRange.location == NSNotFound) {
+            NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
+            if (rangeNumPage.location == NSNotFound) {
+                //
+                NSLog(@"something went wrong");
+                return;
+                //[self.navigationController popViewControllerAnimated:YES];
             }
             else {
-                self.pageNumber = [[self.currentUrl substringWithRange:matchedRange] intValue];
-                
+                self.pageNumber = [[self.currentUrl substringWithRange:rangeNumPage] intValue];
             }
         }
+        else {
+            self.pageNumber = [[self.currentUrl substringWithRange:matchedRange] intValue];
+            
+        }
+        //On check si y'a page=2323
         
         [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
         [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
@@ -315,179 +152,183 @@
         
         [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
         [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
-	}
-    
-    // Boutons bas de page
-    if ([self isModeOffline]) {
-        if (self.currentOfflineTopic.minTopicPageLoaded < self.currentOfflineTopic.maxTopicPageLoaded) {
-            [self setFirstPageNumber:self.currentOfflineTopic.minTopicPageLoaded];
-            [self setLastPageNumber:self.currentOfflineTopic.maxTopicPageLoaded];
-            [self addPageFooter];
-        }
-    }
-    else {
-        HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2PagesHaut" allowPartial:YES];
-        if(pagesTrNode)
-        {
-            HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
-            
-            if (![self isModeOffline] && pagesLinkNode) {
-                NSArray *temporaryNumPagesArray = [pagesLinkNode children];
-                [self setFirstPageNumber:[[[temporaryNumPagesArray objectAtIndex:2] contents] intValue]];
-                
-                if ([self pageNumber] == [self firstPageNumber]) {
-                    NSString *newFirstPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
-                    [self setFirstPageUrl:newFirstPageUrl];
-                }
-                else {
-                    NSLog(@"[temporaryNumPagesArray objectAtIndex:2] %@", [temporaryNumPagesArray objectAtIndex:2]);
-                    NSString *newFirstPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray objectAtIndex:2] getAttributeNamed:@"href"]];
-                    [self setFirstPageUrl:newFirstPageUrl];
-                }
 
-                [self setLastPageNumber:[[[temporaryNumPagesArray lastObject] contents] intValue]];
+        //self.title = [NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber];
+
+		//[self navigationItem].titleView.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
+	}
+    //Titre
+    
+    
+	HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum2PagesHaut" allowPartial:YES];
+	
+	if(pagesTrNode)
+	{
+        
+		HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
+		
+		if (pagesLinkNode) {
+			//NSLog(@"pages %@", rawContentsOfNode([pagesLinkNode _node], [myParser _doc]));
+			
+			//NSArray *temporaryNumPagesArray = [[NSArray alloc] init];
+			NSArray *temporaryNumPagesArray = [pagesLinkNode children];
+            
+			[self setFirstPageNumber:[[[temporaryNumPagesArray objectAtIndex:2] contents] intValue]];
+			
+            //NSLog(@"num %d = %d", [self pageNumber], [self firstPageNumber]);
+
+            
+			if ([self pageNumber] == [self firstPageNumber]) {
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+			else {
+                NSLog(@"[temporaryNumPagesArray objectAtIndex:2] %@", [temporaryNumPagesArray objectAtIndex:2]);
+				NSString *newFirstPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray objectAtIndex:2] getAttributeNamed:@"href"]];
+				[self setFirstPageUrl:newFirstPageUrl];
+			}
+			
+
+			[self setLastPageNumber:[[[temporaryNumPagesArray lastObject] contents] intValue]];
+
+			
+			if ([self pageNumber] == [self lastPageNumber]) {
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+			else {
+                //NSLog(@"lastObject %@", [[temporaryNumPagesArray lastObject] allContents]);
                 
-                if ([self pageNumber] == [self lastPageNumber]) {
-                    NSString *newLastPageUrl = [[NSString alloc] initWithString:[self currentUrl]];
-                    [self setLastPageUrl:newLastPageUrl];
-                }
-                else {
-                    NSString *newLastPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray lastObject] getAttributeNamed:@"href"]];
-                    [self setLastPageUrl:newLastPageUrl];
-                }
-                
-                [self addPageFooter];
-            }
-            else {
-                self.aToolbar = nil;
-                //NSLog(@"pas de pages");
-                [self setFirstPageNumber:1];
-                [self setLastPageNumber:1];
-            }
+				NSString *newLastPageUrl = [[NSString alloc] initWithString:[[temporaryNumPagesArray lastObject] getAttributeNamed:@"href"]];
+				[self setLastPageUrl:newLastPageUrl];
+			}
+
+			/*
+			 NSLog(@"premiere %d", [self firstPageNumber]);			
+			 NSLog(@"premiere url %@", [self firstPageUrl]);
+			 
+			 NSLog(@"premiere %d", [self lastPageNumber]);			
+			 NSLog(@"premiere url %@", [self lastPageUrl]);		
+			 */
+			
+			//TableFooter
+			UIToolbar *tmptoolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+			tmptoolbar.barStyle = UIBarStyleDefault;
+			[tmptoolbar sizeToFit];
+			
+			//Add buttons
+			UIBarButtonItem *systemItem1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
+																						 target:self
+																						 action:@selector(firstPage:)];
+			if ([self pageNumber] == [self firstPageNumber]) {
+				[systemItem1 setEnabled:NO];
+			}
+			
+			UIBarButtonItem *systemItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
+																						 target:self
+																						 action:@selector(lastPage:)];
+
+			if ([self pageNumber] == [self lastPageNumber]) {
+				[systemItem2 setEnabled:NO];
+			}		
+			
+			UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 44)];
+			[label setFont:[UIFont boldSystemFontOfSize:15.0]];
+			[label setAdjustsFontSizeToFitWidth:YES];
+			[label setBackgroundColor:[UIColor clearColor]];
+			[label setTextAlignment:NSTextAlignmentCenter];
+			[label setLineBreakMode:NSLineBreakByTruncatingMiddle];
+			[label setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
+			
+			[label setTextColor:[UIColor whiteColor]];
+			[label setNumberOfLines:0];
+			[label setTag:666];
+			[label setText:[NSString stringWithFormat:@"%d/%d", [self pageNumber], [self lastPageNumber]]];
+			
+			UIBarButtonItem *systemItem3 = [[UIBarButtonItem alloc] initWithCustomView:label];
+			
+			
+			
+			
+			
+			//Use this to put space in between your toolbox buttons
+			UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+																					  target:nil
+																					  action:nil];
+
+			//Add buttons to the array
+			NSArray *items = [NSArray arrayWithObjects: systemItem1, flexItem, systemItem3, flexItem, systemItem2, nil];
+			
+			//release buttons
+			
+			//add array of buttons to toolbar
+			[tmptoolbar setItems:items animated:NO];
+			
+			self.aToolbar = tmptoolbar;
+			
+		}
+		else {
+			self.aToolbar = nil;
+			//NSLog(@"pas de pages");
+            [self setFirstPageNumber:1];
+            [self setLastPageNumber:1];
+		}
+		
+		//--
+		
+		
+		//NSArray *temporaryPagesArray = [[NSArray alloc] init];
+		
+		NSArray *temporaryPagesArray = [pagesTrNode findChildrenWithAttribute:@"class" matchingName:@"pagepresuiv" allowPartial:YES];
+		
+        if (self.isSearchInstra) {
+            [self.view addGestureRecognizer:swipeLeftRecognizer];
+        }
+		else if(temporaryPagesArray.count != 3)
+		{
+			//NSLog(@"pas 3");
+			//[self.view removeGestureRecognizer:swipeLeftRecognizer];
+			//[self.view removeGestureRecognizer:swipeRightRecognizer];
+		}
+		else {
+            HTMLNode *nextUrlNode = [[temporaryPagesArray objectAtIndex:0] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
             
-            //--
-            
-            
-            //NSArray *temporaryPagesArray = [[NSArray alloc] init];
-            
-            NSArray *temporaryPagesArray = [pagesTrNode findChildrenWithAttribute:@"class" matchingName:@"pagepresuiv" allowPartial:YES];
-            
-            if (self.isSearchInstra) {
+            if (nextUrlNode) {
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
+                //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
                 [self.view addGestureRecognizer:swipeLeftRecognizer];
-            }
-            else if(temporaryPagesArray.count != 3)
-            {
-                //NSLog(@"pas 3");
-                //[self.view removeGestureRecognizer:swipeLeftRecognizer];
-                //[self.view removeGestureRecognizer:swipeRightRecognizer];
+                self.nextPageUrl = [[nextUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"nextPageUrl = %@", nextPageUrl);
+                
             }
             else {
-                HTMLNode *nextUrlNode = [[temporaryPagesArray objectAtIndex:0] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
-                
-                if (nextUrlNode) {
-                    //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
-                    //nextPageUrl = [[NSString stringWithFormat:@"%@", [topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber + 1)]]] retain];
-                    [self.view addGestureRecognizer:swipeLeftRecognizer];
-                    self.nextPageUrl = [[nextUrlNode getAttributeNamed:@"href"] copy];
-                    //NSLog(@"nextPageUrl = %@", nextPageUrl);
-                    
-                }
-                else {
-                    self.nextPageUrl = @"";
-                    //[self.view removeGestureRecognizer:swipeLeftRecognizer];
-                }
-                
-                HTMLNode *previousUrlNode = [[temporaryPagesArray objectAtIndex:1] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
-                
-                if (previousUrlNode) {
-                    //previousPageUrl = [[topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber - 1)]] retain];
-                    [self.view addGestureRecognizer:swipeRightRecognizer];
-                    self.previousPageUrl = [[previousUrlNode getAttributeNamed:@"href"] copy];
-                    //NSLog(@"previousPageUrl = %@", previousPageUrl);
-                    
-                }
-                else {
-                    self.previousPageUrl = @"";
-                    //[self.view removeGestureRecognizer:swipeRightRecognizer];
-                    
-                    
-                }
+                self.nextPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeLeftRecognizer];
             }
-        }
-        else {
-            self.aToolbar = nil;
-        }
-    }
+            
+            HTMLNode *previousUrlNode = [[temporaryPagesArray objectAtIndex:1] findChildWithAttribute:@"class" matchingName:@"cHeader" allowPartial:NO];
+            
+            if (previousUrlNode) {
+                //previousPageUrl = [[topicUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", (pageNumber - 1)]] retain];
+                [self.view addGestureRecognizer:swipeRightRecognizer];
+                self.previousPageUrl = [[previousUrlNode getAttributeNamed:@"href"] copy];
+                //NSLog(@"previousPageUrl = %@", previousPageUrl);
+                
+            }
+            else {
+                self.previousPageUrl = @"";
+                //[self.view removeGestureRecognizer:swipeRightRecognizer];
+                
+                
+            }
+		}
+	}
+	else {
+		self.aToolbar = nil;
+	}
 	//NSLog(@"Fin setupPageToolbar");
 
 	//--Pages
-}
-
-- (void)addPageFooter {
-    //TableFooter
-    UIToolbar *tmptoolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    tmptoolbar.barStyle = UIBarStyleDefault;
-    [tmptoolbar sizeToFit];
-    
-    //Add buttons
-    UIBarButtonItem *systemItem1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
-                                                                                 target:self
-                                                                                 action:@selector(firstPage:)];
-    if ([self isModeOffline]) {
-        if (self.pageNumber == self.currentOfflineTopic.minTopicPageLoaded) {
-            [systemItem1 setEnabled:NO];
-        }
-    }
-    else if ([self pageNumber] == [self firstPageNumber]) {
-        [systemItem1 setEnabled:NO];
-    }
-    
-    UIBarButtonItem *systemItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
-                                                                                 target:self
-                                                                                 action:@selector(lastPage:)];
-
-    if ([self isModeOffline]) {
-        if (self.pageNumber == self.currentOfflineTopic.maxTopicPageLoaded) {
-            [systemItem2 setEnabled:NO];
-        }
-    }
-    else if ([self pageNumber] == [self lastPageNumber]) {
-        [systemItem2 setEnabled:NO];
-    }
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 230, 44)];
-    [label setFont:[UIFont boldSystemFontOfSize:15.0]];
-    [label setAdjustsFontSizeToFitWidth:YES];
-    [label setBackgroundColor:[UIColor clearColor]];
-    [label setTextAlignment:NSTextAlignmentCenter];
-    [label setLineBreakMode:NSLineBreakByTruncatingMiddle];
-    [label setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-    
-    [label setTextColor:[UIColor whiteColor]];
-    [label setNumberOfLines:0];
-    [label setTag:666];
-    [label setText:[NSString stringWithFormat:@"%d/%d", [self pageNumber], [self lastPageNumber]]];
-    
-    UIBarButtonItem *systemItem3 = [[UIBarButtonItem alloc] initWithCustomView:label];
-    
-    
-    
-    
-    
-    //Use this to put space in between your toolbox buttons
-    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                                              target:nil
-                                                                              action:nil];
-
-    //Add buttons to the array
-    NSArray *items = [NSArray arrayWithObjects: systemItem1, flexItem, systemItem3, flexItem, systemItem2, nil];
-    
-    //release buttons
-    
-    //add array of buttons to toolbar
-    [tmptoolbar setItems:items animated:NO];
-    
-    self.aToolbar = tmptoolbar;
 }
 
 -(void)setupPoll:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser {
@@ -641,8 +482,7 @@
 	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
 		// Custom initialization
         //NSLog(@"init %@", theTopicUrl);
-		self.currentUrl = [theTopicUrl copy];
-        self.currentOfflineTopic = nil;
+		self.currentUrl = [theTopicUrl copy];	
 		self.loaded = NO;
 		self.isViewed = YES;
         [self setIsSearchInstra:NO];
@@ -652,72 +492,12 @@
 	return self;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andOfflineTopic:(Topic *)thetopic {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-        //NSLog(@"init %@", theTopicUrl);
-        self.currentUrl = nil;
-        self.currentOfflineTopic = thetopic;
-        self.loaded = NO;
-        self.isViewed = YES;
-        [self setIsSearchInstra:NO];
-        self.errorReported = NO;
-
-    }
-    return self;
-}
-
-
 // Overidden to add a separator in the webview for some cases
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages {
     self.isSeparatorNewMessages = isSeparatorNewMessages;
     return [self initWithNibName:nibNameOrNil bundle:nibBundleOrNil andUrl:theTopicUrl];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-	//NSLog(@"viewWillDisappear");
-	
-    [super viewWillDisappear:animated];
-	self.isAnimating = YES;
-    
-    
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    //NSLog(@"viewDidAppear");
-    
-	[super viewDidAppear:animated];
-	self.isAnimating = NO;
-    
-}
-
-- (void)VisibilityChanged:(NSNotification *)notification {
-    NSLog(@"VisibilityChanged %@", notification);
-  /*  NSLog(@"TINT 1 %ld", (long)[[HFRplusAppDelegate sharedAppDelegate].window tintAdjustmentMode]);
-
-    [[HFRplusAppDelegate sharedAppDelegate].window setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
-    [[HFRplusAppDelegate sharedAppDelegate].window setTintColor:[UIColor greenColor]];
-    [[HFRplusAppDelegate sharedAppDelegate].window setTintAdjustmentMode:UIViewTintAdjustmentModeAutomatic];
-    
-    NSLog(@"TINT 2 %ld", (long)[[HFRplusAppDelegate sharedAppDelegate].window tintAdjustmentMode]);
-*/
-//
-
-
-//    NSLog(@"TINT 2 %@", [[HFRplusAppDelegate sharedAppDelegate].window tintColor]);
-
-    
-    if ([[notification valueForKey:@"object"] isEqualToString:@"SHOW"]) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerDidHideMenuNotification object:nil];
-    }
-    else
-    {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerDidHideMenuNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editMenuHidden:) name:UIMenuControllerDidHideMenuNotification object:nil];
-        [self editMenuHidden:nil];
-    }
-    //[self resignFirstResponder];
-}
 
 -(void)textQuote:(id)sender {
     NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
@@ -875,26 +655,41 @@
             label.shadowColor = [UIColor darkGrayColor];
             [label setFont:[UIFont boldSystemFontOfSize:13.0]];
             label.shadowOffset = CGSizeMake(0.0, -1.0);
+            
+            
         }
         else {
             [label setTextColor:[UIColor colorWithRed:113/255.f green:120/255.f blue:128/255.f alpha:1.00]];
             label.shadowColor = [UIColor whiteColor];
             [label setFont:[UIFont boldSystemFontOfSize:19.0]];
             label.shadowOffset = CGSizeMake(0.0, 0.5f);
+            
         }
+        
     }
     
     [label setNumberOfLines:2];
+    
     [label setText:self.topicName];
     [label adjustFontSizeToFit];
     [self.navigationItem setTitleView:label];
 
     // fond blanc WebView
     [self.messagesWebView hideGradientBackground];
-    [self.messagesWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
     
-	//Gesture de Gauche à droite
-	UIGestureRecognizer* recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeToRight:)];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
+        [self.messagesWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
+    }
+    else
+    {
+        [self.messagesWebView setBackgroundColor:[UIColor whiteColor]];
+    }
+    
+	//Gesture
+	UIGestureRecognizer *recognizer;
+
+	//De Gauche à droite
+	recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeToRight:)];
 	self.swipeRightRecognizer = (UISwipeGestureRecognizer *)recognizer;
 	
 	//De Droite à gauche
@@ -902,21 +697,29 @@
 	self.swipeLeftRecognizer = (UISwipeGestureRecognizer *)recognizer;
     swipeLeftRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
     self.swipeLeftRecognizer = (UISwipeGestureRecognizer *)recognizer;
-	
-    //Bouton Repondre message
+	//-- Gesture
+
+
+	//Bouton Repondre message
+    
     if (self.isSearchInstra) {
         UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchTopic)];
         optionsBarItem.enabled = NO;
+        
         NSMutableArray *myButtonArray = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
+        
         self.navigationItem.rightBarButtonItems = myButtonArray;
     }
     else {
         UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
         optionsBarItem.enabled = NO;
+        
         NSMutableArray *myButtonArray = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
+        
         self.navigationItem.rightBarButtonItems = myButtonArray;
     }
     
+
 	[(ShakeView*)self.view setShakeDelegate:self];
 	
 	self.arrayAction = [[NSMutableArray alloc] init];
@@ -938,11 +741,14 @@
         self.searchInputData = [[NSMutableDictionary alloc] init];
     }
 
+    
 	[self setEditFlagTopic:nil];
 	[self setStringFlagTopic:@""];
+
 	[self fetchContent];
     [self editMenuHidden:nil];
     [self forceButtonMenu];
+    //self.messagesWebView.controll = self;
 }
 
 -(void)fullScreen {
@@ -1126,28 +932,70 @@
 
 -(void)answerTopic
 {
+	
 	while (self.isAnimating) {
+        //NSLog(@"isAnimating");
+		//return;
 	}
-         
+    NSLog(@"answerTopic isOK");
+
     HFRNavigationController *navigationController;
-    NewMessageViewController *addMessageViewController = [[NewMessageViewController alloc] initWithNibName:@"AddMessageViewController" bundle:nil];
+    
+     {
+        NewMessageViewController *addMessageViewController = [[NewMessageViewController alloc]
+                                                              initWithNibName:@"AddMessageViewController" bundle:nil];
+         
+         NSLog(@"answerTopic isOK 2");
+
+         
         addMessageViewController.delegate = self;
         [addMessageViewController setUrlQuote:[NSString stringWithFormat:@"%@%@", [k ForumURL], topicAnswerUrl]];
         addMessageViewController.title = @"Nouv. Réponse";
-     if (@available(iOS 13.0, *)) {
-         [addMessageViewController setModalPresentationStyle: UIModalPresentationFullScreen];
-    }
 
-    navigationController = [[HFRNavigationController alloc] initWithRootViewController:addMessageViewController];
-    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+        navigationController = [[HFRNavigationController alloc]
+                                                         initWithRootViewController:addMessageViewController];
+         
+         NSLog(@"answerTopic isOK 3");
+
+    }
+		
+	
+	// Create the navigation controller and present it modally.
+
+    
+    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    NSLog(@"answerTopic isOK 4");
+
 	[self presentModalViewController:navigationController animated:YES];
+    
+
+	// The navigation controller is now owned by the current view controller
+	// and the root view controller is owned by the navigation controller,
+	// so both objects should be released to prevent over-retention.
+
+	//[[HFR_AppDelegate sharedAppDelegate] openURL:[NSString stringWithFormat:@"http://forum.hardware.fr%@", topicAnswerUrl]];
+
+	//[[UIApplication sharedApplication] open-URL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]];
+	
+/*
+	HFR_AppDelegate *mainDelegate = (HFR_AppDelegate *)[[UIApplication sharedApplication] delegate];
+	[[mainDelegate rootController] setSelectedIndex:3];		
+	[[(BrowserViewController *)[[mainDelegate rootController] selectedViewController] webView] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://forum.hardware.fr/%@", topicAnswerUrl]]]];		
+ */
+    
+    NSLog(@"answerTopic isOK END");
+
 }
 
 
 
 -(void)searchTopic {
+
     // Animate the resize of the text view's frame in sync with the keyboard's appearance.
+    
+
     [self toggleSearch];
+
 }
 
 -(void)quoteMessage:(NSString *)quoteUrl andSelectedText:(NSString *)selected withBold:(BOOL)boldSelection {
@@ -1166,7 +1014,7 @@
     HFRNavigationController *navigationController = [[HFRNavigationController alloc]
                                                      initWithRootViewController:quoteMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentModalViewController:navigationController animated:YES];
     
     // The navigation controller is now owned by the current view controller
@@ -1198,7 +1046,7 @@
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 	[self presentModalViewController:navigationController animated:YES];
     
 }
@@ -1431,16 +1279,16 @@
         
         switch (intfrom) {
             case kNewMessageFromShake:
-                [self setStringFlagTopic:[(LinkItem*)[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
+                [self setStringFlagTopic:[[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
                 break;
             case kNewMessageFromUpdate:
-                [self setStringFlagTopic:[(LinkItem*)[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
+                [self setStringFlagTopic:[[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
                 break;
             case kNewMessageFromEditor:
                 // le flag est mis à jour depuis l'editeur.
                 break;
             default:
-                [self setStringFlagTopic:[(LinkItem*)[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
+                [self setStringFlagTopic:[[self.arrayData lastObject] postID]]; // on flag sur le dernier message pour bien positionner après le rechargement.
                 break;
         }
         
@@ -1556,6 +1404,9 @@
 
 - (void)addMessageViewControllerDidFinishOK:(AddMessageViewController *)controller {
 	NSLog(@"addMessageViewControllerDidFinishOK");
+    
+    [self.navigationController popToViewController:self animated:NO];
+
     [self dismissViewControllerAnimated:NO completion:^{
         if (self.arrayData.count > 0) {
             //NSLog(@"curid %d", self.curPostID);
@@ -1574,30 +1425,21 @@
     }];
 
     // Check if user is teletubbiesed
+    NSLog(@"TT test? response is :%@", controller.statusMessage);
     if (controller.statusMessage != nil && [controller.statusMessage rangeOfString:@"télétubbies"].location != NSNotFound) {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Tu es TT !"
-                                                                       message:controller.statusMessage
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-
-        [self presentViewController:alert animated:YES completion:^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [alert dismissViewControllerAnimated:YES completion:^{
-                    [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];
-                }];
-            });
-        }];
-        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        [HFRAlertView DisplayAlertViewWithTitle:@"Tu es TT !" andMessage:controller.statusMessage forDuration:2 completion:^{
+                [[HFRplusAppDelegate sharedAppDelegate] openURL:kTTURL];}];
     } else {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Hooray !"
                                                                        message:controller.statusMessage
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-
         [self presentViewController:alert animated:YES completion:^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            dispatch_after(250000, dispatch_get_main_queue(), ^{
                 [alert dismissViewControllerAnimated:YES completion:nil];
             });
         }];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+
     }
 }
 
@@ -1632,8 +1474,6 @@
         [self toggleSearch:YES];
     }
     else {
-        NSString *refreshBtn = @"";
-
         int i;
         NSLog(@"OLD %@", self.stringFlagTopic);
 
@@ -1662,7 +1502,7 @@
             tmpHTML = [tmpHTML stringByAppendingString:sNewMessage];
 
             if (!ifCurrentFlag) {
-                int tmpFlagValue = [[[(LinkItem*)[self.arrayData objectAtIndex:i] postID] stringByTrimmingCharactersInSet:nonDigits] intValue];
+                int tmpFlagValue = [[[[self.arrayData objectAtIndex:i] postID] stringByTrimmingCharactersInSet:nonDigits] intValue];
 
                 if (tmpFlagValue == currentFlagValue) {
                     if (self.isSeparatorNewMessages == YES) {
@@ -1696,37 +1536,32 @@
         }
         
         NSLog(@"NEW %@", self.stringFlagTopic);
-        
-        if (![self isModeOffline]) {
-            // On ajoute le bouton de notif de sondage
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
-            UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
-            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
-                UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
-                self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
-            } else {
-            UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
-            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
-                self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
-            }
-            
-            //on ajoute le bouton actualiser si besoin
-            if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
-                //NSLog(@"premiere et unique ou dernier");
-                //'before'
-                refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
 
-            }
-            else {
-                //NSLog(@"autre");
-            }
+        // On ajoute le bouton de notif de sondage
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
+            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
+            self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
+        } else {
+            UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
+            self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
         }
-        else { // Offline
-            refreshBtn = @"";
+        
+        NSString *refreshBtn = @"";
+        //on ajoute le bouton actualiser si besoin
+        if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
+            //NSLog(@"premiere et unique ou dernier");
+            //'before'
+            refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
+
         }
-            
-        //Toolbar;
+        else {
+            //NSLog(@"autre");
+        }
+        
         NSString *tooBar = @"";
+        
+        //Toolbar;
         if (self.aToolbar && !self.isSearchInstra) {
             NSString *buttonBegin, *buttonEnd;
             NSString *buttonPrevious, *buttonNext;
@@ -1914,15 +1749,14 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
 
-        
+        /*
         NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);
         NSLog(@"======================================================================================================");
         NSLog(@"baseURL %@", baseURL);
         NSLog(@"======================================================================================================");
-        
+        */
         self.loaded = NO;
-
         [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         
         [self.messagesWebView setUserInteractionEnabled:YES];
@@ -1963,7 +1797,7 @@
         NSInteger nPageCurrentFlag = [[MPStorage shared] getPageFlagForTopidId:[nPost intValue]];
         // Only update flag if page is more recent
         if (self.pageNumber >= nPageCurrentFlag ) {
-            NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
+            NSString* sTPostID = [[self.arrayData lastObject] postID];
             NSString* sP = self.arrayInputData[@"p"];
             NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
             //NSLog(@"====================================================================");
@@ -2003,12 +1837,8 @@
         }
         else {
             jsString2 = @"window.scrollTo(0,document.getElementById('endofpagetoolbar').offsetTop);";
-            if ([self isModeOffline]) {
-                jsString3 = @"window.scrollTo(0,document.getElementById('top').offsetTop);";
-            }
-            else {
-                jsString3 = [NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
-            }
+            jsString3 = [NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
+
         }
         //Position du Flag
         
@@ -2091,7 +1921,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             
             if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
 
-                MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
+                OnlineMessagesTableViewController *aView = [[OnlineMessagesTableViewController alloc] initWithNibName:@"OnlineMessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
                 self.messagesTableViewController = aView;
                 
                 //setup the URL
@@ -2135,7 +1965,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             NSLog(@"%@", sUrl);
 
             
-            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
+            OnlineMessagesTableViewController *aView = [[OnlineMessagesTableViewController alloc] initWithNibName:@"OnlineMessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
             self.messagesTableViewController = aView;
             
             //setup the URL
@@ -2231,10 +2061,10 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 
 -(NSString*) backBarButtonTitle {
     int iCount = 0;
-    // Compte le nombre de controllers MessagesTableViewController en partant de la fin
+    // Compte le nombre de controllers OnlineMessagesTableViewController en partant de la fin
     for (UIViewController* vc in [[self.navigationController viewControllers] reverseObjectEnumerator])
     {
-        if ([vc isKindOfClass:[MessagesTableViewController class]]) {
+        if ([vc isKindOfClass:[OnlineMessagesTableViewController class]]) {
             iCount++;
         } else {
             // Stop counting when different controller
@@ -2467,7 +2297,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 }
 
 - (void)actionAQ:(NSNumber *)curMsgN {
-    NSString* sTPostID = [(LinkItem*)[arrayData objectAtIndex:[curMsgN intValue]] postID];
+    NSString* sTPostID = [[arrayData objectAtIndex:[curMsgN intValue]] postID];
     NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
     NSString* sTopicId = self.arrayInputData[@"post"];
     NSString *sRequest = [NSString stringWithFormat:@"http://alerte-qualitay.toyonos.info/api/getAlertesByTopic.php5?topic_id=%@", sTopicId];
@@ -2500,7 +2330,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     }
     
     int curMsg = [curMsgN intValue];
-    NSLog("AQ link URL = %@%@#%@", [k ForumURL], self.currentUrl, [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]);
+    NSLog("AQ link URL = %@%@#%@", [k ForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]);
     
     NSString* sAuthor = [[arrayData objectAtIndex:curMsg] name];
     NSString* sMessage = [NSString stringWithFormat:@"Créer une Alerte Qualitay sur le post de %@", sAuthor];
@@ -2551,7 +2381,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 -(void)createAQ:(NSNumber *)curMsgN withTitle:(NSString*) sTitle {
     NSString* sAuthor = [[arrayData objectAtIndex:[curMsgN intValue]] name];
     NSString* sComment = [NSString stringWithFormat:@"post de %@", sAuthor];
-    NSString* sTPostID = [(LinkItem*)[arrayData objectAtIndex:[curMsgN intValue]] postID];
+    NSString* sTPostID = [[arrayData objectAtIndex:[curMsgN intValue]] postID];
     NSString* sURL = [NSString stringWithFormat:@"%@%@#%@", [k ForumURL], self.currentUrl, sTPostID];
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
@@ -2641,13 +2471,13 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     int curMsg = [curMsgN intValue];
     
     //NSLog("actionLink ID = %@", [[arrayData objectAtIndex:curMsg] postID]);
-    NSLog("actionLink URL = %@%@#%@", [k ForumURL], self.currentUrl, [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]);
+    NSLog("actionLink URL = %@%@#%@", [k ForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]);
     
     
     //Topic *tmpTopic = [[[self.arrayData objectAtIndex:[indexPath section]] topics] objectAtIndex:[indexPath row]];
     
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = [NSString stringWithFormat:@"%@%@#%@", [k RealForumURL], self.currentUrl, [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]];
+    pasteboard.string = [NSString stringWithFormat:@"%@%@#%@", [k RealForumURL], self.currentUrl, [[arrayData objectAtIndex:curMsg] postID]];
         
     [HFRAlertView DisplayAlertViewWithTitle:@"Lien copié dans le presse-papiers" forDuration:(long)1];
 }
@@ -2695,7 +2525,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     HFRNavigationController *navigationController = [[HFRNavigationController alloc]
                                                      initWithRootViewController:delMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentModalViewController:navigationController animated:YES];
 
 }
@@ -2764,7 +2594,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
     
-    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 	[self presentModalViewController:navigationController animated:YES];
     
 	// The navigation controller is now owned by the current view controller
@@ -2877,7 +2707,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 -(void)EditMessage:(NSNumber *)curMsgN {
 	int curMsg = [curMsgN intValue];
 	
-	[self setEditFlagTopic:[(LinkItem*)[arrayData objectAtIndex:curMsg] postID]];
+	[self setEditFlagTopic:[[arrayData objectAtIndex:curMsg] postID]];
 	[self editMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlEdit] decodeSpanUrlFromString]]];
 	
 }
@@ -3281,7 +3111,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
         [self fetchContent:kNewMessageFromUnkwn];
     }
     else {
-        MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:baseURL];
+        OnlineMessagesTableViewController *aView = [[OnlineMessagesTableViewController alloc] initWithNibName:@"OnlineMessagesTableViewController" bundle:nil andUrl:baseURL];
         self.messagesTableViewController = aView;
         
         //setup the URL

@@ -1,5 +1,5 @@
 //
-//  MessagesTableViewController.h
+//  OfflineMessagesTableViewController.h
 //  HFRplus
 //
 //  Created by FLK on 07/07/10.
@@ -11,10 +11,6 @@
 
 #import "ParseMessagesOperation.h"
 #import "AddMessageViewController.h"
-
-//#import "FormViewController.h"
-//#import "EditFormView.h"
-//#import "QuoteFormView.h"
 
 #import "QuoteMessageViewController.h"
 #import "EditMessageViewController.h"
@@ -29,7 +25,7 @@
 @class ASIHTTPRequest;
 
 
-@interface MessagesTableViewController : PageViewController <UIActionSheetDelegate, ParseMessagesOperationDelegate, AddMessageViewControllerDelegate, UIScrollViewDelegate, AlerteModoViewControllerDelegate> {
+@interface OfflineMessagesTableViewController : PageViewController <UIActionSheetDelegate, ParseMessagesOperationDelegate, AddMessageViewControllerDelegate, UIScrollViewDelegate, AlerteModoViewControllerDelegate> {
     
 	UIWebView *messagesWebView;
     UIView *loadingView;
@@ -55,7 +51,7 @@
 	NSMutableArray *arrayData;
 	NSMutableArray *updatedArrayData;
 	
-    MessagesTableViewController *messagesTableViewController;
+    OfflineMessagesTableViewController *offlineMessagesTableViewController;
 	MessageDetailViewController *detailViewController;
 	
 	//Gesture
@@ -140,7 +136,7 @@
 @property (nonatomic, strong) NSMutableArray *updatedArrayData;
 
 @property (nonatomic, strong) MessageDetailViewController *detailViewController;
-@property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
+@property (nonatomic, strong) OfflineMessagesTableViewController *offlineMessagesTableViewController;
 
 @property (nonatomic, strong) UISwipeGestureRecognizer *swipeLeftRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *swipeRightRecognizer;
@@ -190,7 +186,6 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages;
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andOfflineTopic:(Topic *)thetopic;
 - (void)optionsTopic:(id)sender;
 - (void)answerTopic;
 - (void)quoteMessage:(NSString *)quoteUrl;

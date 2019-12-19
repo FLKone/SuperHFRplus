@@ -296,7 +296,7 @@
 			<key>IASKViewControllerClass</key>
 			<string>ThemeSettingsViewController</string>
 		</dict>
-        <dict>
+		<dict>
             <key>DefaultValue</key>
             <false/>
             <key>Key</key>
@@ -556,7 +556,7 @@
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
-        <dict>
+		<dict>
             <key>Type</key>
             <string>PSToggleSwitchSpecifier</string>
             <key>Title</key>

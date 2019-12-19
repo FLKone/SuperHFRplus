@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Topic : NSObject {
+@interface Topic : NSObject <NSCoding>  {
 	//NSString *_aTitle;
 	NSString *aURL;
 
@@ -33,6 +33,9 @@
     int maxTopicPage;
     int curTopicPage;
     
+    int minTopicPageLoaded;
+    int maxTopicPageLoaded;
+
 	int postID;
 	int catID;
     
@@ -43,7 +46,6 @@
 }
 
 @property (nonatomic, strong) NSString *_aTitle;
-- (void)setATitle:(NSString *)n;
 @property (nonatomic, strong) NSString *aURL;
 
 @property int aRepCount;
@@ -65,6 +67,11 @@
 @property int maxTopicPage;
 @property int curTopicPage;
 
+@property BOOL isTopicLoadedInCache;
+@property int maxTopicPageLoaded;
+@property int curTopicPageLoaded;
+@property int minTopicPageLoaded;
+
 @property int postID;
 @property int catID;
 
@@ -74,4 +81,6 @@
 @property bool isClosed;
 
 - (NSString*) aTitle;
+- (void)setATitle:(NSString *)n;
+- (NSString*) getURLforPage:(int)iPage;
 @end

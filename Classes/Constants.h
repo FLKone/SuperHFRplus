@@ -87,6 +87,7 @@ typedef enum Theme : int {
 #define BLACKLIST_FILE @"blackList.plist"
 #define BLACKLISTDICO_FILE @"blackListDico.plist"
 #define WHITELIST_FILE @"whiteList.plist"
+#define OFFLINETOPICSDICO_FILE @"offlineTopicsDico.plist"
 #define FORUMSMETA_FILE @"forumsMeta.plist"
 #define FORUMS_CACHE_FILE @"forumsCache.plist"
 
