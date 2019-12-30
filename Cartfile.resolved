@@ -1,2 +1,2 @@
-github "auth0/SimpleKeychain" "0.8.1"
-github "futuretap/InAppSettingsKit" "2fb2fa0d6a83f3b47ed18333cc4e028b5207268f"
+github "auth0/SimpleKeychain" "0.9.0"
+github "futuretap/InAppSettingsKit" "fcc4e4f66247586dbfe9969339d58e09a395b2fa"

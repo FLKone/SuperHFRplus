@@ -172,6 +172,10 @@
        completionHandler:^(BOOL granted, NSError * _Nullable error) {
         NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
     }];
+
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"nb_new_mp"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_new_mp"];
+    }
     
     return YES;
 }
@@ -185,36 +189,56 @@
         NSLog(@"\n\nExpired task: %@", task_desc);
     }];
     NSURL *url = [NSURL URLWithString:@"https://forum.hardware.fr/forum1f.php?config=hfr.inc&owntopic=1&new=0&nojs=0"];
+    NSLog(@"Background fetch 01");
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    NSLog(@"Background fetch 02");
     request.timeOutSeconds = 15;
+    NSLog(@"Background fetch 03");
     [request startSynchronous];
+    NSLog(@"Background fetch 04");
     if (![request error]) {
+        NSLog(@"Background fetch 05");
         @try {
-            NSError *error;
+            NSLog(@"Background fetch 06:\n%@", [request responseString]);
+            NSString* sResponseString  = [request responseString];
+            NSString* sNewNbMps = [sResponseString stringByReplacingOccurrencesOfRegex:@"class=\"red\">Vous avez ([0-9]+) nouveau"
+                                                                  withString:@"$1"];
+            NSLog(@"Background fetch 07 - sNbNewMp %@", sNewNbMps);
+
+            NSInteger iNewNbMps = [sNewNbMps intValue];
+            NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_new_mp"];
+            NSLog(@"Nb Mps, old=%ld, new=%ld", (long)iOldNbMps, (long)iNewNbMps);
+
+            if (iNewNbMps > iOldNbMps) {
+                NSLog(@"NOTIFYING FOR %ld new MPs", (iNewNbMps - iOldNbMps));
+                [self scheduleNotification:[NSString stringWithFormat: @"%ld", (long)(iNewNbMps - iOldNbMps)]];
+                [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_new_mp"];
+            }
+            //[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
+
             /*
             HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
             HTMLNode *bodyNode = [myParser body]; //Find the body tag
             HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
             NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
+            NSLog(@"Background fetch 07 : %ld", temporaryMPArray.count);
             if (temporaryMPArray.count == 3) {
                 NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";
                 NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
                 NSLog(@"Background check successful. %@ unread MPs", myMPNumber);
-                [self scheduleNotification:myMPNumber];
-                //[UIApplication sharedApplication].applicationIconBadgeNumber = [myMPNumber intValue];
-            }
-             
-            */
-            [self scheduleNotification:@"3"];
-            /*
-             UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-             localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:60];
-             localNotification.alertBody = [NSString stringWithFormat:@"Checked for new posts in %f seconds", timeElapsed];
-             localNotification.timeZone = [NSTimeZone defaultTimeZone];
-             [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+                
+                NSInteger iNewNbMps = [myMPNumber intValue];
+                NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_new_mp"];
+                NSLog(@"Nb Mps, old=%ld, new=%ld", (long)iOldNbMps, (long)iNewNbMps);
 
-             */
-            //---set the flag that data is successfully downloaded---
+                if (iNewNbMps > iOldNbMps) {
+                    NSLog(@"NOTIFYING FOR %ld new MPs", (iNewNbMps - iOldNbMps));
+                    [self scheduleNotification:[NSString stringWithFormat: @"%ld", (long)(iNewNbMps - iOldNbMps)]];
+                    [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_new_mp"];
+                }
+                [UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
+                
+            }*/
         }
         @catch (NSException * e) {
             NSLog(@"Error in parsing the result of the background fetch: %@", e);
@@ -226,9 +250,13 @@
 
 - (void)scheduleNotification:(NSString*)sNbNewMPs {
     UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-    content.title = @"iOS Fathers";
-    content.body = @"Test notification with thread 1";
-    content.threadIdentifier = @"thread1";
+    //content.title = @"HFR+ is watching you";
+    if ([sNbNewMPs isEqualToString:@"1"]) {
+        content.body = @"Vous avez un nouveau message privé";
+    } else {
+        content.body = [NSString stringWithFormat:@"Vous avez %@ nouveaux messages privés", sNbNewMPs];
+    }
+    //content.threadIdentifier = @"thread1";
     
     UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:3.0 repeats:NO];
     
@@ -388,9 +416,9 @@
     } @finally {
         if (error)
         {
-            NSLog(@"\n\nFailed to submit task request:\n%@\n%@", request.description, error.description);
+            NSLog(@"\n\nFailed to submit task request:\n%@ (%ld)", request.description, error.code);
         } else {
-            NSLog(@"\n\nSubmitted task request %@", request.description);
+            NSLog(@"Submitted task request %@", request.description);
         }
     }
 }
