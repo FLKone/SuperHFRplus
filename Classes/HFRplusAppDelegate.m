@@ -452,7 +452,7 @@
     [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
     [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
     
-    NSDate* startNoelDate = [formatterLocal dateFromString:@"01 11 2019 - 00:00"];
+    NSDate* startNoelDate = [formatterLocal dateFromString:@"24 12 2019 - 00:00"];
     NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2020 - 00:00"];
     
     
