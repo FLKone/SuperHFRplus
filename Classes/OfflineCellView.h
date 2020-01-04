@@ -1,14 +1,15 @@
 //
-//  FavoriteCellView.h
+//  OfflineCellView.h
 //  SuperHFRplus
 //
-//  Created by Bruno ARENE on 04/04/2019.
+//  Created by Bruno ARENE on 11/10/2019.
 //
 
-#ifndef FavoriteCellView_h
-#define FavoriteCellView_h
+#ifndef OfflineCellView_h
+#define OfflineCellView_h
 
-@interface FavoriteCellView : UITableViewCell {
+/*
+OfflineCellView : UITableViewCell {
 }
 
 - (void)applyTheme;
@@ -19,8 +20,8 @@
 @property (strong, nonatomic) IBOutlet UILabel *labelDate;
 @property (strong, nonatomic) IBOutlet UILabel *labelBadge;
 @property BOOL isSuperFavorite;
-@property BOOL isFavoriteDisabled;
 
 @end
-    
-#endif /* FavoriteCellView_h */
+    */
+
+#endif /* OfflineCellView_h */

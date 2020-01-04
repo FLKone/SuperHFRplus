@@ -40,7 +40,9 @@
     self = [super init];
     if (self != nil)
     {
-        self.dataToParse = data;
+        NSString * convertedStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        convertedStr = [convertedStr stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+        self.dataToParse = [convertedStr dataUsingEncoding:NSUTF8StringEncoding];
         self.delegate = theDelegate;
 		self.index = theIndex;
 		self.reverse = isReverse;

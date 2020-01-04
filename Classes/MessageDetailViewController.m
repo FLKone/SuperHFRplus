@@ -116,11 +116,11 @@
 	}
     
     if (SYSTEM_VERSION_LESS_THAN(@"11")) {
-        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.location.hash='%@';", [[arrayData objectAtIndex:curMsg] postID]]];
+        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.location.hash='%@';", [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]]];
 
     }
     else {
-        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", [[arrayData objectAtIndex:curMsg] postID]]];
+        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]]];
 
     }
 
@@ -647,7 +647,7 @@
 
 -(void)EditMessage
 {
-	[parent setEditFlagTopic:[[arrayData objectAtIndex:curMsg] postID]];
+	[parent setEditFlagTopic:[(LinkItem*)[arrayData objectAtIndex:curMsg] postID]];
 	[parent editMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlEdit] decodeSpanUrlFromString] ]];
 
 }

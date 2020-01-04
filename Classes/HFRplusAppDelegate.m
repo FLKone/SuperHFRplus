@@ -11,6 +11,7 @@
 
 #import "HFRMPViewController.h"
 #import "FavoritesTableViewController.h"
+#import "OldFavoritesTableViewController.h"
 #import "ForumsTableViewController.h"
 
 #import "MKStoreManager.h"
@@ -122,7 +123,7 @@
 
     // Start up window
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) { 
-        [splitViewController view].backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bgbigiPad"]];
+        //[splitViewController view].backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bgbigiPad"]];
 
         splitViewController.delegate = splitViewController;
         [window setRootViewController:splitViewController];
@@ -156,6 +157,15 @@
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] refreshTheme];
 
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"old_favorites"] == NO) {
+        NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:rootController.viewControllers];
+        if (viewControllers.count == 5) {
+            [viewControllers removeObjectAtIndex:2];
+            [rootController setViewControllers:viewControllers animated:YES];
+        }
+    }
+
+    
     return YES;
 }
 
@@ -205,7 +215,7 @@
 }
 
 -(void)setTheme:(Theme)theme{
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
+    //[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
 
     if ([self.window respondsToSelector:@selector(setTintColor:)]) {
         self.window.tintColor = [ThemeColors tintColor:theme];
@@ -434,16 +444,16 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
-    
+    //[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
+
     // Noel
-    /*
     NSDate * now = [NSDate date];
     NSDateFormatter* formatterLocal = [[NSDateFormatter alloc] init];
     [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
     [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
     
-    NSDate* startNoelDate = [formatterLocal dateFromString:@"24 12 2018 - 00:00"];
-    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2019 - 00:00"];
+    NSDate* startNoelDate = [formatterLocal dateFromString:@"24 12 2019 - 00:00"];
+    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2020 - 00:00"];
     
     
     NSComparisonResult result1 = [now compare:startNoelDate];
@@ -451,13 +461,13 @@
     BOOL cestNoel = NO;
     if (result1 == NSOrderedDescending && result2 == NSOrderedAscending) {
         //C'est bientot Noel !!
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_period"];
-        NSObject* obj = [[NSUserDefaults standardUserDefaults] objectForKey:@"apply_noel"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_period"];        
+        NSObject* obj = [[NSUserDefaults standardUserDefaults] objectForKey:@"noel_first_time"];
         if (obj == nil) {
             // La première fois on force le thème de Noel
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_disabled"];
             // Mais plus les suivantes
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"apply_noel"];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"noel_first_time"];
             cestNoel = YES;
         }
     } else {
@@ -465,29 +475,29 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"theme_noel_disabled"];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"theme_noel_period"];
     }
-    */
     
     
     NSLog(@"applicationDidBecomeActive");
-    [self setTheme:[[ThemeManager sharedManager] theme]];
-    [[ThemeManager sharedManager] checkTheme];
-    [[ThemeManager sharedManager] refreshTheme];
-    /*
-    if (cestNoel) {
-        // Popup retry
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
-                                                                       message:@"Toute l'équipe de HFR+ vous souhaite de très bonnes fêtes de fin d'année !"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) { }];
-        [alert addAction:actionOK];
-        
-        UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
-        [activeVC presentViewController:alert animated:YES completion:nil];
-        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        
-    }*/
-
+    dispatch_after(0, dispatch_get_main_queue(), ^(void){
+        [self setTheme:[[ThemeManager sharedManager] theme]];
+         [[ThemeManager sharedManager] checkTheme];
+         [[ThemeManager sharedManager] refreshTheme];
+         if (cestNoel) {
+             // Popup retry
+             UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"C'est bientôt Noël !"
+                                                                            message:@"Toute l'équipe de HFR+ vous souhaite de très bonnes fêtes de fin d'année !"
+                                                                     preferredStyle:UIAlertControllerStyleAlert];
+             UIAlertAction* actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel
+                                                              handler:^(UIAlertAction * action) { }];
+             [alert addAction:actionOK];
+             
+             UIViewController* activeVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+             [activeVC presentViewController:alert animated:YES completion:nil];
+             [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+             
+         }
+    });
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -517,12 +527,15 @@
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
     dispatch_async(dispatch_get_main_queue(),
                    ^{
+        int shift = 0;
+        if ([[[[self rootController] tabBar] items] count] == 5) {
+            shift = 1;
+        }
                        if ([badgeValue intValue] > 0) {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:badgeValue];
+           [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:badgeValue];
                        }
                        else {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:nil];
-                           
+           [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
                        }
                    });
 }
@@ -530,11 +543,16 @@
 - (void)updatePlusBadgeWithString:(NSString *)badgeValue;
 {
     dispatch_async(dispatch_get_main_queue(),
-                   ^{ if ([badgeValue intValue] > 0) {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:3] setBadgeValue:badgeValue];
+    ^{
+        int shift = 0;
+        if ([[[[self rootController] tabBar] items] count] == 5) {
+            shift = 1;
+        }
+        if ([badgeValue intValue] > 0) {
+            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:badgeValue];
                        }
                        else {
-                           [[[[[self rootController] tabBar] items] objectAtIndex:3] setBadgeValue:nil];
+            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
                        }});
 }
 
@@ -543,16 +561,20 @@
 {
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
     dispatch_async(dispatch_get_main_queue(), 
-                  ^{     
+    ^{
     NSString *badgeValue = [[[[[self rootController] tabBar] items] objectAtIndex:2] badgeValue];
     
     if ( ([badgeValue intValue] - 1) > 0) {
         [self updateMPBadgeWithString:[NSString stringWithFormat:@"%d", [badgeValue intValue] - 1]];
     }
     else {
-        [[[[[self rootController] tabBar] items] objectAtIndex:2] setBadgeValue:nil];
+            int shift = 0;
+            if ([[[[self rootController] tabBar] items] count] == 5) {
+                shift = 1;
     }
-                  });    
+            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
+        }
+    });
 }
 
 

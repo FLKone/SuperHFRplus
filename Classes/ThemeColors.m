@@ -517,14 +517,11 @@
 };
 
 + (UIColor *)tintColor:(Theme)theme{
-    /*
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
-        switch (theme) {
-            case ThemeLight: return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
-            case ThemeDark: return [UIColor colorWithHue:31.0/360.0 saturation:0.9 brightness:0.95 alpha:1.0];
-        }
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"] == NO) {
+        return [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0];
     }
-    */
+    
     //UIColor* c;
     //CGFloat h, s, b, a;
     
@@ -892,8 +889,9 @@
         switch (index) {
             case 0:return @"cadeaux_on";
             case 1:return @"cadeau_on";
-            case 2:return @"message_on";
-            case 3:return @"cane_on";
+            case 2:return @"cadeau_on";
+            case 3:return @"message_on";
+            case 4:return @"cane_on";
         }
     }
     return @"";
@@ -914,8 +912,9 @@
         switch (index) {
             case 0:return @"cadeaux_off";
             case 1:return @"cadeau_off";
-            case 2:return @"message_off";
-            case 3:return @"cane_off";
+            case 2:return @"cadeau_off";
+            case 3:return @"message_off";
+            case 4:return @"cane_off";
         }
     }
     return @"";

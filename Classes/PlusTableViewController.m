@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "PlusTableViewController.h"
 #import "PlusSettingsViewController.h"
+#import "OfflineTableViewController.h"
 #import "CompteViewController.h"
 #import "CreditsViewController.h"
 #import "AQTableViewController.h"
@@ -16,7 +17,7 @@
 #import "ThemeManager.h"
 
 @implementation PlusTableViewController;
-@synthesize plusTableView, iAQBadgeNumer, settingsViewController, compteViewController, aqTableViewController, creditsViewController;
+@synthesize plusTableView, iAQBadgeNumer, settingsViewController, compteViewController, aqTableViewController, offlineTableViewController, creditsViewController;
 ;
 
 
@@ -42,7 +43,8 @@
     self.settingsViewController = [[PlusSettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
     self.aqTableViewController = [[AQTableViewController alloc] initWithNibName:@"AQTableView" bundle:nil];
     self.creditsViewController = [[CreditsViewController alloc] initWithNibName:@"CreditsViewController" bundle:nil];
-    
+    self.offlineTableViewController = [[OfflineTableViewController alloc] initWithNibName:@"OfflineTableView" bundle:nil];
+
     iAQBadgeNumer = 0;
 }
 
@@ -72,6 +74,9 @@
             [self.navigationController pushViewController:self.settingsViewController animated:YES];
             break;
         case 3:
+            [self.navigationController pushViewController:self.offlineTableViewController animated:YES];
+            break;
+        case 4:
             [self.navigationController pushViewController:self.creditsViewController animated:YES];
             break;
     }
@@ -87,7 +92,7 @@
     return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -121,6 +126,12 @@
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 3:
+            cell.titleLabel.text = @"Favoris hors ligne (beta)";
+            cell.titleImage.image = [UIImage imageNamed:@"offline"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
+            break;
+        case 4:
             cell.titleLabel.text = @"Crédits";
             cell.titleImage.image = [UIImage imageNamed:@"AboutFilled-25"];
             cell.badgeLabel.text = @"";

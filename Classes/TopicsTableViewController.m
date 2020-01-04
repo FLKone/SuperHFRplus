@@ -709,9 +709,9 @@
 
 			NSString *maDate = [linkLastRepNode contents];
             NSDateFormatter * df = [[NSDateFormatter alloc] init];
+            [df setTimeZone:[NSTimeZone timeZoneWithName:@"Europe/Paris"]];
             [df setDateFormat:@"dd-MM-yyyy à HH:mm"];
             aTopic.dDateOfLastPost = [df dateFromString:maDate];
-			if ([theDate isEqual:[maDate substringToIndex:10]]) {
                 NSTimeInterval secondsBetween = [nowTopic timeIntervalSinceDate:aTopic.dDateOfLastPost];
                 int numberMinutes = secondsBetween / 60;
                 int numberHours = secondsBetween / 3600;
@@ -733,10 +733,6 @@
                 }
                 else
                 {
-                    [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
-                }
-            }
-			else {
 				[aTopic setADateOfLastPost:[NSString stringWithFormat:@"%@/%@/%@", [maDate substringWithRange:NSMakeRange(0, 2)]
 									  , [maDate substringWithRange:NSMakeRange(3, 2)]
 									  , [maDate substringWithRange:NSMakeRange(8, 2)]]];
@@ -813,7 +809,7 @@
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
 
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
 	[self presentModalViewController:navigationController animated:YES];
 	
 	// The navigation controller is now owned by the current view controller

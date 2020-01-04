@@ -1,17 +1,18 @@
 //
-//  FavoriteCellView.m
+//  OfflineCellView.m
 //  SuperHFRplus
 //
-//  Created by Bruno ARENE on 04/04/2019.
+//  Created by Bruno ARENE on 11/10/2019.
 //
+/*
 
 #import <Foundation/Foundation.h>
-#import "FavoriteCellView.h"
+#import "OfflineCellView.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 
 
-@implementation FavoriteCellView
+@implementation OfflineCellView
 
 
 -(void)layoutSubviews {
@@ -37,13 +38,8 @@
         [self.labelBadge setTextColor:[ThemeColors cellBackgroundColor:theme]];
         self.labelBadge.backgroundColor = [ThemeColors tintColor];
     }
-    if (self.isFavoriteDisabled) {
-        [self.labelTitle setTextColor:[ThemeColors topicMsgTextColor:theme]];
-        [self.labelDate setTextColor:[ThemeColors topicMsgTextColor:theme]];
-        [self.labelDate setTextColor:[ThemeColors topicMsgTextColor:theme]];
-        self.labelBadge.backgroundColor = [ThemeColors topicMsgTextColor:theme];
-    }
 }
 
 
 @end
+*/

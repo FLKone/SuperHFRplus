@@ -23,7 +23,7 @@
     NSMutableArray *arrayCategoriesVisibleOrder;
     NSMutableArray *arrayCategoriesHiddenOrder;
     NSMutableArray *idPostSuperFavorites;
-    
+
 	MessagesTableViewController *messagesTableViewController;
     PullToRefreshErrorViewController *errorVC;
     
