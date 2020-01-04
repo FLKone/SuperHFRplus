@@ -44,7 +44,7 @@
     UINib *nib2 = [UINib nibWithNibName:@"FavoriteCellView" bundle:nil];
     [self.offlineTableView registerNib:nib2 forCellReuseIdentifier:@"FavoriteCellID"];
 
-    self.title = @"Topics hors ligne";
+    self.title = @"Topics hors ligne (beta)";
     self.navigationController.navigationBar.translucent = NO;
     //Supprime les lignes vides à la fin de la liste
     self.offlineTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
