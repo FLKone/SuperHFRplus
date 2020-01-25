@@ -25,6 +25,7 @@
 @property NSDictionary*    dicMPBlacklistPseudoTimestamp;
 @property NSDictionary*    dicFlags;
 @property NSDictionary*    dicProcessedFlag;
+@property NSNumber*        nbTopicId;
 
 + (MPStorage *)shared;
 
@@ -34,6 +35,7 @@
 - (BOOL)addBlackListSynchronous:(NSString*)pseudo;
 - (BOOL)removeBlackListSynchronous:(NSString*)pseudo;
 - (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag;
+- (void)removeMPFlagAsynchronous:(int)topicID;
 - (NSString*)getUrlFlagForTopidId:(int)topicID;
 - (NSInteger)getPageFlagForTopidId:(int)topicID;
 - (void)reloadMPStorageAsynchronous;

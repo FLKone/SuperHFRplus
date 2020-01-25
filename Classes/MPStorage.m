@@ -24,7 +24,7 @@ NSString* const MP_SOURCE_NAME = @"iOS";
 
 @implementation MPStorage
 
-@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag;
+@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId;
 static MPStorage *_shared = nil;    // static instance variable
 
 // --------------------------------------------------------------------------------
@@ -294,6 +294,22 @@ static MPStorage *_shared = nil;    // static instance variable
     }
 }
 
+- (void)removeMPFlagAsynchronous:(int)iTopidId {
+    nbTopicId = [NSNumber numberWithInt:iTopidId];
+    // Only clean MPStorage when it has been saved successfuly last time
+    if (bIsMPStorageSavedSuccessfully) {
+        ASIHTTPRequest *request = [self GETRequest];
+        [request setDelegate:self];
+        [request setDidFinishSelector:@selector(removeFlag:)];
+        [request setDidFailSelector:@selector(updateMPFlagAsynchronousFailed:)];
+        [request startAsynchronous];
+    }
+    else { // Else, only update internally and try again to save data to MPStorage
+        [self removeFlagInternally];
+        [self saveMPStorageAsynchronous];
+    }
+}
+
 - (void)updateMPFlagAsynchronousFailed:(ASIHTTPRequest *)request {
     bIsMPStorageSavedSuccessfully = NO;
     
@@ -306,6 +322,17 @@ static MPStorage *_shared = nil;    // static instance variable
     if ([self parseMPStorage:[request responseString]]) {
         
         if ([self updateFlagInternally]) {
+            [self saveMPStorageAsynchronous];
+        }
+    }
+}
+
+- (void)removeFlag:(ASIHTTPRequest *)request
+{
+    // If content is not parsed, then error
+    if ([self parseMPStorage:[request responseString]]) {
+        
+        if ([self removeFlagInternally]) {
             [self saveMPStorageAsynchronous];
         }
     }
@@ -346,6 +373,35 @@ static MPStorage *_shared = nil;    // static instance variable
     return YES;
 }
 
+- (BOOL)removeFlagInternally {
+    @try {
+        // Check if post (topic) already exists in list and remove it
+        if ([dData[@"data"][0][@"mpFlags"][@"list"] count] > 0) {
+            NSInteger index = 0;
+            NSInteger indexFound = -1;
+            for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
+                NSNumber* post = [dFlag valueForKey:@"post"];
+                NSNumber* addedPost = nbTopicId;
+                if ([post isEqualToNumber:addedPost]) {
+                    indexFound = index;
+                }
+                index++;
+            }
+            
+            // Remove the found flag
+            if (indexFound >= 0) {
+                [dData[@"data"][0][@"mpFlags"][@"list"] removeObjectAtIndex: indexFound];
+            }
+        }
+    }
+    @catch (NSException * e) {
+        return NO;
+    }
+    @finally {}
+    return YES;
+}
+
+
 - (NSString*)getUrlFlagForTopidId:(int)iTopicId {
     NSString* retUrl = nil;
     
@@ -354,7 +410,11 @@ static MPStorage *_shared = nil;    // static instance variable
         for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
             NSInteger post = [[dFlag valueForKey:@"post"] integerValue];
             if (post == iTopicId) {
-                retUrl = [dFlag valueForKey:@"uri"];
+                NSString* sPost = [dFlag valueForKey:@"post"];
+                NSString* sPage = [dFlag valueForKey:@"page"];
+                NSString* sP = [dFlag valueForKey:@"p"];
+                NSString* sHref = [dFlag valueForKey:@"href"];
+                retUrl = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", sPost, sPage, sP, sHref];
                 break;
             }
         }

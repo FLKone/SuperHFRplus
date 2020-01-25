@@ -61,7 +61,7 @@
 @synthesize request, arrayAction, curPostID;
 
 @synthesize firstDate;
-@synthesize actionCreateAQ;
+@synthesize actionCreateAQ, canSaveDrapalInMPStorage;
 
 - (void)setTopicName:(NSString *)n {
     _topicName = [n filterTU];
@@ -647,7 +647,7 @@
 		self.isViewed = YES;
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
-
+        self.canSaveDrapalInMPStorage = NO;
 	}
 	return self;
 }
@@ -662,7 +662,7 @@
         self.isViewed = YES;
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
-
+        self.canSaveDrapalInMPStorage = NO;
     }
     return self;
 }
@@ -932,7 +932,7 @@
 	self.isFavoritesOrRead = [[NSString	alloc] init];
 	self.isUnreadable = NO;
 	self.curPostID = -1;
-	
+    
     if (!self.searchInputData) {
         NSLog(@"NO searchInputData");
         self.searchInputData = [[NSMutableDictionary alloc] init];
@@ -1914,12 +1914,12 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
 
-        
+        /*
         NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);
         NSLog(@"======================================================================================================");
         NSLog(@"baseURL %@", baseURL);
-        NSLog(@"======================================================================================================");
+        NSLog(@"======================================================================================================");*/
         
         self.loaded = NO;
 
@@ -1956,22 +1956,23 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     // Update flag
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"] && self.isSearchInstra == NO) {
-        NSNumber* nPage = [NSNumber numberWithInt: self.pageNumber];
-        NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
+    if (self.canSaveDrapalInMPStorage) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"] && self.isSearchInstra == NO) {
+            NSNumber* nPage = [NSNumber numberWithInt: self.pageNumber];
+            NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
 
-        NSInteger nPageCurrentFlag = [[MPStorage shared] getPageFlagForTopidId:[nPost intValue]];
-        // Only update flag if page is more recent
-        if (self.pageNumber >= nPageCurrentFlag ) {
-            NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
-            NSString* sP = self.arrayInputData[@"p"];
-            NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
-            //NSLog(@"====================================================================");
-            //NSLog(@"UPDATE FLAG: nPage %@, nPageCurrentFlag %d", nPage, nPageCurrentFlag);
-            //NSLog(@"====================================================================");
-            NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sURI, @"uri", nil];
-            [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
+            NSInteger nPageCurrentFlag = [[MPStorage shared] getPageFlagForTopidId:[nPost intValue]];
+            // Only update flag if page is more recent
+            if (self.pageNumber >= nPageCurrentFlag ) {
+                NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
+                NSString* sP = self.arrayInputData[@"p"];
+                NSString* sUri = @"";
+                NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sUri, @"uri", nil];
+                [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
+            }
         }
+    } else {
+        [[MPStorage shared] removeMPFlagAsynchronous:[self.arrayInputData[@"post"] intValue]];
     }
 }
 

@@ -184,6 +184,7 @@
 @property BOOL isSearchInstra;
 @property BOOL isSeparatorNewMessages;
 @property UIAlertAction* actionCreateAQ;
+@property BOOL canSaveDrapalInMPStorage;
 
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
