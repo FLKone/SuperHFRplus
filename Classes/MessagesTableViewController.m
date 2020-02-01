@@ -1967,7 +1967,7 @@
                 NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
                 NSString* sP = self.arrayInputData[@"p"];
                 NSString* sUri = @"";
-                NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sUri, @"uri", nil];
+                NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", nil];
                 [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
             }
         }
