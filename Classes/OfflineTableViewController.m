@@ -33,7 +33,7 @@
 @implementation OfflineTableViewController;
 @synthesize offlineTableView, maintenanceView, listOfflineTopicsKeys, alertProgress, progressView, request;
 @synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
-@synthesize topicActionAlert, pressedIndexPath, selectedTopic;
+@synthesize topicActionAlert, pressedIndexPath, selectedTopic, iNbPagesLoaded;
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -265,24 +265,29 @@
 }
 -(void) loadOfflineTopicsToCache {
     listOfflineTopicsKeys = [[OfflineStorage shared].dicOfflineTopics allKeys];
-    int total = (int)[listOfflineTopicsKeys count];
-    int c = 0;
-    for (NSNumber* keyTopidID in listOfflineTopicsKeys)
-    {
+    int totalPages = 0;
+    for (NSNumber* keyTopidID in listOfflineTopicsKeys) {
         Topic *tmpTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:keyTopidID];
-        NSLog(@"Loading topic %@", keyTopidID);
-        [[OfflineStorage shared] loadTopicToCache:tmpTopic];
-        c++;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.progressView.progress = ((float)c)/total;
-            [self.alertProgress setMessage:[NSString stringWithFormat:@"%.f%%",((float)c)/total * 100.]];
-        });
+        totalPages = totalPages + (tmpTopic.maxTopicPage - tmpTopic.curTopicPage);
+    }
+    NSLog(@"Total pages to load = %d", totalPages);
+    iNbPagesLoaded = 0;
+    for (NSNumber* keyTopidID in listOfflineTopicsKeys) {
+        Topic *tmpTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:keyTopidID];
+        NSLog(@"Loading topic %@ (%@)", keyTopidID, tmpTopic._aTitle);
+        [[OfflineStorage shared] loadTopicToCache:tmpTopic fromInstance:self totalPages:totalPages];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         self.progressView.progress = 1.0;
-        [self.alertProgress setMessage:@"100%"];
+        [self.alertProgress setMessage:@"\n100%"];
         [self dismissViewControllerAnimated:YES completion:nil];
         [self.offlineTableView reloadData];
+    });
+}
+-(void) updateProgressBarWithPercent:(float)fPercent andMessage:(NSString*)sMessage {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressView.progress = fPercent;
+        [self.alertProgress setMessage:[NSString stringWithFormat:@"%@\n%.f%%", sMessage, fPercent * 100.]];
     });
 }
 
