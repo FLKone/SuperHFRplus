@@ -117,3 +117,6 @@ typedef enum Theme : int {
 #define HASH_KEY @"HASH"
 #define MAIN_KEY @"MAIN"
 
+// Min & max
+#define MAXIMUM(a,b) ( ((a) > (b)) ? (a) : (b) )
+#define MINIMUM(a,b) ( ((a) < (b)) ? (a) : (b) )

@@ -161,110 +161,136 @@ static OfflineStorage *_shared = nil;    // static instance variable
         }
     }
     
-    int iPageToLoad = topic.curTopicPage;
-    // If already in cache, start from last page
+    int iNbMaxPageToLoad = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"offline_max_pages"];
+    int nbPageToLoad = 0;
+    int nbPageLoaded = 0;
+    int iFirstPageToLoad = topic.curTopicPage; // By default start loading at current page
     if (topic.isTopicLoadedInCache) {
-        iPageToLoad = topic.maxTopicPageLoaded;
+        if ((topic.maxTopicPageLoaded - topic.curTopicPageLoaded + 1) >= iNbMaxPageToLoad) {
+            nbPageToLoad = 0; // Everything is already loaded
+        } else {
+            nbPageToLoad = MINIMUM(iNbMaxPageToLoad, iNbMaxPageToLoad - (topic.maxTopicPageLoaded - topic.curTopicPageLoaded + 1));
+            nbPageToLoad = MINIMUM(nbPageToLoad, (topic.maxTopicPage - topic.maxTopicPageLoaded));
+            iFirstPageToLoad = topic.maxTopicPageLoaded + 1;
+        }
+    } else {
+        if ((topic.maxTopicPage - topic.curTopicPage + 1) >= iNbMaxPageToLoad) {
+            nbPageToLoad = iNbMaxPageToLoad;
+        } else {
+            nbPageToLoad = (topic.maxTopicPage - topic.curTopicPage);
+        }
     }
-    while (iPageToLoad <= topic.maxTopicPage) {
-        NSLog(@"Loading Topic %d (%@) - <<<<page %d>>>>", topic.postID, topic._aTitle, iPageToLoad);
-        NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPageToLoad]];
-        NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
 
-        // Check if page is already loaded in cache. For last page, there may be new posts, so it is reloaded each time.
-        if ((iPageToLoad < topic.maxTopicPage) && [fileManager fileExistsAtPath:topicDirectory]) {
-            NSLog(@"Filename %@ found. Skipping to next page", filename);
-            iPageToLoad++;
-            continue;
-        } else if (iPageToLoad == topic.maxTopicPage) {
-            NSError* error = nil;
-            [fileManager removeItemAtPath:topicDirectory error:&error];
-        }
+    if (nbPageToLoad > 0) {
+        int iPageToLoad = iFirstPageToLoad;
+        while (iPageToLoad <= topic.maxTopicPage) {
+            NSLog(@"Loading Topic %d (%@) - <<<<page %d>>>>", topic.postID, topic._aTitle, iPageToLoad);
+            NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPageToLoad]];
+            NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
 
-        if (![fileManager fileExistsAtPath:topicDirectory isDirectory:&isDir]) {
-            NSError* error = nil;
-            [fileManager createDirectoryAtPath:topicDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
-            if (error) {
-                return NO;
+            // Check if page is already loaded in cache. For last page, there may be new posts, so it is reloaded each time.
+            if ((iPageToLoad < topic.maxTopicPage) && [fileManager fileExistsAtPath:topicDirectory]) {
+                NSLog(@"Filename %@ found. Skipping to next page", filename);
+                iPageToLoad++;
+                continue;
+            } else if (iPageToLoad == topic.maxTopicPage) {
+                NSError* error = nil;
+                [fileManager removeItemAtPath:topicDirectory error:&error];
             }
-        }
 
-        [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
-        NSString* sURL = [NSString stringWithFormat:@"https://forum.hardware.fr%@", [topic getURLforPage:iPageToLoad]];
-        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:sURL]];
-        [request setShouldRedirect:NO];
-        [request setDelegate:self];
-        [request startSynchronous];
-        if (request) {
-            if ([request error]) {
-                NSLog(@"error: %@", [[request error] localizedDescription]);
-                return NO;
+            if (![fileManager fileExistsAtPath:topicDirectory isDirectory:&isDir]) {
+                NSError* error = nil;
+                [fileManager createDirectoryAtPath:topicDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
+                if (error) {
+                    return NO;
+                }
             }
-            
-            if ([request responseData]) {
-                //NSLog(@"======================================================");
-                //NSLog(@"OFFLINE HTML %@", [request responseString]);
-                //NSLog(@"======================================================");
-                
-                NSError* error;
-                HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
-                HTMLNode * bodyNode = [myParser body]; //Find the body tag
-                NSArray *arrayMessages = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messCase2" allowPartial:NO];
-                int iImageNumber = 0;
-                
-                for (HTMLNode * nodeMessage in arrayMessages) { //Loop through all the images
-                    if (nodeMessage.children.count >= 2) {
-                        NSArray *arrayImages = [[nodeMessage.children objectAtIndex:1] findChildTags:@"img"];
-                        for (HTMLNode * imgNode in arrayImages) { //Loop through all the images
-                            NSString* sFilename = [self loadImageWithName:[imgNode getAttributeNamed:@"src"]];
-                            if (sFilename) {
-                                //NSLog(@"Before : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
-                                NSString* sImgAttr = [NSString stringWithFormat:@"file://%@", sFilename];
-                                [imgNode setAttributeNamed:@"src" withValue:sImgAttr];
-                                //NSLog(@"After : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
-                            }
-                            iImageNumber++;
-                        }
-                    }
+
+            [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
+            NSString* sURL = [NSString stringWithFormat:@"https://forum.hardware.fr%@", [topic getURLforPage:iPageToLoad]];
+            ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:sURL]];
+            [request setShouldRedirect:YES];
+            [request setDelegate:self];
+            [request setUseCookiePersistence:NO];
+            [request setRequestCookies:[[NSMutableArray alloc]init]];
+            [request startSynchronous];
+            if (request) {
+                if ([request error]) {
+                    NSLog(@"error: %@", [[request error] localizedDescription]);
+                    return NO;
                 }
                 
-                NSString* output = rawContentsOfNode([bodyNode _node], [myParser _doc]);
-                output = [output stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-                output = [output stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-                output = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head>%@</html>", output];
-                /*
-                 NSLog(@"------------------------------------------------------");
-                NSLog(@"Output %@", output);
-                NSLog(@"------------------------------------------------------");
+                if ([request responseData]) {
+                    NSLog(@"======================================================");
+                    NSLog(@"OFFLINE URL  %@", sURL);
+                    NSLog(@"OFFLINE HTML %@", [request responseString]);
+                    NSLog(@"======================================================");
+                    
+                    NSError* error;
+                    HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
+                    HTMLNode * bodyNode = [myParser body]; //Find the body tag
+                    NSArray *arrayMessages = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messCase2" allowPartial:NO];
+                    int iImageNumber = 0;
+                    
+                    for (HTMLNode * nodeMessage in arrayMessages) { //Loop through all the images
+                        if (nodeMessage.children.count >= 2) {
+                            NSArray *arrayImages = [[nodeMessage.children objectAtIndex:1] findChildTags:@"img"];
+                            for (HTMLNode * imgNode in arrayImages) { //Loop through all the images
+                                NSString* sFilename = [self loadImageWithName:[imgNode getAttributeNamed:@"src"]];
+                                if (sFilename) {
+                                    //NSLog(@"Before : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
+                                    NSString* sImgAttr = [NSString stringWithFormat:@"file://%@", sFilename];
+                                    [imgNode setAttributeNamed:@"src" withValue:sImgAttr];
+                                    //NSLog(@"After : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
+                                }
+                                iImageNumber++;
+                            }
+                        }
+                    }
+                    
+                    NSString* output = rawContentsOfNode([bodyNode _node], [myParser _doc]);
+                    output = [output stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+                    output = [output stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+                    output = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head>%@</html>", output];
+                    /*
+                     NSLog(@"------------------------------------------------------");
+                    NSLog(@"Output %@", output);
+                    NSLog(@"------------------------------------------------------");
 
-                NSLog(@"Writing file  %@", filename);
-                 */
-                NSData* data = [output dataUsingEncoding:NSUTF8StringEncoding];
-                [data writeToFile:filename atomically:YES];// error:&errorWrite];
-                
-                NSString* sMessage = topic._aTitle;
-                if (sMessage.length > 40) sMessage = [NSString stringWithFormat:@"%@...", [sMessage substringToIndex:40]];
-                vc.iNbPagesLoaded++;
-                float fProgress = ((float)vc.iNbPagesLoaded)/t;
-                [vc updateProgressBarWithPercent:fProgress andMessage: sMessage];
+                    NSLog(@"Writing file  %@", filename);
+                     */
+                    NSData* data = [output dataUsingEncoding:NSUTF8StringEncoding];
+                    [data writeToFile:filename atomically:YES];// error:&errorWrite];
+                    
+                    NSString* sTitleTopic = topic._aTitle;
+                    if (sTitleTopic.length > 25) sTitleTopic = [NSString stringWithFormat:@"%@...", [sTitleTopic substringToIndex:25]];
+                    NSString* sMessage = [NSString stringWithFormat:@"%@\nPage %d", sTitleTopic, iPageToLoad];
+                    vc.iNbPagesLoaded++;
+                    float fProgress = ((float)vc.iNbPagesLoaded)/t;
+                    [vc updateProgressBarWithPercent:fProgress andMessage: sMessage];
+                }
+            } else {
+                NSLog(@"error in request. Stopping.");
+                return NO;
             }
-        } else {
-            NSLog(@"error in request. Stopping.");
-            return NO;
-        }
 
-        if (iPageToLoad == topic.curTopicPage) {
-            topic.curTopicPageLoaded = iPageToLoad;
-            topic.minTopicPageLoaded = iPageToLoad;
+            if (iPageToLoad == topic.curTopicPage) {
+                topic.curTopicPageLoaded = iPageToLoad;
+                topic.minTopicPageLoaded = iPageToLoad;
+            }
+            
+            iPageToLoad++;
+            nbPageLoaded++;
+            if (nbPageLoaded >= nbPageToLoad) {
+                break;
+            }
         }
         
-        iPageToLoad++;
+        topic.maxTopicPageLoaded = iPageToLoad - 1;
+        topic.isTopicLoadedInCache = YES;
+        
+        [self save];
     }
-    
-    topic.maxTopicPageLoaded = topic.maxTopicPage;
-    topic.isTopicLoadedInCache = YES;
-    
-    [self save];
     
     return YES;
 }
@@ -284,6 +310,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
         else {
             ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:sURL]];
             [request setShouldRedirect:NO];
+            [request setTimeOutSeconds:10];
             [request setDelegate:self];
             [request startSynchronous];
             if ([request responseData]) {
@@ -382,7 +409,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
     directory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", topic.postID]];
 
     int iPageToCheck = topic.curTopicPage;
-    while (iPageToCheck <= topic.maxTopicPage) {
+    while (iPageToCheck <= topic.maxTopicPageLoaded) {
         NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPageToCheck]];
         NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
         if (![fileManager fileExistsAtPath:filename]) {

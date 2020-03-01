@@ -22,6 +22,7 @@
 #import "HTMLParser.h"
 #import "Favorite.h"
 #import "Forum.h"
+#import "Constants.h"
 
 #define  UNICODE_CIRCLE_FULL        @"\U000025CF"
 #define  UNICODE_CIRCLE_3QUARTERS   @"\U000025D4"
@@ -268,8 +269,24 @@
     int totalPages = 0;
     for (NSNumber* keyTopidID in listOfflineTopicsKeys) {
         Topic *tmpTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:keyTopidID];
-        totalPages = totalPages + (tmpTopic.maxTopicPage - tmpTopic.curTopicPage);
+        int iNbMaxPageToLoad = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"offline_max_pages"];
+        if (tmpTopic.isTopicLoadedInCache) {
+            if ((tmpTopic.maxTopicPageLoaded - tmpTopic.curTopicPageLoaded + 1) >= iNbMaxPageToLoad) {
+                totalPages = totalPages + 0; // Everything is already loaded
+            } else {
+                int nbPageToLoad = MINIMUM(iNbMaxPageToLoad, iNbMaxPageToLoad - (tmpTopic.maxTopicPageLoaded - tmpTopic.curTopicPageLoaded + 1));
+                nbPageToLoad = MINIMUM(nbPageToLoad, (tmpTopic.maxTopicPage - tmpTopic.maxTopicPageLoaded));
+                totalPages = totalPages + nbPageToLoad;
+            }
+        } else {
+            if ((tmpTopic.maxTopicPage - tmpTopic.curTopicPage) >= iNbMaxPageToLoad) {
+                totalPages = totalPages + iNbMaxPageToLoad;
+            } else {
+                totalPages = totalPages + (tmpTopic.maxTopicPage - tmpTopic.curTopicPage);
+            }
+        }
     }
+    
     NSLog(@"Total pages to load = %d", totalPages);
     iNbPagesLoaded = 0;
     for (NSNumber* keyTopidID in listOfflineTopicsKeys) {
