@@ -161,6 +161,29 @@
     [self.offlineTableView reloadData];
 }
 
+-(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // If row is deleted, remove it from the list.
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        NSNumber* topicID = [listOfflineTopicsKeys objectAtIndex:(NSUInteger)indexPath.row];
+        Topic *topic = [[OfflineStorage shared].dicOfflineTopics objectForKey:topicID];
+        if (![[OfflineStorage shared] checkTopicOffline:topic]) {
+            return;
+        }
+
+        [[OfflineStorage shared] removeTopicFromOfflineTopics:topic];
+        [self.offlineTableView reloadData];
+        NSLog(@"DELETE");
+    }
+}
+
+
 -(void)loadDataInTableView:(NSData *)contentData
 {
     NSLog(@"loadDataInTableView");

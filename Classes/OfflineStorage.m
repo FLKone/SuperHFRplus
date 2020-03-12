@@ -79,7 +79,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
 }
 
 - (void)removeTopicFromOfflineTopics:(Topic*)topic {
-    if (![self.dicOfflineTopics objectForKey:[NSNumber numberWithInt:topic.postID]]) {
+    if ([self.dicOfflineTopics objectForKey:[NSNumber numberWithInt:topic.postID]]) {
         [self.dicOfflineTopics removeObjectForKey:[NSNumber numberWithInt:topic.postID]];
         topic.isTopicLoadedInCache = NO;
         [self save];
