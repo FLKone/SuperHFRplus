@@ -3947,7 +3947,7 @@
 				);
 				MARKETING_VERSION = 2.1.10;
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super78;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super79;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
@@ -3994,7 +3994,7 @@
 				);
 				MARKETING_VERSION = 2.1.10;
 				OTHER_LDFLAGS = "-licucore";
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super78;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super79;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
