@@ -228,7 +228,7 @@
 
 - (void)fetchContentCompleteChevereto:(ASIHTTPRequest *)theRequest
 {
-    //NSLog(@"fetchContentCompleteChevereto %@", [theRequest responseString]);
+    NSLog(@"fetchContentCompleteChevereto %@", [theRequest responseString]);
     /* Example
      {
      "status_code": 200,
@@ -304,21 +304,30 @@
         if ([[dReply objectForKey:@"status_code"] intValue] == CHEVERETO_UPLOAD_SUCCESS_OK) {
             bSuccess = YES;
             self.link_full = [[dReply[@"image"] objectForKey:@"url"] stringValue];
-            self.link_medium = [[dReply[@"image"][@"medium"] objectForKey:@"url"] stringValue];
-            self.link_preview = nil;
-            self.link_miniature = [[dReply[@"image"][@"thumb"] objectForKey:@"url"] stringValue];
-
             self.nolink_full = [[dReply[@"image"] objectForKey:@"url"] stringValue];
-            self.nolink_medium = [[dReply[@"image"][@"medium"] objectForKey:@"url"] stringValue];
+            self.link_preview = nil;
             self.nolink_preview = nil;
-            self.nolink_miniature = [[dReply[@"image"][@"thumb"] objectForKey:@"url"] stringValue];
-            
+
+            self.link_medium =  nil;
+            self.nolink_medium = nil;
+            if ([dReply[@"image"] objectForKey:@"medium"]) {
+                self.link_medium = [[dReply[@"image"][@"medium"] objectForKey:@"url"] stringValue];
+                self.nolink_medium = [[dReply[@"image"][@"medium"] objectForKey:@"url"] stringValue];
+            }
+                  
+            self.link_miniature =  nil;
+            self.nolink_miniature = nil;
+            if ([dReply[@"image"] objectForKey:@"thumb"]) {
+                self.link_miniature = [[dReply[@"image"][@"thumb"] objectForKey:@"url"] stringValue];
+                self.nolink_miniature = [[dReply[@"image"][@"thumb"] objectForKey:@"url"] stringValue];
+            }
+                 
             [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithFloat:2.0f], self, nil] forKeys:[NSArray arrayWithObjects:@"progress", @"rehostImage", nil]]];
             
         }
         else {
             //Example:  {"status_code":400,"error":{"message":"File too big - max 500 KB","code":313,"context":"CHV\\UploadException"},"status_txt":"Bad Request"}
-            NSString* sErrorMessage = [NSString stringWithFormat:@"%d - %@", [[dReply objectForKey:@"status_code"] intValue], [[dReply[@"error"][@"message"] objectForKey:@"url"] stringValue]];
+            NSString* sErrorMessage = [NSString stringWithFormat:@"%d - %@", [[dReply objectForKey:@"status_code"] intValue], [[dReply[@"error"] objectForKey:@"message"] stringValue]];
             [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:[NSString stringWithFormat:@"Erreur : %@", sErrorMessage]];
         }
     }
