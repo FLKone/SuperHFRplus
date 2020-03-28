@@ -27,6 +27,24 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "5FEEB99B1B7BD70A00501415"
+            BuildableName = "SimpleKeychain.framework"
+            BlueprintName = "SimpleKeychain-iOS"
+            ReferencedContainer = "container:SimpleKeychain.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "5FEEB99B1B7BD70A00501415"
+            BuildableName = "SimpleKeychain.framework"
+            BlueprintName = "SimpleKeychain-iOS"
+            ReferencedContainer = "container:SimpleKeychain.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -39,17 +57,6 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5FEEB99B1B7BD70A00501415"
-            BuildableName = "SimpleKeychain.framework"
-            BlueprintName = "SimpleKeychain-iOS"
-            ReferencedContainer = "container:SimpleKeychain.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -70,8 +77,6 @@
             ReferencedContainer = "container:SimpleKeychain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

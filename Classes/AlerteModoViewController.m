@@ -180,10 +180,10 @@ NSString *const PLACEHOLDER = @"Attention : le message que vous écrivez ici ser
 
 - (IBAction)cancel {
     if ([self.textView text].length > 0 && ![self.textView.text isEqualToString:PLACEHOLDER]) {
-        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Attention !" andMessage:@"Vous allez perdre le contenu de votre alerte" handlerOK: ^(UIAlertAction * action){
+        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Attention !" andMessage:@"Vous allez perdre le contenu de votre alerte" handlerOK: ^(UIAlertAction * action ) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
             [self.delegate alertModoViewControllerDidFinish:self];
-        }];
+        } handlerCancel:nil baseController:self];
     }
     else {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
