@@ -310,7 +310,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
         else {
             ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:sURL]];
             [request setShouldRedirect:NO];
-            [request setTimeOutSeconds:10];
+            [request setTimeOutSeconds:2];
             [request setDelegate:self];
             [request startSynchronous];
             if ([request responseData]) {

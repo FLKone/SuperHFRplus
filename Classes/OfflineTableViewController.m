@@ -45,7 +45,7 @@
     UINib *nib2 = [UINib nibWithNibName:@"FavoriteCellView" bundle:nil];
     [self.offlineTableView registerNib:nib2 forCellReuseIdentifier:@"FavoriteCellID"];
 
-    self.title = @"Topics hors ligne (beta)";
+    self.title = @"Topics hors ligne";
     self.navigationController.navigationBar.translucent = NO;
     //Supprime les lignes vides à la fin de la liste
     self.offlineTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -87,10 +87,10 @@
 
 -(void) actionMenu {
     UIAlertController *actionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Actualiser les topics" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self reload]; }]];
     [actionAlert addAction:[UIAlertAction actionWithTitle:@"Mettre à jour le cache" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self refreshCache]; }]];
-    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Vider le cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCache]; }]];
-    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Tout supprimer" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCacheAndTopics]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Actualiser" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self reload]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Supprimer le cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCache]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Supprimer le cache et les topics" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCacheAndTopics]; }]];
     [actionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) { }]];
 
     [self presentViewController:actionAlert animated:YES completion:nil];
@@ -179,7 +179,6 @@
 
         [[OfflineStorage shared] removeTopicFromOfflineTopics:topic];
         [self.offlineTableView reloadData];
-        NSLog(@"DELETE");
     }
 }
 
