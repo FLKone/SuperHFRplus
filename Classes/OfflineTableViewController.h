@@ -41,7 +41,8 @@
 @property (nonatomic, strong) UIAlertController *topicActionAlert;
 @property (nonatomic, strong) NSIndexPath *pressedIndexPath;
 @property (nonatomic, strong) Topic *selectedTopic;
-
+@property int iNbPagesLoaded;
+-(void) updateProgressBarWithPercent:(float)fPercent andMessage:(NSString*)sMessage;
 
 @end
 

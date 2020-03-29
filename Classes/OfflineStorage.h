@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Topic.h"
+#import "OfflineTableViewController.h"
 
 @interface OfflineStorage : NSObject
 {
@@ -14,18 +15,17 @@
 }
 
 @property NSMutableDictionary*    dicOfflineTopics;
+@property NSMutableDictionary*    dicImageCacheList;
 
 + (OfflineStorage *)shared;
-
 - (BOOL)isOfflineTopic:(Topic*)topic;
-
 
 // To activate / deactivate offline mode for a topic
 - (void)toggleOfflineTopics:(Topic*)topic;
 - (void)updateOfflineTopic:(Topic*)newTopic;
-- (void)addTopicToOfflineTopics:(Topic*)topic withPage:(Topic*)page;
+//- (void)addTopicToOfflineTopics:(Topic*)topic withPage:(Topic*)page;
 - (void)removeTopicFromOfflineTopics:(Topic*)topic;
-- (BOOL)loadTopicToCache:(Topic*)topic;
+- (BOOL)loadTopicToCache:(Topic*)topic fromInstance:(OfflineTableViewController*)vc totalPages:(int)t;
 - (void)eraseAllTopicsInCache;
 - (void)eraseAllTopics;
 - (void)verifyCacheIntegrity;

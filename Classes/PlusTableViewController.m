@@ -126,7 +126,7 @@
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 3:
-            cell.titleLabel.text = @"Favoris hors ligne (beta)";
+            cell.titleLabel.text = @"Favoris hors ligne";
             cell.titleImage.image = [UIImage imageNamed:@"offline"];
             cell.badgeLabel.text = @"";
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
