@@ -1120,3 +1120,6 @@ body.ios7 {
     height:0px !important;
     overflow:hidden !important;
 }
+
+.embedvideo iframe {
+}

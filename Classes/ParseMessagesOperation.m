@@ -214,8 +214,74 @@
                 } 
             }
             
+            NSArray *arr = [NSArray arrayWithObjects: \
+            @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
+            @"^http(?:s)?://(youtu).be/([\\w-]+)/?", \
+            @"^http(?:s)?://(vimeo).com/(?:[a-zA-Z]+/)*([0-9]+)", \
+            @"^https://www.(twitch).tv/([\\w]+)/?$", \
+            @"^https://www.twitch.tv/(video)s/([0-9]+)(?:?.*)?/?", \
+            @"^https://www.twitch.tv/[^/]+/(video)/([0-9]+)(?:?.*)?/?", \
+            @"^https://www.twitch.tv/[^/]+/(clip)/([\\w]+)/?", \
+            @"^https://(clip)s.twitch.tv/([\\w]+)/?$", \
+            @"^https://(streamable).com/([\\w]+)/?", \
+            nil];
+            
+            // Coub and Dailymotion not working => currently not embedded
+            // @"^https://(coub).com/view/([\\w]+)/?", \
+            // @"^http(?:s)?://(?:www.)?(dai)lymotion.com/video/([\\w-]+)/?", \
+            // @"^http(?:s)?://(dai).ly/([\\w-]+)", \
+
+            // Parse for video
+            NSArray *hrefNodeArray = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"cLink" allowPartial:NO]; //Get links for cat
+            for (HTMLNode * hrefNode in hrefNodeArray) {
+                HTMLNode * hrefNodeParent3 = [[[hrefNode parent] parent] parent];
+                NSString* sHref = [hrefNode getAttributeNamed:@"href"];
+                if ([[hrefNodeParent3 getAttributeNamed:@"class"] isEqualToString:@"messCase2"]) {
+                    //NSLog(@"Checking URL :%@", sHref);
+                    for (NSString* regexp in arr) {
+                        //NSString* regexp1 = @"^http(?:s)?:\\/\\/(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)$";
+                        //NSRange   searchRange = NSMakeRange(0, sHref.length);
+                        //NSError  *error2 = NULL;
+                        NSArray  *capturesArray = [sHref arrayOfCaptureComponentsMatchedByRegex:regexp];
+                        //NSLog(@"regexp:%@", regexp);
+                        //NSLog(@"capturesArray: %@", capturesArray);
+                        if (capturesArray.count > 0) {
+                            NSString* sEmbUrl = @"";
+                            if ([capturesArray[0][1] isEqualToString:@"youtu"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"https://www.youtube.com/embed/%@?modestbranding=1&amp;title=&amp;autoplay=0&amp;re l=0&amp;controls=0", capturesArray[0][2]];
+                            } else if ([capturesArray[0][1] isEqualToString:@"dai"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"//www.dailymotion.com/embed/video/%@", capturesArray[0][2]];
+                            } else if ([capturesArray[0][1] isEqualToString:@"vimeo"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"https://player.vimeo.com/video/%@", capturesArray[0][2]];
+                            } else if ([capturesArray[0][1] isEqualToString:@"video"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"https://player.twitch.tv/?autoplay=false&video=v%@", capturesArray[0][2]];
+                            } else if ([capturesArray[0][1] isEqualToString:@"twitch"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"https://player.twitch.tv/?autoplay=false&channel=%@", capturesArray[0][2]];
+                            } else if ([capturesArray[0][1] isEqualToString:@"clip"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"https://clips.twitch.tv/embed?autoplay=false&clip=%@", capturesArray[0][2]];
+                            } else if ([capturesArray[0][1] isEqualToString:@"coub"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"//coub.com/embed/%@", capturesArray[0][2]];
+                            } else if ([capturesArray[0][1] isEqualToString:@"streamable"]) {
+                                sEmbUrl = [NSString stringWithFormat:@"https://streamable.com/s/%@", capturesArray[0][2]];
+                            }
+
+
+                            [hrefNode setAttributeNamed:@"class" withValue:@"embedvideo"];
+                            [hrefNode addAttributeNamed:@"hrefemb" withValue:sEmbUrl];
+                            NSString* value = @"embeddedvideo";
+                            const char * valueStr = [value UTF8String];
+                            char * newVal = (char *)malloc(strlen(valueStr)+1);
+                            memcpy (newVal, valueStr, strlen(valueStr)+1);
+                            free([hrefNode firstChild]->_node->content);
+                            [hrefNode firstChild]->_node->content = (xmlChar*)newVal;
+                            break;
+                        }
+                    }
+                }
+            }
+            
             fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
-            NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", fasTest.dicoHTML);
+            //NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", fasTest.dicoHTML);
             
             //recherche
             NSArray * nodesInMsg = [[messageNode findChildOfClass:@"messCase2"] children];
@@ -316,18 +382,14 @@
                 NSString *tmpURL = [[avatarNode firstChild] getAttributeNamed:@"src"];
                 
                 if (tmpURL.length > 0) { // si on a pas, on check si on a une URL
-                    //NSLog(@"on DL");                                    
-					//async dl 
-                    
                     ASIHTTPRequest *operation = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:tmpURL]];
                     __weak ASIHTTPRequest *operation_ = operation;
                     [operation setCompletionBlock:^{
-                        //NSLog(@"setCompletionBlock");
                         [fileManager createFileAtPath:key contents:[operation_ responseData] attributes:nil];
                         fasTest.imageUI = key;
                     }];
                     [operation setFailedBlock:^{
-                                                NSLog(@"setFailedBlock");
+                        NSLog(@"setFailedBlock");
                         fasTest.imageUI = nil;
                     }];
                                         
@@ -336,7 +398,6 @@
                     
                 }
             }
-            //== AVATAR BY NAME v2
             
 			if ([self isCancelled]) {
 				break;
@@ -344,15 +405,12 @@
 			
 			[self.workingArray addObject:fasTest];
 			
-			
-			
 			//NSLog(@"TOPICS Time elapsed then0		: %f", [then0 timeIntervalSinceDate:then]);
 			//NSLog(@"TOPICS Time elapsed then1		: %f", [then1 timeIntervalSinceDate:then0]);
 			//NSLog(@"TOPICS Time elapsed then2		: %f", [then2 timeIntervalSinceDate:then1]);
 			//NSLog(@"TOPICS Time elapsed then3		: %f", [then3 timeIntervalSinceDate:then2]);
 			//NSLog(@"TOPICS Time elapsed then4		: %f", [then4 timeIntervalSinceDate:then3]);
-			
-			//NSLog(@"TOPICS Time elapsed now			: %f", [now timeIntervalSinceDate:then4]);
+			//NSLog(@"TOPICS Time elapsed now		: %f", [now timeIntervalSinceDate:then4]);
 			//NSLog(@"TOPICS Time elapsed Total		: %f", [now timeIntervalSinceDate:then]);
 			
 		}
@@ -361,19 +419,11 @@
 			break;
 		}
 
-		
-		//[pool2 drain];
-		
-		//break;
         indexNode++;
 	}
 
 	//NSDate *nowT = [NSDate date]; // Create a current date
-
 	//NSLog(@"TOPICS Parse Time elapsed Total		: %f", [nowT timeIntervalSinceDate:thenT]);
-
-	
-
 }
 
 @end
