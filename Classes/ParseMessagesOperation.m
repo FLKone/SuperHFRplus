@@ -165,7 +165,6 @@
 			//fasTest.name = [[fasTest.name componentsSeparatedByCharactersInSet:[[NSCharacterSet letterCharacterSet] invertedSet]] componentsJoinedByString:@""];
 			
 			if ([fasTest.name isEqualToString:@"Publicité"]) {
-				//[pool2 drain];
 				continue;
 			}
             
@@ -239,16 +238,22 @@
                 if ([[hrefNodeParent3 getAttributeNamed:@"class"] isEqualToString:@"messCase2"]) {
                     //NSLog(@"Checking URL :%@", sHref);
                     for (NSString* regexp in arr) {
-                        //NSString* regexp1 = @"^http(?:s)?:\\/\\/(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)$";
-                        //NSRange   searchRange = NSMakeRange(0, sHref.length);
-                        //NSError  *error2 = NULL;
                         NSArray  *capturesArray = [sHref arrayOfCaptureComponentsMatchedByRegex:regexp];
                         //NSLog(@"regexp:%@", regexp);
                         //NSLog(@"capturesArray: %@", capturesArray);
                         if (capturesArray.count > 0) {
                             NSString* sEmbUrl = @"";
                             if ([capturesArray[0][1] isEqualToString:@"youtu"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"https://www.youtube.com/embed/%@?modestbranding=1&amp;title=&amp;autoplay=0&amp;re l=0&amp;controls=0", capturesArray[0][2]];
+                                sEmbUrl = [NSString stringWithFormat:@"https://www.youtube.com/embed/%@", capturesArray[0][2]];
+                                NSString* sRegExpTime = @"(?:\\?|&)t=(?:([0-9]+)h)?(?:([0-9]+)m)?([0-9]+)s$";
+                                //NSLog(@"sRegExpTime:%@", sRegExpTime);
+                                NSArray  *timeArray= [sHref arrayOfCaptureComponentsMatchedByRegex:sRegExpTime];
+                                //NSLog(@"timeArray: %@", timeArray);
+                                if (timeArray.count > 0) {
+                                    int iStart = 0;
+                                    iStart = [timeArray[0][3] intValue] + [timeArray[0][2] intValue]*60 + [timeArray[0][2] intValue]*3600;
+                                    sEmbUrl = [NSString stringWithFormat:@"%@?start=%d", sEmbUrl, iStart];
+                                }
                             } else if ([capturesArray[0][1] isEqualToString:@"dai"]) {
                                 sEmbUrl = [NSString stringWithFormat:@"//www.dailymotion.com/embed/video/%@", capturesArray[0][2]];
                             } else if ([capturesArray[0][1] isEqualToString:@"vimeo"]) {
@@ -265,15 +270,18 @@
                                 sEmbUrl = [NSString stringWithFormat:@"https://streamable.com/s/%@", capturesArray[0][2]];
                             }
 
-
+                            
                             [hrefNode setAttributeNamed:@"class" withValue:@"embedvideo"];
                             [hrefNode addAttributeNamed:@"hrefemb" withValue:sEmbUrl];
+                            NSString* sUrlText = rawContentsOfNode([[hrefNode firstChild] _node], [myParser _doc]);
+                            [hrefNode addAttributeNamed:@"hreftxt" withValue:sUrlText];
+                            /*
                             NSString* value = @"embeddedvideo";
                             const char * valueStr = [value UTF8String];
                             char * newVal = (char *)malloc(strlen(valueStr)+1);
                             memcpy (newVal, valueStr, strlen(valueStr)+1);
                             free([hrefNode firstChild]->_node->content);
-                            [hrefNode firstChild]->_node->content = (xmlChar*)newVal;
+                            [hrefNode firstChild]->_node->content = (xmlChar*)newVal;*/
                             break;
                         }
                     }
