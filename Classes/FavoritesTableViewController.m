@@ -36,6 +36,7 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "OfflineStorage.h"
+#import "MultisManager.h"
 
 #define SECTION_CAT_VISIBLE 0
 #define SECTION_CAT_HIDDEN 1
@@ -1408,6 +1409,12 @@
         }
         [topicActionAlert addAction:uiActionOffline];
         
+        // Check quotes
+        UIAlertAction* uiActionCheckQuotes = [UIAlertAction actionWithTitle:@"Vérifier ses quotes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self checkPostsAndQuotesForTopicIndex:self.pressedIndexPath];
+        }];
+        [topicActionAlert addAction:uiActionCheckQuotes];
+        
 
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
@@ -1483,7 +1490,6 @@
 
 
 - (void)pushTopic {
-    
     if (([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
         [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ||
         [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
@@ -1513,6 +1519,7 @@
     
     // Close left panel on ipad in portrait mode
     [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
+
 }
 
 -(void)setTopicViewed {
@@ -1613,6 +1620,21 @@
     });
 }
 
+
+-(void)checkPostsAndQuotesForTopicIndex:(NSIndexPath *)indexPath {
+    Topic *aTopic = [self getTopicAtIndexPath:indexPath];
+        
+    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[aTopic aURL] displaySeparator:YES];
+    self.messagesTableViewController = aView;
+    
+    //setup the URL
+    self.messagesTableViewController.bFilterPostsQuotes = YES;
+    self.messagesTableViewController.topic = aTopic;
+    self.messagesTableViewController.topicName = [aTopic aTitle];
+    
+    //NSLog(@"push message liste");
+    [self pushTopic];
+}
 
 #pragma mark -
 #pragma mark chooseTopicPage

@@ -23,7 +23,7 @@
 @interface ParseMessagesOperation ()
 @property (nonatomic, weak) id <ParseMessagesOperationDelegate> delegate;
 @property (nonatomic, strong) NSData *dataToParse;
-@property (nonatomic, strong) NSMutableArray *workingArray;
+//@property (nonatomic, strong) NSMutableArray *workingArray;
 @property (nonatomic, strong) LinkItem *workingEntry;
 @property (nonatomic, assign) BOOL reverse;
 @property (nonatomic, assign) int index;
@@ -100,53 +100,40 @@
 
 }
 
--(void)parseData:(HTMLParser *)myParser{
-	
-	if ([self isCancelled]) {
+- (void)parseData:(HTMLParser *)myParser {
+    [self parseData:myParser filterPostsQuotes:NO];
+}
+
+- (void)parseData:(HTMLParser *)myParser filterPostsQuotes:(BOOL)bFilterPostsQuotes {
+    self.workingArray = [NSMutableArray array];
+    if ([self isCancelled]) {
 		return;
 	}
 	
-
-    [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutAvatar];    
+    [ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutAvatar];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	NSString *diskCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"ImageCache"];
 	
-	if (![fileManager fileExistsAtPath:diskCachePath])
-	{
-		//NSLog(@"createDirectoryAtPath");
+	if (![fileManager fileExistsAtPath:diskCachePath])	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:diskCachePath
 								  withIntermediateDirectories:YES
 												   attributes:nil
 														error:NULL];
 	}
-	else {
-		//NSLog(@"pas createDirectoryAtPath");
-	}
-
+    
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
-
-	//NSLog(@"rawContentsOfNode bodyNode : %@", rawContentsOfNode([bodyNode _node], [myParser _doc]));
-	
 	NSArray * messagesNodes = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messagetable" allowPartial:NO]; //Get all the <img alt="" />
-
-	//NSLog(@"%f message %d", [thenT timeIntervalSinceNow] * -1000.0, [messagesNodes count]);
+    
     int indexNode = 0;
 	for (HTMLNode * messageNode2 in messagesNodes) { //Loop through all the tags
-		
-		//NSAutoreleasePool * pool2 = [[NSAutoreleasePool alloc] init];
-		
-		HTMLNode * messageNode = [messageNode2 firstChild];
+
+        HTMLNode * messageNode = [messageNode2 firstChild];
 		
 		if (![self isCancelled]) {
-			//NSDate *then = [NSDate date]; // Create a current date
-			
-			//NSLog(@"====================================/nrawContentsOfNode messageNode : %@", rawContentsOfNode([messageNode2 _node], [myParser _doc]));
-
-
-			
+            BOOL bFilterCurrentPost = YES;
+            
 			HTMLNode * authorNode = [messageNode findChildWithAttribute:@"class" matchingName:@"s2" allowPartial:NO];
 			
 			LinkItem *fasTest = [[LinkItem alloc] init];
@@ -157,27 +144,27 @@
 			else {
 				fasTest.isDel = NO;
 			}
-
 			
 			fasTest.postID = [[[messageNode firstChild] firstChild] getAttributeNamed:@"name"];
 			fasTest.name = [authorNode allContents];
 			fasTest.name = [fasTest.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-			//fasTest.name = [[fasTest.name componentsSeparatedByCharactersInSet:[[NSCharacterSet letterCharacterSet] invertedSet]] componentsJoinedByString:@""];
-			
-			if ([fasTest.name isEqualToString:@"Publicité"]) {
+
+            
+            if ([fasTest.name isEqualToString:@"Publicité"]) {
 				continue;
 			}
             
 			HTMLNode * avatarNode = [messageNode findChildWithAttribute:@"class" matchingName:@"avatar_center" allowPartial:NO];
 			HTMLNode * contentNode = [messageNode findChildWithAttribute:@"id" matchingName:@"para" allowPartial:YES];
-            
 
             // Find "Citations"
             // Get current own pseudo
             MultisManager *manager = [MultisManager sharedManager];
             NSDictionary *mainCompte = [manager getMainCompte];
             NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
-
+            if ([[fasTest.name lowercaseString] isEqualToString:currentPseudoLowercase]) {
+                bFilterCurrentPost = NO;
+            }
             // For class oldcitation to citation
             NSArray *oldquoteArray = [messageNode findChildrenWithAttribute:@"class" matchingName:@"oldcitation" allowPartial:NO];
             for (HTMLNode * quoteNode in oldquoteArray) {
@@ -192,10 +179,11 @@
                 NSString* sFullTextAuthor = [subQuoteNode allContents];
                 if ([sFullTextAuthor length] > 10) {
                     NSString* sQuoteAuthor = [sFullTextAuthor substringToIndex:[sFullTextAuthor length]-10];
-                    //NSLog(@"=======================================> QUOTE : %@", sFullTextAuthor);
+                    
                     // Check for own post
                     if ([[sQuoteAuthor lowercaseString] isEqualToString:currentPseudoLowercase]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_me_quoted"];
+                        bFilterCurrentPost = NO;
                     } else if ([[BlackList shared] isWL:[sQuoteAuthor lowercaseString]]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_whitelist"];
                     } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
@@ -213,6 +201,9 @@
                 } 
             }
             
+            // When activated, filter to remove posts from other people or where you are not quoted
+            if (bFilterPostsQuotes && bFilterCurrentPost) { continue; }
+                             
             NSArray *arr = [NSArray arrayWithObjects: \
             @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
             @"^http(?:s)?://(youtu).be/([\\w-]+)/?", \
@@ -309,8 +300,6 @@
                         
 			HTMLNode * profilNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"profil" allowPartial:NO] parent];
 			fasTest.urlProfil = [profilNode getAttributeNamed:@"href"];
-            
-            
 			
 			HTMLNode * addFlagNode = [messageNode findChildWithAttribute:@"href" matchingName:@"addflag" allowPartial:YES];
 			fasTest.addFlagUrl = [addFlagNode getAttributeNamed:@"href"];
@@ -327,15 +316,8 @@
             // http://forum.hardware.fr/forum2.php?config=hfr.inc&cat=_CATID_&subcat=_SUBCATID_&post=__TOPIC_ID&page=1&p=1&sondage=&owntopic=&trash=&trash_post=&print=
             //          &numreponse=_POSTID_&quote_only=0&new=0&nojs=0#t_POSTID_
 
-			//NSDate *then3 = [NSDate date]; // Create a current date
-
-			
-			//fasTest.messageNode = contentNode;
-			
 			HTMLNode * dateNode = [messageNode findChildWithAttribute:@"class" matchingName:@"toolbar" allowPartial:NO];
 			if ([dateNode allContents]) {
-
-				//fasTest.messageDate = [[[NSString stringWithFormat:@"%@", [dateNode allContents]] stringByReplacingOccurrencesOfString:@"Posté le " withString:@""] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];	
 				NSString *regularExpressionString = @".*([0-9]{2})-([0-9]{2})-([0-9]{4}).*([0-9]{2}):([0-9]{2}):([0-9]{2}).*";
 				fasTest.messageDate = [[dateNode allContents] stringByReplacingOccurrencesOfRegex:regularExpressionString withString:@"$1-$2-$3 $4:$5:$6"];
 			}

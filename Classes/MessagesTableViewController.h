@@ -186,8 +186,11 @@
 @property UIAlertAction* actionCreateAQ;
 @property BOOL canSaveDrapalInMPStorage;
 
-
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
+@property (nonatomic, strong) Topic *topic;
+@property BOOL bFilterPostsQuotes;
+@property (nonatomic, strong) UIAlertController *alertProgress;
+@property (nonatomic, strong) UIProgressView *progressView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages;

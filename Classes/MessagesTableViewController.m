@@ -13,26 +13,19 @@
 #import "TopicsTableViewController.h"
 #import "PollTableViewController.h"
 
-//#import "HFR_EditorViewController.h"
-
-
 #import "RegexKitLite.h"
 #import "HTMLParser.h"
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
-
 #import "ASIDownloadCache.h"
 
 #import "UIWebView+Tools.h"
-
 #import "ShakeView.h"
-//#import "UIImageView+WebCache.h"
 #import "RangeOfCharacters.h"
 #import "NSData+Base64.h"
 
 #import "LinkItem.h"
 #import <CommonCrypto/CommonDigest.h>
-
 #import "ProfilViewController.h"
 #import "UIMenuItem+CXAImageSupport.h"
 #import "UIImpactFeedbackGenerator+UserDefaults.h"
@@ -44,24 +37,22 @@
 #import "HFRAlertView.h"
 #import "MPStorage.h"
 #import "OfflineStorage.h"
+#import "FilterPostsQuotes.h"
 
 @implementation MessagesTableViewController
+
 @synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
 @synthesize swipeLeftRecognizer, swipeRightRecognizer, overview, arrayActionsMessages, lastStringFlagTopic;
 @synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported, isSeparatorNewMessages;
-
-@synthesize queue; //v3
+@synthesize queue;
 @synthesize stringFlagTopic;
 @synthesize editFlagTopic;
 @synthesize arrayInputData;
 @synthesize aToolbar, styleAlert;
-
 @synthesize isFavoritesOrRead, isRedFlagged, isUnreadable, isAnimating, isViewed;
-
 @synthesize request, arrayAction, curPostID;
-
 @synthesize firstDate;
-@synthesize actionCreateAQ, canSaveDrapalInMPStorage;
+@synthesize actionCreateAQ, canSaveDrapalInMPStorage, topic, bFilterPostsQuotes, alertProgress, progressView;
 
 - (void)setTopicName:(NSString *)n {
     _topicName = [n filterTU];
@@ -94,20 +85,7 @@
     //self.firstDate = [NSDate date];
     self.errorReported = NO;
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=1711&page=301&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t530526";
-    
-    
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=5925&page=1&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t535660";
-    
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&subcat=525&post=5145&page=87&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t540188";
-    
-    NSLog(@"URL %@", [self currentUrl]);
-    
-    //NSLog(@"[self currentUrl] %@", [self currentUrl]);
-    //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
-
     self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
-
 	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
 	[request setDelegate:self];
     [request setShowAccurateProgress:YES];
@@ -648,6 +626,7 @@
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
         self.canSaveDrapalInMPStorage = NO;
+        self.bFilterPostsQuotes = NO;
 	}
 	return self;
 }
@@ -663,6 +642,7 @@
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
         self.canSaveDrapalInMPStorage = NO;
+        self.bFilterPostsQuotes = NO;
     }
     return self;
 }
@@ -940,10 +920,52 @@
 
 	[self setEditFlagTopic:nil];
 	[self setStringFlagTopic:@""];
-	[self fetchContent];
+    
+    if (self.bFilterPostsQuotes) {
+        //[self addProgressBar];
+        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[FilterPostsQuotes shared] fetchContentForTopic:self.topic];
+            [self manageLoadedItems:[FilterPostsQuotes shared].arrData];
+            self.pageNumber = self.topic.curTopicPage;
+
+        //});
+        /*
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.progressView.progress = 1.0;
+            [self.alertProgress setMessage:@"\n100%"];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        });*/
+
+    } else {
+        [self fetchContent];
+    }
     [self editMenuHidden:nil];
     [self forceButtonMenu];
 }
+
+-(void) addProgressBar {
+    self.alertProgress = [UIAlertController alertControllerWithTitle:@"Téléchargement des topics" message:@"0%" preferredStyle:UIAlertControllerStyleAlert];
+    [self.alertProgress addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }]];
+
+    UIView *alertView = self.alertProgress.view;
+
+    self.progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+    self.progressView.progress = 0.0;
+    self.progressView.translatesAutoresizingMaskIntoConstraints = false;
+    [alertView addSubview:self.progressView];
+
+
+    NSLayoutConstraint *bottomConstraint = [self.progressView.bottomAnchor constraintEqualToAnchor:alertView.bottomAnchor];
+    [bottomConstraint setActive:YES];
+    bottomConstraint.constant = -45; // How to constraint to Cancel button?
+
+    [[self.progressView.leftAnchor constraintEqualToAnchor:alertView.leftAnchor] setActive:YES];
+    [[self.progressView.rightAnchor constraintEqualToAnchor:alertView.rightAnchor] setActive:YES];
+
+    [self presentViewController:self.alertProgress animated:true completion:nil];
+}
+
 
 -(void)fullScreen {
     [self fullScreen:nil];
@@ -1306,24 +1328,11 @@
             }
         }
         
-        
-
-        
-        
         [label setNumberOfLines:0];
-        
 		[label setText:[NSString stringWithFormat:@"Page: %d — %d/%d", self.pageNumber, index + 1, arrayData.count]];
         
 		[self.detailViewController.navigationItem setTitleView:label];
-		///===
-		
-		 //setup the URL
-		 //detailViewController.topicName = [[arrayData objectAtIndex:indexPath.row] name];	
-		 
-		 //NSLog(@"push message details");
-		 // andContent:[arrayData objectAtIndex:indexPath.section]
-		 
-		 self.detailViewController.arrayData = arrayData;	
+		 self.detailViewController.arrayData = arrayData;
 		 self.detailViewController.curMsg = index;	
 		 self.detailViewController.pageNumber = self.pageNumber;	
 		 self.detailViewController.parent = self;	
@@ -1605,18 +1614,15 @@
 #pragma mark Parse Operation Delegate
 
 // -------------------------------------------------------------------------------
-//	handleLoadedApps:notif
+//	manageLoadedItems:notif
 // -------------------------------------------------------------------------------
 
-- (void)handleLoadedApps:(NSArray *)loadedItems
+- (void)manageLoadedItems:(NSArray *)loadedItems
 {
-    
-	[self.arrayData removeAllObjects];
+    [self.arrayData removeAllObjects];
 	[self.arrayData addObjectsFromArray:loadedItems];
 
-
 	NSString *tmpHTML = @"";
-    
     NSLog(@"COUNT = %lu", (unsigned long)[self.arrayData count]);
     
     if (!self.isSearchInstra && self.arrayData.count == 0 && !self.errorReported) {
@@ -1649,7 +1655,6 @@
         }
 
         NSLog(@"Looking for %d", currentFlagValue);
-        //NSLog(@"==============");
         
         // Ego quote not applyed on MP
         BOOL bIsMP = YES;
@@ -1666,7 +1671,7 @@
 
                 if (tmpFlagValue == currentFlagValue) {
                     if (self.isSeparatorNewMessages == YES) {
-                        // Add separator  (but not after last post of page)
+                        // Add separator (but not after last post of page)
                         if (i < [self.arrayData count] - 1) {
                             tmpHTML = [tmpHTML stringByAppendingString:@"<div class=\"separator1\"></div>"];
                         }
@@ -1675,50 +1680,36 @@
                     closePostID = tmpFlagValue;
                 }
 
-                //NSLog(@"pas encore trouvé");
-                
+                // Pas encore trouvé
                 if (closePostID && currentFlagValue && tmpFlagValue >= currentFlagValue) {
                     //NSLog(@"On a trouvé plus grand, on set");
                     closePostID = tmpFlagValue;
                     ifCurrentFlag = YES;
                 }
-                else {
-                    //NSLog(@"0, on set le premier");
+                else {  // on set le premier
                     closePostID = tmpFlagValue;
                 }
-                
             }
         }
         
-        if (closePostID) {
-            //NSLog(@"On remplace au plus proche");
+        if (closePostID) { // On remplace au plus proche
             self.stringFlagTopic = [NSString stringWithFormat:@"#t%d", closePostID];
         }
-        
-        NSLog(@"NEW %@", self.stringFlagTopic);
         
         if (![self isModeOffline]) {
             // On ajoute le bouton de notif de sondage
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
             UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
-            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
                 UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
                 self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
             } else {
             UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
-            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
                 self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
             }
             
             //on ajoute le bouton actualiser si besoin
             if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
-                //NSLog(@"premiere et unique ou dernier");
-                //'before'
                 refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
-
-            }
-            else {
-                //NSLog(@"autre");
             }
         }
         else { // Offline
@@ -1914,12 +1905,12 @@
         NSString *path = [[NSBundle mainBundle] bundlePath];
         NSURL *baseURL = [NSURL fileURLWithPath:path];
 
-        /*
+        
         NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);
         NSLog(@"======================================================================================================");
         NSLog(@"baseURL %@", baseURL);
-        NSLog(@"======================================================================================================");*/
+        NSLog(@"======================================================================================================");
         
         self.loaded = NO;
 
@@ -1944,7 +1935,7 @@
 
 - (void)didFinishParsing:(NSArray *)appList
 {
-    [self performSelectorOnMainThread:@selector(handleLoadedApps:) withObject:appList waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(manageLoadedItems:) withObject:appList waitUntilDone:NO];
     self.queue = nil;
 }
 
