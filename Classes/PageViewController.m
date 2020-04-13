@@ -17,6 +17,7 @@
 @synthesize currentUrl, currentOfflineTopic, pageNumber;
 @synthesize firstPageNumber, lastPageNumber;
 @synthesize firstPageUrl, lastPageUrl;
+@synthesize filterPostsQuotes;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -29,6 +30,7 @@
 		self.firstPageUrl = [[NSString alloc] init];
 		self.lastPageUrl = [[NSString alloc] init];
         self.currentOfflineTopic = nil;
+        self.filterPostsQuotes = nil;
     }
     return self;
 }
@@ -132,9 +134,10 @@
         if ([self respondsToSelector:@selector(searchSubmit:)]) {
             [self searchSubmit:nil];
         }
-
     }
-
+    else if ([pageType isEqualToString:@"filterPostsQuotesNext"]) {
+        [self filterPostsQuotesNext:nil];
+    }
 }
 
 -(void)gotoPageNumber:(int)number{
@@ -257,6 +260,9 @@
 }
 - (IBAction)searchSubmit:(UIBarButtonItem *)sender {
     
+}
+
+- (IBAction)filterPostsQuotesNext:(UIBarButtonItem *)sender {
 }
 
 - (void)fetchContent:(int)from {

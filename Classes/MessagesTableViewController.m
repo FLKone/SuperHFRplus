@@ -52,7 +52,7 @@
 @synthesize isFavoritesOrRead, isRedFlagged, isUnreadable, isAnimating, isViewed;
 @synthesize request, arrayAction, curPostID;
 @synthesize firstDate;
-@synthesize actionCreateAQ, canSaveDrapalInMPStorage, topic, bFilterPostsQuotes, alertProgress, progressView;
+@synthesize actionCreateAQ, canSaveDrapalInMPStorage, topic, filterPostsQuotes, arrFilteredPosts, alertProgress, progressView;
 
 - (void)setTopicName:(NSString *)n {
     _topicName = [n filterTU];
@@ -250,11 +250,14 @@
             }
         }
         
-        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        if (self.filterPostsQuotes) {
+            [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld à %ld", self.topicName, (unsigned long)self.pageNumberFilterStart, (unsigned long)self.pageNumberFilterEnd]];
+        }
+        else {
+            [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        }
         [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
     }
-
-    //NSLog(@"pageNumber %d", self.pageNumber);
 
     if (self.isSearchInstra) {
         
@@ -626,7 +629,8 @@
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
         self.canSaveDrapalInMPStorage = NO;
-        self.bFilterPostsQuotes = NO;
+        self.filterPostsQuotes = nil;
+        self.arrFilteredPosts = nil;
 	}
 	return self;
 }
@@ -642,7 +646,8 @@
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
         self.canSaveDrapalInMPStorage = NO;
-        self.bFilterPostsQuotes = NO;
+        self.filterPostsQuotes = nil;
+        self.arrFilteredPosts = nil;
     }
     return self;
 }
@@ -744,7 +749,7 @@
 }
 
 - (void)editMenuHidden:(id)sender {
-    NSLog(@"editMenuHidden %@ NOMBRE %u", sender, [UIMenuController sharedMenuController].menuItems.count);
+    NSLog(@"editMenuHidden %@ NOMBRE %lu", sender, (long unsigned)[UIMenuController sharedMenuController].menuItems.count);
     
     UIImage *menuImgQuote = [UIImage imageNamed:@"ReplyArrowFilled-20"];
     UIImage *menuImgQuoteB = [UIImage imageNamed:@"BoldFilled-20"];
@@ -921,21 +926,11 @@
 	[self setEditFlagTopic:nil];
 	[self setStringFlagTopic:@""];
     
-    if (self.bFilterPostsQuotes) {
-        //[self addProgressBar];
-        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[FilterPostsQuotes shared] fetchContentForTopic:self.topic];
-            [self manageLoadedItems:[FilterPostsQuotes shared].arrData];
-            self.pageNumber = self.topic.curTopicPage;
-
-        //});
-        /*
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            self.progressView.progress = 1.0;
-            [self.alertProgress setMessage:@"\n100%"];
-            [self dismissViewControllerAnimated:YES completion:nil];
-        });*/
-
+    if (self.filterPostsQuotes) {
+        [self manageLoadedItems:self.filterPostsQuotes.arrData];
+        self.pageNumberFilterStart = self.filterPostsQuotes.iStartPage;
+        self.pageNumberFilterEnd = self.filterPostsQuotes.iLastPageLoaded;
+        [self setupScrollAndPage];
     } else {
         [self fetchContent];
     }
@@ -1709,7 +1704,11 @@
             
             //on ajoute le bouton actualiser si besoin
             if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
-                refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
+                if (self.filterPostsQuotes) {
+                    refreshBtn = @"<div id=\"actualiserbtn\">&nbsp;</div>"; // just to add some space
+                } else {
+                    refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">&nbsp;</div>";
+                }
             }
         }
         else { // Offline
@@ -1754,7 +1753,10 @@
         else if (self.isSearchInstra) {
             tooBar = [NSString stringWithFormat:@"<a href=\"oijlkajsdoihjlkjasdoauto://submitsearch\" id=\"searchintra_nextbutton\">Résultats suivants &raquo;</a>"];
         }
-        
+        else if (self.filterPostsQuotes && !self.filterPostsQuotes.bIsFinished) {
+            tooBar = [NSString stringWithFormat:@"<a href=\"oijlkajsdoihjlkjasdoauto://filterPostsQuotesNext\" id=\"searchintra_nextbutton\">Résultats suivants &raquo;</a>"];
+        }
+
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *display_sig = [defaults stringForKey:@"display_sig"];
@@ -1957,7 +1959,6 @@
             if (self.pageNumber >= nPageCurrentFlag ) {
                 NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
                 NSString* sP = self.arrayInputData[@"p"];
-                NSString* sUri = @"";
                 NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", nil];
                 [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
             }
@@ -1968,16 +1969,13 @@
 }
 
 - (void)webViewDidFinishPreLoadDOM {
-    NSLog(@"== webViewDidFinishPreLoadDOM");
-
-    //[self userTextSizeDidChange];
 }
 
 - (void)webViewDidFinishLoadDOM
 {
     NSLog(@"== webViewDidFinishLoadDOM");
     
-    if (!self.pageNumber) {
+    if (!self.pageNumber && !self.filterPostsQuotes) {
         return;
     }
     
@@ -3293,6 +3291,9 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 
 }
 
+- (IBAction)filterPostsQuotesNext:(UIBarButtonItem *)sender {
+    [self.filterPostsQuotes checkNextPostsAndQuotesWithVC:self];
+}
 
 -(NSString *)serializeParams:(NSDictionary *)params {
     /*

@@ -68,8 +68,8 @@
     
 		if ([self isCancelled])
 		{
-			//NSLog(@"main canceled");		
-		}	
+			//NSLog(@"main canceled");
+		}
 		self.workingArray = [NSMutableArray array];
 
 		NSError * error = nil;
@@ -101,10 +101,10 @@
 }
 
 - (void)parseData:(HTMLParser *)myParser {
-    [self parseData:myParser filterPostsQuotes:NO];
+    [self parseData:myParser filterPostsQuotes:NO topicUrl:nil topicPage:0];
 }
 
-- (void)parseData:(HTMLParser *)myParser filterPostsQuotes:(BOOL)bFilterPostsQuotes {
+- (void)parseData:(HTMLParser *)myParser filterPostsQuotes:(BOOL)bFilterPostsQuotes topicUrl:(NSString*)sTopicUrl topicPage:(int)iPage{
     self.workingArray = [NSMutableArray array];
     if ([self isCancelled]) {
 		return;
@@ -127,30 +127,30 @@
 	NSArray * messagesNodes = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messagetable" allowPartial:NO]; //Get all the <img alt="" />
     
     int indexNode = 0;
-	for (HTMLNode * messageNode2 in messagesNodes) { //Loop through all the tags
+	for (HTMLNode * messageNodeParent in messagesNodes) { //Loop through all the tags
 
-        HTMLNode * messageNode = [messageNode2 firstChild];
+        HTMLNode * messageNode = [messageNodeParent firstChild];
 		
 		if (![self isCancelled]) {
             BOOL bFilterCurrentPost = YES;
             
 			HTMLNode * authorNode = [messageNode findChildWithAttribute:@"class" matchingName:@"s2" allowPartial:NO];
-			
-			LinkItem *fasTest = [[LinkItem alloc] init];
-			
+        
+			LinkItem *linkItem = [[LinkItem alloc] init];
+            
 			if ([[[[messageNode parent] parent] getAttributeNamed:@"class"] isEqualToString:@"messagetabledel"]) {
-				fasTest.isDel = YES;
+				linkItem.isDel = YES;
 			}
 			else {
-				fasTest.isDel = NO;
+				linkItem.isDel = NO;
 			}
 			
-			fasTest.postID = [[[messageNode firstChild] firstChild] getAttributeNamed:@"name"];
-			fasTest.name = [authorNode allContents];
-			fasTest.name = [fasTest.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			linkItem.postID = [[[messageNode firstChild] firstChild] getAttributeNamed:@"name"];
+            linkItem.name = [authorNode allContents];
+			linkItem.name = [linkItem.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
             
-            if ([fasTest.name isEqualToString:@"Publicité"]) {
+            if ([linkItem.name isEqualToString:@"Publicité"]) {
 				continue;
 			}
             
@@ -162,7 +162,7 @@
             MultisManager *manager = [MultisManager sharedManager];
             NSDictionary *mainCompte = [manager getMainCompte];
             NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
-            if ([[fasTest.name lowercaseString] isEqualToString:currentPseudoLowercase]) {
+            if ([[linkItem.name lowercaseString] isEqualToString:currentPseudoLowercase]) {
                 bFilterCurrentPost = NO;
             }
             // For class oldcitation to citation
@@ -188,7 +188,7 @@
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_whitelist"];
                     } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
-                        NSString* sPostId = [fasTest.postID substringFromIndex:1];
+                        NSString* sPostId = [linkItem.postID substringFromIndex:1];
                         [quoteNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
                         [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
                         [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
@@ -202,7 +202,20 @@
             }
             
             // When activated, filter to remove posts from other people or where you are not quoted
-            if (bFilterPostsQuotes && bFilterCurrentPost) { continue; }
+            if (bFilterPostsQuotes && bFilterCurrentPost) {
+                continue;
+            }
+            if (bFilterPostsQuotes) {
+                if (sTopicUrl) {
+                    linkItem.url = [NSString stringWithFormat:@"https://forum.hardware.fr%@", sTopicUrl];
+                    if (iPage > 0) {
+                        linkItem.iPage = iPage;
+                        linkItem.url = [linkItem.url stringByReplacingOccurrencesOfRegex:@"&page=[0-9]+" withString:[NSString stringWithFormat:@"&page=%d", iPage]];
+                    }
+                    linkItem.url = [linkItem.url stringByReplacingOccurrencesOfRegex:@"#t[0-9]+" withString:[NSString stringWithFormat:@"#%@", linkItem.postID]];
+                    NSLog(@"URL post:%@", linkItem.url);
+                }
+            }
                              
             NSArray *arr = [NSArray arrayWithObjects: \
             @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
@@ -279,66 +292,66 @@
                 }
             }
             
-            fasTest.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
-            //NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", fasTest.dicoHTML);
+            linkItem.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
+            NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", linkItem.dicoHTML);
             
             //recherche
             NSArray * nodesInMsg = [[messageNode findChildOfClass:@"messCase2"] children];
             if (nodesInMsg.count >= 2 && [[[nodesInMsg objectAtIndex:1] tagName] isEqualToString:@"a"]) {
-                fasTest.dicoHTML = [rawContentsOfNode([[nodesInMsg objectAtIndex:1] _node], [myParser _doc]) stringByAppendingString:fasTest.dicoHTML];
+                linkItem.dicoHTML = [rawContentsOfNode([[nodesInMsg objectAtIndex:1] _node], [myParser _doc]) stringByAppendingString:linkItem.dicoHTML];
             }
             
 			// NEW FAST
 			HTMLNode * quoteNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"answer" allowPartial:NO] parent];
-			fasTest.urlQuote = [quoteNode className];
+			linkItem.urlQuote = [quoteNode className];
 			
 			HTMLNode * editNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"edit" allowPartial:NO] parent];
-			fasTest.urlEdit = [editNode className];
+			linkItem.urlEdit = [editNode className];
 
             HTMLNode * alertNode = [messageNode findChildWithAttribute:@"href" matchingName:@"/user/modo.php" allowPartial:YES];
-            fasTest.urlAlert = [alertNode getAttributeNamed:@"href"];
+            linkItem.urlAlert = [alertNode getAttributeNamed:@"href"];
                         
 			HTMLNode * profilNode = [[messageNode findChildWithAttribute:@"alt" matchingName:@"profil" allowPartial:NO] parent];
-			fasTest.urlProfil = [profilNode getAttributeNamed:@"href"];
+			linkItem.urlProfil = [profilNode getAttributeNamed:@"href"];
 			
 			HTMLNode * addFlagNode = [messageNode findChildWithAttribute:@"href" matchingName:@"addflag" allowPartial:YES];
-			fasTest.addFlagUrl = [addFlagNode getAttributeNamed:@"href"];
+			linkItem.addFlagUrl = [addFlagNode getAttributeNamed:@"href"];
 
 			HTMLNode * quoteJSNode = [messageNode findChildWithAttribute:@"onclick" matchingName:@"quoter('hardwarefr'" allowPartial:YES];
-			fasTest.quoteJS = [quoteJSNode getAttributeNamed:@"onclick"];
+			linkItem.quoteJS = [quoteJSNode getAttributeNamed:@"onclick"];
 
 			HTMLNode * MPNode = [messageNode findChildWithAttribute:@"href" matchingName:@"/message.php?config=hfr.inc&cat=prive&sond=&p=1&subcat=&dest=" allowPartial:YES];
-			fasTest.MPUrl = [MPNode getAttributeNamed:@"href"];
+			linkItem.MPUrl = [MPNode getAttributeNamed:@"href"];
 			
 			//NSDate *then2 = [NSDate date]; // Create a current date
 
-            // Message URL =
+            //NSString* sPostUrl = [NSString stringWithFormat:@"http://forum.hardware.fr/forum2.php?config=hfr.inc&cat=_CATID_&subcat=_SUBCATID_&post=__TOPIC_ID&page=1&p=1&sondage=&owntopic=&trash=&trash_post=&print=&numreponse=_POSTID_&quote_only=0&new=0&nojs=0#t_POSTID_"];
             // http://forum.hardware.fr/forum2.php?config=hfr.inc&cat=_CATID_&subcat=_SUBCATID_&post=__TOPIC_ID&page=1&p=1&sondage=&owntopic=&trash=&trash_post=&print=
             //          &numreponse=_POSTID_&quote_only=0&new=0&nojs=0#t_POSTID_
 
 			HTMLNode * dateNode = [messageNode findChildWithAttribute:@"class" matchingName:@"toolbar" allowPartial:NO];
 			if ([dateNode allContents]) {
 				NSString *regularExpressionString = @".*([0-9]{2})-([0-9]{2})-([0-9]{4}).*([0-9]{2}):([0-9]{2}):([0-9]{2}).*";
-				fasTest.messageDate = [[dateNode allContents] stringByReplacingOccurrencesOfRegex:regularExpressionString withString:@"$1-$2-$3 $4:$5:$6"];
+				linkItem.messageDate = [[dateNode allContents] stringByReplacingOccurrencesOfRegex:regularExpressionString withString:@"$1-$2-$3 $4:$5:$6"];
 			}
 			else {
-				fasTest.messageDate = @"";
+				linkItem.messageDate = @"";
 			}
 			
             //edit citation
 			HTMLNode * editedNode = [messageNode findChildWithAttribute:@"class" matchingName:@"edited" allowPartial:NO];
             if ([editedNode allContents]) {
                 NSString *regularExpressionString = @".*Message cité ([^<]+) fois.*";
-                fasTest.quotedNB = [[[[editedNode allContents] stringByMatching:regularExpressionString capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByDecodingXMLEntities];
-                if (fasTest.quotedNB) {
-                    fasTest.quotedLINK = [[editedNode findChildTag:@"a"] getAttributeNamed:@"href"];
+                linkItem.quotedNB = [[[[editedNode allContents] stringByMatching:regularExpressionString capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByDecodingXMLEntities];
+                if (linkItem.quotedNB) {
+                    linkItem.quotedLINK = [[editedNode findChildTag:@"a"] getAttributeNamed:@"href"];
                 }
                 
                 NSString *regularExpressionString2 = @".*Message édité par ([^<]+).*";
-                fasTest.editedTime = [[[[editedNode allContents] stringByMatching:regularExpressionString2 capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByDecodingXMLEntities];
+                linkItem.editedTime = [[[[editedNode allContents] stringByMatching:regularExpressionString2 capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByDecodingXMLEntities];
                 
-                //NSLog(@"editedTime = %@", fasTest.editedTime);
-                //NSLog(@"quotedLINK = %@", fasTest.quotedLINK);
+                //NSLog(@"editedTime = %@", linkItem.editedTime);
+                //NSLog(@"quotedLINK = %@", linkItem.quotedLINK);
             }
 
             
@@ -347,7 +360,7 @@
 			NSPredicate *regExErrorPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regExError];
 			BOOL isRegExError = [regExErrorPredicate evaluateWithObject:[request responseString]];*/
 			
-			fasTest.imageUI = nil;
+			linkItem.imageUI = nil;
 
 			//NSDate *then4 = [NSDate date]; // Create a current date
 
@@ -356,7 +369,7 @@
             //AVATAR BY NAME v2
             
             //Key for pseudo
-            const char *str = [fasTest.name UTF8String];
+            const char *str = [linkItem.name UTF8String];
             unsigned char r[CC_MD5_DIGEST_LENGTH];
             CC_MD5(str, strlen(str), r);
             NSString *filename = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
@@ -366,7 +379,7 @@
             
             if ([fileManager fileExistsAtPath:key]) // on check si on a deja l'avatar pour cette key
             {
-                fasTest.imageUI = key;
+                linkItem.imageUI = key;
             }
             else { 
                 NSString *tmpURL = [[avatarNode firstChild] getAttributeNamed:@"src"];
@@ -376,11 +389,11 @@
                     __weak ASIHTTPRequest *operation_ = operation;
                     [operation setCompletionBlock:^{
                         [fileManager createFileAtPath:key contents:[operation_ responseData] attributes:nil];
-                        fasTest.imageUI = key;
+                        linkItem.imageUI = key;
                     }];
                     [operation setFailedBlock:^{
                         NSLog(@"setFailedBlock");
-                        fasTest.imageUI = nil;
+                        linkItem.imageUI = nil;
                     }];
                                         
                     [self.queue addOperation:operation];
@@ -393,7 +406,7 @@
 				break;
 			}
 			
-			[self.workingArray addObject:fasTest];
+			[self.workingArray addObject:linkItem];
 			
 			//NSLog(@"TOPICS Time elapsed then0		: %f", [then0 timeIntervalSinceDate:then]);
 			//NSLog(@"TOPICS Time elapsed then1		: %f", [then1 timeIntervalSinceDate:then0]);

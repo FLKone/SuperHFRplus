@@ -90,6 +90,7 @@
 @property BOOL viewed;
 @property BOOL isDel;
 @property BOOL isBL;
+@property int iPage;
 
 -(NSString *)toHTML:(int)index isMP:(BOOL)bIsMP;
 

@@ -560,12 +560,21 @@ table.code *, table.fixed * {
 .message .content .right {
 /*    padding-top: 44px !important; */
 }
-.message .content .right>a.cLink {
+.message .content .right>a.cLink  {
     display: block;
-    line-height: 44px;
+    line-height: 30px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: black; /*rien ?*/ /* Dark rgb(146, 147, 151);*/
+    border-bottom: 1px solid var(--color-background-bars); /* ?? */ /* Dark rgb(68, 79, 77); */
+    background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background); /*rien ?*/ /* Dark rgb(19, 19, 29); */
+    background-origin: content-box;
+}
+
+.message .content .right>a.filteredpostlink {
+    display: block;
+    line-height: 30px;
+    padding: 0 0px 0 10px !important;
+    text-decoration: none;
     border-bottom: 1px solid var(--color-background-bars); /* ?? */ /* Dark rgb(68, 79, 77); */
     background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background); /*rien ?*/ /* Dark rgb(19, 19, 29); */
     background-origin: content-box;

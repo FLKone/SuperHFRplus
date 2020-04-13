@@ -24,7 +24,7 @@
 
 #import "MWPhotoBrowser.h"
 
-@class HTMLNode;
+@class HTMLNode, MessageDetailViewController, ASIHTTPRequest, FilterPostsQuotes;
 @class MessageDetailViewController;
 @class ASIHTTPRequest;
 
@@ -188,7 +188,9 @@
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
 @property (nonatomic, strong) Topic *topic;
-@property BOOL bFilterPostsQuotes;
+//@property BOOL bFilterPostsQuotes;
+@property FilterPostsQuotes* filterPostsQuotes;
+@property NSMutableArray* arrFilteredPosts;
 @property (nonatomic, strong) UIAlertController *alertProgress;
 @property (nonatomic, strong) UIProgressView *progressView;
 
@@ -232,6 +234,7 @@
 - (IBAction)searchKeywordChanged:(UITextField *)sender;
 - (void)toggleSearch:(BOOL) active;
 - (IBAction)searchNext:(UITextField *)sender;
-
+- (void)manageLoadedItems:(NSArray *)loadedItems;
+- (void)setupScrollAndPage;
 
 @end

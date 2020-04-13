@@ -9,7 +9,8 @@
 
 @class MessagesTableViewController;
 @class PullToRefreshErrorViewController;
-@class ASIHTTPRequest;
+@class ASIHTTPRequest, FilterPostsQuotes;
+
 
 @interface FavoritesTableViewController : UIViewController <UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIAlertViewDelegate> {
 	IBOutlet UITableView *favoritesTableView;
@@ -58,6 +59,7 @@
 
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
 @property (nonatomic, strong) PullToRefreshErrorViewController *errorVC;
+@property (nonatomic, strong) FilterPostsQuotes* filterPostsQuotes;
 
 @property BOOL showAll;
 @property BOOL editCategoriesList;
@@ -66,7 +68,8 @@
 @property STATUS status;
 @property (nonatomic, strong) NSString *statusMessage;
 @property (nonatomic, strong) IBOutlet UILabel *maintenanceView;
-
+@property (nonatomic, strong) UIAlertController *alertProgress;
+@property (nonatomic, strong) UIProgressView *progressView;
 -(NSString*)wordAfterString:(NSString*)searchString inString:(NSString*)selfString;
 
 @property (nonatomic, strong) NSIndexPath *pressedIndexPath;
@@ -82,5 +85,6 @@
 - (void)pushTopic;
 
 - (void)chooseTopicPage;
+-(void) updateProgressBarWithPercent:(float)fPercent andMessage:(NSString*)sMessage;
 
 @end

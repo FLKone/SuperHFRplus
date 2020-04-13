@@ -16,7 +16,7 @@
 @implementation LinkItem
 
 @synthesize postID, lastPageUrl, lastPostUrl, viewed, name, url, flagUrl, typeFlag, rep, dicoHTML, messageDate, imageUI, textViewMsg, messageNode, messageAuteur;
-@synthesize urlQuote, urlAlert, urlEdit, urlProfil, addFlagUrl, quoteJS, MPUrl, isDel, isBL;
+@synthesize urlQuote, urlAlert, urlEdit, urlProfil, addFlagUrl, quoteJS, MPUrl, isDel, isBL, iPage;
 
 @synthesize quotedNB, quotedLINK, editedTime;
 
@@ -211,7 +211,15 @@
     if (self.editedTime) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<p class=\"editedhfrlink\">édité par %@</p>", self.editedTime]];
     }
-    
+    if (self.url) {
+        NSString* sPage = @"";
+        if (self.iPage > 0) {
+            sPage = [NSString stringWithFormat:@" - page %d", self.iPage];
+        }
+        NSString* sVoirMessage = [NSString stringWithFormat:@"<a class=\"filteredpostlink\" href=\"%@\" >Voir dans le sujet non filtré%@</a>", self.url, sPage];
+        myRawContent = [sVoirMessage stringByAppendingString:myRawContent];
+    }
+
     // Improve color for keyword in cpp tag
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"<span style=\"color:blue\">" withString:@"<span style=\"color:var( --color-action)\">"];
 

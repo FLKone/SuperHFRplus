@@ -37,6 +37,7 @@
 #import "ThemeColors.h"
 #import "OfflineStorage.h"
 #import "MultisManager.h"
+#import "FilterPostsQuotes.h"
 
 #define SECTION_CAT_VISIBLE 0
 #define SECTION_CAT_HIDDEN 1
@@ -47,10 +48,8 @@
 @synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
 @synthesize messagesTableViewController, errorVC;
 @synthesize idPostSuperFavorites;
-
 @synthesize request;
-
-@synthesize reloadOnAppear, status, statusMessage, maintenanceView, topicActionAlert;
+@synthesize reloadOnAppear, status, statusMessage, maintenanceView, topicActionAlert, filterPostsQuotes;
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -1622,18 +1621,34 @@
 
 
 -(void)checkPostsAndQuotesForTopicIndex:(NSIndexPath *)indexPath {
-    Topic *aTopic = [self getTopicAtIndexPath:indexPath];
-        
-    MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[aTopic aURL] displaySeparator:YES];
-    self.messagesTableViewController = aView;
-    
-    //setup the URL
-    self.messagesTableViewController.bFilterPostsQuotes = YES;
-    self.messagesTableViewController.topic = aTopic;
-    self.messagesTableViewController.topicName = [aTopic aTitle];
-    
-    //NSLog(@"push message liste");
-    [self pushTopic];
+    Topic *topic = [self getTopicAtIndexPath:indexPath];
+    if (!self.filterPostsQuotes) {
+        self.filterPostsQuotes = [[FilterPostsQuotes alloc] init];
+    }
+    [self.filterPostsQuotes checkPostsAndQuotesForTopic:topic andVC:self];
+}
+
+-(void) addProgressBar {
+    self.alertProgress = [UIAlertController alertControllerWithTitle:@"Téléchargement des topics" message:@"0%" preferredStyle:UIAlertControllerStyleAlert];
+    [self.alertProgress addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }]];
+
+    UIView *alertView = self.alertProgress.view;
+
+    self.progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+    self.progressView.progress = 0.0;
+    self.progressView.translatesAutoresizingMaskIntoConstraints = false;
+    [alertView addSubview:self.progressView];
+
+
+    NSLayoutConstraint *bottomConstraint = [self.progressView.bottomAnchor constraintEqualToAnchor:alertView.bottomAnchor];
+    [bottomConstraint setActive:YES];
+    bottomConstraint.constant = -45; // How to constraint to Cancel button?
+
+    [[self.progressView.leftAnchor constraintEqualToAnchor:alertView.leftAnchor] setActive:YES];
+    [[self.progressView.rightAnchor constraintEqualToAnchor:alertView.rightAnchor] setActive:YES];
+
+    [self presentViewController:self.alertProgress animated:true completion:nil];
 }
 
 #pragma mark -
