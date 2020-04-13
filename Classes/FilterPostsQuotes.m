@@ -68,11 +68,22 @@
     self.arrData = [[NSMutableArray alloc] init];
     self.bShowPostsRequired = NO;
     self.stopRequired = NO;
+    self.bIsFinished = NO;
+
     int iPageToLoad = topic.curTopicPage;
     if (iStartPage > 0) {
         iPageToLoad = iStartPage;
     }
     self.iStartPage = iPageToLoad;
+    NSString* sStartAfterPostId = nil;
+    if (iStartPage == 0) {
+        NSRange foundRange = [topic.aURL rangeOfString:@"#t"];
+        if (foundRange.location != NSNotFound) {
+            NSRange rangeRes = NSMakeRange(foundRange.location + 1, topic.aURL.length - foundRange.location - 1);
+            sStartAfterPostId = [topic.aURL substringWithRange:rangeRes];
+        }
+    }
+    
     int iNbPagesLoaded = 0;
     while (iPageToLoad <= topic.maxTopicPage) {
         NSLog(@"Loading Topic page %d", iPageToLoad);
@@ -94,7 +105,8 @@
                 ParseMessagesOperation *parser = [[ParseMessagesOperation alloc] initWithData:[request responseData] index:0 reverse:NO delegate:nil];
                 NSError * error = nil;
                 HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
-                [parser parseData:myParser filterPostsQuotes:YES topicUrl:topic.aURL topicPage:iPageToLoad];
+                [parser parseData:myParser filterPostsQuotes:YES startAfterThisPostId:sStartAfterPostId topicUrl:topic.aURL topicPage:iPageToLoad];
+                sStartAfterPostId = nil; // On filter on first page of url, not on the following
                 self.arrData = [self.arrData arrayByAddingObjectsFromArray:parser.workingArray];
             }
         }
@@ -115,7 +127,11 @@
         //sMessage = [NSString stringWithFormat:@"n%@", (unsigned long)iPageToLoad, sMessage];
         [self updateProgressBarWithPercent:fProgress andMessage:sMessage];
         
-        if (self.arrData.count >= 40 || self.bShowPostsRequired || self.stopRequired) {
+        if (iPageToLoad == topic.maxTopicPage) {
+            self.bIsFinished = YES;
+            break;
+        }
+        else if (self.arrData.count >= 40 || self.bShowPostsRequired || self.stopRequired) {
             break;
         }
         else {
@@ -124,27 +140,31 @@
         }
     }
     self.iLastPageLoaded = iPageToLoad;
-    if (iPageToLoad == topic.maxTopicPage) {
-        self.bIsFinished = NO;
-    }
-    if (!self.stopRequired && (self.arrData.count >= 40 || self.bShowPostsRequired || (self.arrData.count > 1 && bIsFinished))) {
+    if (!self.stopRequired && (self.arrData.count >= 40 || self.bShowPostsRequired || (self.arrData.count >= 1 && bIsFinished))) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.alertProgress dismissViewControllerAnimated:NO completion:nil];
-            NSArray* arrActions = [self.alertProgress actions];
-            [arrActions[0] setEnabled:NO];
-            if (self.messagesTableVC) {
-                [self displayNextPosts];
-            }
-            else {
-                [self displayPosts:topic];
-            }
+            self.progressView.progress = 1.0;
+        });
+        [NSThread sleepForTimeInterval:1];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.alertProgress dismissViewControllerAnimated:YES completion:^{
+                if (self.messagesTableVC) {
+                    [self displayNextPosts];
+                }
+                else {
+                    [self displayPosts:topic];
+                }
+            }];
         });
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.progressView.progress = 1.0;
             [self.alertProgress setTitle:@"Résultat"];
-            //[self dismissViewControllerAnimated:YES completion:nil];
-            //[self.offlineTableView reloadData];
+            NSArray* arrActions = [self.alertProgress actions];
+            [arrActions[1] setTitle:@"Fermer"];
+        });
+        [NSThread sleepForTimeInterval:2];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.alertProgress dismissViewControllerAnimated:YES completion:nil];
         });
     }
 }
@@ -189,7 +209,10 @@
         [self.alertProgress setMessage:sMessage];
     });
 }
-
+-(void) closeProgressView {
+    dispatch_async(dispatch_get_main_queue(), ^{
+    });
+}
 -(void) displayPosts:(Topic*)topic {
     MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:topic.aURL displaySeparator:YES];
     self.favoriteVC.messagesTableViewController = aView;

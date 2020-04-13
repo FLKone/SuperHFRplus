@@ -1705,7 +1705,9 @@
             //on ajoute le bouton actualiser si besoin
             if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
                 if (self.filterPostsQuotes) {
-                    refreshBtn = @"<div id=\"actualiserbtn\">&nbsp;</div>"; // just to add some space
+                    if (!self.filterPostsQuotes.bIsFinished) {
+                        refreshBtn = @"<div id=\"actualiserbtn\">&nbsp;</div>"; // just to add some space
+                    }
                 } else {
                     refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">&nbsp;</div>";
                 }
@@ -1993,7 +1995,7 @@
         }
         else {
             jsString2 = @"window.scrollTo(0,document.getElementById('endofpagetoolbar').offsetTop);";
-            if ([self isModeOffline]) {
+            if ([self isModeOffline] || self.filterPostsQuotes) {
                 jsString3 = @"window.scrollTo(0,document.getElementById('top').offsetTop);";
             }
             else {

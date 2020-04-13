@@ -565,9 +565,11 @@ table.code *, table.fixed * {
     line-height: 30px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    border-bottom: 1px solid var(--color-background-bars); /* ?? */ /* Dark rgb(68, 79, 77); */
-    background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background); /*rien ?*/ /* Dark rgb(19, 19, 29); */
+    border-top: 1px solid var(--color-background-bars);
+    border-bottom: 1px solid var(--color-background-bars);
+    background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background);
     background-origin: content-box;
+    margin-bottom: 5px !important;
 }
 
 .message .content .right>a.filteredpostlink {
@@ -575,9 +577,11 @@ table.code *, table.fixed * {
     line-height: 30px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    border-bottom: 1px solid var(--color-background-bars); /* ?? */ /* Dark rgb(68, 79, 77); */
-    background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background); /*rien ?*/ /* Dark rgb(19, 19, 29); */
+    border-top: 1px solid var(--color-background-bars);
+    border-bottom: 1px solid var(--color-background-bars);
+    background: url(unselectedrow.png) no-repeat scroll right center;
     background-origin: content-box;
+    margin-bottom: 5px !important;
 }
 
 div[id^=para] {

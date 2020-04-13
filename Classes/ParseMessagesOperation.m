@@ -101,10 +101,10 @@
 }
 
 - (void)parseData:(HTMLParser *)myParser {
-    [self parseData:myParser filterPostsQuotes:NO topicUrl:nil topicPage:0];
+    [self parseData:myParser filterPostsQuotes:NO startAfterThisPostId:nil topicUrl:nil topicPage:0];
 }
 
-- (void)parseData:(HTMLParser *)myParser filterPostsQuotes:(BOOL)bFilterPostsQuotes topicUrl:(NSString*)sTopicUrl topicPage:(int)iPage{
+- (void)parseData:(HTMLParser *)myParser filterPostsQuotes:(BOOL)bFilterPostsQuotes startAfterThisPostId:(NSString*)sStartAfterPostId topicUrl:(NSString*)sTopicUrl topicPage:(int)iPage{
     self.workingArray = [NSMutableArray array];
     if ([self isCancelled]) {
 		return;
@@ -122,6 +122,8 @@
 												   attributes:nil
 														error:NULL];
 	}
+    
+    BOOL bPostIdSeen = NO;
     
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
 	NSArray * messagesNodes = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messagetable" allowPartial:NO]; //Get all the <img alt="" />
@@ -145,7 +147,14 @@
 				linkItem.isDel = NO;
 			}
 			
-			linkItem.postID = [[[messageNode firstChild] firstChild] getAttributeNamed:@"name"];
+            linkItem.postID = [[[messageNode firstChild] firstChild] getAttributeNamed:@"name"];
+            if (sStartAfterPostId && !bPostIdSeen) {
+                if ([linkItem.postID isEqualToString:sStartAfterPostId]) {
+                    bPostIdSeen = YES;
+                }
+                continue;
+            }
+            
             linkItem.name = [authorNode allContents];
 			linkItem.name = [linkItem.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
@@ -186,6 +195,7 @@
                         bFilterCurrentPost = NO;
                     } else if ([[BlackList shared] isWL:[sQuoteAuthor lowercaseString]]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_whitelist"];
+                        bFilterCurrentPost = NO;
                     } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
                         NSString* sPostId = [linkItem.postID substringFromIndex:1];
