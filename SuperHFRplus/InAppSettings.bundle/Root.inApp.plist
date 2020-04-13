@@ -444,6 +444,26 @@
 				<string>yes</string>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>yes</string>
+            <key>Key</key>
+            <string>embedded_videos</string>
+            <key>Title</key>
+            <string>Afficher les vidéos</string>
+            <key>Titles</key>
+            <array>
+                <string>Lien</string>
+                <string>Intégré</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <string>no</string>
+                <string>yes</string>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>no</string>

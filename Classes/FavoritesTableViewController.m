@@ -1409,7 +1409,7 @@
         [topicActionAlert addAction:uiActionOffline];
         
         // Check quotes
-        UIAlertAction* uiActionCheckQuotes = [UIAlertAction actionWithTitle:@"Vérifier ses quotes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIAlertAction* uiActionCheckQuotes = [UIAlertAction actionWithTitle:@"Filtrer les posts" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self checkPostsAndQuotesForTopicIndex:self.pressedIndexPath];
         }];
         [topicActionAlert addAction:uiActionCheckQuotes];

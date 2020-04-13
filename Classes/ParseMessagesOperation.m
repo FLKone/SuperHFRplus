@@ -226,77 +226,79 @@
                     NSLog(@"URL post:%@", linkItem.url);
                 }
             }
-                             
-            NSArray *arr = [NSArray arrayWithObjects: \
-            @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
-            @"^http(?:s)?://(youtu).be/([\\w-]+)/?", \
-            @"^http(?:s)?://(vimeo).com/(?:[a-zA-Z]+/)*([0-9]+)", \
-            @"^https://www.(twitch).tv/([\\w]+)/?$", \
-            @"^https://www.twitch.tv/(video)s/([0-9]+)(?:?.*)?/?", \
-            @"^https://www.twitch.tv/[^/]+/(video)/([0-9]+)(?:?.*)?/?", \
-            @"^https://www.twitch.tv/[^/]+/(clip)/([\\w]+)/?", \
-            @"^https://(clip)s.twitch.tv/([\\w]+)/?$", \
-            @"^https://(streamable).com/([\\w]+)/?", \
-            nil];
             
-            // Coub and Dailymotion not working => currently not embedded
-            // @"^https://(coub).com/view/([\\w]+)/?", \
-            // @"^http(?:s)?://(?:www.)?(dai)lymotion.com/video/([\\w-]+)/?", \
-            // @"^http(?:s)?://(dai).ly/([\\w-]+)", \
+            if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"embedded_videos"] isEqualToString:@"yes"]) {
+                NSArray *arr = [NSArray arrayWithObjects: \
+                @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
+                @"^http(?:s)?://(youtu).be/([\\w-]+)/?", \
+                @"^http(?:s)?://(vimeo).com/(?:[a-zA-Z]+/)*([0-9]+)", \
+                @"^https://www.(twitch).tv/([\\w]+)/?$", \
+                @"^https://www.twitch.tv/(video)s/([0-9]+)(?:?.*)?/?", \
+                @"^https://www.twitch.tv/[^/]+/(video)/([0-9]+)(?:?.*)?/?", \
+                @"^https://www.twitch.tv/[^/]+/(clip)/([\\w]+)/?", \
+                @"^https://(clip)s.twitch.tv/([\\w]+)/?$", \
+                @"^https://(streamable).com/([\\w]+)/?", \
+                nil];
+                
+                // Coub and Dailymotion not working => currently not embedded
+                // @"^https://(coub).com/view/([\\w]+)/?", \
+                // @"^http(?:s)?://(?:www.)?(dai)lymotion.com/video/([\\w-]+)/?", \
+                // @"^http(?:s)?://(dai).ly/([\\w-]+)", \
 
-            // Parse for video
-            NSArray *hrefNodeArray = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"cLink" allowPartial:NO]; //Get links for cat
-            for (HTMLNode * hrefNode in hrefNodeArray) {
-                HTMLNode * hrefNodeParent3 = [[[hrefNode parent] parent] parent];
-                NSString* sHref = [hrefNode getAttributeNamed:@"href"];
-                if ([[hrefNodeParent3 getAttributeNamed:@"class"] isEqualToString:@"messCase2"]) {
-                    //NSLog(@"Checking URL :%@", sHref);
-                    for (NSString* regexp in arr) {
-                        NSArray  *capturesArray = [sHref arrayOfCaptureComponentsMatchedByRegex:regexp];
-                        //NSLog(@"regexp:%@", regexp);
-                        //NSLog(@"capturesArray: %@", capturesArray);
-                        if (capturesArray.count > 0) {
-                            NSString* sEmbUrl = @"";
-                            if ([capturesArray[0][1] isEqualToString:@"youtu"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"https://www.youtube.com/embed/%@", capturesArray[0][2]];
-                                NSString* sRegExpTime = @"(?:\\?|&)t=(?:([0-9]+)h)?(?:([0-9]+)m)?([0-9]+)s$";
-                                //NSLog(@"sRegExpTime:%@", sRegExpTime);
-                                NSArray  *timeArray= [sHref arrayOfCaptureComponentsMatchedByRegex:sRegExpTime];
-                                //NSLog(@"timeArray: %@", timeArray);
-                                if (timeArray.count > 0) {
-                                    int iStart = 0;
-                                    iStart = [timeArray[0][3] intValue] + [timeArray[0][2] intValue]*60 + [timeArray[0][2] intValue]*3600;
-                                    sEmbUrl = [NSString stringWithFormat:@"%@?start=%d", sEmbUrl, iStart];
+                // Parse for video
+                NSArray *hrefNodeArray = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"cLink" allowPartial:NO]; //Get links for cat
+                for (HTMLNode * hrefNode in hrefNodeArray) {
+                    HTMLNode * hrefNodeParent3 = [[[hrefNode parent] parent] parent];
+                    NSString* sHref = [hrefNode getAttributeNamed:@"href"];
+                    if ([[hrefNodeParent3 getAttributeNamed:@"class"] isEqualToString:@"messCase2"]) {
+                        //NSLog(@"Checking URL :%@", sHref);
+                        for (NSString* regexp in arr) {
+                            NSArray  *capturesArray = [sHref arrayOfCaptureComponentsMatchedByRegex:regexp];
+                            //NSLog(@"regexp:%@", regexp);
+                            //NSLog(@"capturesArray: %@", capturesArray);
+                            if (capturesArray.count > 0) {
+                                NSString* sEmbUrl = @"";
+                                if ([capturesArray[0][1] isEqualToString:@"youtu"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"https://www.youtube.com/embed/%@", capturesArray[0][2]];
+                                    NSString* sRegExpTime = @"(?:\\?|&)t=(?:([0-9]+)h)?(?:([0-9]+)m)?([0-9]+)s$";
+                                    //NSLog(@"sRegExpTime:%@", sRegExpTime);
+                                    NSArray  *timeArray= [sHref arrayOfCaptureComponentsMatchedByRegex:sRegExpTime];
+                                    //NSLog(@"timeArray: %@", timeArray);
+                                    if (timeArray.count > 0) {
+                                        int iStart = 0;
+                                        iStart = [timeArray[0][3] intValue] + [timeArray[0][2] intValue]*60 + [timeArray[0][2] intValue]*3600;
+                                        sEmbUrl = [NSString stringWithFormat:@"%@?start=%d", sEmbUrl, iStart];
+                                    }
+                                } else if ([capturesArray[0][1] isEqualToString:@"dai"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"//www.dailymotion.com/embed/video/%@", capturesArray[0][2]];
+                                } else if ([capturesArray[0][1] isEqualToString:@"vimeo"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"https://player.vimeo.com/video/%@", capturesArray[0][2]];
+                                } else if ([capturesArray[0][1] isEqualToString:@"video"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"https://player.twitch.tv/?autoplay=false&video=v%@", capturesArray[0][2]];
+                                } else if ([capturesArray[0][1] isEqualToString:@"twitch"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"https://player.twitch.tv/?autoplay=false&channel=%@", capturesArray[0][2]];
+                                } else if ([capturesArray[0][1] isEqualToString:@"clip"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"https://clips.twitch.tv/embed?autoplay=false&clip=%@", capturesArray[0][2]];
+                                } else if ([capturesArray[0][1] isEqualToString:@"coub"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"//coub.com/embed/%@", capturesArray[0][2]];
+                                } else if ([capturesArray[0][1] isEqualToString:@"streamable"]) {
+                                    sEmbUrl = [NSString stringWithFormat:@"https://streamable.com/s/%@", capturesArray[0][2]];
                                 }
-                            } else if ([capturesArray[0][1] isEqualToString:@"dai"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"//www.dailymotion.com/embed/video/%@", capturesArray[0][2]];
-                            } else if ([capturesArray[0][1] isEqualToString:@"vimeo"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"https://player.vimeo.com/video/%@", capturesArray[0][2]];
-                            } else if ([capturesArray[0][1] isEqualToString:@"video"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"https://player.twitch.tv/?autoplay=false&video=v%@", capturesArray[0][2]];
-                            } else if ([capturesArray[0][1] isEqualToString:@"twitch"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"https://player.twitch.tv/?autoplay=false&channel=%@", capturesArray[0][2]];
-                            } else if ([capturesArray[0][1] isEqualToString:@"clip"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"https://clips.twitch.tv/embed?autoplay=false&clip=%@", capturesArray[0][2]];
-                            } else if ([capturesArray[0][1] isEqualToString:@"coub"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"//coub.com/embed/%@", capturesArray[0][2]];
-                            } else if ([capturesArray[0][1] isEqualToString:@"streamable"]) {
-                                sEmbUrl = [NSString stringWithFormat:@"https://streamable.com/s/%@", capturesArray[0][2]];
-                            }
 
-                            
-                            [hrefNode setAttributeNamed:@"class" withValue:@"embedvideo"];
-                            [hrefNode addAttributeNamed:@"hrefemb" withValue:sEmbUrl];
-                            NSString* sUrlText = rawContentsOfNode([[hrefNode firstChild] _node], [myParser _doc]);
-                            [hrefNode addAttributeNamed:@"hreftxt" withValue:sUrlText];
-                            /*
-                            NSString* value = @"embeddedvideo";
-                            const char * valueStr = [value UTF8String];
-                            char * newVal = (char *)malloc(strlen(valueStr)+1);
-                            memcpy (newVal, valueStr, strlen(valueStr)+1);
-                            free([hrefNode firstChild]->_node->content);
-                            [hrefNode firstChild]->_node->content = (xmlChar*)newVal;*/
-                            break;
+                                
+                                [hrefNode setAttributeNamed:@"class" withValue:@"embedvideo"];
+                                [hrefNode addAttributeNamed:@"hrefemb" withValue:sEmbUrl];
+                                NSString* sUrlText = rawContentsOfNode([[hrefNode firstChild] _node], [myParser _doc]);
+                                [hrefNode addAttributeNamed:@"hreftxt" withValue:sUrlText];
+                                /*
+                                NSString* value = @"embeddedvideo";
+                                const char * valueStr = [value UTF8String];
+                                char * newVal = (char *)malloc(strlen(valueStr)+1);
+                                memcpy (newVal, valueStr, strlen(valueStr)+1);
+                                free([hrefNode firstChild]->_node->content);
+                                [hrefNode firstChild]->_node->content = (xmlChar*)newVal;*/
+                                break;
+                            }
                         }
                     }
                 }
