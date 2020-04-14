@@ -116,7 +116,7 @@
                 [arrActions[0] setEnabled:YES];
             });
         }
-        float fProgress = ((float)iNbPagesLoaded)/(topic.maxTopicPage - iStartPage);
+        float fProgress = ((float)iNbPagesLoaded+1)/(topic.maxTopicPage - self.iStartPage);
         NSString* sMessage = @"Aucun post trouvé";
         if (self.arrData.count == 1) {
             sMessage = @"1 post trouvé";
@@ -124,7 +124,7 @@
         else if (self.arrData.count > 1) {
             sMessage = [NSString stringWithFormat:@"%ld posts trouvés", (long)self.arrData.count];
         }
-        //sMessage = [NSString stringWithFormat:@"n%@", (unsigned long)iPageToLoad, sMessage];
+        sMessage = [NSString stringWithFormat:@"%@\n%ld/%ld", sMessage, (unsigned long)iPageToLoad, (unsigned long)topic.maxTopicPage];
         [self updateProgressBarWithPercent:fProgress andMessage:sMessage];
         
         if (iPageToLoad == topic.maxTopicPage) {

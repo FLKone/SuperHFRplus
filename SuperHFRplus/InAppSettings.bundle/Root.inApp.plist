@@ -350,6 +350,30 @@
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>wl_pseudo</string>
+            <key>Key</key>
+            <string>filter_posts_quotes</string>
+            <key>Title</key>
+            <string>Filtrer les posts</string>
+            <key>Titles</key>
+            <array>
+                <string>Love list et texte du pseudo</string>
+                <string>Love list uniquement</string>
+                <string>Texte du pseudo uniquement</string>
+                <string>Aucun</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <string>wl_pseudo</string>
+                <string>wl</string>
+                <string>pseudo</string>
+                <string>nothing</string>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>default</string>

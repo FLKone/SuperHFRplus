@@ -130,7 +130,10 @@
     
     int indexNode = 0;
 	for (HTMLNode * messageNodeParent in messagesNodes) { //Loop through all the tags
-
+        if (bFilterPostsQuotes && indexNode == 0) { // Filter 1st post of the page: "Reprise de la page précédente"
+            indexNode++;
+            continue;
+        }
         HTMLNode * messageNode = [messageNodeParent firstChild];
 		
 		if (![self isCancelled]) {
@@ -154,7 +157,7 @@
                 }
                 continue;
             }
-            
+
             linkItem.name = [authorNode allContents];
 			linkItem.name = [linkItem.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
@@ -172,6 +175,9 @@
             NSDictionary *mainCompte = [manager getMainCompte];
             NSString *currentPseudoLowercase = [[mainCompte objectForKey:PSEUDO_DISPLAY_KEY] lowercaseString];
             if ([[linkItem.name lowercaseString] isEqualToString:currentPseudoLowercase]) {
+                bFilterCurrentPost = NO;
+            }
+            else if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"filter_posts_quotes"] containsString:@"wl"] && [[BlackList shared] isWL:[linkItem.name lowercaseString]]) {
                 bFilterCurrentPost = NO;
             }
             // For class oldcitation to citation
@@ -195,7 +201,6 @@
                         bFilterCurrentPost = NO;
                     } else if ([[BlackList shared] isWL:[sQuoteAuthor lowercaseString]]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_whitelist"];
-                        bFilterCurrentPost = NO;
                     } else if ([[BlackList shared] isBL:[sQuoteAuthor lowercaseString]]) {
                         [quoteNode setAttributeNamed:@"class" withValue:@"citation_blacklist"];
                         NSString* sPostId = [linkItem.postID substringFromIndex:1];
@@ -211,10 +216,6 @@
                 } 
             }
             
-            // When activated, filter to remove posts from other people or where you are not quoted
-            if (bFilterPostsQuotes && bFilterCurrentPost) {
-                continue;
-            }
             if (bFilterPostsQuotes) {
                 if (sTopicUrl) {
                     linkItem.url = [NSString stringWithFormat:@"https://forum.hardware.fr%@", sTopicUrl];
@@ -223,7 +224,6 @@
                         linkItem.url = [linkItem.url stringByReplacingOccurrencesOfRegex:@"&page=[0-9]+" withString:[NSString stringWithFormat:@"&page=%d", iPage]];
                     }
                     linkItem.url = [linkItem.url stringByReplacingOccurrencesOfRegex:@"#t[0-9]+" withString:[NSString stringWithFormat:@"#%@", linkItem.postID]];
-                    NSLog(@"URL post:%@", linkItem.url);
                 }
             }
             
@@ -303,10 +303,27 @@
                     }
                 }
             }
-            
+
+            // When activated, filter to remove posts from other people or where you are not quoted
+            if (bFilterPostsQuotes && bFilterCurrentPost && ![[[NSUserDefaults standardUserDefaults] stringForKey:@"filter_posts_quotes"] containsString:@"pseudo"]) {
+                continue;
+            }
+
             linkItem.dicoHTML = rawContentsOfNode([contentNode _node], [myParser _doc]);
-            NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", linkItem.dicoHTML);
+            //NSLog(@"################################################# dicoHTML:\nd%@\n##################################################", linkItem.dicoHTML);
             
+            if (bFilterPostsQuotes && bFilterCurrentPost && [[[NSUserDefaults standardUserDefaults] stringForKey:@"filter_posts_quotes"] containsString:@"pseudo"]) {
+                if ([[linkItem.dicoHTML lowercaseString] containsString:currentPseudoLowercase]) {
+                    bFilterCurrentPost = NO;
+                }
+            }
+
+            // When activated, filter to remove posts from other people or where you are not quoted
+            if (bFilterPostsQuotes && bFilterCurrentPost) {
+                continue;
+            }
+
+
             //recherche
             NSArray * nodesInMsg = [[messageNode findChildOfClass:@"messCase2"] children];
             if (nodesInMsg.count >= 2 && [[[nodesInMsg objectAtIndex:1] tagName] isEqualToString:@"a"]) {

@@ -251,7 +251,12 @@
         }
         
         if (self.filterPostsQuotes) {
-            [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld à %ld", self.topicName, (unsigned long)self.pageNumberFilterStart, (unsigned long)self.pageNumberFilterEnd]];
+            if (self.pageNumberFilterStart == self.pageNumberFilterEnd) {
+                [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld", self.topicName, (unsigned long)self.pageNumberFilterStart]];
+            }
+            else {
+                [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld à %ld", self.topicName, (unsigned long)self.pageNumberFilterStart, (unsigned long)self.pageNumberFilterEnd]];
+            }
         }
         else {
             [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
@@ -1709,7 +1714,7 @@
                         refreshBtn = @"<div id=\"actualiserbtn\">&nbsp;</div>"; // just to add some space
                     }
                 } else {
-                    refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">&nbsp;</div>";
+                    refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
                 }
             }
         }
