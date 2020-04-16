@@ -33,12 +33,12 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <wkWebView contentMode="scaleToFill" id="MsJ-S0-jPQ">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                    <autoresizingMask key="autoresizingMask"/>
+                <wkWebView hidden="YES" opaque="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MsJ-S0-jPQ">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                     <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <wkWebViewConfiguration key="configuration">
-                        <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                    <wkWebViewConfiguration key="configuration" allowsInlineMediaPlayback="YES">
+                        <dataDetectorTypes key="dataDetectorTypes"/>
+                        <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" audio="YES" video="YES"/>
                         <wkPreferences key="preferences"/>
                     </wkWebViewConfiguration>
                 </wkWebView>
@@ -70,8 +70,9 @@
                     </subviews>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
-                <view hidden="YES" alpha="0.90000000000000002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sPu-av-2DW">
+                <view hidden="YES" alpha="0.90000000000000002" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sPu-av-2DW">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5982934397163121" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aIX-Ky-oja">
@@ -144,10 +145,10 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="sPu-av-2DW" secondAttribute="bottom" id="JbE-Mu-N5K"/>
-                <constraint firstItem="sPu-av-2DW" firstAttribute="trailing" secondItem="VAc-gQ-SII" secondAttribute="trailing" id="aHH-yw-rsf"/>
-                <constraint firstItem="sPu-av-2DW" firstAttribute="top" secondItem="VAc-gQ-SII" secondAttribute="top" id="aKY-wy-QiA"/>
-                <constraint firstItem="sPu-av-2DW" firstAttribute="leading" secondItem="VAc-gQ-SII" secondAttribute="leading" id="fZB-7x-bGZ"/>
+                <constraint firstItem="MsJ-S0-jPQ" firstAttribute="leading" secondItem="VAc-gQ-SII" secondAttribute="leading" id="4C2-f3-c6g"/>
+                <constraint firstItem="MsJ-S0-jPQ" firstAttribute="trailing" secondItem="VAc-gQ-SII" secondAttribute="trailing" id="GXg-IO-URl"/>
+                <constraint firstItem="MsJ-S0-jPQ" firstAttribute="bottom" secondItem="VAc-gQ-SII" secondAttribute="bottom" id="Ui3-wa-mjn"/>
+                <constraint firstItem="MsJ-S0-jPQ" firstAttribute="top" secondItem="VAc-gQ-SII" secondAttribute="top" id="hTM-vC-0LO"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>

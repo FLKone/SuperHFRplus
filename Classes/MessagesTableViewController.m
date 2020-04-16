@@ -1984,36 +1984,30 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSLog(@"didFinishNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self finishWebViewLoading];
 }
 
 - (void)finishWebViewLoading {
-    if (!self.pageNumber && !self.filterPostsQuotes) {
+    if (!self.filterPostsQuotes && !self.pageNumber) {
+        NSLog(@"Error: pageNumber not set");
         return;
     }
-    
-    if (!self.loaded) {
-        NSLog(@"== First DOM");
-        self.loaded = YES;
-
-        NSString* jsString2 = @"";
-        NSString* jsString3 = @"";
-
-        if (SYSTEM_VERSION_LESS_THAN(@"11")) {
-            jsString2 = @"window.location.hash='#bas';";
-            jsString3 = [NSString stringWithFormat:@"window.location.hash='%@';", ![self.stringFlagTopic isEqualToString:@""] ? self.stringFlagTopic : @"#top"];
         
+    if (!self.loaded) {
+        NSLog(@"Scroll to flag");
+        self.loaded = YES;
+        
+        NSString* jsString2 = @"window.scrollTo(0,document.getElementById('endofpagetoolbar').offsetTop);";
+        NSString* jsString3 = @"";
+        
+        if ([self isModeOffline] || self.filterPostsQuotes) {
+            jsString3 = @"window.scrollTo(0,document.getElementById('top').offsetTop);";
         }
         else {
-            jsString2 = @"window.scrollTo(0,document.getElementById('endofpagetoolbar').offsetTop);";
-            if ([self isModeOffline] || self.filterPostsQuotes) {
-                jsString3 = @"window.scrollTo(0,document.getElementById('top').offsetTop);";
-            }
-            else {
-                jsString3 = [NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
-            }
+            jsString3 = [NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", ![self.stringFlagTopic isEqualToString:@""] ? [self.stringFlagTopic stringByReplacingOccurrencesOfString:@"#" withString:@""] : @"top"];
         }
-        //Position du Flag
         
+        //Position du Flag
         [self.messagesWebView evaluateJavaScript:[jsString2 stringByAppendingString:jsString3] completionHandler:nil];
 
         NSLog(@"jsString2 %@", jsString2);
@@ -2026,11 +2020,7 @@
         [self.messagesWebView setHidden:NO];
         [self.messagesWebView becomeFirstResponder];
 
-        NSString *jsString = @"";
-
-        jsString = [jsString stringByAppendingString:@"$('.message').addSwipeEvents().bind('doubletap', function(evt, touch) { window.location = 'oijlkajsdoihjlkjasdodetails://'+this.id; });"];
-        [self.messagesWebView evaluateJavaScript:jsString completionHandler:nil];
-        return;
+        [self.messagesWebView evaluateJavaScript:@"$('.message').addSwipeEvents().bind('doubletap', function(evt, touch) { window.location = 'oijlkajsdoihjlkjasdodetails://'+this.id; });" completionHandler:nil];
     }
 }
 
