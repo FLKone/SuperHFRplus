@@ -14,7 +14,7 @@
 #import "ASIHTTPRequest.h"
 #import "RegexKitLite.h"
 
-#import "UIWebView+Tools.h"
+//WK #import "UIWebView+Tools.h"
 
 #import "LinkItem.h"
 #import "ThemeManager.h"
@@ -115,17 +115,9 @@
 		
 	}
     
-    if (SYSTEM_VERSION_LESS_THAN(@"11")) {
-        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.location.hash='%@';", [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]]];
-
-    }
-    else {
-        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]]];
-
-    }
+    [[self.parent messagesWebView] evaluateJavaScript:[NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]] completionHandler:nil];
 
     NSString *myRawContent = [[arrayData objectAtIndex:curMsg] dicoHTML];
-    
     if ([[arrayData objectAtIndex:curMsg] quotedNB]) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<a class=\"quotedhfrlink\" href=\"%@\">%@</a>", [[arrayData objectAtIndex:curMsg] quotedLINK], [[arrayData objectAtIndex:curMsg] quotedNB]]];
     }
@@ -445,7 +437,7 @@
 	[messageTitle setText:self.messageTitleString];	
 
     [self.messageView setBackgroundColor:[UIColor whiteColor]];
-    [self.messageView hideGradientBackground];
+    //WKK[self.messageView hideGradientBackground];
 
     //[self segmentAction:self.navigationItem.rightBarButtonItem];
     
@@ -483,7 +475,7 @@
     // e.g. self.myOutlet = nil;
 
 	[self.messageView stopLoading];
-	self.messageView.delegate = nil;
+	//WKKself.messageView.delegate = nil;
 	self.messageView = nil;
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;	
 
@@ -512,27 +504,22 @@
 
 
 }
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-	//NSLog(@"webViewDidStartLoad");
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-	//NSLog(@"webViewDidFinishLoad");
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+	NSLog(@"didFinishNavigation");
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
-
 }
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)aRequest navigationType:(UIWebViewNavigationType)navigationType {
-    //NSLog(@"expected:%d, got:%d | url:%@", UIWebViewNavigationTypeLinkClicked, navigationType, [aRequest.URL absoluteString]);
 
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSLog(@"decidePolicyForNavigationAction = %@", navigationAction.request.URL);
+    NSURLRequest *aRequest = navigationAction.request;
+    if (navigationAction.navigationType == UIWebViewNavigationTypeLinkClicked) {
         if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
-            
             if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
                 NSLog(@"pas la meme page / topic");
                 // Navigation logic may go here. Create and push another view controller.
@@ -563,7 +550,7 @@
             }
             
 
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
         }
 		else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
             
@@ -588,31 +575,32 @@
             
             [self.navigationController pushViewController:messagesTableViewController animated:YES];
             
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
         }
         else {
             NSURL *url = aRequest.URL;
             NSString *urlString = url.absoluteString;
             
             [[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
         }
         
     }
-    else if (navigationType == UIWebViewNavigationTypeOther) {
+    else if (navigationAction.navigationType == UIWebViewNavigationTypeOther) {
         if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
-            [self webViewDidFinishLoadDOM];
-            return NO;
+            [self userTextSizeDidChange];
+            decisionHandler(WKNavigationActionPolicyCancel);
         }
     }
     
-    return YES;
+    decisionHandler(WKNavigationActionPolicyAllow);
 }
 
-- (void)webViewDidFinishLoadDOM {
+/* WKK duplicated method
+ - (void)webView:(WKWebView *)localWebView didFinishNavigation:(WKNavigation *)navigation {
     [self userTextSizeDidChange];
 
-}
+}*/
 
 - (IBAction)segmentAction:(id)sender
 {
@@ -753,7 +741,7 @@
             //        script = [script stringByAppendingString:[NSString stringWithFormat:@"$('.message .content .right p.editedhfrlink').css('cssText', 'font-size:%fpx !important');", floor(userFontSize*0.75)]];
             
             
-            [self.messageView stringByEvaluatingJavaScriptFromString:script];
+            [self.messageView evaluateJavaScript:script completionHandler:nil];
             
             return [NSString stringWithFormat:@".message .content .right { font-size:%fpx !important; }", userFontSize];
             
@@ -794,18 +782,14 @@
         document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = false;\
         document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;";
     }
-    [self.messageView stringByEvaluatingJavaScriptFromString:script];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        self.actionBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-        self.quoteBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-        self.editBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-        
-        [(UILabel *)self.navigationItem.titleView setTextColor:[ThemeColors titleTextAttributesColor:[[ThemeManager sharedManager] theme]]];
+    [self.messageView evaluateJavaScript:script completionHandler:nil];
+    
+    self.actionBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+    self.quoteBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+    self.editBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+    [(UILabel *)self.navigationItem.titleView setTextColor:[ThemeColors titleTextAttributesColor:[[ThemeManager sharedManager] theme]]];
 
-    }
-
-    //[self.detailViewController.navigationItem setTitleView:label];
     return @"";
 }
 
@@ -814,7 +798,7 @@
     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
         script = @"document.getElementById('smileys_double').disabled = false;";
     }
-    [self.messageView stringByEvaluatingJavaScriptFromString:script];
+    [self.messageView evaluateJavaScript:script completionHandler:nil];
 }
 
 #pragma mark -

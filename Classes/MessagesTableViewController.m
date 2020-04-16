@@ -19,7 +19,7 @@
 #import "ASIFormDataRequest.h"
 #import "ASIDownloadCache.h"
 
-#import "UIWebView+Tools.h"
+// WKK #import "UIWebView+Tools.h"
 #import "ShakeView.h"
 #import "RangeOfCharacters.h"
 #import "NSData+Base64.h"
@@ -122,7 +122,7 @@
         default:
             //NSLog(@"not hidden");
             [self.loadingView setHidden:NO];
-            [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML = \"\";"];
+            [self.messagesWebView evaluateJavaScript:@"document.body.innerHTML = \"\";" completionHandler:nil];
             break;
     }
     
@@ -709,27 +709,31 @@
     //[self resignFirstResponder];
 }
 
+/* WKK
 -(void)textQuote:(id)sender {
-    NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
+    [self.messagesWebView evaluateJavaScript:@"window.getSelection().toString();" completionHandler:^(id result, NSError*  error) {
+        if (error == nil && result != nil) {
+            NSString *theSelectedText = [NSString stringWithFormat:@"%@", result];
+            NSString *baseElem = @"window.getSelection().anchorNode";
+            int iProtection = 0;
+            
+            while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
+                iProtection++;
+                if (iProtection > 100) return;
+                baseElem = [baseElem stringByAppendingString:@".parentElement"];
+            }
+            NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
+            int curMsg = [[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]] intValue];
 
-    NSString *baseElem = @"window.getSelection().anchorNode";
-    int iProtection = 0;
-    while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
-        //NSLog(@"baseElem %@", baseElem);
-        //NSLog(@"%@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]]);
-        iProtection++;
-        if (iProtection > 100) return;
-        baseElem = [baseElem stringByAppendingString:@".parentElement"];
-    }
-    NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
-    int curMsg = [[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]] intValue];
 
+            NSLog(@"theSelectedText %@", theSelectedText);
+            
+            if (curMsg < 100) { // Id post BL sont >= 100
+                [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
+            }
 
-    NSLog(@"theSelectedText %@", theSelectedText);
-    
-    if (curMsg < 100) { // Id post BL sont >= 100
-        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
-    }
+        }
+    }];
 }
 
 -(void)textQuoteBold:(id)sender {
@@ -751,7 +755,7 @@
     if (curMsg < 100) { // Id post BL sont >= 100
         [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText withBold:YES];
     }
-}
+}*/
 
 - (void)editMenuHidden:(id)sender {
     NSLog(@"editMenuHidden %@ NOMBRE %lu", sender, (long unsigned)[UIMenuController sharedMenuController].menuItems.count);
@@ -809,6 +813,8 @@
     [self.tabBarController setViewControllers:viewControllers animated:YES];
     [self.tabBarController setSelectedIndex:0];
 */
+
+
 
 
 - (void)viewDidLoad {
@@ -880,7 +886,8 @@
     [self.navigationItem setTitleView:label];
 
     // fond blanc WebView
-    [self.messagesWebView hideGradientBackground];
+    //[self.messagesWebView hideGradientBackground];
+    self.messagesWebView.navigationDelegate = self;
     [self.messagesWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
     
 	//Gesture de Gauche à droite
@@ -906,7 +913,7 @@
         NSMutableArray *myButtonArray = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
         self.navigationItem.rightBarButtonItems = myButtonArray;
     }
-    
+        
 	[(ShakeView*)self.view setShakeDelegate:self];
 	
 	self.arrayAction = [[NSMutableArray alloc] init];
@@ -1135,7 +1142,7 @@
         script = @"";
     }
 
-    [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
+    [self.messagesWebView evaluateJavaScript:script completionHandler:nil];
 }
     
 -(void)goToPagePositionTop{
@@ -1425,7 +1432,7 @@
         [myGen impactOccurredWithDefaults];
         myGen = NULL;
 
-		[self.messagesWebView stringByEvaluatingJavaScriptFromString:@"$('#actualiserbtn').addClass('loading');"];
+		[self.messagesWebView evaluateJavaScript:@"$('#actualiserbtn').addClass('loading');" completionHandler:nil];
         [self fetchContentinBackground:[NSNumber numberWithInt:from]];
 		//[self performSelectorInBackground:@selector(fetchContentinBackground:) withObject:];
 	}    
@@ -1950,10 +1957,9 @@
 
 #pragma mark -
 #pragma mark WebView Delegate
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-	NSLog(@"== webViewDidStartLoad");
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     // Update flag
     if (self.canSaveDrapalInMPStorage) {
@@ -1975,13 +1981,12 @@
     }
 }
 
-- (void)webViewDidFinishPreLoadDOM {
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"didFinishNavigation");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
-- (void)webViewDidFinishLoadDOM
-{
-    NSLog(@"== webViewDidFinishLoadDOM");
-    
+- (void)finishWebViewLoading {
     if (!self.pageNumber && !self.filterPostsQuotes) {
         return;
     }
@@ -2009,12 +2014,10 @@
         }
         //Position du Flag
         
-        NSString* result = [self.messagesWebView stringByEvaluatingJavaScriptFromString:[jsString2 stringByAppendingString:jsString3]];
-
+        [self.messagesWebView evaluateJavaScript:[jsString2 stringByAppendingString:jsString3] completionHandler:nil];
 
         NSLog(@"jsString2 %@", jsString2);
         NSLog(@"jsString3 %@", jsString3);
-        NSLog(@"result %@", result);
         
         self.lastStringFlagTopic = self.stringFlagTopic;
         self.stringFlagTopic = @"";
@@ -2026,29 +2029,20 @@
         NSString *jsString = @"";
 
         jsString = [jsString stringByAppendingString:@"$('.message').addSwipeEvents().bind('doubletap', function(evt, touch) { window.location = 'oijlkajsdoihjlkjasdodetails://'+this.id; });"];
-        [self.messagesWebView stringByEvaluatingJavaScriptFromString:jsString];
+        [self.messagesWebView evaluateJavaScript:jsString completionHandler:nil];
         return;
     }
-        
-    NSLog(@"== DOMed");
-    
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
 	NSLog(@"== webViewDidFinishLoad");
-    
-    //if (!self.loaded) {
-    //    [self webViewDidFinishPreLoadDOM];
-    //}
-    
-    [self webViewDidFinishLoadDOM];
-    
-//    [webView.scrollView setContentSize: CGSizeMake(300, webView.scrollView.contentSize.height)];
+    [self finishWebViewLoading];
+    //webView.UIDelegate = self;
     [webView.scrollView setContentSize: CGSizeMake(webView.frame.size.width, webView.scrollView.contentSize.height)];
 
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
+
 /*
 https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179&page=57043&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t57321037
  */
@@ -2073,18 +2067,33 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 	
     return NO;
 }
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)aRequest navigationType:(UIWebViewNavigationType)navigationType {
-	//NSLog(@"expected:%ld, got:%ld | url:%@", (long)UIWebViewNavigationTypeLinkClicked, (long)navigationType, aRequest.URL);
 
-	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSURLRequest *aRequest = navigationAction.request;
+    NSLog(@"URL Scheme : <<<<<<<<<<%@>>>>>>>>>>>", [aRequest.URL scheme]);
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        NSLog(@"navigationType == WKNavigationTypeLinkActivated");
+    } else if(navigationAction.navigationType == WKNavigationTypeFormSubmitted) {
+        NSLog(@"navigationType == WKNavigationTypeFormSubmitted");
+    } else if(navigationAction.navigationType == WKNavigationTypeBackForward) {
+        NSLog(@"navigationType == WKNavigationTypeBackForward");
+    } else if(navigationAction.navigationType == WKNavigationTypeReload) {
+        NSLog(@"navigationType == WKNavigationTypeReload");
+    } else if(navigationAction.navigationType == WKNavigationTypeFormResubmitted) {
+        NSLog(@"navigationType == WKNavigationTypeFormResubmitted");
+    } else if(navigationAction.navigationType == WKNavigationTypeOther) {
+        NSLog(@"navigationType == WKNavigationTypeOther");
+    }
+    BOOL bAllow = YES;
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
         NSString* sRegExUrlProfil = @"profil-[0-9]+.htm";
         NSPredicate *testProfilUrl = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", sRegExUrlProfil];
 
-		if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoauto"]) {
-			[self goToPage:[[aRequest.URL absoluteString] lastPathComponent]];
-			return NO;
-		}
-		else if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
+        if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoauto"]) {
+            [self goToPage:[[aRequest.URL absoluteString] lastPathComponent]];
+            bAllow = NO;
+        }
+        else if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
             
             if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
 
@@ -2093,7 +2102,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
                 
                 //setup the URL
                 self.messagesTableViewController.topicName = @"";
-                self.messagesTableViewController.isViewed = YES;	
+                self.messagesTableViewController.isViewed = YES;
 
                 self.navigationItem.backBarButtonItem =
                 [[UIBarButtonItem alloc] initWithTitle:[self backBarButtonTitle]
@@ -2111,8 +2120,8 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
           //  NSLog(@"clicked [[aRequest.URL path] %@", [aRequest.URL path]);
           //  NSLog(@"clicked [[aRequest.URL lastPathComponent] %@", [aRequest.URL lastPathComponent]);
             
-			return NO;
-		}
+            bAllow = NO;
+        }
         else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"] && [testProfilUrl evaluateWithObject: [[aRequest.URL pathComponents] objectAtIndex:2]]) {
             ProfilViewController *profilVC = [[ProfilViewController alloc] initWithNibName:@"ProfilViewController" bundle:nil andUrl:[aRequest.URL path]];
             
@@ -2123,7 +2132,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             nc.modalPresentationStyle = UIModalPresentationFormSheet;
             
             [self presentModalViewController:nc animated:YES];
-            return NO;
+            bAllow = NO;
         }
         else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
                 
@@ -2147,57 +2156,57 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             
             [self.navigationController pushViewController:messagesTableViewController animated:YES];
 
-            return NO;
+            bAllow = NO;
         }
-		else {
-			NSURL *url = aRequest.URL;
-			NSString *urlString = url.absoluteString;
-			
-			[[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
-			return NO;
-		}
+        else {
+            NSURL *url = aRequest.URL;
+            NSString *urlString = url.absoluteString;
+            
+            [[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
+            bAllow = NO;
+        }
 
-	}
-	else if (navigationType == UIWebViewNavigationTypeOther) {
-		if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdodetails"]) {
+    }
+    else if (navigationAction.navigationType == WKNavigationTypeOther) {
+        if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdodetails"]) {
             int iPostId = [[[aRequest.URL absoluteString] lastPathComponent] intValue];
             if (iPostId < 100) {
                 [self didSelectMessage:iPostId];
             }
-			return NO;
-		}
-		else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdotouch"]) {
-			// cache le menu controller dès que l'utilisateur touche la WebView
+            bAllow = NO;
+        }
+        else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdotouch"]) {
+            // cache le menu controller dès que l'utilisateur touche la WebView
             if ([[[aRequest.URL absoluteString] lastPathComponent] isEqualToString:@"touchstart"]) {
                 if ([UIMenuController sharedMenuController].isMenuVisible) {
                     [[UIMenuController sharedMenuController] setMenuVisible:NO animated:YES];
                 }
             }
-			return NO;
-		}
-        else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdopreloaded"]) {
-            [self webViewDidFinishPreLoadDOM];
-            return NO;
+            bAllow = NO;
         }
-		else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
-			[self webViewDidFinishLoadDOM];
-			return NO;
-		}
-		else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdorefresh"]) {
-			[self searchNewMessages:kNewMessageFromUpdate];
-			return NO;
-		}
-		else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdopopup"]) {
-			//NSLog(@"oijlkajsdoihjlkjasdopopup");
+        else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdopreloaded"]) {
+            //WKK [self webViewDidFinishPreLoadDOM];
+            bAllow = NO;
+        }
+        else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
+            //WK[self webViewDidFinishLoadDOM];
+            bAllow = NO;
+        }
+        else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdorefresh"]) {
+            [self searchNewMessages:kNewMessageFromUpdate];
+            bAllow = NO;
+        }
+        else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdopopup"]) {
+            //NSLog(@"oijlkajsdoihjlkjasdopopup");
             NSArray<NSString *> *pathComponents = [[aRequest.URL absoluteString] pathComponents];
             int xpos = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:0] intValue];
             int ypos = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:1] intValue];
-			int curMsg = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:2] intValue];
-			NSLog(@"%d %d %d", xpos, ypos, curMsg);
+            int curMsg = [[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:2] intValue];
+            NSLog(@"%d %d %d", xpos, ypos, curMsg);
 
-			[self performSelector:@selector(showMenuCon:andPos:) withObject:[NSNumber numberWithInt:curMsg]  withObject:[NSNumber numberWithInt:ypos]];
-			return NO;
-		}
+            [self performSelector:@selector(showMenuCon:andPos:) withObject:[NSNumber numberWithInt:curMsg]  withObject:[NSNumber numberWithInt:ypos]];
+            bAllow = NO;
+        }
         else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoimbrows"]) {
             NSString *regularExpressionString = @"oijlkajsdoihjlkjasdoimbrows://[^/]+/(.*)";
             
@@ -2205,27 +2214,29 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             
             [self didSelectImage:[[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:1] intValue] withUrl:imgUrl];
 
-            return NO;
+            bAllow = NO;
         }
         else {
             
             NSLog(@"OTHHHHERRRREEE %@ %@", [aRequest.URL scheme], [aRequest.URL fragment]);
             if ([[aRequest.URL fragment] isEqualToString:@"bas"]) {
-                //return NO;
+                bAllow = NO;
             }
 
         }
-        
-        
-	}
+    }
     else {
         NSLog(@"VRAIMENT OTHHHHERRRREEE %@ %@", [aRequest.URL scheme], [aRequest.URL fragment]);
-
     }
     
-	return YES;
+    if (bAllow) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
 }
-
+    
 -(NSString*) backBarButtonTitle {
     int iCount = 0;
     // Compte le nombre de controllers MessagesTableViewController en partant de la fin
@@ -2845,30 +2856,15 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 		quotes = [quotes stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"|%@", [quoteComponents objectAtIndex:3]] withString:@""];
 	}
 	
-	
 	if (quotes.length == 0) {
-		//
 		//NSLog(@"quote vide");
 		[self EffaceCookie:nameCookie];
 	}
-	else
-	{
+	else {
 		//NSLog(@"nameCookie %@", nameCookie);
 		//NSLog(@"quotes %@", quotes);
 		[self EcrireCookie:nameCookie withVal:quotes];
 	}
-	
-	//[self.messageView stringByEvaluatingJavaScriptFromString:@"quoter('hardwarefr','prive',1556872,1962548600);"];
-	//NSLog(@"actionCiter %@", [NSDate date]);
-	
-	//NSHTTPCookieStorage *cookShared = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-	//NSArray *cookies = [cookShared cookies];
-	
-	//for (NSHTTPCookie *aCookie in cookies) {
-	//	NSLog(@"%@", aCookie);
-	//}
-	
-	
 }
 
 -(void)EditMessage:(NSNumber *)curMsgN {
@@ -2944,7 +2940,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             //        script = [script stringByAppendingString:[NSString stringWithFormat:@"$('.message .content .right table.code *').css('cssText', 'font-size:%fpx !important');", floor(userFontSize*0.75)]];
             //        script = [script stringByAppendingString:[NSString stringWithFormat:@"$('.message .content .right p.editedhfrlink').css('cssText', 'font-size:%fpx !important');", floor(userFontSize*0.75)]];
             
-            [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
+            [self.messagesWebView evaluateJavaScript:script completionHandler:nil];
             
             return [NSString stringWithFormat:@".message .content .right { font-size:%fpx !important; }", userFontSize];
             
@@ -2953,7 +2949,6 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     }
     
     return @"";
-    
 }
 
 - (NSString *) userThemeDidChange {
@@ -3027,7 +3022,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
                         [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],
                         sBorderHeader];
 
-    [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
+    [self.messagesWebView evaluateJavaScript:script completionHandler:nil];
     
     return @"";
 }
@@ -3038,7 +3033,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
         script = @"document.getElementById('smileys_double').disabled = false;";
     }
-    [self.messagesWebView stringByEvaluatingJavaScriptFromString:script];
+    [self.messagesWebView evaluateJavaScript:script completionHandler:nil];
 }
 
 #pragma mark -
@@ -3060,7 +3055,6 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     self.errorLabelView = nil;
     
 	[self.messagesWebView stopLoading];
-	self.messagesWebView.delegate = nil;
 	self.messagesWebView = nil;
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;	
 

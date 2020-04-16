@@ -66,10 +66,6 @@
     }
  
     decisionHandler(WKNavigationActionPolicyAllow);
-//    [webView loadRequest:navigationAction.request];
-
-
-
 }
 
 

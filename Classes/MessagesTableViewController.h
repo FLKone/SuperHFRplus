@@ -29,9 +29,9 @@
 @class ASIHTTPRequest;
 
 
-@interface MessagesTableViewController : PageViewController <UIActionSheetDelegate, ParseMessagesOperationDelegate, AddMessageViewControllerDelegate, UIScrollViewDelegate, AlerteModoViewControllerDelegate> {
+@interface MessagesTableViewController : PageViewController <UIActionSheetDelegate, ParseMessagesOperationDelegate, AddMessageViewControllerDelegate, UIScrollViewDelegate, AlerteModoViewControllerDelegate, WKNavigationDelegate, WKUIDelegate> {
     
-	UIWebView *messagesWebView;
+	WKWebView *messagesWebView;
     UIView *loadingView;
     UILabel *loadingViewLabel;
     UIActivityIndicatorView *loadingViewIndicator;
@@ -114,7 +114,7 @@
 
 
 
-@property (nonatomic, strong) IBOutlet UIWebView *messagesWebView;
+@property (nonatomic, strong) IBOutlet WKWebView *messagesWebView;
 @property (nonatomic, strong) IBOutlet UIView *loadingView;
 @property (nonatomic, strong) IBOutlet UILabel *loadingViewLabel;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *loadingViewIndicator;

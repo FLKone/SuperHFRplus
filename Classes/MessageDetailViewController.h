@@ -12,7 +12,7 @@
 @class MessagesTableViewController;
 
 @interface MessageDetailViewController : UIViewController <AddMessageViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate> {
-	IBOutlet UIWebView *messageView;
+	IBOutlet WKWebView *messageView;
 	IBOutlet UILabel *messageAuthor;
 	IBOutlet UILabel *messageDate;
 	IBOutlet UIImageView *authorAvatar;
@@ -40,7 +40,7 @@
     
 }
 
-@property (nonatomic, strong) IBOutlet UIWebView *messageView;
+@property (nonatomic, strong) IBOutlet WKWebView *messageView;
 @property (nonatomic, strong) IBOutlet UILabel *messageAuthor;
 @property (nonatomic, strong) IBOutlet UILabel *messageDate;
 @property (nonatomic, strong) IBOutlet UIImageView *authorAvatar;
