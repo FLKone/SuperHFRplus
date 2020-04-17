@@ -709,54 +709,50 @@
     //[self resignFirstResponder];
 }
 
-/* WKK
+
 -(void)textQuote:(id)sender {
     [self.messagesWebView evaluateJavaScript:@"window.getSelection().toString();" completionHandler:^(id result, NSError*  error) {
         if (error == nil && result != nil) {
-            NSString *theSelectedText = [NSString stringWithFormat:@"%@", result];
-            NSString *baseElem = @"window.getSelection().anchorNode";
-            int iProtection = 0;
-            
-            while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
-                iProtection++;
-                if (iProtection > 100) return;
-                baseElem = [baseElem stringByAppendingString:@".parentElement"];
-            }
-            NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
-            int curMsg = [[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]] intValue];
-
-
-            NSLog(@"theSelectedText %@", theSelectedText);
-            
-            if (curMsg < 100) { // Id post BL sont >= 100
-                [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText];
-            }
-
+            [self textQuoteSearchParent:@"window.getSelection().anchorNode" selectedText:[NSString stringWithFormat:@"%@", result] boldText:NO];
         }
     }];
 }
 
 -(void)textQuoteBold:(id)sender {
-    NSString *theSelectedText = [self.messagesWebView stringByEvaluatingJavaScriptFromString:@"window.getSelection().toString();"];
-    NSString *baseElem = @"window.getSelection().anchorNode";
-    int iProtection = 0;
-    while ([[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]] rangeOfString:@"message"].location == NSNotFound) {
-        //NSLog(@"baseElem %@", baseElem);
-        //NSLog(@"%@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.className", baseElem]]);
-        iProtection++;
-        if (iProtection > 100) return;
-        baseElem = [baseElem stringByAppendingString:@".parentElement"];
-    }
-    NSLog(@"ID %@", [self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]]);
-    int curMsg = [[self.messagesWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.parentElement.id", baseElem]] intValue];
+    [self.messagesWebView evaluateJavaScript:@"window.getSelection().toString();" completionHandler:^(id result, NSError*  error) {
+        if (error == nil && result != nil) {
+            [self textQuoteSearchParent:@"window.getSelection().anchorNode" selectedText:[NSString stringWithFormat:@"%@", result] boldText:YES];
+        }
+    }];
+}
 
-    NSLog(@"theSelectedText Bold %@", theSelectedText);
-    
-    if (curMsg < 100) { // Id post BL sont >= 100
-        [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString]] andSelectedText:theSelectedText withBold:YES];
-    }
-}*/
-
+- (void)textQuoteSearchParent:(NSString*)baseElem selectedText:(NSString*)sSelectedText boldText:(BOOL)bBoldText{
+    [self.messagesWebView evaluateJavaScript:[NSString stringWithFormat:@"%@.parentElement.className", baseElem] completionHandler:^(id result, NSError*  error) {
+        if (error == nil && result != nil && baseElem.length < 200) { // baseElem.length < 200 to avoid infinite search
+            NSString *sResult = [NSString stringWithFormat:@"%@", result];
+            if ([sResult rangeOfString:@"message"].location == NSNotFound) {
+                [self textQuoteSearchParent:[baseElem stringByAppendingString:@".parentElement"] selectedText:sSelectedText boldText:bBoldText];
+            }
+            else {
+                // baseElem found (found top baseElem for message class), getting its message ID (should be a value < 100). Values > 10000 are for blacklist additional messages
+                [self.messagesWebView evaluateJavaScript:[NSString stringWithFormat:@"%@.parentElement.id", baseElem] completionHandler:^(id result, NSError*  error) {
+                       if (error == nil && result != nil) { // baseElem.length < 200 to avoid infinite search
+                           int iCurMsgId = [[NSString stringWithFormat:@"%@", result] intValue];
+                           if (iCurMsgId < 100) { // Id post BL sont >= 100
+                               if (bBoldText) {
+                                   [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:iCurMsgId] urlQuote] decodeSpanUrlFromString]] andSelectedText:sSelectedText withBold:YES];
+                               }
+                               else {
+                                   [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[self.arrayData objectAtIndex:iCurMsgId] urlQuote] decodeSpanUrlFromString]] andSelectedText:sSelectedText];
+                               }
+                           }
+                       }
+                }];
+            }
+        }
+    }];
+}
+            
 - (void)editMenuHidden:(id)sender {
     NSLog(@"editMenuHidden %@ NOMBRE %lu", sender, (long unsigned)[UIMenuController sharedMenuController].menuItems.count);
     
@@ -768,17 +764,9 @@
     UIMenuItem *textQuotinuumBis = [[UIMenuItem alloc] initWithTitle:@"Citergras" action:@selector(textQuoteBold:) image:menuImgQuoteB];
 
     [self.arrayAction removeAllObjects];
-    /*
-    [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Citerexclu", @"textQuote:", menuImgQuote, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
-
-    [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Citergras", @"textQuoteBold:", menuImgQuoteB, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
-    */
     
     UIMenuController *menuController = [UIMenuController sharedMenuController];
     [menuController setMenuItems:[NSArray arrayWithObjects:textQuotinuum, textQuotinuumBis, nil]];
-    //[self.messagesWebView becomeFirstResponder];
-//    [self becomeFirstResponder];
-
 }
 
 -(void)forceButtonMenu {
