@@ -924,13 +924,13 @@ body.ios7 {
 
 .ios7 #toolbarpage .button.begin {
     left:16px;
-    -webkit-mask: url(arrowbegin.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowbegin.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button.begin.active {
     left:16px;
-    -webkit-mask: url(arrowbegin.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowbegin.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action);
 }
@@ -939,12 +939,12 @@ body.ios7 {
 }
 .ios7 #toolbarpage .button.end {
 	right:16px;
-    -webkit-mask: url(arrowend.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowend.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button.end.active {
-    -webkit-mask: url(arrowend.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowend.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action);
 }
@@ -954,12 +954,12 @@ body.ios7 {
 
 .ios7 #toolbarpage .button2.begin {
 	left:65px;
-    -webkit-mask: url(arrowback.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowback.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button2.begin.active {
-    -webkit-mask: url(arrowback.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowback.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action);
 }
@@ -968,12 +968,12 @@ body.ios7 {
 }
 .ios7 #toolbarpage .button2.end {
 	right:65px;
-    -webkit-mask: url(arrowforward.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowforward.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action-disabled);
 }
 .ios7 #toolbarpage .button2.end.active {
-    -webkit-mask: url(arrowforward.svg) no-repeat 100% 100%;
+    -webkit-mask-box-image: url(arrowforward.svg); /* no-repeat 100% 100%;*/
     -webkit-mask-size: cover;
     background-color:var(--color-action);
 }
