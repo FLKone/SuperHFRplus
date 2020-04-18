@@ -115,7 +115,7 @@
     NSString *regExYT = @"<a rel=\"nofollow\" href=\"([^\"]+)\" target=\"_blank\" class=\"embedvideo\" hrefemb=\"([^\"]+)\" hreftxt=\"([^\"]+)\">([^<]+)</a>";
     //Example: <iframe width="560" height="315" src="https://www.youtube.com/embed/FMbSgh1hb6k?&autoplay=1"frameborder="0"></iframe>
     //NSString *sFrameEmbedded = @"<div class=\"embedvideo\"><iframe width=\"100%\" height=\"100%\" src=\"$2\" frameborder=\"0\"></iframe></div>";
-    NSString *sFrameEmbedded = @"<div class=\"embedvideo\"><iframe src=\"$2\" frameborder=\"0\"></iframe><a href=\"$1\">$3</a></div>";
+    NSString *sFrameEmbedded = @"<div class=\"embedvideo\"><iframe src=\"$2\" frameborder=\"0\"></iframe><br><a href=\"$1\">$3</a></div>";
     myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExYT
                                                           withString:sFrameEmbedded];
     

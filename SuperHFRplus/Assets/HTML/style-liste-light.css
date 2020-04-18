@@ -1134,5 +1134,10 @@ body.ios7 {
     overflow:hidden !important;
 }
 
-.embedvideo iframe {
+/* ipad only */
+@media only screen and (min-device-width : 768px) {
+    .embedvideo iframe {
+        width:60%;
+        height:300px;
+    }
 }
