@@ -177,7 +177,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
         if ((topic.maxTopicPage - topic.curTopicPage + 1) >= iNbMaxPageToLoad) {
             nbPageToLoad = iNbMaxPageToLoad;
         } else {
-            nbPageToLoad = (topic.maxTopicPage - topic.curTopicPage);
+            nbPageToLoad = (topic.maxTopicPage - topic.curTopicPage + 1);
         }
     }
 

@@ -266,6 +266,7 @@
     */
     
     [self.maintenanceView setHidden:NO];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
     // Popup
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]  preferredStyle:UIAlertControllerStyleAlert];
@@ -301,10 +302,10 @@
                 totalPages = totalPages + nbPageToLoad;
             }
         } else {
-            if ((tmpTopic.maxTopicPage - tmpTopic.curTopicPage) >= iNbMaxPageToLoad) {
+            if ((tmpTopic.maxTopicPage - tmpTopic.curTopicPage + 1) >= iNbMaxPageToLoad) {
                 totalPages = totalPages + iNbMaxPageToLoad;
             } else {
-                totalPages = totalPages + (tmpTopic.maxTopicPage - tmpTopic.curTopicPage);
+                totalPages = totalPages + (tmpTopic.maxTopicPage - tmpTopic.curTopicPage + 1);
             }
         }
     }
