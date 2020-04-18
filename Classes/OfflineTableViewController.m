@@ -55,28 +55,25 @@
     [[OfflineStorage shared] verifyCacheIntegrity];
     
     // Add PullToRefresh function to tableview
-    /*
     __weak OfflineTableViewController *self_ = self;
     [self.offlineTableView addPullToRefreshWithActionHandler:^{
-        [self_ refreshContent];
-    }];*/
-    //[self.OfflineTableView triggerPullToRefresh];
+        [self_ reload];
+    }];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.view.backgroundColor = self.offlineTableView.backgroundColor = self.maintenanceView.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.view.backgroundColor = self.offlineTableView.backgroundColor = self.offlineTableView.pullToRefreshView.backgroundColor = self.maintenanceView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.offlineTableView.separatorColor = [ThemeColors cellBorderColor];
     if (self.offlineTableView.indexPathForSelectedRow) {
         [self.offlineTableView deselectRowAtIndexPath:self.offlineTableView.indexPathForSelectedRow animated:NO];
     }
     
-    /*
     self.offlineTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
     self.offlineTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
     self.offlineTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
-    */
+    
     [self.offlineTableView reloadData];
 }
 
@@ -131,13 +128,9 @@
     UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelFetchContent)];
     self.navigationItem.rightBarButtonItem = segmentBarItem;
 
-    //[self.favoritesTableView.pullToRefreshView stopAnimating];
+    [self.offlineTableView.pullToRefreshView stopAnimating];
 
     [self.maintenanceView setHidden:YES];
-     /*
-    [self.favoritesTableView setHidden:YES];
-    [self.loadingView setHidden:NO];
-     */
 }
 
 - (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
@@ -145,11 +138,6 @@
     NSLog(@"fetchContentComplete");
 
     //Bouton Reload
-    /*
-    self.navigationItem.rightBarButtonItem = nil;
-    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
-    self.navigationItem.rightBarButtonItem = segmentBarItem;
-    */
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
     [self loadDataInTableView:[theRequest responseData]];
@@ -159,6 +147,8 @@
     [self.arrayNewData removeAllObjects];
     
     [self.offlineTableView reloadData];
+    [self.offlineTableView.pullToRefreshView stopAnimating];
+    [self.offlineTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
 }
 
 -(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
@@ -266,6 +256,8 @@
     */
     
     [self.maintenanceView setHidden:NO];
+    [self.offlineTableView.pullToRefreshView stopAnimating];
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
     // Popup
