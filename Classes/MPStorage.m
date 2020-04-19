@@ -14,6 +14,7 @@
 #import "BlackList.h"
 #import "HFRAlertView.h"
 #import "MultisManager.h"
+#import "Bookmark.h"
 
 NSString* const MP_NAME = @"a2bcc09b796b8c6fab77058ff8446c34";
 NSString* const MP_SENDTO = @"MultiMP";
@@ -24,12 +25,10 @@ NSString* const MP_SOURCE_NAME = @"iOS";
 
 @implementation MPStorage
 
-@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId;
+@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, listBookmarks, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId;
 static MPStorage *_shared = nil;    // static instance variable
 
-// --------------------------------------------------------------------------------
-// Init methods
-// --------------------------------------------------------------------------------
+#pragma mark - Init methods
 
 + (MPStorage *)shared {
     if (_shared == nil) {
@@ -48,7 +47,7 @@ static MPStorage *_shared = nil;    // static instance variable
 }
 
 - (BOOL)initOrResetMP:(NSString*)pseudo {
-    [self initOrResetMP:pseudo fromView:nil];
+    return [self initOrResetMP:pseudo fromView:nil];
 }
 
 - (BOOL)initOrResetMP:(NSString*)pseudo fromView:(UIView*)view {
@@ -114,9 +113,7 @@ static MPStorage *_shared = nil;    // static instance variable
     return NO;
 }
 
-// --------------------------------------------------------------------------------
-// Load MPStorage
-// --------------------------------------------------------------------------------
+#pragma mark - Load MPStorage
 
 - (void)reloadMPStorageAsynchronous {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
@@ -139,9 +136,8 @@ static MPStorage *_shared = nil;    // static instance variable
         [self updateLastSucessAcessDate];
     }
 }
-// --------------------------------------------------------------------------------
-// Load black list methods
-// --------------------------------------------------------------------------------
+
+#pragma mark - Load black list methods
 
 - (void)loadBlackListAsynchronous {
     ASIHTTPRequest *request = [self GETRequest];
@@ -189,9 +185,7 @@ static MPStorage *_shared = nil;    // static instance variable
     return success;
 }
 
-// --------------------------------------------------------------------------------
-// Save black list methods
-// --------------------------------------------------------------------------------
+#pragma mark - Save black list methods
 
 - (BOOL)addBlackListSynchronous:(NSString*)newPseudoBL {
     // First get content of MPStorage
@@ -274,9 +268,7 @@ static MPStorage *_shared = nil;    // static instance variable
     return NO;
 }
 
-// --------------------------------------------------------------------------------
-// Save MP flags methods
-// --------------------------------------------------------------------------------
+#pragma mark -  Save MP flags methods
 
 - (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag {
     dicProcessedFlag = newFlag;
@@ -442,10 +434,50 @@ static MPStorage *_shared = nil;    // static instance variable
     return retPage;
 }
 
+- (int)getBookmarksNumber {
+    if (self.listBookmarks) {
+        return (int)self.listBookmarks.count;
+    }
 
-// --------------------------------------------------------------------------------
-// MPstorage general handling methods
-// --------------------------------------------------------------------------------
+    return 0;
+}
+
+- (Bookmark*)getBookmarkAtIndex:(int)index {
+    if (self.listBookmarks) {
+        return [self.listBookmarks objectAtIndex:index];
+    }
+
+    return nil;
+}
+
+- (void)parseBookmarks {
+    self.listBookmarks = [[NSMutableArray alloc] init];
+    @try {
+        for (NSDictionary* dic in dData[@"data"][0][@"bookmarks"][@"list"]) {
+            Bookmark* b = [[Bookmark alloc] init];
+
+            b.sPost = [[dic valueForKey:@"post"] stringValue];
+            b.sPage = [[dic valueForKey:@"page"] stringValue];
+            b.sCat = [[dic valueForKey:@"cat"] stringValue];
+            b.sP = [dic valueForKey:@"p"];
+            b.sHref = [dic valueForKey:@"href"];
+
+
+            b.sLabel = [dic valueForKey:@"label"];
+            b.sAuthorPost = [dic valueForKey:@"author"];
+            b.dateBookmarkCreation = [NSDate now];//[NSDate dateWithTimeIntervalSince1970:[[b valueForKey:@"createDate"] intValue]];
+            
+            [self.listBookmarks addObject:b];
+        }
+    }
+    @catch (NSException * e) {
+        NSLog(@"Exception: %@", e);
+    }
+    @finally {}
+}
+
+
+#pragma mark - MPstorage general handling methods
 
 // Method to find the MPStorage in the current MPs page
 - (BOOL)findStorageMPFromPage:(NSInteger)pageId {
@@ -669,6 +701,7 @@ static MPStorage *_shared = nil;    // static instance variable
             }
         }
     }
+    return NO;
 }
 
 - (BOOL)saveMPStorageAsynchronous {

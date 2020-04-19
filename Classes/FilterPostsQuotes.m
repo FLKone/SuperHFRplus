@@ -37,7 +37,7 @@
 
 
 
-#pragma mark Main method
+#pragma mark - Main method
 
 - (void)checkPostsAndQuotesForTopic:(Topic *)topic andVC:(FavoritesTableViewController*) vc{
     self.favoriteVC = vc;
@@ -56,7 +56,17 @@
     });
 }
 
-#pragma mark Work methods
+- (void)checkPostsAndQuotesForAllTopics:(NSMutableArray *)arrTopics andVC:(FavoritesTableViewController*) vc{
+    /*self.favoriteVC = vc;
+    self.messagesTableVC = nil;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self checkContentForAllTopics:arrTopics];
+    });*/
+}
+
+
+
+#pragma mark - Work methods
 
 - (void)fetchContentForTopic:(Topic*)topic {
     [self fetchContentForTopic:topic startPage:0];

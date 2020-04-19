@@ -144,9 +144,15 @@
 		}
 		
 		//[[(TopicCellView *)cell titleLabel] ];
-		
-		[[(TopicCellView *)cell msgLabel] setText:[NSString stringWithFormat:@"@%@", [(Topic *)[arrayData objectAtIndex:indexPath.row] aAuthorOrInter]]];
-
+        NSString* sIcon = @"";
+        if ([[(Topic *)[arrayData objectAtIndex:indexPath.row] aAuthorOrInter] containsString:@"multiples"]) {
+            sIcon = @"\U00002620 @multiples";
+            [[(TopicCellView *)cell msgLabel] setText:[NSString stringWithFormat:@"%@", sIcon]];//, [(Topic *)[arrayData objectAtIndex:indexPath.row] aAuthorOrInter]]];
+            [[(TopicCellView *)cell msgLabel] setFont:[UIFont systemFontOfSize:11.0]];
+        }
+        else {
+            [[(TopicCellView *)cell msgLabel] setText:[NSString stringWithFormat:@"%@@%@", sIcon, [(Topic *)[arrayData objectAtIndex:indexPath.row] aAuthorOrInter]]];
+        }
 		//[(UILabel *)[cell.contentView viewWithTag:999] setFrame:CGRectMake(10, 5, 280, 22)];
 		//[(UILabel *)[cell.contentView viewWithTag:997] setFrame:CGRectMake(130, 27, 150, 22)];
 		

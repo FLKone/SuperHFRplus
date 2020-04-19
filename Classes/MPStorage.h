@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-
+@class Bookmark;
 
 @interface MPStorage : NSObject
 {
@@ -22,6 +22,7 @@
 @property NSString* sNumRep;
 @property NSMutableArray*  listInternalBlacklistPseudo;
 @property NSMutableArray*  listMPBlacklistPseudo;
+@property NSMutableArray*  listBookmarks;
 @property NSDictionary*    dicMPBlacklistPseudoTimestamp;
 @property NSDictionary*    dicFlags;
 @property NSDictionary*    dicProcessedFlag;
@@ -39,4 +40,8 @@
 - (NSString*)getUrlFlagForTopidId:(int)topicID;
 - (NSInteger)getPageFlagForTopidId:(int)topicID;
 - (void)reloadMPStorageAsynchronous;
+- (int)getBookmarksNumber ;
+- (Bookmark*)getBookmarkAtIndex:(int)index;
+- (void)parseBookmarks;
+
 @end

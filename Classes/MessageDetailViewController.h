@@ -11,7 +11,7 @@
 
 @class MessagesTableViewController;
 
-@interface MessageDetailViewController : UIViewController <AddMessageViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate> {
+@interface MessageDetailViewController : UIViewController <AddMessageViewControllerDelegate, UIActionSheetDelegate, WKNavigationDelegate, WKUIDelegate> {
 	IBOutlet WKWebView *messageView;
 	IBOutlet UILabel *messageAuthor;
 	IBOutlet UILabel *messageDate;

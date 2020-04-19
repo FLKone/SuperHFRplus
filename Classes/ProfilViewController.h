@@ -85,11 +85,11 @@
 @end
 
 @interface PersonnalLinkViewController : UIViewController {
-    IBOutlet UIWebView *webView;
+    IBOutlet WKWebView *webView;
     NSURL *url;
 }
 
-@property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) IBOutlet WKWebView *webView;
 @property (nonatomic, strong) IBOutlet NSURL *url;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theURL;

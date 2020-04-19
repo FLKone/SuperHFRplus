@@ -595,7 +595,7 @@
     if ([web isEqualToString:@"internal"]) {
         if ([self.detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
             //on load
-            [((BrowserViewController *)self.detailNavigationController.topViewController).myWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringUrl]]];
+            [((BrowserViewController *)self.detailNavigationController.topViewController).myModernWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringUrl]]];
         }
         else
         {
@@ -751,7 +751,7 @@
     else if (buttonIndex == 2) {
         if ([[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
             //on load
-            [((BrowserViewController *)[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController).myWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[alertView stringURL]]]];
+            [((BrowserViewController *)[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController).myModernWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[alertView stringURL]]]];
         }
         else {
             //on move/decale

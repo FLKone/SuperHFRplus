@@ -29,6 +29,8 @@
 //+ (FilterPostsQuotes *)shared;
 
 - (void)checkPostsAndQuotesForTopic:(Topic *)topic andVC:(FavoritesTableViewController*)vc;
+- (void)checkPostsAndQuotesForAllTopics:(NSArray *)arrTopics andVC:(FavoritesTableViewController*)vc;
+
 - (void)checkNextPostsAndQuotesWithVC:(MessagesTableViewController*) vc;
 
 - (void)fetchContentForTopic:(Topic*)topic;

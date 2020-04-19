@@ -10,11 +10,8 @@
 #import "MessageDetailViewController.h"
 #import "MessagesTableViewController.h"
 #import "RangeOfCharacters.h"
-//#import "UIImageView+WebCache.h"
 #import "ASIHTTPRequest.h"
 #import "RegexKitLite.h"
-
-//WK #import "UIWebView+Tools.h"
 
 #import "LinkItem.h"
 #import "ThemeManager.h"
@@ -386,27 +383,15 @@
          self.messageAvatar.frame = CGRectMake(self.messageAvatar.frame.origin.x, self.messageAvatar.frame.origin.y - 49, self.messageAvatar.frame.size.width, self.messageAvatar.frame.size.height);
     }
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [self.messageAuthor setFont:[UIFont boldSystemFontOfSize:17.0f]];
-        [self.messageDate setFont:[UIFont boldSystemFontOfSize:8.0f]];
-    }
+    [self.messageAuthor setFont:[UIFont boldSystemFontOfSize:17.0f]];
+    [self.messageDate setFont:[UIFont boldSystemFontOfSize:8.0f]];
     
     UISegmentedControl *segmentedControl;
-    
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        segmentedControl = [[UISegmentedControl alloc] initWithItems:
-                                                [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"upsmall7"],
-                                                 [UIImage imageNamed:@"downsmall7"],
-                                                 nil]];
-    }
-    else {
-        segmentedControl = [[UISegmentedControl alloc] initWithItems:
-                                                [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"upsmall"],
-                                                 [UIImage imageNamed:@"downsmall"],
-                                                 nil]];
-    }
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:
+                                            [NSArray arrayWithObjects:
+                                             [UIImage imageNamed:@"upsmall7"],
+                                             [UIImage imageNamed:@"downsmall7"],
+                                             nil]];
 
 	[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
     
@@ -418,14 +403,13 @@
             segmentedControl.frame = CGRectMake(0, 0, 90, 30);
         }
     }
-    else
+    else {
         segmentedControl.frame = CGRectMake(0, 0, 90, 30);
+    }
     
 	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
 	segmentedControl.momentary = YES;
 	segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-
-	//defaultTintColor = [segmentedControl.tintColor retain];	// keep track of this for later
 	
 	UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     
@@ -433,13 +417,10 @@
 	[(UISegmentedControl *)self.navigationItem.rightBarButtonItem.customView setEnabled:NO forSegmentAtIndex:0];
 	[(UISegmentedControl *)self.navigationItem.rightBarButtonItem.customView setEnabled:NO forSegmentAtIndex:1];
 	
-	
 	[messageTitle setText:self.messageTitleString];	
 
     [self.messageView setBackgroundColor:[UIColor whiteColor]];
-    //WKK[self.messageView hideGradientBackground];
-
-    //[self segmentAction:self.navigationItem.rightBarButtonItem];
+    self.messageView.navigationDelegate = self;
     
     [self setupData];
 }
@@ -456,7 +437,6 @@
 	} else {
 		return (interfaceOrientation == UIInterfaceOrientationPortrait);
 	}
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -466,147 +446,9 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload {
-	//NSLog(@"viewDidUnload MessageDetailView");
-	
-    messageAvatar = nil;
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-
-	[self.messageView stopLoading];
-	//WKKself.messageView.delegate = nil;
-	self.messageView = nil;
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;	
-
-	self.messageAuthor = nil;
-	self.messageDate = nil;
-	self.authorAvatar = nil;
-	
-	self.messageTitle = nil;
-	
-	self.toolbarBtn = nil;
-}
-
-- (void)dealloc {
-	//NSLog(@"dealloc MessageDetailView");
-
-	[self viewDidUnload];
-
-    if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIContentSizeCategoryDidChangeNotification object:nil];
-    }
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kSmileysSizeChangedNotification object:nil];
-
-	self.parent = nil;
-
-
-}
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
-    NSLog(@"didStartProvisionalNavigation");
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-	NSLog(@"didFinishNavigation");
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-}
-
-
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    NSLog(@"decidePolicyForNavigationAction = %@", navigationAction.request.URL);
-    NSURLRequest *aRequest = navigationAction.request;
-    if (navigationAction.navigationType == UIWebViewNavigationTypeLinkClicked) {
-        if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
-            if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
-                NSLog(@"pas la meme page / topic");
-                // Navigation logic may go here. Create and push another view controller.
-                
-                //NSLog(@"did Select row Topics table views: %d", indexPath.row);
-                
-                //if (self.messagesTableViewController == nil) {
-                MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
-                self.messagesTableViewController = aView;
-                //}
-                
-                self.navigationItem.backBarButtonItem =
-                [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                                 style: UIBarButtonItemStyleBordered
-                                                target:nil
-                                                action:nil];
-                
-                if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-                    self.navigationItem.backBarButtonItem.title = @" ";
-                }
-                
-                //setup the URL
-                self.messagesTableViewController.topicName = @"";	
-                self.messagesTableViewController.isViewed = YES;	
-                
-                //NSLog(@"push message liste");
-                [self.navigationController pushViewController:messagesTableViewController animated:YES];  
-            }
-            
-
-            decisionHandler(WKNavigationActionPolicyCancel);
-        }
-		else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
-            
-            NSLog(@"%@", aRequest.URL);
-            
-            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
-            self.messagesTableViewController = aView;
-            
-            self.navigationItem.backBarButtonItem =
-            [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                             style: UIBarButtonItemStyleBordered
-                                            target:nil
-                                            action:nil];
-            
-            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-                self.navigationItem.backBarButtonItem.title = @" ";
-            }
-            
-            //setup the URL
-            self.messagesTableViewController.topicName = @"";
-            self.messagesTableViewController.isViewed = YES;
-            
-            [self.navigationController pushViewController:messagesTableViewController animated:YES];
-            
-            decisionHandler(WKNavigationActionPolicyCancel);
-        }
-        else {
-            NSURL *url = aRequest.URL;
-            NSString *urlString = url.absoluteString;
-            
-            [[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
-            decisionHandler(WKNavigationActionPolicyCancel);
-        }
-        
-    }
-    else if (navigationAction.navigationType == UIWebViewNavigationTypeOther) {
-        if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
-            [self userTextSizeDidChange];
-            decisionHandler(WKNavigationActionPolicyCancel);
-        }
-    }
-    
-    decisionHandler(WKNavigationActionPolicyAllow);
-}
-
-/* WKK duplicated method
- - (void)webView:(WKWebView *)localWebView didFinishNavigation:(WKNavigation *)navigation {
-    [self userTextSizeDidChange];
-
-}*/
-
-- (IBAction)segmentAction:(id)sender
-{
+- (IBAction)segmentAction:(id)sender {
 	// The segmented control was clicked, handle it here 
 	UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
-	//NSLog(@"Segment clicked: %d", segmentedControl.selectedSegmentIndex);
 	
 	switch (segmentedControl.selectedSegmentIndex) {
 		case 0:
@@ -622,27 +464,19 @@
 			break;
 	}
 	
-	[(UILabel *)self.navigationItem.titleView setText:[NSString stringWithFormat:@"Page: %d — %d/%d", self.pageNumber, curMsg + 1, arrayData.count]];
-
-	//[parent.messagesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:curMsg] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-	
+    [(UILabel *)self.navigationItem.titleView setText:[NSString stringWithFormat:@"Page: %d — %d/%ld", self.pageNumber, curMsg + 1, (unsigned long)self.arrayData.count]];
 }
 
--(void)QuoteMessage
-{
+-(void)QuoteMessage {
 	[parent quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString] ]];
 }
 
--(void)EditMessage
-{
+-(void)EditMessage {
 	[parent setEditFlagTopic:[(LinkItem*)[arrayData objectAtIndex:curMsg] postID]];
 	[parent editMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlEdit] decodeSpanUrlFromString] ]];
-
 }
 
 -(void)ActionList:(id)sender {
-	//NSLog(@"ActionList %@", [NSDate date]);
-
 	//Btn Quote & Edit
 	[self.arrayAction removeAllObjects];
 
@@ -719,10 +553,6 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
 	if (buttonIndex < [self.arrayAction count]) {
-		//NSLog(@"clickedButtonAtIndex %d %@", buttonIndex, [NSNumber numberWithInt:curMsg]);
-
-
-        
         [self.parent performSelectorOnMainThread:NSSelectorFromString([[self.arrayAction objectAtIndex:buttonIndex] objectForKey:@"code"]) withObject:[NSNumber numberWithInt:curMsg] waitUntilDone:NO];
         
     }
@@ -799,6 +629,104 @@
         script = @"document.getElementById('smileys_double').disabled = false;";
     }
     [self.messageView evaluateJavaScript:script completionHandler:nil];
+}
+#pragma mark -
+#pragma mark WKWebView Delegate
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"didFinishNavigation");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self userTextSizeDidChange];
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSLog(@"decidePolicyForNavigationAction = %@", navigationAction.request.URL);
+    BOOL bAllow = YES;
+    NSURLRequest *aRequest = navigationAction.request;
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
+            if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
+                NSLog(@"pas la meme page / topic");
+                // Navigation logic may go here. Create and push another view controller.
+                
+                //NSLog(@"did Select row Topics table views: %d", indexPath.row);
+                
+                //if (self.messagesTableViewController == nil) {
+                MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
+                self.messagesTableViewController = aView;
+                //}
+                
+                self.navigationItem.backBarButtonItem =
+                [[UIBarButtonItem alloc] initWithTitle:@"Retour"
+                                                 style: UIBarButtonItemStyleBordered
+                                                target:nil
+                                                action:nil];
+                
+                if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
+                    self.navigationItem.backBarButtonItem.title = @" ";
+                }
+                
+                //setup the URL
+                self.messagesTableViewController.topicName = @"";
+                self.messagesTableViewController.isViewed = YES;
+                
+                //NSLog(@"push message liste");
+                [self.navigationController pushViewController:messagesTableViewController animated:YES];
+            }
+            
+            bAllow = NO;
+        }
+        else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
+            
+            NSLog(@"%@", aRequest.URL);
+            
+            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
+            self.messagesTableViewController = aView;
+            
+            self.navigationItem.backBarButtonItem =
+            [[UIBarButtonItem alloc] initWithTitle:@"Retour"
+                                             style: UIBarButtonItemStyleBordered
+                                            target:nil
+                                            action:nil];
+            
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
+                self.navigationItem.backBarButtonItem.title = @" ";
+            }
+            
+            //setup the URL
+            self.messagesTableViewController.topicName = @"";
+            self.messagesTableViewController.isViewed = YES;
+            
+            [self.navigationController pushViewController:messagesTableViewController animated:YES];
+            
+            bAllow = NO;
+        }
+        else {
+            NSURL *url = aRequest.URL;
+            NSString *urlString = url.absoluteString;
+            
+            [[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
+            bAllow = NO;
+        }
+    }
+    else if (navigationAction.navigationType == WKNavigationTypeOther) {
+        if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
+            [self userTextSizeDidChange];
+            bAllow = NO;
+        }
+    }
+    
+    if (bAllow) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
 }
 
 #pragma mark -

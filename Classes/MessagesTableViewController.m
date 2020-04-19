@@ -19,7 +19,6 @@
 #import "ASIFormDataRequest.h"
 #import "ASIDownloadCache.h"
 
-// WKK #import "UIWebView+Tools.h"
 #import "ShakeView.h"
 #import "RangeOfCharacters.h"
 #import "NSData+Base64.h"
@@ -739,12 +738,7 @@
                        if (error == nil && result != nil) { // baseElem.length < 200 to avoid infinite search
                            int iCurMsgId = [[NSString stringWithFormat:@"%@", result] intValue];
                            if (iCurMsgId < 100) { // Id post BL sont >= 100
-                               if (bBoldText) {
-                                   [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:iCurMsgId] urlQuote] decodeSpanUrlFromString]] andSelectedText:sSelectedText withBold:YES];
-                               }
-                               else {
-                                   [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[self.arrayData objectAtIndex:iCurMsgId] urlQuote] decodeSpanUrlFromString]] andSelectedText:sSelectedText];
-                               }
+                               [self quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[self.arrayData objectAtIndex:iCurMsgId] urlQuote] decodeSpanUrlFromString]] andSelectedText:sSelectedText withBold:bBoldText];
                            }
                        }
                 }];
@@ -758,7 +752,6 @@
     
     UIImage *menuImgQuote = [UIImage imageNamed:@"ReplyArrowFilled-20"];
     UIImage *menuImgQuoteB = [UIImage imageNamed:@"BoldFilled-20"];
-    
     
     UIMenuItem *textQuotinuum = [[UIMenuItem alloc] initWithTitle:@"Citerexclu" action:@selector(textQuote:) image:menuImgQuote];
     UIMenuItem *textQuotinuumBis = [[UIMenuItem alloc] initWithTitle:@"Citergras" action:@selector(textQuoteBold:) image:menuImgQuoteB];
@@ -783,7 +776,6 @@
         [navItem setLeftItemsSupplementBackButton:YES];
     }
     /* Evol onglet sticky (gardée au cas où)
-
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(removeTabBar)];*/
 }
 
@@ -801,9 +793,6 @@
     [self.tabBarController setViewControllers:viewControllers animated:YES];
     [self.tabBarController setSelectedIndex:0];
 */
-
-
-
 
 - (void)viewDidLoad {
 	//NSLog(@"viewDidLoad %@", self.topicName);
@@ -1945,6 +1934,7 @@
 
 #pragma mark -
 #pragma mark WebView Delegate
+// was webViewDidStartLoad
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
     NSLog(@"didStartProvisionalNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -1969,6 +1959,8 @@
     }
 }
 
+// webViewDidFinishPreLoadDOM was empty method
+// was webViewDidFinishLoadDOM
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSLog(@"didFinishNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -2011,19 +2003,6 @@
         [self.messagesWebView evaluateJavaScript:@"$('.message').addSwipeEvents().bind('doubletap', function(evt, touch) { window.location = 'oijlkajsdoihjlkjasdodetails://'+this.id; });" completionHandler:nil];
     }
 }
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-	NSLog(@"== webViewDidFinishLoad");
-    [self finishWebViewLoading];
-    //webView.UIDelegate = self;
-    [webView.scrollView setContentSize: CGSizeMake(webView.frame.size.width, webView.scrollView.contentSize.height)];
-
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-}
-
-/*
-https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179&page=57043&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t57321037
- */
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     NSLog(@"MTV %@ nbS=%lu", NSStringFromSelector(action), [UIMenuController sharedMenuController].menuItems.count);
@@ -2163,11 +2142,10 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
             bAllow = NO;
         }
         else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdopreloaded"]) {
-            //WKK [self webViewDidFinishPreLoadDOM];
             bAllow = NO;
         }
         else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
-            //WK[self webViewDidFinishLoadDOM];
+            [self finishWebViewLoading];
             bAllow = NO;
         }
         else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdorefresh"]) {

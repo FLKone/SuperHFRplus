@@ -779,11 +779,15 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-
 	[super viewDidDisappear:animated];
 	[self.view resignFirstResponder];
+    
+    if (!self.filterPostsQuotes) {
+        self.filterPostsQuotes = [[FilterPostsQuotes alloc] init];
+    }
+    [self.filterPostsQuotes checkPostsAndQuotesForAllTopics:self.arrayData andVC:self];
+    //Mode sans cat : [self.filterPostsQuotes checkPostsAndQuotesForTopics:self.arrayTopics andVC:self];
 }
-
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -1193,6 +1197,27 @@
     }
 }
 
+- (void)checkPostsAndQuotesForAllTopics {
+    NSMutableArray *cells = [[NSMutableArray alloc] init];
+    for (NSInteger j = 0; j < [self.favoritesTableView numberOfSections]; ++j)
+    {
+        for (NSInteger i = 0; i < [self.favoritesTableView numberOfRowsInSection:j]; ++i)
+        {
+            // Check for posts for topic with callback in case cell needs to be updated
+            // Unable search in ViewWillDisapear
+            [cells addObject:[self.favoritesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:j]]];
+        }
+    }
+    
+    if (!self.filterPostsQuotes) {
+        self.filterPostsQuotes = [[FilterPostsQuotes alloc] init];
+    }
+    [self.filterPostsQuotes checkPostsAndQuotesForAllTopics:self.arrayData andVC:self];
+
+}
+
+
+
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     // Only when displaying all CATs
@@ -1583,7 +1608,6 @@
     
     }
 }
-
 
 -(void)setTopicSuperFavoriteWithIndex:(NSIndexPath *)indexPath {
     Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
