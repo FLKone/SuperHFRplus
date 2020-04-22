@@ -232,11 +232,6 @@
                 @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
                 @"^http(?:s)?://(youtu).be/([\\w-]+)/?", \
                 @"^http(?:s)?://(vimeo).com/(?:[a-zA-Z]+/)*([0-9]+)", \
-                @"^https://www.(twitch).tv/([\\w]+)/?$", \
-                @"^https://www.twitch.tv/(video)s/([0-9]+)(?:?.*)?/?", \
-                @"^https://www.twitch.tv/[^/]+/(video)/([0-9]+)(?:?.*)?/?", \
-                @"^https://www.twitch.tv/[^/]+/(clip)/([\\w]+)/?", \
-                @"^https://(clip)s.twitch.tv/([\\w]+)/?$", \
                 @"^https://(streamable).com/([\\w]+)/?", \
                 nil];
                 
@@ -244,7 +239,14 @@
                 // @"^https://(coub).com/view/([\\w]+)/?", \
                 // @"^http(?:s)?://(?:www.)?(dai)lymotion.com/video/([\\w-]+)/?", \
                 // @"^http(?:s)?://(dai).ly/([\\w-]+)", \
-
+                
+                // Issue with Twitch: blocking button Actualiser
+                // @"^https://www.(twitch).tv/([\\w]+)/?$", \
+                // @"^https://www.twitch.tv/(video)s/([0-9]+)(?:?.*)?/?", \
+                // @"^https://www.twitch.tv/[^/]+/(video)/([0-9]+)(?:?.*)?/?", \
+                // @"^https://www.twitch.tv/[^/]+/(clip)/([\\w]+)/?", \
+                // @"^https://(clip)s.twitch.tv/([\\w]+)/?$", \
+                
                 // Parse for video
                 NSArray *hrefNodeArray = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"cLink" allowPartial:NO]; //Get links for cat
                 for (HTMLNode * hrefNode in hrefNodeArray) {
