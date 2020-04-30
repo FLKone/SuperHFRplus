@@ -38,12 +38,12 @@
 
     self.title = @"Bookmarks";
     self.navigationController.navigationBar.translucent = NO;
+
     //Supprime les lignes vides à la fin de la liste
     self.bookmarksTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
     
-    [[MPStorage shared] parseBookmarks];
     
     // Add PullToRefresh function to tableview
     __weak BookmarksTableViewController *self_ = self;
@@ -86,9 +86,11 @@
     [[ThemeManager sharedManager] applyThemeToAlertController:actionAlert];
 }
 
-- (void)reload
-{
-    //listBookmarksTopicsKeys = [[MPStorage shared].dicBookmarksTopics allKeys];
+- (void)reload {
+    [[MPStorage shared] reloadMPStorageAsynchronousWithCompletion:^{
+        
+    }];
+     //listBookmarksTopicsKeys = [[MPStorage shared].dicBookmarksTopics allKeys];
 }
 
 #pragma mark - TableView delegate methods
@@ -113,32 +115,33 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     FavoriteCellView *cell = (FavoriteCellView *)[tableView dequeueReusableCellWithIdentifier:@"FavoriteCellID"];
-    /*
-    UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc]
-                                                         initWithTarget:self action:@selector(handleLongPress:)];
-    [cell addGestureRecognizer:longPressRecognizer];
-    NSNumber* keyTopidID = [listBookmarksTopicsKeys objectAtIndex:(NSUInteger)indexPath.row];
-    Topic *tmpTopic = [[BookmarksStorage shared].dicBookmarksTopics objectForKey:keyTopidID];
-    */
-    // {"data":[{"bookmarks":{"list":[{"post":"680","cat":"25","author":"MilesTEG1","numreponse":742423,"label":"Test","createDate":1587291544336}],
+
+    [cell setShowsReorderControl:NO];
 
     Bookmark* bookmark = [[MPStorage shared] getBookmarkAtIndex:(int)indexPath.row];
-    UIFont *font1 = [UIFont boldSystemFontOfSize:13.0f];
-    /*if ([tmpTopic isViewed]) {
-        font1 = [UIFont systemFontOfSize:13.0f];
-    }*/
+    
+    // Label
     UIFont *font2 = [UIFont fontWithName:@"fontello" size:15];
     NSDictionary *arialDict = [NSDictionary dictionaryWithObject: font2 forKey:NSFontAttributeName];
     NSMutableAttributedString *aAttrString1 = [[NSMutableAttributedString alloc] initWithString:bookmark.sLabel attributes: arialDict];
     [cell.labelTitle setAttributedText:aAttrString1];
 
-    [cell setShowsReorderControl:NO];
+    // Page number
+    [cell.labelMessageNumber setText:[NSString stringWithFormat:@"%@", bookmark.sAuthorPost]];
     
+    
+    // No badge
+    cell.labelBadge.clipsToBounds = YES;
+    cell.labelBadge.layer.cornerRadius = 20 / 2;
+    [cell.labelBadge setText:@""];
+    cell.labelBadge.backgroundColor = [UIColor clearColor];
+    cell.labelBadgeWidth.constant = 0;
+
     // Posteur + date
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"hh:mm dd-MM-yyyy"];
+    [dateFormat setDateFormat:@"dd/MM/yyyy à hh:mm"];
     NSString *theDate = [dateFormat stringFromDate:bookmark.dateBookmarkCreation];
-    [cell.labelDate setText:[NSString stringWithFormat:@"%@ - %@", bookmark.sAuthorPost, theDate]];
+    [cell.labelDate setText:[NSString stringWithFormat:@"%@", theDate]];
     
     [cell applyTheme];
     
@@ -208,6 +211,45 @@
 {
     return 50;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Bookmark* bookmark = [[MPStorage shared] getBookmarkAtIndex:(int)indexPath.row];
+    NSString* sURL = [bookmark getUrl];
+    //NSString* sURL = @"/forum2.php?config=hfr.inc&cat=14&post=115&numreponse=5978240#t5978240";
+    NSLog(@"URL: (%@)", sURL);
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=14&post=115&numreponse=5978240#t5978240"]];
+    [request startSynchronous];
+    int statusCode = [request responseStatusCode];
+    NSString *statusMessage = [request responseStatusMessage];
+    NSLog(@"Code:%d, Status:%@", statusCode, statusMessage);
+    //
+    self.messagesTableViewController = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:sURL];
+
+    // Open topic
+    // Sur iPhone
+    if (([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
+        [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ||
+        [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
+
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Bookmarks" style: UIBarButtonItemStylePlain target:nil action:nil];
+        [self.navigationController pushViewController:self.messagesTableViewController animated:YES];
+    }
+    else { //iPad
+        [[[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] viewControllers] objectAtIndex:1] popToRootViewControllerAnimated:NO];
+        
+        [[[HFRplusAppDelegate sharedAppDelegate] detailNavigationController] setViewControllers:[NSMutableArray arrayWithObjects:self.messagesTableViewController, nil] animated:YES];
+        
+        if ([self.messagesTableViewController.splitViewController respondsToSelector:@selector(displayModeButtonItem)]) {
+            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftBarButtonItem = self.messagesTableViewController.splitViewController.displayModeButtonItem;
+            [[HFRplusAppDelegate sharedAppDelegate] detailNavigationController].viewControllers[0].navigationItem.leftItemsSupplementBackButton = YES;
+        }
+        
+        // Close left panel on ipad in portrait mode
+        [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
+    }
+    
+}
+
 
 @end
 

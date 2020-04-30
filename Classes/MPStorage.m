@@ -25,7 +25,7 @@ NSString* const MP_SOURCE_NAME = @"iOS";
 
 @implementation MPStorage
 
-@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, listBookmarks, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId;
+@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, listBookmarks, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId, targetViewController, targetSelector;
 static MPStorage *_shared = nil;    // static instance variable
 
 #pragma mark - Init methods
@@ -129,11 +129,31 @@ static MPStorage *_shared = nil;    // static instance variable
         }
     }
 }
+- (void)reloadMPStorageSynchronousWithCompletion:(void (^)(void))completionBlock {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
+        if (bIsMPStorageSavedSuccessfully) {
+            ASIHTTPRequest *request = [self GETRequest];
+            [request setShouldRedirect:NO];
+            [request setDelegate:self];
+            [request setDidFinishSelector:@selector(reloadMPStorageAsynchronousComplete:)];
+            [request startAsynchronous];
+        }
+        else {
+            NSLog(@"Not reloading MPStorage because last save is not successful.");
+        }
+    }
+}
 
 - (void)reloadMPStorageAsynchronousComplete:(ASIHTTPRequest *)request
 {
     if ([self parseMPStorage:[request responseString]]) {
         [self updateLastSucessAcessDate];
+    }
+    if (self.targetViewController) {
+        //dispatch_async(dispatch_get_main_queue(), ^{
+        objc_msgSend(self.targetViewController, self.targetSelector);
+        //[self.targetViewController performSelector:self.targetSelector];
+        //}
     }
 }
 
@@ -457,10 +477,8 @@ static MPStorage *_shared = nil;    // static instance variable
             Bookmark* b = [[Bookmark alloc] init];
 
             b.sPost = [[dic valueForKey:@"post"] stringValue];
-            b.sPage = [[dic valueForKey:@"page"] stringValue];
             b.sCat = [[dic valueForKey:@"cat"] stringValue];
-            b.sP = [dic valueForKey:@"p"];
-            b.sHref = [dic valueForKey:@"href"];
+            b.sNumResponse = [dic valueForKey:@"numreponse"];
 
 
             b.sLabel = [dic valueForKey:@"label"];
@@ -643,6 +661,7 @@ static MPStorage *_shared = nil;    // static instance variable
             
             self.bIsActive = YES;
             [[MPStorage shared] loadBlackListAsynchronous];
+            [[MPStorage shared] parseBookmarks];
         }];
         return NO;
     }

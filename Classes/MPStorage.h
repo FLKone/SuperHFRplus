@@ -27,6 +27,8 @@
 @property NSDictionary*    dicFlags;
 @property NSDictionary*    dicProcessedFlag;
 @property NSNumber*        nbTopicId;
+@property UIViewController*       targetViewController;
+@property SEL                     didFinishReloadSelector;
 
 + (MPStorage *)shared;
 

@@ -85,10 +85,10 @@
     self.errorReported = NO;
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
     self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
+    NSLog(@"URL:%@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
 	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
 	[request setDelegate:self];
     [request setShowAccurateProgress:YES];
-    
 	//[request setCachePolicy:ASIReloadIfDifferentCachePolicy];
 	//[request setDownloadCache:[ASIDownloadCache sharedCache]];
 	
@@ -163,6 +163,8 @@
 	
     [self startParseDataHtml:[request responseData]];
     
+    self.originalUrl = theRequest.originalURL.absoluteString;
+    
     [self cancelFetchContent];
 }
 
@@ -197,16 +199,11 @@
 
 -(void)setupScrollAndPage
 {
-	//NSLog(@"topicName: %@", self.topicName);
-	
-	//On vire le '#t09707987987'
-	NSRange rangeFlagPage;
-	rangeFlagPage =  [[self currentUrl] rangeOfString:@"#" options:NSBackwardsSearch];
-	
+    NSRange rangeFlagPage =  [self.currentUrl rangeOfString:@"#" options:NSBackwardsSearch];
     
     if (self.stringFlagTopic.length == 0) {
         if (!(rangeFlagPage.location == NSNotFound)) {
-            self.stringFlagTopic = [[self currentUrl] substringFromIndex:rangeFlagPage.location];
+            self.stringFlagTopic = [self.currentUrl substringFromIndex:rangeFlagPage.location];
         }
         else {
             self.stringFlagTopic = @"";
@@ -214,66 +211,59 @@
     }
     
 	if (!(rangeFlagPage.location == NSNotFound)) {
-		self.currentUrl = [[self currentUrl] substringToIndex:rangeFlagPage.location];
+		self.currentUrl = [self.currentUrl substringToIndex:rangeFlagPage.location];
     }
-	//--
-
-
-    /* else */
     
-    {
-        if (![self isModeOffline]) {
-            //On check si y'a page=2323
-            NSString *regexString  = @".*page=([^&]+).*";
-            NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
-            NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
-            NSError  *error2        = NULL;
-            
-            matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
-            
-            if (matchedRange.location == NSNotFound) {
-                NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
-                if (rangeNumPage.location == NSNotFound) {
-                    //
-                    NSLog(@"something went wrong");
-                    return;
-                    //[self.navigationController popViewControllerAnimated:YES];
-                }
-                else {
-                    self.pageNumber = [[self.currentUrl substringWithRange:rangeNumPage] intValue];
-                }
-            }
-            else {
-                self.pageNumber = [[self.currentUrl substringWithRange:matchedRange] intValue];
-                
-            }
-        }
+    // Looking for stringFlagTopic in original URL
+    rangeFlagPage =  [self.originalUrl rangeOfString:@"#" options:NSBackwardsSearch];
+    if (self.stringFlagTopic.length == 0 && !(rangeFlagPage.location == NSNotFound)) {
+        self.stringFlagTopic = [self.originalUrl substringFromIndex:rangeFlagPage.location];
+    }
+    
+    if (![self isModeOffline]) {
+        //On check si y'a page=2323
+        NSString *regexString  = @".*page=([^&]+).*";
+        NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
+        NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
+        NSError  *error2        = NULL;
         
-        if (self.filterPostsQuotes) {
-            if (self.pageNumberFilterStart == self.pageNumberFilterEnd) {
-                [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld", self.topicName, (unsigned long)self.pageNumberFilterStart]];
+        matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
+        
+        if (matchedRange.location == NSNotFound) {
+            NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
+            if (rangeNumPage.location == NSNotFound) {
+                //
+                NSLog(@"something went wrong");
+                return;
+                //[self.navigationController popViewControllerAnimated:YES];
             }
             else {
-                [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld à %ld", self.topicName, (unsigned long)self.pageNumberFilterStart, (unsigned long)self.pageNumberFilterEnd]];
+                self.pageNumber = [[self.currentUrl substringWithRange:rangeNumPage] intValue];
             }
         }
         else {
-            [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+            self.pageNumber = [[self.currentUrl substringWithRange:matchedRange] intValue];
+            
         }
-        [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
     }
-
+    
+    if (self.filterPostsQuotes) {
+        if (self.pageNumberFilterStart == self.pageNumberFilterEnd) {
+            [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld", self.topicName, (unsigned long)self.pageNumberFilterStart]];
+        }
+        else {
+            [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld à %ld", self.topicName, (unsigned long)self.pageNumberFilterStart, (unsigned long)self.pageNumberFilterEnd]];
+        }
+    }
+    else {
+        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+    }
+    [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
+    
     if (self.isSearchInstra) {
-        
         [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Recherche | %@", self.topicName]];
         [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
-        
     }
-    
-	//self.title = [NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber];
-    
-	//[self navigationItem].titleView.frame = CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height - 4);
-	
 }
 
 -(void)setupPageToolbar:(HTMLNode *)bodyNode andP:(HTMLParser *)myParser;
@@ -625,7 +615,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl {
 	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
 		// Custom initialization
-        //NSLog(@"init %@", theTopicUrl);
+        NSLog(@"init %@", theTopicUrl);
 		self.currentUrl = [theTopicUrl copy];
         self.currentOfflineTopic = nil;
 		self.loaded = NO;
@@ -2014,7 +2004,7 @@
     } else {
         returnA = [super canPerformAction:action withSender:sender];
     }
-
+    [self perfo]
     NSLog(@"MTV returnA %d", returnA);
     return returnA;
 }
