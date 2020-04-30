@@ -12,7 +12,7 @@
 
 #import "HTMLParser.h"
 #import	"RegexKitLite.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "ASIFormDataRequest.h"
 
 #import "ShakeView.h"
@@ -186,7 +186,7 @@
 	UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
 	self.navigationItem.rightBarButtonItem = segmentBarItem;
 	
-	[self loadDataInTableView:[theRequest responseData]];
+	[self loadDataInTableView:[theRequest safeResponseData]];
 	
     [self.arrayData removeAllObjects];
     //[self.arrayTopics removeAllObjects];

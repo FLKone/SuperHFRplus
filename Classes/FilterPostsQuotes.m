@@ -6,7 +6,7 @@
 //
 
 #import "FilterPostsQuotes.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "ASIFormDataRequest.h"
 #import "HTMLParser.h"
 #import "RegexKitLite.h"
@@ -100,11 +100,11 @@
                 NSLog(@"error: %@", [[request error] localizedDescription]);
                 return;
             }
-            
-            if ([request responseData]) {
-                ParseMessagesOperation *parser = [[ParseMessagesOperation alloc] initWithData:[request responseData] index:0 reverse:NO delegate:nil];
+            NSData* data = [request safeResponseData];
+            if (data) {
+                ParseMessagesOperation *parser = [[ParseMessagesOperation alloc] initWithData:data index:0 reverse:NO delegate:nil];
                 NSError * error = nil;
-                HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
+                HTMLParser *myParser = [[HTMLParser alloc] initWithData:data error:&error];
                 [parser parseData:myParser filterPostsQuotes:YES startAfterThisPostId:sStartAfterPostId topicUrl:topic.aURL topicPage:iPageToLoad];
                 sStartAfterPostId = nil; // On filter on first page of url, not on the following
                 self.arrData = [self.arrData arrayByAddingObjectsFromArray:parser.workingArray];

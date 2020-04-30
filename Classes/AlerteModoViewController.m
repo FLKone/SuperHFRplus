@@ -14,6 +14,7 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "HFRAlertView.h"
+#import "ASIHTTPRequest+Tools.h"
 
 @implementation AlerteModoViewController
 @synthesize textView, delegate, url;
@@ -58,7 +59,7 @@ NSString *const PLACEHOLDER = @"Attention : le message que vous écrivez ici ser
     
     [self.arrayInputData removeAllObjects];
     
-    [self loadDataInTableView:[request responseData]];
+    [self loadDataInTableView:[request safeResponseData]];
     
     [self.accessoryView setHidden:NO];
     [self.loadingView setHidden:YES];
@@ -221,10 +222,10 @@ NSString *const PLACEHOLDER = @"Attention : le message que vous écrivez ici ser
             [self presentViewController:alert animated:YES completion:nil];
             [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
-        else if ([arequest responseString])
+        else if ([arequest safeResponseString])
         {
             NSError * error = nil;
-            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
+            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest safeResponseString] error:&error];
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
             

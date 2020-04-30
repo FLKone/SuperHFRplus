@@ -22,8 +22,8 @@
 #import "HFRUIImagePickerController.h"
 #import "MultisManager.h"
 #import "HFRAlertView.h"
-
 #import "EditMessageViewController.h"
+#import "ASIHTTPRequest+Tools.h"
 
 @implementation AddMessageViewController
 @synthesize delegate, textView, arrayInputData, formSubmit, accessoryView, smileView;
@@ -838,14 +838,14 @@
         if ([arequest error]) {
         [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:@"Erreur de connexion..."];
         }
-        else if ([arequest responseString])
+        else if ([arequest safeResponseString])
         {
         @try {
             // Set main compte cookies
             [[MultisManager sharedManager] forceCookiesForCompte:[[MultisManager sharedManager] getMainCompte]];
             
             NSError * error = nil;
-            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
+            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest safeResponseString] error:&error];
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
             
@@ -869,7 +869,7 @@
                     urlArray = [((QuoteMessageViewController *)self).urlQuote arrayOfCaptureComponentsMatchedByRegex:@"numreponse=([0-9]+)&"];
                 }
                 else {
-                    urlArray = [[arequest responseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"[^#]+([^\"]*)\" />"];
+                    urlArray = [[arequest safeResponseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"[^#]+([^\"]*)\" />"];
                 }
                 
                 if (urlArray.count > 0) {
@@ -1503,7 +1503,7 @@
     
     //NSDate *thenT = [NSDate date]; // Create a current date
     
-    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[theRequest responseString] error:NULL];
+    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[theRequest safeResponseString] error:NULL];
     HTMLNode * smileNode = [myParser doc]; //Find the body tag
     
     NSArray * tmpImageArray =  [smileNode findChildTags:@"img"];

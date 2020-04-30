@@ -15,7 +15,7 @@
 
 #import "RegexKitLite.h"
 #import "HTMLParser.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "ASIFormDataRequest.h"
 #import "ASIDownloadCache.h"
 
@@ -87,6 +87,8 @@
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
     self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
 	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
+    
+    [request setResponseEncoding:NSUTF8StringEncoding];
 	[request setDelegate:self];
     [request setShowAccurateProgress:YES];
     
@@ -162,7 +164,7 @@
 		[[HFRplusAppDelegate sharedAppDelegate] readMPBadge];
 	}
 	
-    [self startParseDataHtml:[request responseData]];
+    [self startParseDataHtml:[request safeResponseData]];
     
     [self cancelFetchContent];
 }
@@ -1112,9 +1114,9 @@
         if ([delrequest error]) {
             //NSLog(@"error: %@", [[arequest error] localizedDescription]);
         }
-        else if ([delrequest responseString])
+        else if ([delrequest safeResponseString])
         {
-            //NSLog(@"responseString: %@", [arequest responseString]);
+            //NSLog(@"responseString: %@", [arequest safeResponseString]);
             
             //[self reload];
             [[[HFRplusAppDelegate sharedAppDelegate] messagesNavController] popViewControllerAnimated:YES];
@@ -2404,7 +2406,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     __weak ASIHTTPRequest*aRequest_ = aRequest;
 
     [aRequest setCompletionBlock:^{
-        NSString *responseString = [aRequest_ responseString];
+        NSString *responseString = [aRequest_ safeResponseString];
         responseString = [responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         responseString = [responseString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
         
@@ -3259,7 +3261,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
         if ([arequest error]) {
             NSLog(@"error: %@", [[arequest error] localizedDescription]);
         }
-        else if ([arequest responseString])
+        else if ([arequest safeResponseString])
         {
             baseURL = Location;
             //NSLog(@"responseString %@", [arequest responseString]);

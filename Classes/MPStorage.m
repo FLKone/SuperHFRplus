@@ -8,7 +8,7 @@
 
 #import "MPStorage.h"
 #import "HFRplusAppDelegate.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "ASIFormDataRequest.h"
 #import "HTMLParser.h"
 #import "BlackList.h"
@@ -135,7 +135,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (void)reloadMPStorageAsynchronousComplete:(ASIHTTPRequest *)request
 {
-    if ([self parseMPStorage:[request responseString]]) {
+    if ([self parseMPStorage:[request safeResponseString]]) {
         [self updateLastSucessAcessDate];
     }
 }
@@ -158,7 +158,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (void)loadBlackListComplete:(ASIHTTPRequest *)request
 {
-    if ([self updateBlackList:[request responseString]] == NO) {
+    if ([self updateBlackList:[request safeResponseString]] == NO) {
         // TODO Retry later
     }
 }
@@ -203,9 +203,9 @@ static MPStorage *_shared = nil;    // static instance variable
             return NO;
         }
         
-        if ([request responseString])
+        if ([request safeResponseString])
         {
-            if (![self parseMPStorage:[request responseString]]) return NO;
+            if (![self parseMPStorage:[request safeResponseString]]) return NO;
             
             // Check if pseudo already exists in list
             NSInteger index = 0;
@@ -244,11 +244,11 @@ static MPStorage *_shared = nil;    // static instance variable
             NSLog(@"error: %@", [[request error] localizedDescription]);
             return NO;
         }
-        
-        if ([request responseString])
+        NSString* sResponse = [request safeResponseString];
+        if (sResponse)
         {
             // If content is not parsed, then error
-            if (![self parseMPStorage:[request responseString]]) return NO;
+            if (![self parseMPStorage:sResponse]) return NO;
 
             if ([dData[@"data"][0][@"blacklist"][@"list"] count] > 0) {
                 // Check if pseudo already exists in list
@@ -319,7 +319,7 @@ static MPStorage *_shared = nil;    // static instance variable
 - (void)updateFlag:(ASIHTTPRequest *)request
 {
     // If content is not parsed, then error
-    if ([self parseMPStorage:[request responseString]]) {
+    if ([self parseMPStorage:[request safeResponseString]]) {
         
         if ([self updateFlagInternally]) {
             [self saveMPStorageAsynchronous];
@@ -330,7 +330,7 @@ static MPStorage *_shared = nil;    // static instance variable
 - (void)removeFlag:(ASIHTTPRequest *)request
 {
     // If content is not parsed, then error
-    if ([self parseMPStorage:[request responseString]]) {
+    if ([self parseMPStorage:[request safeResponseString]]) {
         
         if ([self removeFlagInternally]) {
             [self saveMPStorageAsynchronous];
@@ -455,7 +455,7 @@ static MPStorage *_shared = nil;    // static instance variable
     [request startSynchronous];
     NSError *error = [request error];
     if (!error) {
-        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request responseString] error:&error];
+        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request safeResponseString] error:&error];
         HTMLNode * bodyNode = [myParser body]; //Find the body tag
         HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum1PagesHaut" allowPartial:YES];
         HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
@@ -505,16 +505,16 @@ static MPStorage *_shared = nil;    // static instance variable
             // Set main compte cookies
             NSLog(@"ERROR creating MPstorage");
         }
-        else if ([requestPOST responseString])
+        else if ([requestPOST safeResponseString])
         {
-            NSLog(@"Response string for creating MPstorage \n%@\n-----------------------------\n", [requestPOST responseString]);
-            if ([[requestPOST responseString] containsString:@"succès"]) {
+            NSLog(@"Response string for creating MPstorage \n%@\n-----------------------------\n", [requestPOST safeResponseString]);
+            if ([[requestPOST safeResponseString] containsString:@"succès"]) {
                 NSLog(@"SUCCESS creating MPstorage");
                 [self updateLastSucessAcessDate];
                 return YES;
             } else {
                 NSError* error;
-                HTMLParser *myParser = [[HTMLParser alloc] initWithString:[requestPOST responseString] error:&error];
+                HTMLParser *myParser = [[HTMLParser alloc] initWithString:[requestPOST safeResponseString] error:&error];
                 HTMLNode * bodyNode = [myParser body]; //Find the body tag
                 HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
                 [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:[NSString stringWithFormat:@"Failed to create MPStorage : %@", [messagesNode contents]] forDuration:(long)3];
@@ -659,10 +659,10 @@ static MPStorage *_shared = nil;    // static instance variable
             // Set main compte cookies
             NSLog(@"ERROR updating MPstorage");
         }
-        else if ([requestPOST responseString])
+        else if ([requestPOST safeResponseString])
         {
-            NSLog(@"Success ? updating MPstorage :\n%@", [requestPOST responseString]);
-            if ([[requestPOST responseString] containsString:@"succès"]) {
+            NSLog(@"Success ? updating MPstorage :\n%@", [requestPOST safeResponseString]);
+            if ([[requestPOST safeResponseString] containsString:@"succès"]) {
                 [self updateLastSucessAcessDate];
                 bIsMPStorageSavedSuccessfully = YES;
                 return YES;
@@ -699,9 +699,9 @@ static MPStorage *_shared = nil;    // static instance variable
 - (void)saveMPStorageAsynchronousComplete:(ASIHTTPRequest *)request
 {
     bIsMPStorageSavedSuccessfully = NO;
-    if ([request responseString])
+    if ([request safeResponseString])
     {
-        if ([[request responseString] containsString:@"succès"]) {
+        if ([[request safeResponseString] containsString:@"succès"]) {
             [self updateLastSucessAcessDate];
             bIsMPStorageSavedSuccessfully = YES;
         }

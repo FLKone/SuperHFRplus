@@ -10,7 +10,7 @@
 #import "PlusTableViewController.h"
 #import "MessagesTableViewController.h"
 #import "AQCellView.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "Constants.h"
 #import "MultisManager.h"
 #import "ThemeManager.h"
@@ -140,7 +140,7 @@
     //Bouton Reload
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
-    [self loadDataInTableView:[theRequest responseData]];
+    [self loadDataInTableView:[theRequest safeResponseData]];
     
     [self.arrayData removeAllObjects];
     self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];

@@ -15,7 +15,7 @@
 #import "RangeOfCharacters.h"
 #import <CommonCrypto/CommonDigest.h>
 
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "BlackList.h"
 #import "MultisManager.h"
 
@@ -419,7 +419,7 @@
                     ASIHTTPRequest *operation = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:tmpURL]];
                     __weak ASIHTTPRequest *operation_ = operation;
                     [operation setCompletionBlock:^{
-                        [fileManager createFileAtPath:key contents:[operation_ responseData] attributes:nil];
+                        [fileManager createFileAtPath:key contents:[operation_ safeResponseData] attributes:nil];
                         linkItem.imageUI = key;
                     }];
                     [operation setFailedBlock:^{

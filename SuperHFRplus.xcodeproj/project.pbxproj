@@ -15,6 +15,8 @@
 		15167EB12330210600D64651 /* Heart-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15167EB02330210600D64651 /* Heart-20@2x.png */; };
 		151DE8D523AAC73D003E6D1B /* OldFavoritesTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */; };
 		151DE8D723AAC74D003E6D1B /* OldFavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */; };
+		152D2D472455916000D9D644 /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */; };
+		152D2D4A2456E56500D9D644 /* ASIHTTPRequest+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */; };
 		15357D64234BA620002D5C2E /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D62234BA61F002D5C2E /* offline@2x.png */; };
 		15357D65234BA620002D5C2E /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D63234BA620002D5C2E /* offline.png */; };
 		15357D67234BA712002D5C2E /* offline2@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D66234BA712002D5C2E /* offline2@2.png */; };
@@ -791,6 +793,9 @@
 		151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OldFavoritesTableViewController.xib; sourceTree = "<group>"; };
 		151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldFavoritesTableViewController.m; sourceTree = "<group>"; };
 		151DE8D823AAC756003E6D1B /* OldFavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldFavoritesTableViewController.h; sourceTree = "<group>"; };
+		152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
+		152D2D482456E55400D9D644 /* ASIHTTPRequest+Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ASIHTTPRequest+Tools.h"; sourceTree = "<group>"; };
+		152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ASIHTTPRequest+Tools.m"; sourceTree = "<group>"; };
 		15357D62234BA61F002D5C2E /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		15357D63234BA620002D5C2E /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
 		15357D66234BA712002D5C2E /* offline2@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline2@2.png"; sourceTree = "<group>"; };
@@ -1621,6 +1626,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				152D2D472455916000D9D644 /* libiconv.2.4.0.tbd in Frameworks */,
 				D8FEA7E7224542540096602D /* WebP.framework in Frameworks */,
 				4CD6B8811B977E0E007FC29E /* SafariServices.framework in Frameworks */,
 				D8672D35203F0AD00045785C /* InAppSettingsKit.framework in Frameworks */,
@@ -1960,6 +1966,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */,
 				D87BB73A21624AEB0079690C /* SimpleKeychain.framework */,
 				D87BB73B21624AEC0079690C /* SimpleKeychain.framework.dSYM */,
 				D8672D34203F0AD00045785C /* InAppSettingsKit.framework */,
@@ -2409,6 +2416,8 @@
 				4CCF76671FB5CE12008CF525 /* InAppSettingsKit+Theme.m */,
 				D8A61742215E82C6006E9248 /* UIScrollView+Theme.h */,
 				D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */,
+				152D2D482456E55400D9D644 /* ASIHTTPRequest+Tools.h */,
+				152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -3735,6 +3744,7 @@
 				D86ED58520445F5C00A2D541 /* UIImage+BezierPath.m in Sources */,
 				4CB132A81B908EC00081B44D /* UIMenuItem+CXAImageSupport.m in Sources */,
 				CA7C70D3185EF50E00B348BA /* UIImage+Resize.m in Sources */,
+				152D2D4A2456E56500D9D644 /* ASIHTTPRequest+Tools.m in Sources */,
 				D8835E941E5F13C70073398C /* SDWebImagePrefetcher.m in Sources */,
 				CA7C70F2185EF50E00B348BA /* RangeOfCharacters.m in Sources */,
 				15C673D122567A7300B9E0BE /* FavoriteCellView.m in Sources */,

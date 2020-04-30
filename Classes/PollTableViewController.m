@@ -14,7 +14,7 @@
 #import "RangeOfCharacters.h"
 #import "ASIFormDataRequest.h"
 #import "PollResultTableViewCell.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "MessagesTableViewController.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
@@ -280,7 +280,7 @@
 	//NSLog(@"fetchContentComplete");
 
     
-    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[request responseString] error:NULL];
+    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[theRequest safeResponseString] error:NULL];
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
     NSLog(@"setupPoll");
 	HTMLNode * tmpPollNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"sondage" allowPartial:NO];
@@ -293,11 +293,8 @@
         [self.delegate setPollParser:myParser];
     }
     
-	//[self.arrayData removeAllObjects];
 	[self.tableViewPoll reloadData];
 	
-	//[self loadDataInTableView:[request responseData]];
-    
 	[self.loadingView setHidden:YES];
     
 	switch (self.status) {
@@ -496,10 +493,10 @@
             [self presentViewController:alert animated:YES completion:nil];
             [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
-        else if ([arequest responseString])
+        else if ([arequest safeResponseString])
         {
             NSError * error = nil;
-            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
+            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest safeResponseString] error:&error];
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
             

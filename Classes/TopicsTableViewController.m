@@ -7,7 +7,7 @@
 
 #import "HFRplusAppDelegate.h"
 
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "Constants.h"
 #import "HTMLParser.h"
 
@@ -106,7 +106,7 @@
 
 - (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
 {
-    [self loadDataInTableView:[theRequest responseData]];
+    [self loadDataInTableView:[theRequest safeResponseData]];
 	
     [self.arrayData removeAllObjects];
     
@@ -119,34 +119,6 @@
     [self.topicsTableView.pullToRefreshView stopAnimating];
     [self.topicsTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
     
-    /*
-	[self.arrayData removeAllObjects];
-	[self.topicsTableView reloadData];
-	
-	[self loadDataInTableView:[request responseData]];
-
-	[self.loadingView setHidden:YES];
-
-	switch (self.status) {
-		case kMaintenance:
-		case kNoResults:
-		case kNoAuth:            
-			[self.maintenanceView setText:self.statusMessage];
-            
-            [self.loadingView setHidden:YES];
-			[self.maintenanceView setHidden:NO];
-			[self.topicsTableView setHidden:YES];
-			break;
-		default:
-			[self.topicsTableView reloadData];
-            
-            [self.loadingView setHidden:YES];
-            [self.maintenanceView setHidden:YES];
-			[self.topicsTableView setHidden:NO];
-			break;
-	}
-    */
-	
 	[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:YES];
     [self cancelFetchContent];
 }

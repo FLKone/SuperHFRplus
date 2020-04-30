@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "OfflineStorage.h"
 #import "OfflineTableViewController.h"
 #import "HTMLparser.h"
@@ -220,14 +220,14 @@ static OfflineStorage *_shared = nil;    // static instance variable
                     return NO;
                 }
                 
-                if ([request responseData]) {
-                    NSLog(@"======================================================");
-                    NSLog(@"OFFLINE URL  %@", sURL);
-                    NSLog(@"OFFLINE HTML %@", [request responseString]);
-                    NSLog(@"======================================================");
+                if ([request safeResponseData]) {
+                    //NSLog(@"======================================================");
+                    //NSLog(@"OFFLINE URL  %@", sURL);
+                    //NSLog(@"OFFLINE HTML %@", [request safeResponseString]);
+                    //NSLog(@"======================================================");
                     
                     NSError* error;
-                    HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
+                    HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request safeResponseData] error:&error];
                     HTMLNode * bodyNode = [myParser body]; //Find the body tag
                     NSArray *arrayMessages = [bodyNode findChildrenWithAttribute:@"class" matchingName:@"messCase2" allowPartial:NO];
                     int iImageNumber = 0;
@@ -313,12 +313,13 @@ static OfflineStorage *_shared = nil;    // static instance variable
             [request setTimeOutSeconds:2];
             [request setDelegate:self];
             [request startSynchronous];
-            if ([request responseData]) {
+            NSData* dResponseData = [request responseData];
+            if (dResponseData) {
                 NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
                 directory = [directory stringByAppendingPathComponent:@"cache"];
                 directory = [directory stringByAppendingPathComponent:IMAGE_CACHE_DIRECTORY];
                 NSString* sFilenameNewImage = [directory stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
-                [[request responseData] writeToFile:sFilenameNewImage atomically:YES];
+                [dResponseData writeToFile:sFilenameNewImage atomically:YES];
                 [self.dicImageCacheList setObject:sFilenameNewImage forKey:sURL];
                 NSLog(@"### IMAGE CACHE ### File saved into cache (u:%@,f:%@)", sURL, sFilenameNewImage);
                 return sFilenameNewImage;
