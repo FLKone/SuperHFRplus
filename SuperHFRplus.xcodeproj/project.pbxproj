@@ -647,6 +647,7 @@
 		D80DBD741E55BE730051B751 /* ASIHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D80DBD5F1E55BE730051B751 /* ASIHTTPRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D80DBD761E55BE730051B751 /* ASIInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = D80DBD631E55BE730051B751 /* ASIInputStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D80DBD781E55BE730051B751 /* ASINetworkQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = D80DBD651E55BE730051B751 /* ASINetworkQueue.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D8116F19245F1064007C5434 /* photoDefaultClic.png in Resources */ = {isa = PBXBuildFile; fileRef = D8116F18245F1064007C5434 /* photoDefaultClic.png */; };
 		D82690401E5856A5006971C3 /* HFRUIImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D826903E1E5856A5006971C3 /* HFRUIImagePickerController.m */; };
 		D82690441E585CAC006971C3 /* style-liste-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = D82690411E585CAC006971C3 /* style-liste-dark.css */; };
 		D82690461E585CAC006971C3 /* style-liste-retina-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = D82690421E585CAC006971C3 /* style-liste-retina-dark.css */; };
@@ -1514,6 +1515,7 @@
 		D80DBD641E55BE730051B751 /* ASINetworkQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASINetworkQueue.h; sourceTree = "<group>"; };
 		D80DBD651E55BE730051B751 /* ASINetworkQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASINetworkQueue.m; sourceTree = "<group>"; };
 		D80DBD661E55BE730051B751 /* ASIProgressDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIProgressDelegate.h; sourceTree = "<group>"; };
+		D8116F18245F1064007C5434 /* photoDefaultClic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoDefaultClic.png; sourceTree = "<group>"; };
 		D826903D1E5856A5006971C3 /* HFRUIImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRUIImagePickerController.h; sourceTree = "<group>"; };
 		D826903E1E5856A5006971C3 /* HFRUIImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFRUIImagePickerController.m; sourceTree = "<group>"; };
 		D82690411E585CAC006971C3 /* style-liste-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "style-liste-dark.css"; sourceTree = "<group>"; };
@@ -2654,6 +2656,7 @@
 				CA00C60E17C30C370067B457 /* nextIcon.png */,
 				CA00C60F17C30C370067B457 /* nextIcon@2x.png */,
 				CA00C61017C30C370067B457 /* photoDefault.png */,
+				D8116F18245F1064007C5434 /* photoDefaultClic.png */,
 				CA00C61117C30C370067B457 /* photoDefaultfail.png */,
 				CA00C61217C30C370067B457 /* photoDefaultfailmini.png */,
 				CA00C61317C30C370067B457 /* previousIcon.png */,
@@ -3310,6 +3313,7 @@
 				CA7C701F185EF50E00B348BA /* AccessoryView.xib in Resources */,
 				CA7C7020185EF50E00B348BA /* sum.gif in Resources */,
 				CA7C7021185EF50E00B348BA /* TopicCellView.xib in Resources */,
+				D8116F19245F1064007C5434 /* photoDefaultClic.png in Resources */,
 				4CB132CA1B9099220081B44D /* ReplyArrowFilled-20.png in Resources */,
 				CA7C7022185EF50E00B348BA /* InAppSettings.bundle in Resources */,
 				4CB1330E1B90B7940081B44D /* Thor Hammer Filled-23@2x.png in Resources */,

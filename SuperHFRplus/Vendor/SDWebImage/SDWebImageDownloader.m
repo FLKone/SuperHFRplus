@@ -124,6 +124,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         else {
             request.allHTTPHeaderFields = wself.HTTPHeaders;
         }
+        [request setValue:@"https://forum.hardware.fr" forHTTPHeaderField:@"Referer"];
         operation = [[SDWebImageDownloaderOperation alloc] initWithRequest:request
                                                                    options:options
                                                                   progress:^(NSInteger receivedSize, NSInteger expectedSize) {

@@ -1842,7 +1842,7 @@
                                 function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
                                 function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
                                 function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
-                                $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
+                                $('img').error(function(){var failingSrc = $(this).attr('src');if(failingSrc.indexOf('https://reho.st')>-1){$(this).attr('src', 'photoDefaultClic.png')}else{$(this).attr('src', 'photoDefaultfailmini.png');}});\
                                 function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
                                 document.documentElement.style.setProperty('--color-action', '%@');\
                                 document.documentElement.style.setProperty('--color-action-disabled', '%@');\
