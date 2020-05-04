@@ -2004,7 +2004,7 @@
     } else {
         returnA = [super canPerformAction:action withSender:sender];
     }
-    [self perfo]
+
     NSLog(@"MTV returnA %d", returnA);
     return returnA;
 }

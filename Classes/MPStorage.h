@@ -42,6 +42,7 @@
 - (NSString*)getUrlFlagForTopidId:(int)topicID;
 - (NSInteger)getPageFlagForTopidId:(int)topicID;
 - (void)reloadMPStorageAsynchronous;
+- (void)reloadMPStorageAsynchronousFromViewController:(UIViewController*)vc withSelector:(SEL)selector;
 - (int)getBookmarksNumber ;
 - (Bookmark*)getBookmarkAtIndex:(int)index;
 - (void)parseBookmarks;

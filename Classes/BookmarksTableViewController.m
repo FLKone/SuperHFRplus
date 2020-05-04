@@ -87,10 +87,12 @@
 }
 
 - (void)reload {
-    [[MPStorage shared] reloadMPStorageAsynchronousWithCompletion:^{
-        
-    }];
-     //listBookmarksTopicsKeys = [[MPStorage shared].dicBookmarksTopics allKeys];
+    [[MPStorage shared] reloadMPStorageAsynchronousFromViewController:(UIViewController*)self withSelector:@selector(finishedLoadingData)];
+}
+
+- (void)finishedLoadingData {
+    [self.bookmarksTableView.pullToRefreshView stopAnimating];
+    [self.bookmarksTableView reloadData];
 }
 
 #pragma mark - TableView delegate methods

@@ -25,7 +25,7 @@ NSString* const MP_SOURCE_NAME = @"iOS";
 
 @implementation MPStorage
 
-@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, listBookmarks, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId, targetViewController, targetSelector;
+@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, listBookmarks, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId, targetViewController, didFinishReloadSelector;
 static MPStorage *_shared = nil;    // static instance variable
 
 #pragma mark - Init methods
@@ -116,21 +116,14 @@ static MPStorage *_shared = nil;    // static instance variable
 #pragma mark - Load MPStorage
 
 - (void)reloadMPStorageAsynchronous {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
-        if (bIsMPStorageSavedSuccessfully) {
-            ASIHTTPRequest *request = [self GETRequest];
-            [request setShouldRedirect:NO];
-            [request setDelegate:self];
-            [request setDidFinishSelector:@selector(reloadMPStorageAsynchronousComplete:)];
-            [request startAsynchronous];
-        }
-        else {
-            NSLog(@"Not reloading MPStorage because last save is not successful.");
-        }
-    }
+    [self reloadMPStorageAsynchronousFromViewController:nil withSelector:nil];
 }
-- (void)reloadMPStorageSynchronousWithCompletion:(void (^)(void))completionBlock {
+
+- (void)reloadMPStorageAsynchronousFromViewController:(UIViewController*)vc withSelector:(SEL)selector {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
+        self.targetViewController = vc;
+        self.didFinishReloadSelector = selector;
+        
         if (bIsMPStorageSavedSuccessfully) {
             ASIHTTPRequest *request = [self GETRequest];
             [request setShouldRedirect:NO];
@@ -140,6 +133,7 @@ static MPStorage *_shared = nil;    // static instance variable
         }
         else {
             NSLog(@"Not reloading MPStorage because last save is not successful.");
+            //TODO: partie à améliorer...
         }
     }
 }
@@ -148,12 +142,9 @@ static MPStorage *_shared = nil;    // static instance variable
 {
     if ([self parseMPStorage:[request responseString]]) {
         [self updateLastSucessAcessDate];
-    }
-    if (self.targetViewController) {
-        //dispatch_async(dispatch_get_main_queue(), ^{
-        objc_msgSend(self.targetViewController, self.targetSelector);
-        //[self.targetViewController performSelector:self.targetSelector];
-        //}
+        if (self.targetViewController) {
+            [self.targetViewController performSelectorOnMainThread:self.didFinishReloadSelector withObject:nil waitUntilDone:NO];
+        }
     }
 }
 
@@ -661,7 +652,6 @@ static MPStorage *_shared = nil;    // static instance variable
             
             self.bIsActive = YES;
             [[MPStorage shared] loadBlackListAsynchronous];
-            [[MPStorage shared] parseBookmarks];
         }];
         return NO;
     }
@@ -692,6 +682,7 @@ static MPStorage *_shared = nil;    // static instance variable
     }
     @finally {}
     
+    [[MPStorage shared] parseBookmarks];
     [self updateLastSucessAcessDate];
     return YES;
 }
