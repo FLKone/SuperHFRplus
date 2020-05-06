@@ -419,7 +419,7 @@
                     ASIHTTPRequest *operation = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:tmpURL]];
                     __weak ASIHTTPRequest *operation_ = operation;
                     [operation setCompletionBlock:^{
-                        [fileManager createFileAtPath:key contents:[operation_ safeResponseData] attributes:nil];
+                        [fileManager createFileAtPath:key contents:[operation_ responseData] attributes:nil];
                         linkItem.imageUI = key;
                     }];
                     [operation setFailedBlock:^{
