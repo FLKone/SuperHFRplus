@@ -37,6 +37,9 @@
 - (void)loadBlackListAsynchronous;
 - (BOOL)addBlackListSynchronous:(NSString*)pseudo;
 - (BOOL)removeBlackListSynchronous:(NSString*)pseudo;
+- (BOOL)addBookmarkSynchronous:(Bookmark*)bookmark;
+- (BOOL)removeBookmarkSynchronous:(Bookmark*)bookmark;
+- (Bookmark*)getBookmarkForPost:(NSString*)sPost numreponse:(NSString*)sNumResponse;
 - (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag;
 - (void)removeMPFlagAsynchronous:(int)topicID;
 - (NSString*)getUrlFlagForTopidId:(int)topicID;

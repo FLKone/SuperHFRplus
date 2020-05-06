@@ -279,6 +279,96 @@ static MPStorage *_shared = nil;    // static instance variable
     return NO;
 }
 
+#pragma mark - add/remove bookmark
+
+- (BOOL)addBookmarkSynchronous:(Bookmark*)bookmark {
+    // First get content of MPStorage
+    ASIHTTPRequest *request = [self GETRequest];
+    [request startSynchronous];
+    if (request) {
+        if ([request error]) {
+            NSLog(@"error: %@", [[request error] localizedDescription]);
+            return NO;
+        }
+        
+        if ([request responseString])
+        {
+            if (![self parseMPStorage:[request responseString]]) return NO;
+            
+            // Check if pseudo already exists in list
+            NSInteger index = 0;
+            NSInteger indexFound = -1;
+            if ([dData[@"data"][0][@"bookmarks"][@"list"] count] > 0) {
+                for (NSDictionary* dBookmark in dData[@"data"][0][@"bookmarks"][@"list"]) {
+                    NSString* sNumreponse = [[dBookmark valueForKey:@"numreponse"] stringValue];
+                    if ([sNumreponse isEqualToString:bookmark.sNumResponse]) {
+                        indexFound = index;
+                    }
+                    index++;
+                }
+            }
+            
+             // Not found, so it can be added
+            if (indexFound == -1) {
+                // {"post":"96827","cat":"13","author":"Hansaplast","numreponse":59533822,"label":"Carafe","createDate":1587576009076}
+                NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: TIMESTAMP, @"createDate", bookmark.sPost, @"post", bookmark.sAuthorPost, @"author", bookmark.sNumResponse, @"numreponse", bookmark.sCat, @"cat", bookmark.sLabel, @"label", nil];
+                [dData[@"data"][0][@"bookmarks"][@"list"] insertObject:dict atIndex:0];
+                
+                [dData setValue:TIMESTAMP forKey:@"lastUpdate"];
+                [dData setValue:MP_SOURCE_NAME forKey:@"sourceName"];
+
+                if ([self saveMPStorageSynchronous]) {
+                    [self parseBookmarks];
+                    return YES;
+                }
+            }
+        }
+    }
+    return NO;
+}
+
+- (BOOL)removeBookmarkSynchronous:(Bookmark*)bookmark {
+    // First get content of MPStorage
+    ASIHTTPRequest *request = [self GETRequest];
+    [request startSynchronous];
+    
+    if (request) {
+        if ([request error]) {
+            NSLog(@"error: %@", [[request error] localizedDescription]);
+            return NO;
+        }
+        
+        if ([request responseString])
+        {
+            // If content is not parsed, then error
+            if (![self parseMPStorage:[request responseString]]) return NO;
+
+            if ([dData[@"data"][0][@"bookmarks"][@"list"] count] > 0) {
+                // Check if pseudo already exists in list
+                NSInteger index = 0;
+                NSInteger indexFound = -1;
+                for (NSDictionary* dBookmark in dData[@"data"][0][@"bookmarks"][@"list"]) {
+                    NSString* sNumreponse = [[dBookmark valueForKey:@"numreponse"] stringValue];
+                    if ([sNumreponse isEqualToString:bookmark.sNumResponse]) {
+                        indexFound = index;
+                    }
+                    index++;
+                }
+                
+                // Found, so it can be removed
+                if (indexFound >= 0) {
+                    [dData[@"data"][0][@"bookmarks"][@"list"] removeObjectAtIndex: indexFound];
+                    if ([self saveMPStorageSynchronous]) {
+                        [self parseBookmarks]; // update bookmark list
+                        return YES;
+                    }
+                }
+            }
+        }
+    }
+    return NO;
+}
+
 #pragma mark -  Save MP flags methods
 
 - (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag {
@@ -461,23 +551,38 @@ static MPStorage *_shared = nil;    // static instance variable
     return nil;
 }
 
+- (Bookmark*)getBookmarkForPost:(NSString*)sPost numreponse:(NSString*)sNumResponse {
+    for (Bookmark* b in self.listBookmarks) {
+        if ([b.sPost isEqualToString:sPost] && [b.sNumResponse isEqualToString:sNumResponse]) {
+            return b; // Found
+        }
+    }
+
+    return nil; // Not found
+}
+
+
 - (void)parseBookmarks {
     self.listBookmarks = [[NSMutableArray alloc] init];
+    NSMutableArray* listBookmarksTmp = [[NSMutableArray alloc] init];
     @try {
         for (NSDictionary* dic in dData[@"data"][0][@"bookmarks"][@"list"]) {
             Bookmark* b = [[Bookmark alloc] init];
 
             b.sPost = [[dic valueForKey:@"post"] stringValue];
             b.sCat = [[dic valueForKey:@"cat"] stringValue];
-            b.sNumResponse = [dic valueForKey:@"numreponse"];
-
-
+            b.sNumResponse = [[dic valueForKey:@"numreponse"] stringValue];
             b.sLabel = [dic valueForKey:@"label"];
             b.sAuthorPost = [dic valueForKey:@"author"];
-            b.dateBookmarkCreation = [NSDate now];//[NSDate dateWithTimeIntervalSince1970:[[b valueForKey:@"createDate"] intValue]];
+            NSTimeInterval timeStamp = [[dic valueForKey:@"createDate"] doubleValue];
+            b.dateBookmarkCreation = [NSDate dateWithTimeIntervalSince1970:timeStamp/1000];
             
-            [self.listBookmarks addObject:b];
+            [listBookmarksTmp addObject:b];
         }
+        
+        //Reorder bookmarks by date
+        NSSortDescriptor *sortDescriptorDate = [[NSSortDescriptor alloc] initWithKey: @"dateBookmarkCreation" ascending:NO selector:@selector(compare:)];
+        self.listBookmarks = (NSMutableArray *)[listBookmarksTmp sortedArrayUsingDescriptors: [NSMutableArray arrayWithObject:sortDescriptorDate]];
     }
     @catch (NSException * e) {
         NSLog(@"Exception: %@", e);

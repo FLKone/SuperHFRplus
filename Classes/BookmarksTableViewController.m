@@ -204,6 +204,22 @@
     }*/
 }
 
+-(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // If row is deleted, remove it from the list.
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        Bookmark* bookmark = [[MPStorage shared] getBookmarkAtIndex:(int)indexPath.row];
+        [[MPStorage shared] removeBookmarkSynchronous:bookmark];
+        [self.bookmarksTableView reloadData];
+    }
+}
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 0;

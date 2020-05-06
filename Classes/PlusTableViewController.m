@@ -70,16 +70,16 @@
             [self.navigationController pushViewController:self.compteViewController animated:YES];
             break;
         case 1:
-            [self.navigationController pushViewController:self.aqTableViewController animated:YES];
+            [self.navigationController pushViewController:self.bookmarksTableViewController animated:YES];
             break;
         case 2:
-            [self.navigationController pushViewController:self.settingsViewController animated:YES];
+            [self.navigationController pushViewController:self.aqTableViewController animated:YES];
             break;
         case 3:
             [self.navigationController pushViewController:self.offlineTableViewController animated:YES];
             break;
         case 4:
-            [self.navigationController pushViewController:self.bookmarksTableViewController animated:YES];
+            [self.navigationController pushViewController:self.settingsViewController animated:YES];
             break;
         case 5:
             [self.navigationController pushViewController:self.creditsViewController animated:YES];
@@ -110,6 +110,12 @@
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 1:
+            cell.titleLabel.text = @"Bookmarks";
+            cell.titleImage.image = [UIImage imageNamed:@"08-pin"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
+            break;
+        case 2:
             cell.titleLabel.text = @"Alertes Qualitay";
             cell.titleImage.image = [UIImage imageNamed:@"08-chat"];
             cell.badgeLabel.clipsToBounds = YES;
@@ -124,12 +130,6 @@
                 cell.badgeLabel.text = @"";
             }
             break;
-        case 2:
-            cell.titleLabel.text = @"Réglages";
-            cell.titleImage.image = [UIImage imageNamed:@"20-gear2"];
-            cell.badgeLabel.text = @"";
-            cell.badgeLabel.backgroundColor = [UIColor clearColor];
-            break;
         case 3:
             cell.titleLabel.text = @"Favoris hors ligne";
             cell.titleImage.image = [UIImage imageNamed:@"offline"];
@@ -137,8 +137,8 @@
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 4:
-            cell.titleLabel.text = @"Bookmarks";
-            cell.titleImage.image = [UIImage imageNamed:@"08-chat"];
+            cell.titleLabel.text = @"Réglages";
+            cell.titleImage.image = [UIImage imageNamed:@"20-gear2"];
             cell.badgeLabel.text = @"";
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;

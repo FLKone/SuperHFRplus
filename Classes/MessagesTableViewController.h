@@ -109,7 +109,6 @@
     NSString* firstnumBackup;
     
     BOOL isSeparatorNewMessages;
-    UIAlertAction* actionCreateAQ;
 }
 
 
@@ -184,6 +183,7 @@
 @property BOOL isSearchInstra;
 @property BOOL isSeparatorNewMessages;
 @property UIAlertAction* actionCreateAQ;
+@property UIAlertAction* actionCreateBookmark;
 @property BOOL canSaveDrapalInMPStorage;
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;

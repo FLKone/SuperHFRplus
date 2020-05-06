@@ -37,6 +37,7 @@
 #import "MPStorage.h"
 #import "OfflineStorage.h"
 #import "FilterPostsQuotes.h"
+#import "Bookmark.h"
 
 @implementation MessagesTableViewController
 
@@ -51,7 +52,7 @@
 @synthesize isFavoritesOrRead, isRedFlagged, isUnreadable, isAnimating, isViewed;
 @synthesize request, arrayAction, curPostID;
 @synthesize firstDate;
-@synthesize actionCreateAQ, canSaveDrapalInMPStorage, topic, filterPostsQuotes, arrFilteredPosts, alertProgress, progressView;
+@synthesize actionCreateAQ, actionCreateBookmark, canSaveDrapalInMPStorage, topic, filterPostsQuotes, arrFilteredPosts, alertProgress, progressView;
 
 - (void)setTopicName:(NSString *)n {
     _topicName = [n filterTU];
@@ -2238,6 +2239,7 @@
     UIImage *menuImgDelete = [UIImage imageNamed:@"DeleteColumnFilled-20"];
     UIImage *menuImgAlerte = [UIImage imageNamed:@"HighPriorityFilled-20"];
     UIImage *menuImgAQ = [UIImage imageNamed:@"08-chat-20"];
+    UIImage *menuImgBookmark = [UIImage imageNamed:@"08-pin-20"];
 
 	if([[arrayData objectAtIndex:curMsg] urlEdit]){
 		//NSLog(@"urlEdit");
@@ -2303,6 +2305,11 @@
     // AQ (sauf dans les MPs)
     if (![self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
         [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"AQ", @"actionAQ", menuImgAQ, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
+    }
+    
+    // Bookmark (sauf dans les MPs) et MPStorage doit être actif
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && ![self.arrayInputData[@"cat"] isEqualToString: @"prive"]) {
+        [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Bookmark", @"actionBookmark", menuImgBookmark, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
     }
     
 	self.curPostID = curMsg;
@@ -2464,7 +2471,7 @@
     [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = @"Ajoutez un titre";
         textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        [textField addTarget:self action:@selector(textDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [textField addTarget:self action:@selector(textDidChangeCreateAQ:) forControlEvents:UIControlEventEditingChanged];
         [[ThemeManager sharedManager] applyThemeToTextField:textField];
         textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
         //ftextField.borderStyle = UITextBorderStyleNone;
@@ -2494,7 +2501,7 @@
     }
 }
 
--(void)textDidChange:(UITextField *)textField {
+- (void)textDidChangeCreateAQ:(UITextField *)textField {
     if (textField.text.length > 0) {
         [self.actionCreateAQ setEnabled:YES];
     } else {
@@ -2584,6 +2591,84 @@
     } else {
         NSString* sMessage = [NSString stringWithFormat:@"Code erreur %@", responseString];
         [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:sMessage forDuration:(long)1];
+    }
+}
+
+- (void)actionBookmark:(NSNumber *)curMsgN {
+    NSString* sTPostID = [(LinkItem*)[arrayData objectAtIndex:[curMsgN intValue]] postID];
+    NSString *sPostId = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
+    NSString* sTopicId = self.arrayInputData[@"post"];
+    Bookmark* bookmark = [[MPStorage shared] getBookmarkForPost:sTopicId numreponse:sPostId];
+
+    if (bookmark) {
+        [HFRAlertView DisplayAlertViewWithTitle:@"Post déjà dans les bookmarks" andMessage:nil forDuration:1];
+        return;
+    }
+    
+    int curMsg = [curMsgN intValue];
+    NSLog("AQ link URL = %@%@#%@", [k ForumURL], self.currentUrl, [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]);
+    
+    NSString* sAuthor = [[arrayData objectAtIndex:curMsg] name];
+    NSString* sMessage = [NSString stringWithFormat:@"Créer un bookmark sur le post de %@ ?", sAuthor];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Bookmark" message:sMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"Ajoutez un titre";
+        textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        [textField addTarget:self action:@selector(textDidChangeCreateBookmark:) forControlEvents:UIControlEventEditingChanged];
+        [[ThemeManager sharedManager] applyThemeToTextField:textField];
+        textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    }];
+
+
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    self.actionCreateBookmark = [UIAlertAction actionWithTitle:@"Créer" style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction * action) {
+                                                     NSString* sTitle = alert.textFields.firstObject.text;
+                                                     [self createBookmark:curMsgN withTitle:sTitle]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:self.actionCreateBookmark];
+    [self.actionCreateBookmark setEnabled:false];
+
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    for (UIView* textfield in alert.textFields) {
+        UIView *container = textfield.superview;
+        UIView *effectView = container.superview.subviews[0];
+        
+        if (effectView && [effectView class] == [UIVisualEffectView class]){
+            container.backgroundColor = [UIColor clearColor];
+            [effectView removeFromSuperview];
+        }
+    }
+}
+
+
+- (void)textDidChangeCreateBookmark:(UITextField *)textField {
+    if (textField.text.length > 0) {
+        [self.actionCreateBookmark setEnabled:YES];
+    } else {
+        [self.actionCreateBookmark setEnabled:NO];
+    }
+}
+
+-(void)createBookmark:(NSNumber *)curMsgN withTitle:(NSString*)sTitle {
+    Bookmark* b = [[Bookmark alloc] init];
+    b.sPost = self.arrayInputData[@"post"];
+    b.sCat = self.arrayInputData[@"cat"];
+    NSString* sTPostID = [(LinkItem*)[arrayData objectAtIndex:[curMsgN intValue]] postID];
+    b.sNumResponse = [sTPostID substringWithRange:NSMakeRange(1, [sTPostID length]-1)];
+    b.sLabel = sTitle;
+    b.sAuthorPost = [[arrayData objectAtIndex:[curMsgN intValue]] name];
+    b.dateBookmarkCreation = [NSDate now];
+
+    if ([[MPStorage shared] addBookmarkSynchronous:b]) {
+        [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:@"Bookmark créé" forDuration:(long)1];
+    }
+    else {
+        [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:@"Erreur à la création du bookmark" forDuration:(long)1];
     }
 }
 
@@ -2837,7 +2922,9 @@
 }
 -(void)actionAQ {
     [self actionAQ:[NSNumber numberWithInt:curPostID]];
-    
+}
+-(void)actionBookmark {
+    [self actionBookmark:[NSNumber numberWithInt:curPostID]];
 }
 -(void)actionMessage {
 	[self actionMessage:[NSNumber numberWithInt:curPostID]];
