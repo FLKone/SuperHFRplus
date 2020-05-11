@@ -2331,6 +2331,8 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     if(![[arrayData objectAtIndex:curMsg] urlEdit]){
         if([[arrayData objectAtIndex:curMsg] urlAlert]){
             [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Alerter", @"actionAlerter", menuImgAlerte, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
+        }else{
+            [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Alerter", @"actionAlerterAnon", menuImgAlerte, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
         }
     }
 
@@ -2675,6 +2677,21 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     
     
 }
+
+-(void) actionAlerterAnon:(NSNumber *)curMsgN {
+    NSLog(@"actionAlerterAnon %@", curMsgN);
+    if (self.isAnimating) {
+        return;
+    }
+    
+    int curMsg = [curMsgN intValue];
+
+    NSString *mailto = @"mailto:marc@hardware.fr?subject=[HardWare.fr]%20Signalement%20d%27un%20contenu%20illicite&body=Message%20:%20";
+    NSString *postIDString = [NSString stringWithFormat:@"%@",[(LinkItem *)[arrayData objectAtIndex:curMsg] postID]];
+    UIApplication *application = [UIApplication sharedApplication];
+    [application openURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@#%@",mailto,[k ForumURL], self.currentUrl, postIDString]] options:@{} completionHandler:nil];
+}
+
 -(void) actionSupprimer:(NSNumber *)curMsgN {
     NSLog(@"actionSupprimer %@", curMsgN);
     if (self.isAnimating) {
@@ -2914,6 +2931,9 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 -(void)actionAlerter {
     [self actionAlerter:[NSNumber numberWithInt:curPostID]];
     
+}
+-(void)actionAlerterAnon {
+    [self actionAlerterAnon:[NSNumber numberWithInt:curPostID]];
 }
 -(void)actionSupprimer {
     [self actionSupprimer:[NSNumber numberWithInt:curPostID]];
