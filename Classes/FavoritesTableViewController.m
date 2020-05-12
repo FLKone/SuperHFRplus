@@ -181,24 +181,39 @@
 {
     NSLog(@"fetchContentComplete");
 
-	//Bouton Reload
-	self.navigationItem.rightBarButtonItem = nil;
-	UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
-	self.navigationItem.rightBarButtonItem = segmentBarItem;
-	
-	[self loadDataInTableView:[theRequest safeResponseData]];
-	
-    [self.arrayData removeAllObjects];
-    //[self.arrayTopics removeAllObjects];
+    //Bouton Reload
+    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
+    self.navigationItem.rightBarButtonItem = segmentBarItem;
+    @try {
+        [self loadDataInTableView:[theRequest responseData]];
+        
+        [self.arrayData removeAllObjects];
 
-    self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];
-    
-    [self.arrayNewData removeAllObjects];
-    
-	[self.favoritesTableView reloadData];
-    
-    [self.favoritesTableView.pullToRefreshView stopAnimating];
-    [self.favoritesTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
+        self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];
+        
+        [self.arrayNewData removeAllObjects];
+        
+        [self.favoritesTableView reloadData];
+        
+        [self.favoritesTableView.pullToRefreshView stopAnimating];
+        [self.favoritesTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
+    }
+    @catch(NSException* e) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[NSString stringWithFormat:@"Erreur : %@", e] preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+        UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction * action) { [self.favoritesTableView triggerPullToRefresh]; }];
+        [alert addAction:actionCancel];
+        [alert addAction:actionRetry];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+
+    }
+    @finally {}
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
