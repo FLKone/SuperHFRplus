@@ -303,23 +303,23 @@
         
         if ([[dReply objectForKey:@"status_code"] intValue] == CHEVERETO_UPLOAD_SUCCESS_OK) {
             bSuccess = YES;
-            self.link_full = [[dReply[@"image"] objectForKey:@"url"] stringValue];
-            self.nolink_full = [[dReply[@"image"] objectForKey:@"url"] stringValue];
+            self.link_full = [dReply[@"image"] objectForKey:@"url"];
+            self.nolink_full = [dReply[@"image"] objectForKey:@"url"];
             self.link_preview = nil;
             self.nolink_preview = nil;
 
             self.link_medium =  nil;
             self.nolink_medium = nil;
             if ([dReply[@"image"] objectForKey:@"medium"]) {
-                self.link_medium = [[dReply[@"image"][@"medium"] objectForKey:@"url"] stringValue];
-                self.nolink_medium = [[dReply[@"image"][@"medium"] objectForKey:@"url"] stringValue];
+                self.link_medium = [dReply[@"image"][@"medium"] objectForKey:@"url"];
+                self.nolink_medium = [dReply[@"image"][@"medium"] objectForKey:@"url"];
             }
                   
             self.link_miniature =  nil;
             self.nolink_miniature = nil;
             if ([dReply[@"image"] objectForKey:@"thumb"]) {
-                self.link_miniature = [[dReply[@"image"][@"thumb"] objectForKey:@"url"] stringValue];
-                self.nolink_miniature = [[dReply[@"image"][@"thumb"] objectForKey:@"url"] stringValue];
+                self.link_miniature = [dReply[@"image"][@"thumb"] objectForKey:@"url"];
+                self.nolink_miniature = [dReply[@"image"][@"thumb"] objectForKey:@"url"];
             }
                  
             [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithFloat:2.0f], self, nil] forKeys:[NSArray arrayWithObjects:@"progress", @"rehostImage", nil]]];
