@@ -42,7 +42,8 @@
     self.compteViewController = [[CompteViewController alloc] initWithNibName:@"CompteViewController" bundle:nil];
     self.settingsViewController = [[PlusSettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
     self.aqTableViewController = [[AQTableViewController alloc] initWithNibName:@"AQTableView" bundle:nil];
-    self.creditsViewController = [[CreditsViewController alloc] initWithNibName:@"CreditsViewController" bundle:nil];
+    self.creditsViewController = [[CreditsViewController alloc] initWithNibName:@"CreditsViewController" bundle:nil filename:@"credits"];
+    self.charteViewController = [[CreditsViewController alloc] initWithNibName:@"CreditsViewController" bundle:nil filename:@"charte"];
     self.offlineTableViewController = [[OfflineTableViewController alloc] initWithNibName:@"OfflineTableView" bundle:nil];
 
     iAQBadgeNumer = 0;
@@ -79,6 +80,9 @@
         case 4:
             [self.navigationController pushViewController:self.creditsViewController animated:YES];
             break;
+        case 5:
+            [self.navigationController pushViewController:self.charteViewController animated:YES];
+            break;
     }
 }
 
@@ -92,7 +96,7 @@
     return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 5;
+    return 6;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -134,6 +138,12 @@
         case 4:
             cell.titleLabel.text = @"Crédits";
             cell.titleImage.image = [UIImage imageNamed:@"AboutFilled-25"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
+            break;
+        case 5:
+            cell.titleLabel.text = @"Charte du forum";
+            cell.titleImage.image = [UIImage imageNamed:@"sign-25"];
             cell.badgeLabel.text = @"";
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
