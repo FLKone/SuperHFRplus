@@ -13,26 +13,19 @@
 #import "TopicsTableViewController.h"
 #import "PollTableViewController.h"
 
-//#import "HFR_EditorViewController.h"
-
-
 #import "RegexKitLite.h"
 #import "HTMLParser.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "ASIFormDataRequest.h"
-
 #import "ASIDownloadCache.h"
 
 #import "UIWebView+Tools.h"
-
 #import "ShakeView.h"
-//#import "UIImageView+WebCache.h"
 #import "RangeOfCharacters.h"
 #import "NSData+Base64.h"
 
 #import "LinkItem.h"
 #import <CommonCrypto/CommonDigest.h>
-
 #import "ProfilViewController.h"
 #import "UIMenuItem+CXAImageSupport.h"
 #import "UIImpactFeedbackGenerator+UserDefaults.h"
@@ -44,24 +37,22 @@
 #import "HFRAlertView.h"
 #import "MPStorage.h"
 #import "OfflineStorage.h"
+#import "FilterPostsQuotes.h"
 
 @implementation MessagesTableViewController
+
 @synthesize loaded, isLoading, _topicName, topicAnswerUrl, loadingView, errorLabelView, messagesWebView, arrayData, updatedArrayData, detailViewController, messagesTableViewController, pollNode, pollParser, isNewPoll;
 @synthesize swipeLeftRecognizer, swipeRightRecognizer, overview, arrayActionsMessages, lastStringFlagTopic;
 @synthesize searchBg, searchBox, searchKeyword, searchPseudo, searchFilter, searchFromFP, searchInputData, isSearchInstra, errorReported, isSeparatorNewMessages;
-
-@synthesize queue; //v3
+@synthesize queue;
 @synthesize stringFlagTopic;
 @synthesize editFlagTopic;
 @synthesize arrayInputData;
 @synthesize aToolbar, styleAlert;
-
 @synthesize isFavoritesOrRead, isRedFlagged, isUnreadable, isAnimating, isViewed;
-
 @synthesize request, arrayAction, curPostID;
-
 @synthesize firstDate;
-@synthesize actionCreateAQ;
+@synthesize actionCreateAQ, canSaveDrapalInMPStorage, topic, filterPostsQuotes, arrFilteredPosts, alertProgress, progressView;
 
 - (void)setTopicName:(NSString *)n {
     _topicName = [n filterTU];
@@ -94,21 +85,10 @@
     //self.firstDate = [NSDate date];
     self.errorReported = NO;
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMaxi];
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=1711&page=301&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t530526";
-    
-    
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&post=5925&page=1&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t535660";
-    
-    //self.currentUrl = @"/forum2.php?config=hfr.inc&cat=25&subcat=525&post=5145&page=87&p=1&sondage=0&owntopic=1&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#t540188";
-    
-    NSLog(@"URL %@", [self currentUrl]);
-    
-    //NSLog(@"[self currentUrl] %@", [self currentUrl]);
-    //NSLog(@"[self stringFlagTopic] %@", [self stringFlagTopic]);
-
     self.currentUrl = [self.currentUrl stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""];
-
 	[self setRequest:[ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]]]];
+    
+    [request setResponseEncoding:NSUTF8StringEncoding];
 	[request setDelegate:self];
     [request setShowAccurateProgress:YES];
     
@@ -184,7 +164,7 @@
 		[[HFRplusAppDelegate sharedAppDelegate] readMPBadge];
 	}
 	
-    [self startParseDataHtml:[request responseData]];
+    [self startParseDataHtml:[request safeResponseData]];
     
     [self cancelFetchContent];
 }
@@ -272,11 +252,19 @@
             }
         }
         
-        [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        if (self.filterPostsQuotes) {
+            if (self.pageNumberFilterStart == self.pageNumberFilterEnd) {
+                [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld", self.topicName, (unsigned long)self.pageNumberFilterStart]];
+            }
+            else {
+                [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"Filtré | %@ — %ld à %ld", self.topicName, (unsigned long)self.pageNumberFilterStart, (unsigned long)self.pageNumberFilterEnd]];
+            }
+        }
+        else {
+            [(UILabel *)[self navigationItem].titleView setText:[NSString stringWithFormat:@"%@ — %d", self.topicName, self.pageNumber]];
+        }
         [(UILabel *)[self navigationItem].titleView adjustFontSizeToFit];
     }
-
-    //NSLog(@"pageNumber %d", self.pageNumber);
 
     if (self.isSearchInstra) {
         
@@ -647,7 +635,9 @@
 		self.isViewed = YES;
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
-
+        self.canSaveDrapalInMPStorage = NO;
+        self.filterPostsQuotes = nil;
+        self.arrFilteredPosts = nil;
 	}
 	return self;
 }
@@ -662,7 +652,9 @@
         self.isViewed = YES;
         [self setIsSearchInstra:NO];
         self.errorReported = NO;
-
+        self.canSaveDrapalInMPStorage = NO;
+        self.filterPostsQuotes = nil;
+        self.arrFilteredPosts = nil;
     }
     return self;
 }
@@ -764,7 +756,7 @@
 }
 
 - (void)editMenuHidden:(id)sender {
-    NSLog(@"editMenuHidden %@ NOMBRE %u", sender, [UIMenuController sharedMenuController].menuItems.count);
+    NSLog(@"editMenuHidden %@ NOMBRE %lu", sender, (long unsigned)[UIMenuController sharedMenuController].menuItems.count);
     
     UIImage *menuImgQuote = [UIImage imageNamed:@"ReplyArrowFilled-20"];
     UIImage *menuImgQuoteB = [UIImage imageNamed:@"BoldFilled-20"];
@@ -932,7 +924,7 @@
 	self.isFavoritesOrRead = [[NSString	alloc] init];
 	self.isUnreadable = NO;
 	self.curPostID = -1;
-	
+    
     if (!self.searchInputData) {
         NSLog(@"NO searchInputData");
         self.searchInputData = [[NSMutableDictionary alloc] init];
@@ -940,10 +932,42 @@
 
 	[self setEditFlagTopic:nil];
 	[self setStringFlagTopic:@""];
-	[self fetchContent];
+    
+    if (self.filterPostsQuotes) {
+        [self manageLoadedItems:self.filterPostsQuotes.arrData];
+        self.pageNumberFilterStart = self.filterPostsQuotes.iStartPage;
+        self.pageNumberFilterEnd = self.filterPostsQuotes.iLastPageLoaded;
+        [self setupScrollAndPage];
+    } else {
+        [self fetchContent];
+    }
     [self editMenuHidden:nil];
     [self forceButtonMenu];
 }
+
+-(void) addProgressBar {
+    self.alertProgress = [UIAlertController alertControllerWithTitle:@"Téléchargement des topics" message:@"0%" preferredStyle:UIAlertControllerStyleAlert];
+    [self.alertProgress addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }]];
+
+    UIView *alertView = self.alertProgress.view;
+
+    self.progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+    self.progressView.progress = 0.0;
+    self.progressView.translatesAutoresizingMaskIntoConstraints = false;
+    [alertView addSubview:self.progressView];
+
+
+    NSLayoutConstraint *bottomConstraint = [self.progressView.bottomAnchor constraintEqualToAnchor:alertView.bottomAnchor];
+    [bottomConstraint setActive:YES];
+    bottomConstraint.constant = -45; // How to constraint to Cancel button?
+
+    [[self.progressView.leftAnchor constraintEqualToAnchor:alertView.leftAnchor] setActive:YES];
+    [[self.progressView.rightAnchor constraintEqualToAnchor:alertView.rightAnchor] setActive:YES];
+
+    [self presentViewController:self.alertProgress animated:true completion:nil];
+}
+
 
 -(void)fullScreen {
     [self fullScreen:nil];
@@ -1090,9 +1114,9 @@
         if ([delrequest error]) {
             //NSLog(@"error: %@", [[arequest error] localizedDescription]);
         }
-        else if ([delrequest responseString])
+        else if ([delrequest safeResponseString])
         {
-            //NSLog(@"responseString: %@", [arequest responseString]);
+            //NSLog(@"responseString: %@", [arequest safeResponseString]);
             
             //[self reload];
             [[[HFRplusAppDelegate sharedAppDelegate] messagesNavController] popViewControllerAnimated:YES];
@@ -1306,24 +1330,11 @@
             }
         }
         
-        
-
-        
-        
         [label setNumberOfLines:0];
-        
 		[label setText:[NSString stringWithFormat:@"Page: %d — %d/%d", self.pageNumber, index + 1, arrayData.count]];
         
 		[self.detailViewController.navigationItem setTitleView:label];
-		///===
-		
-		 //setup the URL
-		 //detailViewController.topicName = [[arrayData objectAtIndex:indexPath.row] name];	
-		 
-		 //NSLog(@"push message details");
-		 // andContent:[arrayData objectAtIndex:indexPath.section]
-		 
-		 self.detailViewController.arrayData = arrayData;	
+		 self.detailViewController.arrayData = arrayData;
 		 self.detailViewController.curMsg = index;	
 		 self.detailViewController.pageNumber = self.pageNumber;	
 		 self.detailViewController.parent = self;	
@@ -1605,18 +1616,15 @@
 #pragma mark Parse Operation Delegate
 
 // -------------------------------------------------------------------------------
-//	handleLoadedApps:notif
+//	manageLoadedItems:notif
 // -------------------------------------------------------------------------------
 
-- (void)handleLoadedApps:(NSArray *)loadedItems
+- (void)manageLoadedItems:(NSArray *)loadedItems
 {
-    
-	[self.arrayData removeAllObjects];
+    [self.arrayData removeAllObjects];
 	[self.arrayData addObjectsFromArray:loadedItems];
 
-
 	NSString *tmpHTML = @"";
-    
     NSLog(@"COUNT = %lu", (unsigned long)[self.arrayData count]);
     
     if (!self.isSearchInstra && self.arrayData.count == 0 && !self.errorReported) {
@@ -1649,7 +1657,6 @@
         }
 
         NSLog(@"Looking for %d", currentFlagValue);
-        //NSLog(@"==============");
         
         // Ego quote not applyed on MP
         BOOL bIsMP = YES;
@@ -1666,7 +1673,7 @@
 
                 if (tmpFlagValue == currentFlagValue) {
                     if (self.isSeparatorNewMessages == YES) {
-                        // Add separator  (but not after last post of page)
+                        // Add separator (but not after last post of page)
                         if (i < [self.arrayData count] - 1) {
                             tmpHTML = [tmpHTML stringByAppendingString:@"<div class=\"separator1\"></div>"];
                         }
@@ -1675,50 +1682,42 @@
                     closePostID = tmpFlagValue;
                 }
 
-                //NSLog(@"pas encore trouvé");
-                
+                // Pas encore trouvé
                 if (closePostID && currentFlagValue && tmpFlagValue >= currentFlagValue) {
                     //NSLog(@"On a trouvé plus grand, on set");
                     closePostID = tmpFlagValue;
                     ifCurrentFlag = YES;
                 }
-                else {
-                    //NSLog(@"0, on set le premier");
+                else {  // on set le premier
                     closePostID = tmpFlagValue;
                 }
-                
             }
         }
         
-        if (closePostID) {
-            //NSLog(@"On remplace au plus proche");
+        if (closePostID) { // On remplace au plus proche
             self.stringFlagTopic = [NSString stringWithFormat:@"#t%d", closePostID];
         }
-        
-        NSLog(@"NEW %@", self.stringFlagTopic);
         
         if (![self isModeOffline]) {
             // On ajoute le bouton de notif de sondage
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"notify_poll_not_answered"] && self.isNewPoll) {
             UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
-            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
                 UIBarButtonItem* pollBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_sondage"] style:UIBarButtonItemStylePlain target:self action:@selector(showPoll:)];
                 self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, pollBarItem, nil];
             } else {
             UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(optionsTopic:)];
-            //UIBarButtonItem* optionsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icone_action"] style:UIBarButtonItemStylePlain target:self action:@selector(optionsTopic:)];
                 self.navigationItem.rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:optionsBarItem, nil];
             }
             
             //on ajoute le bouton actualiser si besoin
             if (([self pageNumber] == [self lastPageNumber]) || ([self lastPageNumber] == 0)) {
-                //NSLog(@"premiere et unique ou dernier");
-                //'before'
-                refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
-
-            }
-            else {
-                //NSLog(@"autre");
+                if (self.filterPostsQuotes) {
+                    if (!self.filterPostsQuotes.bIsFinished) {
+                        refreshBtn = @"<div id=\"actualiserbtn\">&nbsp;</div>"; // just to add some space
+                    }
+                } else {
+                    refreshBtn = @"<div id=\"actualiserbtn\" onClick=\"window.location = 'oijlkajsdoihjlkjasdorefresh://data'; return false;\">Actualiser</div>";
+                }
             }
         }
         else { // Offline
@@ -1763,7 +1762,10 @@
         else if (self.isSearchInstra) {
             tooBar = [NSString stringWithFormat:@"<a href=\"oijlkajsdoihjlkjasdoauto://submitsearch\" id=\"searchintra_nextbutton\">Résultats suivants &raquo;</a>"];
         }
-        
+        else if (self.filterPostsQuotes && !self.filterPostsQuotes.bIsFinished) {
+            tooBar = [NSString stringWithFormat:@"<a href=\"oijlkajsdoihjlkjasdoauto://filterPostsQuotesNext\" id=\"searchintra_nextbutton\">Résultats suivants &raquo;</a>"];
+        }
+
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *display_sig = [defaults stringForKey:@"display_sig"];
@@ -1840,7 +1842,7 @@
                                 function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; }\
                                 function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; }\
                                 function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}}\
-                                $('img').error(function(){ $(this).attr('src', 'photoDefaultfailmini.png');});\
+                                $('img').error(function(){var failingSrc = $(this).attr('src');if(failingSrc.indexOf('https://reho.st')>-1){$(this).attr('src', 'photoDefaultClic.png')}else{$(this).attr('src', 'photoDefaultfailmini.png');}});\
                                 function touchstart() { document.location.href = 'oijlkajsdoihjlkjasdotouch://touchstart'};\
                                 document.documentElement.style.setProperty('--color-action', '%@');\
                                 document.documentElement.style.setProperty('--color-action-disabled', '%@');\
@@ -1944,7 +1946,7 @@
 
 - (void)didFinishParsing:(NSArray *)appList
 {
-    [self performSelectorOnMainThread:@selector(handleLoadedApps:) withObject:appList waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(manageLoadedItems:) withObject:appList waitUntilDone:NO];
     self.queue = nil;
 }
 
@@ -1956,36 +1958,33 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     // Update flag
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"] && self.isSearchInstra == NO) {
-        NSNumber* nPage = [NSNumber numberWithInt: self.pageNumber];
-        NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
+    if (self.canSaveDrapalInMPStorage) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"] && [self.arrayInputData[@"cat"] isEqualToString: @"prive"] && self.isSearchInstra == NO) {
+            NSNumber* nPage = [NSNumber numberWithInt: self.pageNumber];
+            NSNumber* nPost = [NSNumber numberWithInt: [self.arrayInputData[@"post"] intValue]];
 
-        NSInteger nPageCurrentFlag = [[MPStorage shared] getPageFlagForTopidId:[nPost intValue]];
-        // Only update flag if page is more recent
-        if (self.pageNumber >= nPageCurrentFlag ) {
-            NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
-            NSString* sP = self.arrayInputData[@"p"];
-            NSString* sURI = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", self.arrayInputData[@"post"], self.arrayInputData[@"page"], sP, sTPostID];
-            //NSLog(@"====================================================================");
-            //NSLog(@"UPDATE FLAG: nPage %@, nPageCurrentFlag %d", nPage, nPageCurrentFlag);
-            //NSLog(@"====================================================================");
-            NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", sURI, @"uri", nil];
-            [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
+            NSInteger nPageCurrentFlag = [[MPStorage shared] getPageFlagForTopidId:[nPost intValue]];
+            // Only update flag if page is more recent
+            if (self.pageNumber >= nPageCurrentFlag ) {
+                NSString* sTPostID = [(LinkItem*)[self.arrayData lastObject] postID];
+                NSString* sP = self.arrayInputData[@"p"];
+                NSDictionary* newFlag = [NSDictionary dictionaryWithObjectsAndKeys: nPost, @"post", sP, @"p", sTPostID, @"href", nPage, @"page", nil];
+                [[MPStorage shared] updateMPFlagAsynchronous:newFlag];
+            }
         }
+    } else {
+        [[MPStorage shared] removeMPFlagAsynchronous:[self.arrayInputData[@"post"] intValue]];
     }
 }
 
 - (void)webViewDidFinishPreLoadDOM {
-    NSLog(@"== webViewDidFinishPreLoadDOM");
-
-    //[self userTextSizeDidChange];
 }
 
 - (void)webViewDidFinishLoadDOM
 {
     NSLog(@"== webViewDidFinishLoadDOM");
     
-    if (!self.pageNumber) {
+    if (!self.pageNumber && !self.filterPostsQuotes) {
         return;
     }
     
@@ -2003,7 +2002,7 @@
         }
         else {
             jsString2 = @"window.scrollTo(0,document.getElementById('endofpagetoolbar').offsetTop);";
-            if ([self isModeOffline]) {
+            if ([self isModeOffline] || self.filterPostsQuotes) {
                 jsString3 = @"window.scrollTo(0,document.getElementById('top').offsetTop);";
             }
             else {
@@ -2332,6 +2331,8 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     if(![[arrayData objectAtIndex:curMsg] urlEdit]){
         if([[arrayData objectAtIndex:curMsg] urlAlert]){
             [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Alerter", @"actionAlerter", menuImgAlerte, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
+        }else{
+            [self.arrayAction addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Alerter", @"actionAlerterAnon", menuImgAlerte, nil] forKeys:[NSArray arrayWithObjects:@"title", @"code", @"image", nil]]];
         }
     }
 
@@ -2407,7 +2408,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     __weak ASIHTTPRequest*aRequest_ = aRequest;
 
     [aRequest setCompletionBlock:^{
-        NSString *responseString = [aRequest_ responseString];
+        NSString *responseString = [aRequest_ safeResponseString];
         responseString = [responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         responseString = [responseString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
         
@@ -2676,6 +2677,21 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
     
     
 }
+
+-(void) actionAlerterAnon:(NSNumber *)curMsgN {
+    NSLog(@"actionAlerterAnon %@", curMsgN);
+    if (self.isAnimating) {
+        return;
+    }
+    
+    int curMsg = [curMsgN intValue];
+
+    NSString *mailto = @"mailto:marc@hardware.fr?subject=[HardWare.fr]%20Signalement%20d%27un%20contenu%20illicite&body=Message%20:%20";
+    NSString *postIDString = [NSString stringWithFormat:@"%@",[(LinkItem *)[arrayData objectAtIndex:curMsg] postID]];
+    UIApplication *application = [UIApplication sharedApplication];
+    [application openURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@#%@",mailto,[k ForumURL], self.currentUrl, postIDString]] options:@{} completionHandler:nil];
+}
+
 -(void) actionSupprimer:(NSNumber *)curMsgN {
     NSLog(@"actionSupprimer %@", curMsgN);
     if (self.isAnimating) {
@@ -2915,6 +2931,9 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 -(void)actionAlerter {
     [self actionAlerter:[NSNumber numberWithInt:curPostID]];
     
+}
+-(void)actionAlerterAnon {
+    [self actionAlerterAnon:[NSNumber numberWithInt:curPostID]];
 }
 -(void)actionSupprimer {
     [self actionSupprimer:[NSNumber numberWithInt:curPostID]];
@@ -3262,7 +3281,7 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
         if ([arequest error]) {
             NSLog(@"error: %@", [[arequest error] localizedDescription]);
         }
-        else if ([arequest responseString])
+        else if ([arequest safeResponseString])
         {
             baseURL = Location;
             //NSLog(@"responseString %@", [arequest responseString]);
@@ -3301,6 +3320,9 @@ https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=13&subcat=430&post=61179
 
 }
 
+- (IBAction)filterPostsQuotesNext:(UIBarButtonItem *)sender {
+    [self.filterPostsQuotes checkNextPostsAndQuotesWithVC:self];
+}
 
 -(NSString *)serializeParams:(NSDictionary *)params {
     /*

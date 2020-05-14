@@ -16,7 +16,7 @@
 
 #import "Forum.h"
 
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 
 
 #import "UIScrollView+SVPullToRefresh.h"
@@ -134,7 +134,7 @@
     //[self.loadingView setHidden:YES];
     //[self.maintenanceView setHidden:YES];
 	
-    [self loadDataInTableView:[theRequest responseData]];
+    [self loadDataInTableView:[theRequest safeResponseData]];
     
     [self.arrayData removeAllObjects];
     

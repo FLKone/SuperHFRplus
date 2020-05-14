@@ -76,6 +76,14 @@
     [self.spinner startAnimating];
     
     NSString *url = self.rehostImage.nolink_preview;
+    if (url == nil) {
+        url = self.rehostImage.nolink_medium;
+    }
+    if (url == nil) {
+        url = self.rehostImage.nolink_full;
+    }
+
+    
 	url = [url stringByReplacingOccurrencesOfString:@"[img]" withString:@""];
 	url = [url stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
 	url = [url stringByReplacingOccurrencesOfString:@"hfr-rehost.net" withString:@"reho.st"];
@@ -89,11 +97,26 @@
             [self_.previewImage setImage:image];
             [self_.previewImage setHidden:NO];
             
-            [self_.miniBtn setHidden:NO];
-            [self_.previewBtn setHidden:NO];
-            [self_.mediumBtn setHidden:NO];
-            [self_.fullBtn setHidden:NO];
-            [self_.miniBtn setHidden:NO];
+            if (self.rehostImage.link_full) {
+                [self_.fullBtn setHidden:NO];
+            } else {
+                [self_.fullBtn setHidden:YES];
+            }
+            if (self.rehostImage.link_medium) {
+                [self_.mediumBtn setHidden:NO];
+            } else {
+                [self_.mediumBtn setHidden:YES];
+            }
+            if (self.rehostImage.link_preview) {
+                [self_.previewBtn setHidden:NO];
+            } else {
+                [self_.previewBtn setHidden:YES];
+            }
+            if (self.rehostImage.link_miniature) {
+                [self_.miniBtn setHidden:NO];
+            } else {
+                [self_.miniBtn setHidden:YES];
+            }
         }
         
         [self_.spinner stopAnimating];
@@ -123,7 +146,7 @@
     pasteboard.string = @"";
     
     switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"]) {
-		case bbcodeImageWithLink:
+        case bbcodeLinkOnly:
 		{
 			switch (imageSizeType) {
 				case bbcodeImageFull:
@@ -144,35 +167,35 @@
 		case bbcodeImageNoLink:
 			switch (imageSizeType) {
 				case bbcodeImageFull:
-					pasteboard.string = rehostImage.nolink_full;
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.link_full];
 					break;
                 case bbcodeImageMedium:
-                    pasteboard.string = rehostImage.nolink_medium;
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.nolink_medium];
                     break;
 				case bbcodeImagePreview:
-					pasteboard.string = rehostImage.nolink_preview;
+					pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.nolink_preview];
 					break;
 				case bbcodeImageMini:
-					pasteboard.string = rehostImage.nolink_miniature;
+					pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.nolink_miniature];
 					break;
 			}
 			break;
-        case bbcodeLinkOnly:
+        case bbcodeImageWithLink:
         {
-			switch (imageSizeType) {
-				case bbcodeImageFull:
-					pasteboard.string = [[rehostImage.nolink_full stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
-					break;
+            switch (imageSizeType) {
+                case bbcodeImageFull:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_full];
+                    break;
                 case bbcodeImageMedium:
-                    pasteboard.string = [[rehostImage.nolink_medium stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_medium];
                     break;
                 case bbcodeImagePreview:
-                    pasteboard.string = [[rehostImage.nolink_preview stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_preview];
                     break;
-				case bbcodeImageMini:
-					pasteboard.string = [[rehostImage.nolink_miniature stringByReplacingOccurrencesOfString:@"[img]" withString:@""] stringByReplacingOccurrencesOfString:@"[/img]" withString:@""];
-					break;
-			}
+                case bbcodeImageMini:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_miniature];
+                    break;
+            }
 			break;
         }
 	}

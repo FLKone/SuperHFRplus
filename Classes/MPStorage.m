@@ -8,7 +8,7 @@
 
 #import "MPStorage.h"
 #import "HFRplusAppDelegate.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "ASIFormDataRequest.h"
 #import "HTMLParser.h"
 #import "BlackList.h"
@@ -24,7 +24,7 @@ NSString* const MP_SOURCE_NAME = @"iOS";
 
 @implementation MPStorage
 
-@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag;
+@synthesize bIsActive, bIsMPStorageSavedSuccessfully, sLastSucessAcessDate,dData, sPostId, sNumRep, listInternalBlacklistPseudo, listMPBlacklistPseudo, dicMPBlacklistPseudoTimestamp, dicFlags, dicProcessedFlag, nbTopicId;
 static MPStorage *_shared = nil;    // static instance variable
 
 // --------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (void)reloadMPStorageAsynchronousComplete:(ASIHTTPRequest *)request
 {
-    if ([self parseMPStorage:[request responseString]]) {
+    if ([self parseMPStorage:[request safeResponseString]]) {
         [self updateLastSucessAcessDate];
     }
 }
@@ -158,7 +158,7 @@ static MPStorage *_shared = nil;    // static instance variable
 
 - (void)loadBlackListComplete:(ASIHTTPRequest *)request
 {
-    if ([self updateBlackList:[request responseString]] == NO) {
+    if ([self updateBlackList:[request safeResponseString]] == NO) {
         // TODO Retry later
     }
 }
@@ -203,9 +203,9 @@ static MPStorage *_shared = nil;    // static instance variable
             return NO;
         }
         
-        if ([request responseString])
+        if ([request safeResponseString])
         {
-            if (![self parseMPStorage:[request responseString]]) return NO;
+            if (![self parseMPStorage:[request safeResponseString]]) return NO;
             
             // Check if pseudo already exists in list
             NSInteger index = 0;
@@ -244,11 +244,11 @@ static MPStorage *_shared = nil;    // static instance variable
             NSLog(@"error: %@", [[request error] localizedDescription]);
             return NO;
         }
-        
-        if ([request responseString])
+        NSString* sResponse = [request safeResponseString];
+        if (sResponse)
         {
             // If content is not parsed, then error
-            if (![self parseMPStorage:[request responseString]]) return NO;
+            if (![self parseMPStorage:sResponse]) return NO;
 
             if ([dData[@"data"][0][@"blacklist"][@"list"] count] > 0) {
                 // Check if pseudo already exists in list
@@ -294,6 +294,22 @@ static MPStorage *_shared = nil;    // static instance variable
     }
 }
 
+- (void)removeMPFlagAsynchronous:(int)iTopidId {
+    nbTopicId = [NSNumber numberWithInt:iTopidId];
+    // Only clean MPStorage when it has been saved successfuly last time
+    if (bIsMPStorageSavedSuccessfully) {
+        ASIHTTPRequest *request = [self GETRequest];
+        [request setDelegate:self];
+        [request setDidFinishSelector:@selector(removeFlag:)];
+        [request setDidFailSelector:@selector(updateMPFlagAsynchronousFailed:)];
+        [request startAsynchronous];
+    }
+    else { // Else, only update internally and try again to save data to MPStorage
+        [self removeFlagInternally];
+        [self saveMPStorageAsynchronous];
+    }
+}
+
 - (void)updateMPFlagAsynchronousFailed:(ASIHTTPRequest *)request {
     bIsMPStorageSavedSuccessfully = NO;
     
@@ -303,9 +319,20 @@ static MPStorage *_shared = nil;    // static instance variable
 - (void)updateFlag:(ASIHTTPRequest *)request
 {
     // If content is not parsed, then error
-    if ([self parseMPStorage:[request responseString]]) {
+    if ([self parseMPStorage:[request safeResponseString]]) {
         
         if ([self updateFlagInternally]) {
+            [self saveMPStorageAsynchronous];
+        }
+    }
+}
+
+- (void)removeFlag:(ASIHTTPRequest *)request
+{
+    // If content is not parsed, then error
+    if ([self parseMPStorage:[request safeResponseString]]) {
+        
+        if ([self removeFlagInternally]) {
             [self saveMPStorageAsynchronous];
         }
     }
@@ -346,6 +373,35 @@ static MPStorage *_shared = nil;    // static instance variable
     return YES;
 }
 
+- (BOOL)removeFlagInternally {
+    @try {
+        // Check if post (topic) already exists in list and remove it
+        if ([dData[@"data"][0][@"mpFlags"][@"list"] count] > 0) {
+            NSInteger index = 0;
+            NSInteger indexFound = -1;
+            for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
+                NSNumber* post = [dFlag valueForKey:@"post"];
+                NSNumber* addedPost = nbTopicId;
+                if ([post isEqualToNumber:addedPost]) {
+                    indexFound = index;
+                }
+                index++;
+            }
+            
+            // Remove the found flag
+            if (indexFound >= 0) {
+                [dData[@"data"][0][@"mpFlags"][@"list"] removeObjectAtIndex: indexFound];
+            }
+        }
+    }
+    @catch (NSException * e) {
+        return NO;
+    }
+    @finally {}
+    return YES;
+}
+
+
 - (NSString*)getUrlFlagForTopidId:(int)iTopicId {
     NSString* retUrl = nil;
     
@@ -354,7 +410,11 @@ static MPStorage *_shared = nil;    // static instance variable
         for (NSDictionary* dFlag in dData[@"data"][0][@"mpFlags"][@"list"]) {
             NSInteger post = [[dFlag valueForKey:@"post"] integerValue];
             if (post == iTopicId) {
-                retUrl = [dFlag valueForKey:@"uri"];
+                NSString* sPost = [dFlag valueForKey:@"post"];
+                NSString* sPage = [dFlag valueForKey:@"page"];
+                NSString* sP = [dFlag valueForKey:@"p"];
+                NSString* sHref = [dFlag valueForKey:@"href"];
+                retUrl = [NSString stringWithFormat:@"https://forum.hardware.fr/forum2.php?config=hfr.inc&cat=prive&post=%@&page=%@&p=%@&sondage=0&owntopic=0&trash=0&trash_post=0&print=0&numreponse=0&quote_only=0&new=0&nojs=0#%@", sPost, sPage, sP, sHref];
                 break;
             }
         }
@@ -395,7 +455,7 @@ static MPStorage *_shared = nil;    // static instance variable
     [request startSynchronous];
     NSError *error = [request error];
     if (!error) {
-        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request responseString] error:&error];
+        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request safeResponseString] error:&error];
         HTMLNode * bodyNode = [myParser body]; //Find the body tag
         HTMLNode * pagesTrNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"fondForum1PagesHaut" allowPartial:YES];
         HTMLNode * pagesLinkNode = [pagesTrNode findChildWithAttribute:@"class" matchingName:@"left" allowPartial:NO];
@@ -445,16 +505,16 @@ static MPStorage *_shared = nil;    // static instance variable
             // Set main compte cookies
             NSLog(@"ERROR creating MPstorage");
         }
-        else if ([requestPOST responseString])
+        else if ([requestPOST safeResponseString])
         {
-            NSLog(@"Response string for creating MPstorage \n%@\n-----------------------------\n", [requestPOST responseString]);
-            if ([[requestPOST responseString] containsString:@"succès"]) {
+            NSLog(@"Response string for creating MPstorage \n%@\n-----------------------------\n", [requestPOST safeResponseString]);
+            if ([[requestPOST safeResponseString] containsString:@"succès"]) {
                 NSLog(@"SUCCESS creating MPstorage");
                 [self updateLastSucessAcessDate];
                 return YES;
             } else {
                 NSError* error;
-                HTMLParser *myParser = [[HTMLParser alloc] initWithString:[requestPOST responseString] error:&error];
+                HTMLParser *myParser = [[HTMLParser alloc] initWithString:[requestPOST safeResponseString] error:&error];
                 HTMLNode * bodyNode = [myParser body]; //Find the body tag
                 HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
                 [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:[NSString stringWithFormat:@"Failed to create MPStorage : %@", [messagesNode contents]] forDuration:(long)3];
@@ -599,10 +659,10 @@ static MPStorage *_shared = nil;    // static instance variable
             // Set main compte cookies
             NSLog(@"ERROR updating MPstorage");
         }
-        else if ([requestPOST responseString])
+        else if ([requestPOST safeResponseString])
         {
-            NSLog(@"Success ? updating MPstorage :\n%@", [requestPOST responseString]);
-            if ([[requestPOST responseString] containsString:@"succès"]) {
+            NSLog(@"Success ? updating MPstorage :\n%@", [requestPOST safeResponseString]);
+            if ([[requestPOST safeResponseString] containsString:@"succès"]) {
                 [self updateLastSucessAcessDate];
                 bIsMPStorageSavedSuccessfully = YES;
                 return YES;
@@ -639,9 +699,9 @@ static MPStorage *_shared = nil;    // static instance variable
 - (void)saveMPStorageAsynchronousComplete:(ASIHTTPRequest *)request
 {
     bIsMPStorageSavedSuccessfully = NO;
-    if ([request responseString])
+    if ([request safeResponseString])
     {
-        if ([[request responseString] containsString:@"succès"]) {
+        if ([[request safeResponseString] containsString:@"succès"]) {
             [self updateLastSucessAcessDate];
             bIsMPStorageSavedSuccessfully = YES;
         }

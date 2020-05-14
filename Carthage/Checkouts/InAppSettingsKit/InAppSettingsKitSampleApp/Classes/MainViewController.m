@@ -19,27 +19,20 @@
 
 #import <MessageUI/MessageUI.h>
 
-#ifdef USES_IASK_STATIC_LIBRARY
-#import "InAppSettingsKit/IASKSettingsReader.h"
-#import "InAppSettingsKit/IASKAppSettingsViewController.h"
-#else
-  #import "IASKSettingsReader.h"
-#endif
+#import <InAppSettingsKit/IASKSettingsReader.h>
+#import <InAppSettingsKit/IASKAppSettingsViewController.h>
 
 #import "CustomViewCell.h"
 
 @interface MainViewController()<UIPopoverControllerDelegate>
 - (void)settingDidChange:(NSNotification*)notification;
 
-#ifndef USE_STORYBOARD
 @property (nonatomic) UIPopoverController* currentPopoverController;
-#endif
 
 @end
 
 @implementation MainViewController
 
-#ifndef USE_STORYBOARD
 @synthesize appSettingsViewController, tabAppSettingsViewController;
 
 - (IASKAppSettingsViewController*)appSettingsViewController {
@@ -96,31 +89,19 @@
 	self.currentPopoverController = nil;
 }
 
-- (void)didReceiveMemoryWarning {
-	// Releases the view if it doesn't have a superview.
-	[super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
-	self.appSettingsViewController = nil;
-}
-
-#endif
-
 - (void)awakeFromNib {
 	[super awakeFromNib];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
 
-#ifndef USE_STORYBOARD
+
 	BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoConnect"];
 	self.tabAppSettingsViewController.hiddenKeys = enabled ? nil : [NSSet setWithObjects:@"AutoConnectLogin", @"AutoConnectPassword", nil];
 	
 	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showSettingsPopover:)];
 	}
-#endif
 }
 
-#ifdef USE_STORYBOARD
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	IASKAppSettingsViewController *settingsViewController = (id)((UINavigationController*)segue.destinationViewController).topViewController;
 	settingsViewController.delegate = self;
@@ -128,8 +109,6 @@
 	BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoConnect"];
 	settingsViewController.hiddenKeys = enabled ? nil : [NSSet setWithObjects:@"AutoConnectLogin", @"AutoConnectPassword", nil];
 }
-#endif
-
 
 #pragma mark -
 #pragma mark IASKAppSettingsViewControllerDelegate protocol
@@ -139,7 +118,39 @@
 	// your code here to reconfigure the app for changed settings
 }
 
+// optional delegate methods for handling regex validation
+- (BOOL)settingsViewController:(IASKAppSettingsViewController *)sender
+ validationFailureForSpecifier:(IASKSpecifier *)specifier
+					 textField:(IASKTextField *)field
+				 previousValue:(NSString *)prevValue {
+	BOOL defaultBehaviour = YES;
+	if ([field.key isEqual: @"RegexValidation2"]) {
+		defaultBehaviour = NO;
+		field.textColor  = UIColor.redColor;
+	}
+	return defaultBehaviour;
+}
+
+- (void)settingsViewController:(IASKAppSettingsViewController *)sender
+ validationSuccessForSpecifier:(IASKSpecifier *)specifier
+					 textField:(IASKTextField *)field {
+	if (@available(iOS 13.0, *)) {
+		field.textColor = UIColor.labelColor;
+	} else {
+		field.textColor = UIColor.blackColor;
+	}
+}
+
 // optional delegate method for handling mail sending result
+- (BOOL)settingsViewController:(id<IASKViewController>)settingsViewController
+shouldPresentMailComposeViewController:(MFMailComposeViewController*)mailComposeViewController
+				  forSpecifier:(IASKSpecifier*) specifier {
+	if ([specifier.key isEqualToString:@"mail_dynamic_subject"]) {
+		[mailComposeViewController setSubject:NSDate.date.description];
+	}
+	return YES;
+}
+
 - (void)settingsViewController:(id<IASKViewController>)settingsViewController mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
        
     if ( error != nil ) {
@@ -268,7 +279,7 @@
 	if ([specifier.key isEqualToString:@"countryCode"]) {
 		NSMutableArray *countryNames = NSMutableArray.array;
 		for (NSString *countryCode in [NSLocale ISOCountryCodes]) {
-			[countryNames addObject:[NSLocale.currentLocale displayNameForKey:NSLocaleCountryCode value:countryCode]];
+			[countryNames addObject:(id)[NSLocale.currentLocale displayNameForKey:NSLocaleCountryCode value:countryCode]];
 		}
 		return countryNames;
 	}
@@ -291,12 +302,10 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:kIASKAppSettingChanged object:self userInfo:@{@"customCell" : textView.text}];
 }
 
-#ifndef USE_STORYBOARD
 #pragma mark - UIPopoverControllerDelegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	self.currentPopoverController = nil;
 }
-#endif
 
 #pragma mark -
 - (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForSpecifier:(IASKSpecifier*)specifier {

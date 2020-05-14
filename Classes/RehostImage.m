@@ -13,6 +13,9 @@
 
 #import "ThemeManager.h"
 #import "ThemeColors.h"
+#import "HFRAlertView.h"
+
+#define CHEVERETO_UPLOAD_SUCCESS_OK 200
 
 @implementation RehostImage
 
@@ -115,11 +118,13 @@
         
         NSData* jpegImageData = UIImageJPEGRepresentation(picture, 1);
 	
-        [self performSelectorOnMainThread:@selector(loadData2:) withObject:jpegImageData waitUntilDone:NO];
+        //TODO here: add setting in IASK to let user choose the image upload site
+        // Then depending on the choice, out the selector on the corresponding loadDataxxx method
+        [self performSelectorOnMainThread:@selector(loadDataChevereto:) withObject:jpegImageData waitUntilDone:NO];
     }
 }
 
--(void)loadData2:(NSData *)jpegImageData {
+-(void)loadDataRehost:(NSData *)jpegImageData {
 	ASIFormDataRequest* request = [ASIFormDataRequest requestWithURL:
                                [NSURL URLWithString:@"https://reho.st/upload"]];
     //[NSURL URLWithString:@"http://apps.flkone.com/hfrplus/api/upload.processor.php"]];
@@ -137,11 +142,36 @@
 	[request setDelegate:self];
 	
 	[request setDidStartSelector:@selector(fetchContentStarted:)];
-	[request setDidFinishSelector:@selector(fetchContentComplete:)];
+	[request setDidFinishSelector:@selector(fetchContentCompleteRehost:)];
 	[request setDidFailSelector:@selector(fetchContentFailed:)];
 	
 	[request startAsynchronous];
 }
+
+-(void)loadDataChevereto:(NSData *)jpegImageData {
+    //Example : https://img3.super-h.fr/api/1/upload/?key=af34631bb9b18fd4ef1ee46acae65976&source=https://img.super-h.fr/upload/images/U28P.jpg&format=json
+    ASIFormDataRequest* request = [ASIFormDataRequest requestWithURL:
+                                   [NSURL URLWithString:@"https://img3.super-h.fr/api/1/upload/?key=af34631bb9b18fd4ef1ee46acae65976"]];//&format=txt"]];
+    
+    
+    NSString* filename = [NSString stringWithFormat:@"snapshot_%d.jpg", rand()];
+    
+    [request setData:jpegImageData withFileName:filename andContentType:@"image/jpeg" forKey:@"source"];
+    [request setPostValue:@"Envoyer" forKey:@"submit"];
+    [request setShouldRedirect:NO];
+    [request setShowAccurateProgress:YES];
+    
+    request.uploadProgressDelegate = self;
+    
+    [request setDelegate:self];
+    
+    [request setDidStartSelector:@selector(fetchContentStarted:)];
+    [request setDidFinishSelector:@selector(fetchContentCompleteChevereto:)];
+    [request setDidFailSelector:@selector(fetchContentFailed:)];
+    
+    [request startAsynchronous];
+}
+
 
 - (void)setProgress:(float)progress
 {
@@ -154,26 +184,20 @@
 	//NSLog(@"fetchContentStarted");
 }
 
-- (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
+- (void)fetchContentCompleteRehost:(ASIHTTPRequest *)theRequest
 {
-    //NSLog(@"fetchContentComplete %@", [theRequest responseString]);
+    //NSLog(@"fetchContentCompleteRehost %@", [theRequest responseString]);
 	//NSLog(@"fetchContentComplete");
 	
+    [HFRAlertView DisplayOKAlertViewWithTitle:@"Upload réussi ?" andMessage:[theRequest responseString]];
+
 	
 	NSError * error = nil;
-	//HTMLParser * myParser = [[HTMLParser alloc] initWithContentsOfURL:[NSURL URLWithString:[self.urlQuote lowercaseString]] error:&error];
 	HTMLParser * myParser = [[HTMLParser alloc] initWithData:[theRequest responseData] error:&error];
-	//NSLog(@"error %@", error);
-	//NSDate *then0 = [NSDate date]; // Create a current date
-	
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
     
 	NSArray *codeArray = [bodyNode findChildTags:@"code"];
-	//NSLog(@"codeArray %d", codeArray.count);
-	
 	if (codeArray.count == 8) {
-		// OK :D
-
 		// If appropriate, configure the new managed object.
         self.link_full = [[codeArray objectAtIndex:0] allContents];
         self.link_medium = [[codeArray objectAtIndex:1] allContents];
@@ -202,8 +226,124 @@
 
 }
 
+- (void)fetchContentCompleteChevereto:(ASIHTTPRequest *)theRequest
+{
+    NSLog(@"fetchContentCompleteChevereto %@", [theRequest responseString]);
+    /* Example
+     {
+     "status_code": 200,
+     "success": {
+         "message": "image uploaded",
+         "code": 200
+     },
+     "image": {
+             "name": "example",
+             "extension": "png",
+             "size": 53237,
+             "width": 1151,
+             "height": 898,
+             "date": "2014-06-04 15:32:33",
+             "date_gmt": "2014-06-04 19:32:33",
+             "storage_id": null,
+             "description": null,
+             "nsfw": "0",
+             "md5": "c684350d722c956c362ab70299735830",
+             "storage": "datefolder",
+             "original_filename": "example.png",
+             "original_exifdata": null,
+             "views": "0",
+             "id_encoded": "L",
+             "filename": "example.png",
+             "ratio": 1.2817371937639,
+             "size_formatted": "52 KB",
+             "mime": "image/png",
+             "bits": 8,
+             "channels": null,
+             "url": "http://127.0.0.1/images/2014/06/04/example.png",
+             "url_viewer": "http://127.0.0.1/image/L",
+             "thumb": {
+                 "filename": "example.th.png",
+                 "name": "example.th",
+                 "width": 160,
+                 "height": 160,
+                 "ratio": 1,
+                 "size": 17848,
+                 "size_formatted": "17.4 KB",
+                 "mime": "image/png",
+                 "extension": "png",
+                 "bits": 8,
+                 "channels": null,
+                 "url": "http://127.0.0.1/images/2014/06/04/example.th.png"
+             },
+             "medium": {
+                 "filename": "example.md.png",
+                 "name": "example.md",
+                 "width": 500,
+                 "height": 390,
+                 "ratio": 1.2820512820513,
+                 "size": 104448,
+                 "size_formatted": "102 KB",
+                 "mime": "image/png",
+                 "extension": "png",
+                 "bits": 8,
+                 "channels": null,
+                 "url": "http://127.0.0.1/images/2014/06/04/example.md.png"
+             },
+             "views_label": "views",
+             "display_url": "http://127.0.0.1/images/2014/06/04/example.md.png",
+             "how_long_ago": "moments ago"
+         },
+         "status_txt": "OK"
+     }
+     */
+    BOOL bSuccess = NO;
+    @try {
+        NSError* error = nil;
+        NSDictionary* dReply = [NSJSONSerialization JSONObjectWithData:[theRequest responseData] options: NSJSONReadingMutableContainers error: &error];
+        
+        if ([[dReply objectForKey:@"status_code"] intValue] == CHEVERETO_UPLOAD_SUCCESS_OK) {
+            bSuccess = YES;
+            self.link_full = [dReply[@"image"] objectForKey:@"url"];
+            self.nolink_full = [dReply[@"image"] objectForKey:@"url"];
+            self.link_preview = nil;
+            self.nolink_preview = nil;
+
+            self.link_medium =  nil;
+            self.nolink_medium = nil;
+            if ([dReply[@"image"] objectForKey:@"medium"]) {
+                self.link_medium = [dReply[@"image"][@"medium"] objectForKey:@"url"];
+                self.nolink_medium = [dReply[@"image"][@"medium"] objectForKey:@"url"];
+            }
+                  
+            self.link_miniature =  nil;
+            self.nolink_miniature = nil;
+            if ([dReply[@"image"] objectForKey:@"thumb"]) {
+                self.link_miniature = [dReply[@"image"][@"thumb"] objectForKey:@"url"];
+                self.nolink_miniature = [dReply[@"image"][@"thumb"] objectForKey:@"url"];
+            }
+                 
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadProgress" object:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithFloat:2.0f], self, nil] forKeys:[NSArray arrayWithObjects:@"progress", @"rehostImage", nil]]];
+            
+        }
+        else {
+            //Example:  {"status_code":400,"error":{"message":"File too big - max 500 KB","code":313,"context":"CHV\\UploadException"},"status_txt":"Bad Request"}
+            NSString* sErrorMessage = [NSString stringWithFormat:@"%d - %@", [[dReply objectForKey:@"status_code"] intValue], [[dReply[@"error"] objectForKey:@"message"] stringValue]];
+            [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:[NSString stringWithFormat:@"Erreur : %@", sErrorMessage]];
+        }
+    }
+    @catch (NSException * e) {
+        NSLog(@"Exception: %@", e);
+        [HFRAlertView DisplayOKAlertViewWithTitle:@"Ooops !" andMessage:[NSString stringWithFormat:@"Erreur : %@", e]];
+    }
+    @finally {}
+
+}
+
+
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
+    //NSLog(@"fetchContentFailed %@", [theRequest responseString]);
+
     // Popup error
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:@"Erreur inconnue :/"
                                                             preferredStyle:UIAlertControllerStyleAlert];

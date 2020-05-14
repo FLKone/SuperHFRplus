@@ -350,6 +350,30 @@
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>wl_pseudo</string>
+            <key>Key</key>
+            <string>filter_posts_quotes</string>
+            <key>Title</key>
+            <string>Filtrer les posts</string>
+            <key>Titles</key>
+            <array>
+                <string>Love list et texte du pseudo</string>
+                <string>Love list uniquement</string>
+                <string>Texte du pseudo uniquement</string>
+                <string>Aucun</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <string>wl_pseudo</string>
+                <string>wl</string>
+                <string>pseudo</string>
+                <string>nothing</string>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>default</string>
@@ -444,6 +468,26 @@
 				<string>yes</string>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>yes</string>
+            <key>Key</key>
+            <string>embedded_videos</string>
+            <key>Title</key>
+            <string>Afficher les vidéos</string>
+            <key>Titles</key>
+            <array>
+                <string>Lien</string>
+                <string>Intégré</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <string>no</string>
+                <string>yes</string>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>no</string>
@@ -532,6 +576,42 @@
 			<key>Key</key>
 			<string>mpstorage_reset</string>
 		</dict>
+        <dict>
+            <key>FooterText</key>
+            <string></string>
+            <key>Title</key>
+            <string>Mode Offline</string>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>20</integer>
+            <key>Key</key>
+            <string>offline_max_pages</string>
+            <key>Title</key>
+            <string>Limite de chargement</string>
+            <key>Titles</key>
+            <array>
+                <string>5 pages</string>
+                <string>10 pages</string>
+                <string>20 pages</string>
+                <string>30 pages</string>
+                <string>50 pages</string>
+                <string>100 pages</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>6</integer>
+                <integer>11</integer>
+                <integer>21</integer>
+                <integer>31</integer>
+                <integer>51</integer>
+                <integer>101</integer>
+            </array>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Maintenance</string>

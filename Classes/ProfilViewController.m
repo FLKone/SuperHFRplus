@@ -8,9 +8,7 @@
 
 #import "HFRplusAppDelegate.h"
 #import "ProfilViewController.h"
-
-#import "ASIHTTPRequest.h"
-
+#import "ASIHTTPRequest+Tools.h"
 #import "HTMLParser.h"
 #import "RegexKitLite.h"
 #import "RangeOfCharacters.h"
@@ -84,7 +82,7 @@
     [self.loadingView setHidden:YES];
     [self.maintenanceView setHidden:YES];
     
-    [self loadDataInTableView:[theRequest responseData]];
+    [self loadDataInTableView:[theRequest safeResponseData]];
     
 	[self.profilTableView reloadData];
     [self.profilTableView setHidden:NO];
@@ -761,7 +759,7 @@
 	[self.arrayData removeAllObjects];
 	[self.feedTableView reloadData];
 	
-	[self loadDataInTableView:[request responseData]];
+	[self loadDataInTableView:[request safeResponseData]];
     
 	[self.loadingView setHidden:YES];
     
@@ -1378,7 +1376,7 @@
 	NSLog(@"fetchContentComplete");
     
     
-    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[request responseString] error:NULL];
+    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[request safeResponseString] error:NULL];
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
 
     //PARSING

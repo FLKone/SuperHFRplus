@@ -12,6 +12,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "Topic.h"
 
+@class FilterPostsQuotes;
+
 @interface PageViewController : UIViewController <UITextFieldDelegate, UIAlertViewDelegate> {
 	NSString *currentUrl;	
 	int pageNumber;
@@ -30,6 +32,7 @@
 @property (nonatomic, strong) NSString *currentUrl;
 @property (nonatomic, strong) Topic *currentOfflineTopic;
 @property int pageNumber;
+@property int pageNumberFilterStart, pageNumberFilterEnd;
 
 @property int firstPageNumber;
 @property int lastPageNumber;
@@ -38,6 +41,7 @@
 
 @property (nonatomic, strong) NSString *nextPageUrl;
 @property (nonatomic, strong) NSString *previousPageUrl;
+@property FilterPostsQuotes* filterPostsQuotes;
 
 -(BOOL)isModeOffline;
 -(void)choosePage;
@@ -45,6 +49,7 @@
 -(void)gotoPageNumber:(int)number;
 -(void)fetchContent;
 -(IBAction)searchSubmit:(UIBarButtonItem *)sender;
+-(IBAction)filterPostsQuotesNext:(UIBarButtonItem *)sender;
 -(void)fetchContent:(int)from;
 
 -(void)nextPage:(id)sender;

@@ -161,27 +161,30 @@
     NSString * sOpennedUrl = nil;
     
     // Try to get URL from MPStorage
+    BOOL bCanSaveDrapalInMPStorage = NO;
     NSString *sPost = nil;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"mpstorage_active"]) {
         // Get post id from URL
         Topic *t = [arrayData objectAtIndex:indexPath.row];
-        for (NSString *qs in [t.aURL componentsSeparatedByString:@"&"]) {
-            // Get the parameter name
-            NSString *key = [[qs componentsSeparatedByString:@"="] objectAtIndex:0];
-            // Get the parameter value
-            if ([key isEqualToString:@"post"]) {
-                sPost = [[qs componentsSeparatedByString:@"="] objectAtIndex:1];
+        if ([t.aAuthorOrInter isEqualToString:@"Interlocuteurs multiples"]) {
+            bCanSaveDrapalInMPStorage = YES;
+            for (NSString *qs in [t.aURL componentsSeparatedByString:@"&"]) {
+                // Get the parameter name
+                NSString *key = [[qs componentsSeparatedByString:@"="] objectAtIndex:0];
+                // Get the parameter value
+                if ([key isEqualToString:@"post"]) {
+                    sPost = [[qs componentsSeparatedByString:@"="] objectAtIndex:1];
+                }
+            }
+        
+            if (sPost) {
+                sOpennedUrl = [[MPStorage shared] getUrlFlagForTopidId:[sPost intValue]];
+                if ([sOpennedUrl hasPrefix:@"https://forum.hardware.fr"]) {
+                    sOpennedUrl = [sOpennedUrl substringWithRange:NSMakeRange(25, [sOpennedUrl length]-25)];
+                }
             }
         }
     }
-    
-    if (sPost) {
-        sOpennedUrl = [[MPStorage shared] getUrlFlagForTopidId:[sPost intValue]];
-        if ([sOpennedUrl hasPrefix:@"https://forum.hardware.fr"]) {
-            sOpennedUrl = [sOpennedUrl substringWithRange:NSMakeRange(25, [sOpennedUrl length]-25)];
-        }
-    }
-    
     // If nothing, only get URL of last page
     if (sOpennedUrl == nil) {
         sOpennedUrl = [[arrayData objectAtIndex:indexPath.row] aURLOfLastPost];
@@ -193,7 +196,8 @@
 	//setup the URL
 	self.messagesTableViewController.topicName = [[arrayData objectAtIndex:indexPath.row] aTitle];	
 	self.messagesTableViewController.isViewed = [[arrayData objectAtIndex:indexPath.row] isViewed];	
-
+    self.messagesTableViewController.canSaveDrapalInMPStorage = bCanSaveDrapalInMPStorage;
+    
     [self pushTopic];
 	//NSLog(@"push message liste");
 

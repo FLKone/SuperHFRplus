@@ -103,7 +103,7 @@ table
 table p
 {
 	max-width:100% !important;
-	overflow-x:hidden;
+    /*    overflow-x:hidden;*/
 }
 
 table p img
@@ -560,15 +560,28 @@ table.code *, table.fixed * {
 .message .content .right {
 /*    padding-top: 44px !important; */
 }
-.message .content .right>a.cLink {
+.message .content .right>a.cLink  {
     display: block;
-    line-height: 44px;
+    line-height: 30px;
     padding: 0 0px 0 10px !important;
     text-decoration: none;
-    color: black; /*rien ?*/ /* Dark rgb(146, 147, 151);*/
-    border-bottom: 1px solid var(--color-background-bars); /* ?? */ /* Dark rgb(68, 79, 77); */
-    background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background); /*rien ?*/ /* Dark rgb(19, 19, 29); */
+    border-top: 1px solid var(--color-background-bars);
+    border-bottom: 1px solid var(--color-background-bars);
+    background: url(unselectedrow.png) no-repeat scroll right center var(--color-message-background);
     background-origin: content-box;
+    margin-bottom: 5px !important;
+}
+
+.message .content .right>a.filteredpostlink {
+    display: block;
+    line-height: 30px;
+    padding: 0 0px 0 10px !important;
+    text-decoration: none;
+    border-top: 1px solid var(--color-background-bars);
+    border-bottom: 1px solid var(--color-background-bars);
+    background: url(unselectedrow.png) no-repeat scroll right center;
+    background-origin: content-box;
+    margin-bottom: 5px !important;
 }
 
 div[id^=para] {
@@ -1119,4 +1132,12 @@ body.ios7 {
 .message.hfrbl {
     height:0px !important;
     overflow:hidden !important;
+}
+
+/* ipad only */
+@media only screen and (min-device-width : 768px) {
+    .embedvideo iframe {
+        width:60%;
+        height:300px;
+    }
 }

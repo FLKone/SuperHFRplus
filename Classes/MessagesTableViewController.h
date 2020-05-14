@@ -24,7 +24,7 @@
 
 #import "MWPhotoBrowser.h"
 
-@class HTMLNode;
+@class HTMLNode, MessageDetailViewController, ASIHTTPRequest, FilterPostsQuotes;
 @class MessageDetailViewController;
 @class ASIHTTPRequest;
 
@@ -184,9 +184,15 @@
 @property BOOL isSearchInstra;
 @property BOOL isSeparatorNewMessages;
 @property UIAlertAction* actionCreateAQ;
-
+@property BOOL canSaveDrapalInMPStorage;
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
+@property (nonatomic, strong) Topic *topic;
+//@property BOOL bFilterPostsQuotes;
+@property FilterPostsQuotes* filterPostsQuotes;
+@property NSMutableArray* arrFilteredPosts;
+@property (nonatomic, strong) UIAlertController *alertProgress;
+@property (nonatomic, strong) UIProgressView *progressView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages;
@@ -228,6 +234,7 @@
 - (IBAction)searchKeywordChanged:(UITextField *)sender;
 - (void)toggleSearch:(BOOL) active;
 - (IBAction)searchNext:(UITextField *)sender;
-
+- (void)manageLoadedItems:(NSArray *)loadedItems;
+- (void)setupScrollAndPage;
 
 @end

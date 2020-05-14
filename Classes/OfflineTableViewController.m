@@ -10,7 +10,7 @@
 #import "PlusTableViewController.h"
 #import "MessagesTableViewController.h"
 #import "AQCellView.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "Constants.h"
 #import "MultisManager.h"
 #import "ThemeManager.h"
@@ -22,6 +22,7 @@
 #import "HTMLParser.h"
 #import "Favorite.h"
 #import "Forum.h"
+#import "Constants.h"
 
 #define  UNICODE_CIRCLE_FULL        @"\U000025CF"
 #define  UNICODE_CIRCLE_3QUARTERS   @"\U000025D4"
@@ -33,7 +34,7 @@
 @implementation OfflineTableViewController;
 @synthesize offlineTableView, maintenanceView, listOfflineTopicsKeys, alertProgress, progressView, request;
 @synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
-@synthesize topicActionAlert, pressedIndexPath, selectedTopic;
+@synthesize topicActionAlert, pressedIndexPath, selectedTopic, iNbPagesLoaded;
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -44,7 +45,7 @@
     UINib *nib2 = [UINib nibWithNibName:@"FavoriteCellView" bundle:nil];
     [self.offlineTableView registerNib:nib2 forCellReuseIdentifier:@"FavoriteCellID"];
 
-    self.title = @"Topics hors ligne (beta)";
+    self.title = @"Topics hors ligne";
     self.navigationController.navigationBar.translucent = NO;
     //Supprime les lignes vides à la fin de la liste
     self.offlineTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -54,28 +55,25 @@
     [[OfflineStorage shared] verifyCacheIntegrity];
     
     // Add PullToRefresh function to tableview
-    /*
     __weak OfflineTableViewController *self_ = self;
     [self.offlineTableView addPullToRefreshWithActionHandler:^{
-        [self_ refreshContent];
-    }];*/
-    //[self.OfflineTableView triggerPullToRefresh];
+        [self_ reload];
+    }];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.view.backgroundColor = self.offlineTableView.backgroundColor = self.maintenanceView.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.view.backgroundColor = self.offlineTableView.backgroundColor = self.offlineTableView.pullToRefreshView.backgroundColor = self.maintenanceView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.offlineTableView.separatorColor = [ThemeColors cellBorderColor];
     if (self.offlineTableView.indexPathForSelectedRow) {
         [self.offlineTableView deselectRowAtIndexPath:self.offlineTableView.indexPathForSelectedRow animated:NO];
     }
     
-    /*
     self.offlineTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor];
     self.offlineTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor];
     self.offlineTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
-    */
+    
     [self.offlineTableView reloadData];
 }
 
@@ -86,10 +84,10 @@
 
 -(void) actionMenu {
     UIAlertController *actionAlert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Actualiser les topics" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self reload]; }]];
     [actionAlert addAction:[UIAlertAction actionWithTitle:@"Mettre à jour le cache" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self refreshCache]; }]];
-    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Vider le cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCache]; }]];
-    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Tout supprimer" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCacheAndTopics]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Actualiser" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self reload]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Supprimer le cache" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCache]; }]];
+    [actionAlert addAction:[UIAlertAction actionWithTitle:@"Supprimer le cache et les topics" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) { [self deleteCacheAndTopics]; }]];
     [actionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) { }]];
 
     [self presentViewController:actionAlert animated:YES completion:nil];
@@ -130,13 +128,9 @@
     UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelFetchContent)];
     self.navigationItem.rightBarButtonItem = segmentBarItem;
 
-    //[self.favoritesTableView.pullToRefreshView stopAnimating];
+    [self.offlineTableView.pullToRefreshView stopAnimating];
 
     [self.maintenanceView setHidden:YES];
-     /*
-    [self.favoritesTableView setHidden:YES];
-    [self.loadingView setHidden:NO];
-     */
 }
 
 - (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
@@ -144,21 +138,40 @@
     NSLog(@"fetchContentComplete");
 
     //Bouton Reload
-    /*
-    self.navigationItem.rightBarButtonItem = nil;
-    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
-    self.navigationItem.rightBarButtonItem = segmentBarItem;
-    */
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
-    [self loadDataInTableView:[theRequest responseData]];
+    [self loadDataInTableView:[theRequest safeResponseData]];
     
     [self.arrayData removeAllObjects];
     self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];
     [self.arrayNewData removeAllObjects];
     
     [self.offlineTableView reloadData];
+    [self.offlineTableView.pullToRefreshView stopAnimating];
+    [self.offlineTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
 }
+
+-(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // If row is deleted, remove it from the list.
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        NSNumber* topicID = [listOfflineTopicsKeys objectAtIndex:(NSUInteger)indexPath.row];
+        Topic *topic = [[OfflineStorage shared].dicOfflineTopics objectForKey:topicID];
+        if (![[OfflineStorage shared] checkTopicOffline:topic]) {
+            return;
+        }
+
+        [[OfflineStorage shared] removeTopicFromOfflineTopics:topic];
+        [self.offlineTableView reloadData];
+    }
+}
+
 
 -(void)loadDataInTableView:(NSData *)contentData
 {
@@ -243,6 +256,9 @@
     */
     
     [self.maintenanceView setHidden:NO];
+    [self.offlineTableView.pullToRefreshView stopAnimating];
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionMenu)];;
 
     // Popup
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]  preferredStyle:UIAlertControllerStyleAlert];
@@ -265,24 +281,45 @@
 }
 -(void) loadOfflineTopicsToCache {
     listOfflineTopicsKeys = [[OfflineStorage shared].dicOfflineTopics allKeys];
-    int total = (int)[listOfflineTopicsKeys count];
-    int c = 0;
-    for (NSNumber* keyTopidID in listOfflineTopicsKeys)
-    {
+    int totalPages = 0;
+    for (NSNumber* keyTopidID in listOfflineTopicsKeys) {
         Topic *tmpTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:keyTopidID];
-        NSLog(@"Loading topic %@", keyTopidID);
-        [[OfflineStorage shared] loadTopicToCache:tmpTopic];
-        c++;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.progressView.progress = ((float)c)/total;
-            [self.alertProgress setMessage:[NSString stringWithFormat:@"%.f%%",((float)c)/total * 100.]];
-        });
+        int iNbMaxPageToLoad = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"offline_max_pages"];
+        if (tmpTopic.isTopicLoadedInCache) {
+            if ((tmpTopic.maxTopicPageLoaded - tmpTopic.curTopicPageLoaded + 1) >= iNbMaxPageToLoad) {
+                totalPages = totalPages + 0; // Everything is already loaded
+            } else {
+                int nbPageToLoad = MINIMUM(iNbMaxPageToLoad, iNbMaxPageToLoad - (tmpTopic.maxTopicPageLoaded - tmpTopic.curTopicPageLoaded + 1));
+                nbPageToLoad = MINIMUM(nbPageToLoad, (tmpTopic.maxTopicPage - tmpTopic.maxTopicPageLoaded));
+                totalPages = totalPages + nbPageToLoad;
+            }
+        } else {
+            if ((tmpTopic.maxTopicPage - tmpTopic.curTopicPage + 1) >= iNbMaxPageToLoad) {
+                totalPages = totalPages + iNbMaxPageToLoad;
+            } else {
+                totalPages = totalPages + (tmpTopic.maxTopicPage - tmpTopic.curTopicPage + 1);
+            }
+        }
+    }
+    
+    NSLog(@"Total pages to load = %d", totalPages);
+    iNbPagesLoaded = 0;
+    for (NSNumber* keyTopidID in listOfflineTopicsKeys) {
+        Topic *tmpTopic = [[OfflineStorage shared].dicOfflineTopics objectForKey:keyTopidID];
+        NSLog(@"Loading topic %@ (%@)", keyTopidID, tmpTopic._aTitle);
+        [[OfflineStorage shared] loadTopicToCache:tmpTopic fromInstance:self totalPages:totalPages];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         self.progressView.progress = 1.0;
-        [self.alertProgress setMessage:@"100%"];
+        [self.alertProgress setMessage:@"\n100%"];
         [self dismissViewControllerAnimated:YES completion:nil];
         [self.offlineTableView reloadData];
+    });
+}
+-(void) updateProgressBarWithPercent:(float)fPercent andMessage:(NSString*)sMessage {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressView.progress = fPercent;
+        [self.alertProgress setMessage:[NSString stringWithFormat:@"%@\n%.f%%", sMessage, fPercent * 100.]];
     });
 }
 

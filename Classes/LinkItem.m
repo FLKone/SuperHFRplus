@@ -16,7 +16,7 @@
 @implementation LinkItem
 
 @synthesize postID, lastPageUrl, lastPostUrl, viewed, name, url, flagUrl, typeFlag, rep, dicoHTML, messageDate, imageUI, textViewMsg, messageNode, messageAuteur;
-@synthesize urlQuote, urlAlert, urlEdit, urlProfil, addFlagUrl, quoteJS, MPUrl, isDel, isBL;
+@synthesize urlQuote, urlAlert, urlEdit, urlProfil, addFlagUrl, quoteJS, MPUrl, isDel, isBL, iPage;
 
 @synthesize quotedNB, quotedLINK, editedTime;
 
@@ -27,18 +27,6 @@
     if ([[BlackList shared] isBL:[self name]]) {
         bIsPostBL = YES;
     }
-    /* NOT WORKING
-     
-    else {
-        NSDateFormatter * df = [[NSDateFormatter alloc] init];
-        [df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
-        NSDate *dNow = [[NSDate alloc] init];
-        NSDate* dPost = [df dateFromString:self.messageDate];
-        NSTimeInterval secondsBetween = [dNow timeIntervalSinceDate:dPost];
-        if (secondsBetween < 60*[[NSUserDefaults standardUserDefaults] integerForKey:@"hiderecentposts"]) {
-            bIsPostBL = YES;
-        }
-    }*/
     
     // Get current own pseudo
     MultisManager *manager = [MultisManager sharedManager];
@@ -67,10 +55,7 @@
 
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%AUTEUR_PSEUDO%%" withString:[self name]];
     tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%POSTID%%" withString:[self postID]];
-    
 	tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%MESSAGE_DATE%%" withString:[[self messageDate] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
-
-	//tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%AUTEUR_AVATAR_SRC%%" withString:@"bundle://avatar_male_gray_on_light_48x48.png"];
 
 	if([self imageUI] != nil){
 		tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%AUTEUR_AVATAR_SRC%%" withString:@"background-image:url('%%AUTEUR_AVATAR_SRC%%');"];
@@ -127,33 +112,16 @@
                                                           withString:@"|NATIVE-$1-98787687687697|"];
     
     // Embedded video
-    //<a rel="nofollow" href="https://www.youtube.com/watch?v=pBsjtSjQEjM" target="_blank" class="cLink">https://www.youtube.com/watch?v=pBsjtSjQEjM</a>
-    //NSString *regExYT = @"http(?:s)?:\/\/(?:www\.|m\.|gaming\.)?(youtu)be\.com\/.+v=([\w-]+)";
-    //myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExYT
-    //                                                      withString:@"|NATIVE-$1-98787687687697|"];
-    //regExYT
-
+    NSString *regExYT = @"<a rel=\"nofollow\" href=\"([^\"]+)\" target=\"_blank\" class=\"embedvideo\" hrefemb=\"([^\"]+)\" hreftxt=\"([^\"]+)\">([^<]+)</a>";
+    //Example: <iframe width="560" height="315" src="https://www.youtube.com/embed/FMbSgh1hb6k?&autoplay=1"frameborder="0"></iframe>
+    //NSString *sFrameEmbedded = @"<div class=\"embedvideo\"><iframe width=\"100%\" height=\"100%\" src=\"$2\" frameborder=\"0\"></iframe></div>";
+    NSString *sFrameEmbedded = @"<div class=\"embedvideo\"><iframe src=\"$2\" frameborder=\"0\"></iframe><br><a href=\"$1\">$3</a></div>";
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExYT
+                                                          withString:sFrameEmbedded];
     
-	//Replacing Links by HREF
-	//NSString *regEx3 = @"<a rel=\"nofollow\" href=\"([^\"]+)\" target=\"_blank\" class=\"cLink\">[^<]+</a>";			
-	//myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx3
-	//													  withString:@"$1"];			
-	
-	//myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"|EXTERNAL-98787687687697|" withString:@"<img src='image.png' />"];
-	
-	
-	//Toyonos Images http://hfr.toyonos.info/generateurs/rofl/?s=shay&v=4&t=5
-	//NSString *regExToyo = @"<img src=\"http://hfr.toyonos.info/generateurs/([^\"]+)\" alt=\"[^\"]+\" title=\"[^\"]+\" style=\"[^\"]+\">";			
-	//myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regExToyo
-	//													  withString:@"<img src=\"http://hfr.toyonos.info/generateurs/$1\">"];
-	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	NSString *display = [defaults stringForKey:@"display_images"];
 
-    
-	
-    //NSLog(@"display %@", display);
-    
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"hfr-rehost.net" withString:@"reho.st"]; // changement de domaine hfr-rehost
     NSString *landscape = [ThemeColors landscapePath:[[ThemeManager sharedManager] theme]];
     
@@ -236,8 +204,6 @@
             myRawContent = [myRawContent stringByAppendingString:@"</div>"];
         }
     }
-
-    //NSLog(@"--------------\n%@", myRawContent);
 	
     if (self.quotedNB) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<a class=\"quotedhfrlink\" href=\"%@\">%@</a>", self.quotedLINK, self.quotedNB]];
@@ -245,7 +211,15 @@
     if (self.editedTime) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<p class=\"editedhfrlink\">édité par %@</p>", self.editedTime]];
     }
-    
+    if (self.url) {
+        NSString* sPage = @"";
+        if (self.iPage > 0) {
+            sPage = [NSString stringWithFormat:@" - page %d", self.iPage];
+        }
+        NSString* sVoirMessage = [NSString stringWithFormat:@"<a class=\"filteredpostlink\" href=\"%@\" >Voir dans le sujet non filtré%@</a>", self.url, sPage];
+        myRawContent = [sVoirMessage stringByAppendingString:myRawContent];
+    }
+
     // Improve color for keyword in cpp tag
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"<span style=\"color:blue\">" withString:@"<span style=\"color:var( --color-action)\">"];
 

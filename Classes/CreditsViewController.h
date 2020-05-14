@@ -12,5 +12,6 @@
 	UIWebView* myWebView;
 }
 @property (nonatomic, strong) IBOutlet UIWebView* myWebView;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil filename:(NSString *)filename;
 
 @end

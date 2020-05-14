@@ -135,6 +135,12 @@
     
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
     
+    // Add link to img
+    //External Images
+    NSString *regEx = @"<img src=\"([^\"]+)\" alt=\"[^\"]+\" title=\"[^\"]+\" onload=\"[^\"]+\" style=\"[^\"]+\">";
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx
+                                                          withString:@"<img onClick=\"window.location = 'oijlkajsdoihjlkjasdoimbrows://'+this.title+'/'+encodeURIComponent(this.alt); return false;\" class=\"hfrplusimg\" title=\"%%%%ID%%%%\" src=\"$1\" alt=\"$1\" longdesc=\"\">"];
+    
     NSString *customFontSize = [self userTextSizeDidChange];
    
     NSString *doubleSmileysCSS = @"";
@@ -183,8 +189,8 @@
         </head><body class='iosversion'><div class='bunselected maxmessage' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'><div class='message' id='1'><div class='content'><div class='right'>%@</div></div></div></div></body></html><script type='text/javascript'>\
         document.addEventListener('DOMContentLoaded', loadedML);\
         function loadedML() { document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded'; };\
-        function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}} $('img').error(function(){\
-            $(this).attr('src', 'photoDefaultfailmini.png');});\
+        function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}};\
+                    $('img').error(function(){var failingSrc = $(this).attr('src');if(failingSrc.indexOf('https://reho.st')>-1){$(this).attr('src', 'photoDefaultClic.png')}else{$(this).attr('src', 'photoDefaultfailmini.png');}});\
             document.documentElement.style.setProperty('--color-action', '%@');\
             document.documentElement.style.setProperty('--color-action-disabled', '%@');\
             document.documentElement.style.setProperty('--color-message-background', '%@');\
@@ -604,9 +610,52 @@
             [self webViewDidFinishLoadDOM];
             return NO;
         }
+        else if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoimbrows"]) {
+            NSString *regularExpressionString = @"oijlkajsdoihjlkjasdoimbrows://[^/]+/(.*)";
+            
+            NSString *imgUrl = [[[[aRequest.URL absoluteString] stringByMatching:regularExpressionString capture:1L] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            
+            [self didSelectImage:[[[[aRequest.URL absoluteString] pathComponents] objectAtIndex:1] intValue] withUrl:imgUrl];
+
+            return NO;
+        }
     }
     
     return YES;
+}
+
+- (void) didSelectImage:(int)index withUrl:(NSString *)selectedURL {
+
+        
+    NSMutableArray * imageArray = [[NSMutableArray alloc] init];
+    int selectedIndex = 0;
+    
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            [imageArray addObject:[MWPhoto photoWithURL:[NSURL URLWithString:[selectedURL stringByReplacingOccurrencesOfString:@"reho.st/thumb/" withString:@"reho.st/"]]]];
+        else
+            [imageArray addObject:[MWPhoto photoWithURL:[NSURL URLWithString:[selectedURL stringByReplacingOccurrencesOfString:@"reho.st/thumb/" withString:@"reho.st/preview/"]]]];
+            
+
+    
+
+    
+    // Create & present browser
+    MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithPhotos:imageArray];
+    // Set options
+    browser.wantsFullScreenLayout = YES; // Decide if you want the photo browser full screen, i.e. whether the status bar is affected (defaults to YES)
+    browser.displayActionButton = YES; // Show action button to save, copy or email photos (defaults to NO)
+    [browser setInitialPageIndex:selectedIndex]; // Example: allows second image to be presented first
+    // Present
+
+    
+    HFRNavigationController *nc = [[HFRNavigationController alloc] initWithRootViewController:browser];
+    nc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self presentModalViewController:nc animated:YES];
+    
+    
+    //[self.navigationController pushViewController:browser animated:YES];
+    
 }
 
 - (void)webViewDidFinishLoadDOM {

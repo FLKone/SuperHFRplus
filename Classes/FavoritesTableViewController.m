@@ -12,7 +12,7 @@
 
 #import "HTMLParser.h"
 #import	"RegexKitLite.h"
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "ASIFormDataRequest.h"
 
 #import "ShakeView.h"
@@ -36,6 +36,8 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "OfflineStorage.h"
+#import "MultisManager.h"
+#import "FilterPostsQuotes.h"
 
 #define SECTION_CAT_VISIBLE 0
 #define SECTION_CAT_HIDDEN 1
@@ -46,10 +48,8 @@
 @synthesize arrayData, arrayNewData, arrayTopics, arrayCategories, arrayCategoriesHidden, arrayCategoriesVisibleOrder, arrayCategoriesHiddenOrder; //v2 remplace arrayData, arrayDataID, arrayDataID2, arraySection
 @synthesize messagesTableViewController, errorVC;
 @synthesize idPostSuperFavorites;
-
 @synthesize request;
-
-@synthesize reloadOnAppear, status, statusMessage, maintenanceView, topicActionAlert;
+@synthesize reloadOnAppear, status, statusMessage, maintenanceView, topicActionAlert, filterPostsQuotes;
 
 #pragma mark -
 #pragma mark Data lifecycle
@@ -181,24 +181,39 @@
 {
     NSLog(@"fetchContentComplete");
 
-	//Bouton Reload
-	self.navigationItem.rightBarButtonItem = nil;
-	UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
-	self.navigationItem.rightBarButtonItem = segmentBarItem;
-	
-	[self loadDataInTableView:[theRequest responseData]];
-	
-    [self.arrayData removeAllObjects];
-    //[self.arrayTopics removeAllObjects];
+    //Bouton Reload
+    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reload)];
+    self.navigationItem.rightBarButtonItem = segmentBarItem;
+    @try {
+        [self loadDataInTableView:[theRequest responseData]];
+        
+        [self.arrayData removeAllObjects];
 
-    self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];
-    
-    [self.arrayNewData removeAllObjects];
-    
-	[self.favoritesTableView reloadData];
-    
-    [self.favoritesTableView.pullToRefreshView stopAnimating];
-    [self.favoritesTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
+        self.arrayData = [NSMutableArray arrayWithArray:self.arrayNewData];
+        
+        [self.arrayNewData removeAllObjects];
+        
+        [self.favoritesTableView reloadData];
+        
+        [self.favoritesTableView.pullToRefreshView stopAnimating];
+        [self.favoritesTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
+    }
+    @catch(NSException* e) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[NSString stringWithFormat:@"Erreur : %@", e] preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+        UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction * action) { [self.favoritesTableView triggerPullToRefresh]; }];
+        [alert addAction:actionCancel];
+        [alert addAction:actionRetry];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+
+    }
+    @finally {}
 }
 
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
@@ -1408,6 +1423,12 @@
         }
         [topicActionAlert addAction:uiActionOffline];
         
+        // Check quotes
+        UIAlertAction* uiActionCheckQuotes = [UIAlertAction actionWithTitle:@"Filtrer les posts" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self checkPostsAndQuotesForTopicIndex:self.pressedIndexPath];
+        }];
+        [topicActionAlert addAction:uiActionCheckQuotes];
+        
 
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
@@ -1483,7 +1504,6 @@
 
 
 - (void)pushTopic {
-    
     if (([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
         [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ||
         [[HFRplusAppDelegate sharedAppDelegate].detailNavigationController.topViewController isMemberOfClass:[BrowserViewController class]]) {
@@ -1513,6 +1533,7 @@
     
     // Close left panel on ipad in portrait mode
     [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
+
 }
 
 -(void)setTopicViewed {
@@ -1613,6 +1634,37 @@
     });
 }
 
+
+-(void)checkPostsAndQuotesForTopicIndex:(NSIndexPath *)indexPath {
+    Topic *topic = [self getTopicAtIndexPath:indexPath];
+    if (!self.filterPostsQuotes) {
+        self.filterPostsQuotes = [[FilterPostsQuotes alloc] init];
+    }
+    [self.filterPostsQuotes checkPostsAndQuotesForTopic:topic andVC:self];
+}
+
+-(void) addProgressBar {
+    self.alertProgress = [UIAlertController alertControllerWithTitle:@"Téléchargement des topics" message:@"0%" preferredStyle:UIAlertControllerStyleAlert];
+    [self.alertProgress addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }]];
+
+    UIView *alertView = self.alertProgress.view;
+
+    self.progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+    self.progressView.progress = 0.0;
+    self.progressView.translatesAutoresizingMaskIntoConstraints = false;
+    [alertView addSubview:self.progressView];
+
+
+    NSLayoutConstraint *bottomConstraint = [self.progressView.bottomAnchor constraintEqualToAnchor:alertView.bottomAnchor];
+    [bottomConstraint setActive:YES];
+    bottomConstraint.constant = -45; // How to constraint to Cancel button?
+
+    [[self.progressView.leftAnchor constraintEqualToAnchor:alertView.leftAnchor] setActive:YES];
+    [[self.progressView.rightAnchor constraintEqualToAnchor:alertView.rightAnchor] setActive:YES];
+
+    [self presentViewController:self.alertProgress animated:true completion:nil];
+}
 
 #pragma mark -
 #pragma mark chooseTopicPage

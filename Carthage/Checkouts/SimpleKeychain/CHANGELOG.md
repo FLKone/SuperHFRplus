@@ -1,5 +1,35 @@
 # Change Log
 
+## [0.11.1](https://github.com/auth0/SimpleKeychain/tree/0.11.1) (2020-03-26)
+[Full Changelog](https://github.com/auth0/SimpleKeychain/compare/0.11.0...0.11.1)
+
+**Fixed**
+- Disabled LAContext attribute in simulator [SDK-1476] [\#91](https://github.com/auth0/SimpleKeychain/pull/91) ([Widcket](https://github.com/Widcket))
+
+## [0.11.0](https://github.com/auth0/SimpleKeychain/tree/0.11.0) (2020-02-27)
+[Full Changelog](https://github.com/auth0/SimpleKeychain/compare/0.10.0...0.11.0)
+
+**Changed**
+- Marked up A0SimpleKeychain+KeyPair to admit that keys may not exist [\#86](https://github.com/auth0/SimpleKeychain/pull/86) ([cysp](https://github.com/cysp))
+
+**Fixed**
+- Fixed A0LocalAuthenticationCapable macro [\#81](https://github.com/auth0/SimpleKeychain/pull/81) ([Widcket](https://github.com/Widcket))
+
+## [0.10.0](https://github.com/auth0/SimpleKeychain/tree/0.10.0) (2020-02-05)
+[Full Changelog](https://github.com/auth0/SimpleKeychain/compare/0.9.0...0.10.0)
+
+**Added**
+- Swift Package Manager support [\#75](https://github.com/auth0/SimpleKeychain/pull/75) ([StuClift](https://github.com/StuClift))
+
+**Changed**
+- Reused LocalAuthentication context [\#74](https://github.com/auth0/SimpleKeychain/pull/74) ([eaceto](https://github.com/eaceto))
+
+## [0.9.0](https://github.com/auth0/SimpleKeychain/tree/0.9.0) (2019-04-23)
+[Full Changelog](https://github.com/auth0/SimpleKeychain/compare/0.8.1...0.9.0)
+
+**Changed**
+- Update Swift 5 / Xcode 10.2 [\#66](https://github.com/auth0/SimpleKeychain/pull/66) ([cocojoe](https://github.com/cocojoe))
+
 ## [0.8.1](https://github.com/auth0/SimpleKeychain/tree/0.8.1) (2018-04-30)
 [Full Changelog](https://github.com/auth0/SimpleKeychain/compare/0.8.0...0.8.1)
 

@@ -24,6 +24,11 @@
 		5B108AB31EA637B100ED4DD2 /* A0SimpleKeychain+KeyPair.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FEEB9D71B7BF71800501415 /* A0SimpleKeychain+KeyPair.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5B710A8C1EA6408B00C7B380 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5B0D47651EA63D17009FF1BF /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5B710A8D1EA6408B00C7B380 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5B0D47661EA63D17009FF1BF /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5C29744623FF457A00BC18FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C29744523FF457A00BC18FA /* AppDelegate.swift */; };
+		5C29744823FF457A00BC18FA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C29744723FF457A00BC18FA /* ViewController.swift */; };
+		5C29744B23FF457A00BC18FA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C29744923FF457A00BC18FA /* Main.storyboard */; };
+		5C29744D23FF457E00BC18FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C29744C23FF457E00BC18FA /* Assets.xcassets */; };
+		5C29745023FF457E00BC18FA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C29744E23FF457E00BC18FA /* LaunchScreen.storyboard */; };
 		5F4D27851BCE99E7003C27B3 /* SimpleKeychainSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4D27651BCE995C003C27B3 /* SimpleKeychainSpec.swift */; };
 		5F4D27861BCE9BA3003C27B3 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F4D273E1BCE9224003C27B3 /* Nimble.framework */; };
 		5F4D27871BCE9BA3003C27B3 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F4D273F1BCE9224003C27B3 /* Quick.framework */; };
@@ -64,6 +69,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 5F7B45AB1B7D0CE700D5AC89;
 			remoteInfo = SimpleKeychainApp;
+		};
+		5C70AB9C24074300006E2EB2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5FEEB9931B7BD70A00501415 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C29744223FF457A00BC18FA;
+			remoteInfo = tvOSTestHost;
 		};
 		5F4D27801BCE99E0003C27B3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -124,6 +136,14 @@
 		5B0D47661EA63D17009FF1BF /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/tvOS/Quick.framework; sourceTree = SOURCE_ROOT; };
 		5B108AA91EA62F6100ED4DD2 /* SimpleKeychain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleKeychain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B108AB81EA637B100ED4DD2 /* SimpleKeychain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleKeychain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C29744323FF457A00BC18FA /* tvOSTestHost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tvOSTestHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C29744523FF457A00BC18FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5C29744723FF457A00BC18FA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5C29744A23FF457A00BC18FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5C29744C23FF457E00BC18FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5C29744F23FF457E00BC18FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5C29745123FF457E00BC18FA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C29745523FF458C00BC18FA /* tvOSTestHost.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tvOSTestHost.entitlements; sourceTree = "<group>"; };
 		5F4D273A1BCE9216003C27B3 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = SOURCE_ROOT; };
 		5F4D273B1BCE9216003C27B3 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = SOURCE_ROOT; };
 		5F4D273E1BCE9224003C27B3 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = SOURCE_ROOT; };
@@ -166,6 +186,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5B108AAF1EA637B100ED4DD2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C29744023FF457A00BC18FA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -225,6 +252,20 @@
 			name = tvOS;
 			sourceTree = "<group>";
 		};
+		5C29744423FF457A00BC18FA /* tvOSTestHost */ = {
+			isa = PBXGroup;
+			children = (
+				5C29745523FF458C00BC18FA /* tvOSTestHost.entitlements */,
+				5C29744523FF457A00BC18FA /* AppDelegate.swift */,
+				5C29744723FF457A00BC18FA /* ViewController.swift */,
+				5C29744923FF457A00BC18FA /* Main.storyboard */,
+				5C29744C23FF457E00BC18FA /* Assets.xcassets */,
+				5C29744E23FF457E00BC18FA /* LaunchScreen.storyboard */,
+				5C29745123FF457E00BC18FA /* Info.plist */,
+			);
+			path = tvOSTestHost;
+			sourceTree = "<group>";
+		};
 		5F51D71D1BCDC4D400613162 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,6 +320,7 @@
 				5FEEB99E1B7BD70A00501415 /* SimpleKeychain */,
 				5FEEB9AB1B7BD70B00501415 /* SimpleKeychainTests */,
 				5F7B45AD1B7D0CE700D5AC89 /* SimpleKeychainApp */,
+				5C29744423FF457A00BC18FA /* tvOSTestHost */,
 				5FEEB99D1B7BD70A00501415 /* Products */,
 				5F51D71D1BCDC4D400613162 /* Frameworks */,
 			);
@@ -295,6 +337,7 @@
 				5B108AA91EA62F6100ED4DD2 /* SimpleKeychain.framework */,
 				5B108AB81EA637B100ED4DD2 /* SimpleKeychain.framework */,
 				5B0D47591EA63C74009FF1BF /* SimpleKeychainTests.xctest */,
+				5C29744323FF457A00BC18FA /* tvOSTestHost.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -398,6 +441,7 @@
 			dependencies = (
 				5B0D47601EA63C74009FF1BF /* PBXTargetDependency */,
 				5B0D476A1EA63D36009FF1BF /* PBXTargetDependency */,
+				5C70AB9D24074300006E2EB2 /* PBXTargetDependency */,
 			);
 			name = "SimpleKeychainTests-tvOS";
 			productName = "SimpleKeychainTests-tvOS";
@@ -439,6 +483,23 @@
 			productName = SimpleKeychain;
 			productReference = 5B108AB81EA637B100ED4DD2 /* SimpleKeychain.framework */;
 			productType = "com.apple.product-type.framework";
+		};
+		5C29744223FF457A00BC18FA /* tvOSTestHost */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5C29745423FF457E00BC18FA /* Build configuration list for PBXNativeTarget "tvOSTestHost" */;
+			buildPhases = (
+				5C29743F23FF457A00BC18FA /* Sources */,
+				5C29744023FF457A00BC18FA /* Frameworks */,
+				5C29744123FF457A00BC18FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tvOSTestHost;
+			productName = tvOSTestHost;
+			productReference = 5C29744323FF457A00BC18FA /* tvOSTestHost.app */;
+			productType = "com.apple.product-type.application";
 		};
 		5F4D277A1BCE99DF003C27B3 /* SimpleKeychainTests-iOS */ = {
 			isa = PBXNativeTarget;
@@ -537,17 +598,22 @@
 		5FEEB9931B7BD70A00501415 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0930;
+				LastSwiftUpdateCheck = 1130;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Auth0;
 				TargetAttributes = {
 					5B0D47581EA63C74009FF1BF = {
 						CreatedOnToolsVersion = 8.3;
 						LastSwiftMigration = 0930;
 						ProvisioningStyle = Manual;
+						TestTargetID = 5C29744223FF457A00BC18FA;
 					};
 					5B108AAB1EA637B100ED4DD2 = {
 						ProvisioningStyle = Manual;
+					};
+					5C29744223FF457A00BC18FA = {
+						CreatedOnToolsVersion = 11.3.1;
+						ProvisioningStyle = Automatic;
 					};
 					5F4D277A1BCE99DF003C27B3 = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -573,7 +639,7 @@
 			};
 			buildConfigurationList = 5FEEB9961B7BD70A00501415 /* Build configuration list for PBXProject "SimpleKeychain" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -589,6 +655,7 @@
 				5B108A9C1EA62F6100ED4DD2 /* SimpleKeychain-watchOS */,
 				5B108AAB1EA637B100ED4DD2 /* SimpleKeychain-tvOS */,
 				5F7B45AB1B7D0CE700D5AC89 /* SimpleKeychainApp */,
+				5C29744223FF457A00BC18FA /* tvOSTestHost */,
 				5F4D277A1BCE99DF003C27B3 /* SimpleKeychainTests-iOS */,
 				5F4D278E1BCEA69E003C27B3 /* SimpleKeychainTests-OSX */,
 				5B0D47581EA63C74009FF1BF /* SimpleKeychainTests-tvOS */,
@@ -615,6 +682,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C29744123FF457A00BC18FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C29745023FF457E00BC18FA /* LaunchScreen.storyboard in Resources */,
+				5C29744D23FF457E00BC18FA /* Assets.xcassets in Resources */,
+				5C29744B23FF457A00BC18FA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -684,6 +761,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5C29743F23FF457A00BC18FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C29744823FF457A00BC18FA /* ViewController.swift in Sources */,
+				5C29744623FF457A00BC18FA /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5F4D27771BCE99DF003C27B3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -739,6 +825,11 @@
 			target = 5F7B45AB1B7D0CE700D5AC89 /* SimpleKeychainApp */;
 			targetProxy = 5B0D47691EA63D36009FF1BF /* PBXContainerItemProxy */;
 		};
+		5C70AB9D24074300006E2EB2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5C29744223FF457A00BC18FA /* tvOSTestHost */;
+			targetProxy = 5C70AB9C24074300006E2EB2 /* PBXContainerItemProxy */;
+		};
 		5F4D27811BCE99E0003C27B3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5F7B45AB1B7D0CE700D5AC89 /* SimpleKeychainApp */;
@@ -752,6 +843,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		5C29744923FF457A00BC18FA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5C29744A23FF457A00BC18FA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		5C29744E23FF457E00BC18FA /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5C29744F23FF457E00BC18FA /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
 		5F7B45B91B7D0CE700D5AC89 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -783,9 +890,10 @@
 				SDKROOT = appletvos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tvOSTestHost.app/tvOSTestHost";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -806,9 +914,10 @@
 				PRODUCT_NAME = SimpleKeychainTests;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tvOSTestHost.app/tvOSTestHost";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
@@ -837,7 +946,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -861,7 +970,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -890,7 +999,7 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -919,7 +1028,61 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		5C29745223FF457E00BC18FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = tvOSTestHost/tvOSTestHost.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = tvOSTestHost/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.auth0.simplekeychain.tvOSTestHost;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.2;
+			};
+			name = Debug;
+		};
+		5C29745323FF457E00BC18FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = tvOSTestHost/tvOSTestHost.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = tvOSTestHost/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.auth0.simplekeychain.tvOSTestHost;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.2;
 			};
 			name = Release;
 		};
@@ -939,7 +1102,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.auth0.SimpleKeychainTests;
 				PRODUCT_NAME = SimpleKeychainTests;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleKeychainApp.app/SimpleKeychainApp";
 			};
 			name = Debug;
@@ -958,7 +1121,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.auth0.SimpleKeychainTests;
 				PRODUCT_NAME = SimpleKeychainTests;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleKeychainApp.app/SimpleKeychainApp";
 			};
 			name = Release;
@@ -979,7 +1142,7 @@
 				PRODUCT_NAME = SimpleKeychainTests;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -997,7 +1160,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.auth0.SimpleKeychainTests;
 				PRODUCT_NAME = SimpleKeychainTests;
 				SDKROOT = macosx;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -1017,7 +1180,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1032,7 +1195,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.auth0.simplekeychain;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -1040,6 +1203,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1084,10 +1248,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1098,6 +1264,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1135,10 +1302,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1210,7 +1379,7 @@
 				INFOPLIST_FILE = SimpleKeychain/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.auth0.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SimpleKeychain;
 				SDKROOT = macosx;
@@ -1231,7 +1400,7 @@
 				INFOPLIST_FILE = SimpleKeychain/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.auth0.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SimpleKeychain;
 				SDKROOT = macosx;
@@ -1265,6 +1434,15 @@
 			buildConfigurations = (
 				5B108AB61EA637B100ED4DD2 /* Debug */,
 				5B108AB71EA637B100ED4DD2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5C29745423FF457E00BC18FA /* Build configuration list for PBXNativeTarget "tvOSTestHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C29745223FF457E00BC18FA /* Debug */,
+				5C29745323FF457E00BC18FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -14,7 +14,7 @@
 #import "RegexKitLite.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
-
+#import "ASIHTTPRequest+Tools.h"
 
 @implementation QuoteMessageViewController
 @synthesize urlQuote;
@@ -53,7 +53,7 @@
 	
 	[self.arrayInputData removeAllObjects];
 	
-	[self loadDataInTableView:[request responseData]];
+	[self loadDataInTableView:[request safeResponseData]];
 
 	[self.accessoryView setHidden:NO];
 	[self.loadingView setHidden:YES];

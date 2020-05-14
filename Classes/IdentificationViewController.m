@@ -14,7 +14,7 @@
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 #import "MultisManager.h"
-
+#import "ASIHTTPRequest+Tools.h"
 
 @implementation IdentificationViewController
 @synthesize delegate;
@@ -199,7 +199,7 @@
         if ([request error]) {
             //NSLog(@"localizedDescription %@", [[request error] localizedDescription]);
             //NSLog(@"responseString %@", [request responseString]);
-        } else if ([request responseString]) {
+        } else if ([request safeResponseString]) {
             //NSLog(@"responseString %@", [request responseString]);
             //NSLog(@"responseString %@", [request responseHeaders]);
 
@@ -209,10 +209,10 @@
             [self log:[request responseHeaders]];
 
             [self log:@"Response: RAW"];
-            [self log:[request responseString]];
+            [self log:[request safeResponseString]];
 
 
-            NSArray * urlArray = [[request responseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"1; url=login_redirection.php([^\"]*)\" />"];
+            NSArray * urlArray = [[request safeResponseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"1; url=login_redirection.php([^\"]*)\" />"];
             
             //NSLog(@"%d", urlArray.count);
             if (urlArray.count > 0) {
@@ -248,7 +248,7 @@
     //NSLog(@"requestFinished");
 
     // Use when fetching text data
-    NSString *responseString = [request responseString];
+    NSString *responseString = [request safeResponseString];
     //NSLog(@"finish %@", [request responseString]);
 
     NSString *regularExpressionString = @".*<td class=\"profilCase2\"><b>Avatar&nbsp;:</b></td>.*";
@@ -262,7 +262,7 @@
         // Generate Compte
         // Get avatar
         NSError * error = nil;
-        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request responseString] error:&error];
+        HTMLParser *myParser = [[HTMLParser alloc] initWithString:[request safeResponseString] error:&error];
         HTMLNode * bodyNode = [myParser body]; //Find the body tag
         HTMLNode * hashNode = [bodyNode findChildWithAttribute:@"name" matchingName:@"hash_check" allowPartial:NO];
         NSString *hash =  [hashNode getAttributeNamed:@"value"];
