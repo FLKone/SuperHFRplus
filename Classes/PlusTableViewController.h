@@ -22,6 +22,7 @@
     CompteViewController *compteViewController;
     AQTableViewController *aqTableViewController;
     CreditsViewController *creditsViewController;
+    CreditsViewController *charteViewController;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *plusTableView;
@@ -31,6 +32,7 @@
 @property (nonatomic, strong) AQTableViewController *aqTableViewController;
 @property (nonatomic, strong) OfflineTableViewController *offlineTableViewController;
 @property (nonatomic, strong) CreditsViewController *creditsViewController;
+@property (nonatomic, strong) CreditsViewController *charteViewController;
 
 @end
 

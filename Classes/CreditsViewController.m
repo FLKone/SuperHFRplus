@@ -12,8 +12,13 @@
 #import "ThemeManager.h"
 
 
+@interface CreditsViewController ()
+@property (nonatomic, strong) NSString *filename;
+@end
+
 @implementation CreditsViewController
 @synthesize myWebView;
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -24,9 +29,16 @@
 }
 */
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil filename:(NSString *)filename {
+   if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+       self.filename = filename;
+    }
+    return self;
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	self.title = @"Crédits";
+    self.title = [self.filename isEqualToString:@"credits"] ? @"Crédits" : @"Charte du forum";
 
     [super viewDidLoad];
     
@@ -68,7 +80,7 @@
     NSString *path = [[NSBundle mainBundle] bundlePath];
     NSURL *baseURL = [NSURL fileURLWithPath:path];
     
-    NSString *htmlString = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"credits" ofType:@"html"] encoding:NSUTF8StringEncoding error:NULL];
+    NSString *htmlString = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:self.filename ofType:@"html"] encoding:NSUTF8StringEncoding error:NULL];
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
         htmlString = [htmlString stringByReplacingOccurrencesOfString:@"%%iosversion%%" withString:@"ios7"];
