@@ -4024,7 +4024,7 @@
 					"$(SRCROOT)/**",
 					"$(PROJECT_DIR)/**",
 				);
-				MARKETING_VERSION = 2.1.11;
+				MARKETING_VERSION = 2.1.12;
 				OTHER_LDFLAGS = "-licucore";
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super82;
 				PRODUCT_NAME = SuperHFRplusSwift;
