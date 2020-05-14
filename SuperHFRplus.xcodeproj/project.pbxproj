@@ -17,6 +17,13 @@
 		151DE8D723AAC74D003E6D1B /* OldFavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */; };
 		152D2D472455916000D9D644 /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */; };
 		152D2D4A2456E56500D9D644 /* ASIHTTPRequest+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */; };
+		152D2D3B244C79EB00D9D644 /* BookmarksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */; };
+		152D2D3D244C7A0200D9D644 /* BookmarksTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D3C244C7A0200D9D644 /* BookmarksTableView.xib */; };
+		152D2D40244C7A2700D9D644 /* BookmarksCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D3F244C7A2700D9D644 /* BookmarksCellView.m */; };
+		152D2D42244C7A3A00D9D644 /* BookmarksCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D41244C7A3A00D9D644 /* BookmarksCellView.xib */; };
+		152D2D45244CBA1100D9D644 /* Bookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D44244CBA1100D9D644 /* Bookmark.m */; };
+		152D2D4C24619CC500D9D644 /* 08-pin-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D4B24619CC400D9D644 /* 08-pin-20@2x.png */; };
+		152D2D4E2461AE1900D9D644 /* 08-pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D4D2461AE1900D9D644 /* 08-pin@2x.png */; };
 		15357D64234BA620002D5C2E /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D62234BA61F002D5C2E /* offline@2x.png */; };
 		15357D65234BA620002D5C2E /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D63234BA620002D5C2E /* offline.png */; };
 		15357D67234BA712002D5C2E /* offline2@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D66234BA712002D5C2E /* offline2@2.png */; };
@@ -181,7 +188,6 @@
 		4C21E9801BA5C70400691D65 /* XlargeIconsFilled-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E94C1BA5C70400691D65 /* XlargeIconsFilled-20@2x.png */; };
 		4C21E9841BA5CC1200691D65 /* HFRTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C21E9821BA5CC1200691D65 /* HFRTextView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		4C25E3D71D82CECD0031A2F2 /* k.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C25E3D51D82CECD0031A2F2 /* k.m */; };
-		4C265D4E1BAE511800B1A244 /* HFRWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C265D4C1BAE511800B1A244 /* HFRWebView.m */; };
 		4C3903381BCACE4D00FD6F1F /* DACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C3903361BCACE4D00FD6F1F /* DACircularProgressView.m */; };
 		4C3903571BCACEC200FD6F1F /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39033B1BCACEC200FD6F1F /* NSIndexPath+PSTCollectionViewAdditions.m */; };
 		4C3903591BCACEC200FD6F1F /* PSTCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39033D1BCACEC200FD6F1F /* PSTCollectionView.m */; };
@@ -546,7 +552,6 @@
 		CA7C70B6185EF50E00B348BA /* 06-magnify.png in Resources */ = {isa = PBXBuildFile; fileRef = CA00C5A317C30C370067B457 /* 06-magnify.png */; };
 		CA7C70B7185EF50E00B348BA /* jquery.doubletap.js in Resources */ = {isa = PBXBuildFile; fileRef = CA00C58517C30C370067B457 /* jquery.doubletap.js */; };
 		CA7C70B8185EF50E00B348BA /* jquery.base64.js in Resources */ = {isa = PBXBuildFile; fileRef = CA00C58417C30C370067B457 /* jquery.base64.js */; };
-		CA7C70BC185EF50E00B348BA /* UIWebView+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = CA00C46B17C302610067B457 /* UIWebView+Tools.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CA7C70BE185EF50E00B348BA /* HFRplusAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* HFRplusAppDelegate.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		CA7C70BF185EF50E00B348BA /* InfosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BF8777121C4407007624B6 /* InfosViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		CA7C70C0185EF50E00B348BA /* AideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BF8779121C4407007624B6 /* AideViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -800,6 +805,16 @@
 		152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
 		152D2D482456E55400D9D644 /* ASIHTTPRequest+Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ASIHTTPRequest+Tools.h"; sourceTree = "<group>"; };
 		152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ASIHTTPRequest+Tools.m"; sourceTree = "<group>"; };
+		152D2D39244C79D700D9D644 /* BookmarksTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BookmarksTableViewController.h; sourceTree = "<group>"; };
+		152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BookmarksTableViewController.m; sourceTree = "<group>"; };
+		152D2D3C244C7A0200D9D644 /* BookmarksTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarksTableView.xib; sourceTree = "<group>"; };
+		152D2D3E244C7A1B00D9D644 /* BookmarksCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BookmarksCellView.h; sourceTree = "<group>"; };
+		152D2D3F244C7A2700D9D644 /* BookmarksCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BookmarksCellView.m; sourceTree = "<group>"; };
+		152D2D41244C7A3A00D9D644 /* BookmarksCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarksCellView.xib; sourceTree = "<group>"; };
+		152D2D43244CBA0200D9D644 /* Bookmark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
+		152D2D44244CBA1100D9D644 /* Bookmark.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bookmark.m; sourceTree = "<group>"; };
+		152D2D4B24619CC400D9D644 /* 08-pin-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "08-pin-20@2x.png"; path = "SuperHFRplus/Assets/UI/08-pin-20@2x.png"; sourceTree = SOURCE_ROOT; };
+		152D2D4D2461AE1900D9D644 /* 08-pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-pin@2x.png"; sourceTree = "<group>"; };
 		15357D62234BA61F002D5C2E /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		15357D63234BA620002D5C2E /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
 		15357D66234BA712002D5C2E /* offline2@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline2@2.png"; sourceTree = "<group>"; };
@@ -995,8 +1010,6 @@
 		4C21E9821BA5CC1200691D65 /* HFRTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFRTextView.m; sourceTree = "<group>"; };
 		4C25E3D41D82CECD0031A2F2 /* k.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = k.h; sourceTree = "<group>"; };
 		4C25E3D51D82CECD0031A2F2 /* k.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = k.m; sourceTree = "<group>"; };
-		4C265D4B1BAE511800B1A244 /* HFRWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRWebView.h; sourceTree = "<group>"; };
-		4C265D4C1BAE511800B1A244 /* HFRWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFRWebView.m; sourceTree = "<group>"; };
 		4C3903351BCACE4D00FD6F1F /* DACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DACircularProgressView.h; sourceTree = "<group>"; };
 		4C3903361BCACE4D00FD6F1F /* DACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DACircularProgressView.m; sourceTree = "<group>"; };
 		4C39033A1BCACEC200FD6F1F /* NSIndexPath+PSTCollectionViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+PSTCollectionViewAdditions.h"; sourceTree = "<group>"; };
@@ -1170,8 +1183,6 @@
 		CA00C46717C302610067B457 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		CA00C46817C302610067B457 /* UITableViewController+Ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewController+Ext.h"; sourceTree = "<group>"; };
 		CA00C46917C302610067B457 /* UITableViewController+Ext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewController+Ext.m"; sourceTree = "<group>"; };
-		CA00C46A17C302610067B457 /* UIWebView+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+Tools.h"; sourceTree = "<group>"; };
-		CA00C46B17C302610067B457 /* UIWebView+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+Tools.m"; sourceTree = "<group>"; };
 		CA00C53217C3082F0067B457 /* TopicsTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TopicsTableViewController.xib; sourceTree = "<group>"; };
 		CA00C53417C308360067B457 /* ForumsTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForumsTableViewController.xib; sourceTree = "<group>"; };
 		CA00C53E17C30C360067B457 /* global.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = global.gif; sourceTree = "<group>"; };
@@ -1671,8 +1682,6 @@
 				013F0E97121E117800BEBEB1 /* MessagesTableViewController.h */,
 				013F0E98121E117800BEBEB1 /* MessagesTableViewController.m */,
 				013F0E99121E117800BEBEB1 /* MessagesTableViewController.xib */,
-				4C265D4B1BAE511800B1A244 /* HFRWebView.h */,
-				4C265D4C1BAE511800B1A244 /* HFRWebView.m */,
 				4CB133121B90E9530081B44D /* MessagesSearchTableViewController.h */,
 				4CB133131B90E9530081B44D /* MessagesSearchTableViewController.m */,
 				013F0E9D121E117900BEBEB1 /* ParseMessagesOperation.h */,
@@ -1861,6 +1870,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				152D2D38244C798A00D9D644 /* Bookmarks */,
 				15357D68234BA77F002D5C2E /* Offline */,
 				15EBFD0922061ECD00A37CED /* AlertesQualitay */,
 				1503755121FDF89F00A5F7E1 /* Plus */,
@@ -1890,6 +1900,21 @@
 				1503755421FE249300A5F7E1 /* PlusCellView.xib */,
 			);
 			name = Plus;
+			sourceTree = "<group>";
+		};
+		152D2D38244C798A00D9D644 /* Bookmarks */ = {
+			isa = PBXGroup;
+			children = (
+				152D2D39244C79D700D9D644 /* BookmarksTableViewController.h */,
+				152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */,
+				152D2D3C244C7A0200D9D644 /* BookmarksTableView.xib */,
+				152D2D3E244C7A1B00D9D644 /* BookmarksCellView.h */,
+				152D2D3F244C7A2700D9D644 /* BookmarksCellView.m */,
+				152D2D41244C7A3A00D9D644 /* BookmarksCellView.xib */,
+				152D2D43244CBA0200D9D644 /* Bookmark.h */,
+				152D2D44244CBA1100D9D644 /* Bookmark.m */,
+			);
+			name = Bookmarks;
 			sourceTree = "<group>";
 		};
 		15357D68234BA77F002D5C2E /* Offline */ = {
@@ -2232,6 +2257,7 @@
 		4CB132A91B9094BD0081B44D /* MenuItem */ = {
 			isa = PBXGroup;
 			children = (
+				152D2D4B24619CC400D9D644 /* 08-pin-20@2x.png */,
 				15167EB02330210600D64651 /* Heart-20@2x.png */,
 				15A1238C22D659CB00C3DFEC /* Heart-20.png */,
 				1512A7922232F6C8000C9B1D /* 08-chat-20.png */,
@@ -2412,8 +2438,6 @@
 				CA00C46717C302610067B457 /* UIImage+Resize.m */,
 				CA00C46817C302610067B457 /* UITableViewController+Ext.h */,
 				CA00C46917C302610067B457 /* UITableViewController+Ext.m */,
-				CA00C46A17C302610067B457 /* UIWebView+Tools.h */,
-				CA00C46B17C302610067B457 /* UIWebView+Tools.m */,
 				4CC814FB1BAC86ED00F8BB81 /* UIColor+Extension.h */,
 				4CC814FC1BAC86ED00F8BB81 /* UIColor+Extension.m */,
 				4C1793891E93B78B007EA6CB /* UINavigationBar+Helper.h */,
@@ -2571,6 +2595,7 @@
 			children = (
 				D8CA2764246C535C008FC72C /* sign-25.png */,
 				D8CA2763246C535C008FC72C /* sign-25@2x.png */,
+				152D2D4D2461AE1900D9D644 /* 08-pin@2x.png */,
 				15357D66234BA712002D5C2E /* offline2@2.png */,
 				15357D63234BA620002D5C2E /* offline.png */,
 				15357D62234BA61F002D5C2E /* offline@2x.png */,
@@ -3429,6 +3454,7 @@
 				D8B4EDF321C184970042C392 /* snow2.png in Resources */,
 				CAF5DB6B1932BA58000B5215 /* info@2x.png in Resources */,
 				CA7C7054185EF50E00B348BA /* toolbar3@2x.png in Resources */,
+				152D2D4E2461AE1900D9D644 /* 08-pin@2x.png in Resources */,
 				4CB311ED19FAF8750097D84D /* hammer.min.js in Resources */,
 				CA7C7055185EF50E00B348BA /* bgiPad.png in Resources */,
 				CA7C7056185EF50E00B348BA /* crazy.gif in Resources */,
@@ -3453,6 +3479,7 @@
 				D8CA2768246C539B008FC72C /* charte.html in Resources */,
 				CA7C7062185EF50E00B348BA /* lol.gif in Resources */,
 				4C0B8DA71BA4522900D329BA /* BroadcastingFilled-40.png in Resources */,
+				152D2D4C24619CC500D9D644 /* 08-pin-20@2x.png in Resources */,
 				CA7C7063185EF50E00B348BA /* PayViewController.xib in Resources */,
 				CA7C7064185EF50E00B348BA /* buttonbeginon@2x.png in Resources */,
 				CAF5DB691932BA58000B5215 /* info.png in Resources */,
@@ -3530,6 +3557,7 @@
 				CAF5DB711933D3D8000B5215 /* FeedbackViewController.xib in Resources */,
 				CA7C708C185EF50E00B348BA /* buttonprevioushover@2x.png in Resources */,
 				4C0B8DBD1BA4522900D329BA /* ChatFilled-40.png in Resources */,
+				152D2D3D244C7A0200D9D644 /* BookmarksTableView.xib in Resources */,
 				CA7C708D185EF50E00B348BA /* 111-user.png in Resources */,
 				4C59E0911FA9D9F300C902F8 /* Icon-CLASSIC@3x.png in Resources */,
 				CA7C708E185EF50E00B348BA /* buttonpreviouson.png in Resources */,
@@ -3586,6 +3614,7 @@
 				4C0B8E071BA45B0100D329BA /* ForumCellView.xib in Resources */,
 				1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */,
 				CAF5DB671932BA58000B5215 /* error@2x.png in Resources */,
+				152D2D42244C7A3A00D9D644 /* BookmarksCellView.xib in Resources */,
 				D8DDF2AD1E58810A002F1484 /* ToolBarFastRewind_on_tinted.png in Resources */,
 				CA7C70A5185EF50E00B348BA /* 06-magnifying-glass.png in Resources */,
 				4C59E0901FA9D9F300C902F8 /* Icon-CLASSIC@2x.png in Resources */,
@@ -3686,6 +3715,7 @@
 				CA7C70C5185EF50E00B348BA /* ForumsTableViewController.m in Sources */,
 				CA7C70CA185EF50E00B348BA /* TopicsTableViewController.m in Sources */,
 				CA7C70D2185EF50E00B348BA /* FavoritesTableViewController.m in Sources */,
+				152D2D3B244C79EB00D9D644 /* BookmarksTableViewController.m in Sources */,
 				D8835E9E1E5F13C70073398C /* UIImageView+HighlightedWebCache.m in Sources */,
 				CA7C70CE185EF50E00B348BA /* HFRMPViewController.m in Sources */,
 				D8835EA21E5F13C70073398C /* UIView+WebCacheOperation.m in Sources */,
@@ -3748,6 +3778,7 @@
 				CAF5DB7C19340741000B5215 /* FeedbackTableViewCell.m in Sources */,
 				CA7C7104185EF50E00B348BA /* SubCatTableViewController.m in Sources */,
 				CA5E109618AC2A4F00C481A9 /* PollTableViewController.m in Sources */,
+				152D2D45244CBA1100D9D644 /* Bookmark.m in Sources */,
 				D8835E921E5F13C70073398C /* SDWebImageManager.m in Sources */,
 				4CB133151B90E9530081B44D /* MessagesSearchTableViewController.m in Sources */,
 				4C21E9841BA5CC1200691D65 /* HFRTextView.m in Sources */,
@@ -3770,7 +3801,6 @@
 				CA7C70F9185EF50E00B348BA /* NSData+Base64.m in Sources */,
 				4C3903381BCACE4D00FD6F1F /* DACircularProgressView.m in Sources */,
 				4C3903931BCAD0C700FD6F1F /* MWTapDetectingView.m in Sources */,
-				CA7C70BC185EF50E00B348BA /* UIWebView+Tools.m in Sources */,
 				D82690401E5856A5006971C3 /* HFRUIImagePickerController.m in Sources */,
 				CA7C70F4185EF50E00B348BA /* UITableViewController+Ext.m in Sources */,
 				4C3903951BCAD0C700FD6F1F /* MWZoomingScrollView.m in Sources */,
@@ -3809,6 +3839,7 @@
 				4C3903871BCAD0C700FD6F1F /* MWGridCell.m in Sources */,
 				4CFC38571FB0E6BE0027A832 /* AppDelegate.swift in Sources */,
 				15B245AA22E6F9870091B513 /* ThemeSettingsViewController.m in Sources */,
+				152D2D40244C7A2700D9D644 /* BookmarksCellView.m in Sources */,
 				4C3903631BCACEC200FD6F1F /* PSTCollectionViewItemKey.m in Sources */,
 				D8835E841E5F13C70073398C /* MKAnnotationView+WebCache.m in Sources */,
 				D8835E8A1E5F13C70073398C /* SDWebImageCompat.m in Sources */,
@@ -3821,7 +3852,6 @@
 				D8835EA01E5F13C70073398C /* UIImageView+WebCache.m in Sources */,
 				D8F5CBAE1DF45C1100B029FC /* Reachability.m in Sources */,
 				15357D6B234BA7F7002D5C2E /* OfflineTableViewController.m in Sources */,
-				4C265D4E1BAE511800B1A244 /* HFRWebView.m in Sources */,
 				D87BB742216266F00079690C /* CompteTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

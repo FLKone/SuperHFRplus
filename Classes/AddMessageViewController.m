@@ -12,7 +12,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "NSData+Base64.h"
 #import "RegexKitLite.h"
-#import "UIWebView+Tools.h"
 #import "RangeOfCharacters.h"
 #import "RehostImage.h"
 #import "RehostCell.h"
@@ -82,21 +81,20 @@
     return self;
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    //NSLog(@"webViewDidStartLoad");
+// was webViewDidStartLoad
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    //NSLog(@"webViewDidFinishLoad");
-    
+// webViewDidFinishPreLoadDOM was empty method
+// was webViewDidFinishLoad
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"didFinishNavigation");
+
     NSString *jsString = @"";
     //jsString = [jsString stringByAppendingString:@"$('body').bind('touchmove', function(e){e.preventDefault()});"];
     //jsString = [jsString stringByAppendingString:@"$('.button').addSwipeEvents().bind('tap', function(evt, touch) { $(this).addClass('selected'); window.location = 'oijlkajsdoihjlkjasdosmile://'+encodeURIComponent(this.title); });"];
-    
     //jsString = [jsString stringByAppendingString:@"$('#smileperso img.smile').addSwipeEvents().bind('tap', function(evt, touch) { $(this).addClass('selected'); window.location = 'oijlkajsdoihjlkjasdosmile://'+encodeURIComponent(this.alt); });"];
     
     jsString = [jsString stringByAppendingString:@"var hammertime = $('.button').hammer({ hold_timeout: 0.000001 }); \
@@ -121,20 +119,21 @@
                 }\
                 });"];
     
-    //NSLog(@"jsString %@", jsString);
-    
-    [webView stringByEvaluatingJavaScriptFromString:jsString];
-    
+    [webView evaluateJavaScript:jsString completionHandler:nil];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)aRequest navigationType:(UIWebViewNavigationType)navigationType {
-    //NSLog(@"expected:%ld, got:%ld | url:%@", (long)UIWebViewNavigationTypeLinkClicked, navigationType, [aRequest.URL absoluteString]);
+// was shouldStartLoadWithRequest
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+
+    NSURLRequest *aRequest = navigationAction.request;
+    NSLog(@"URL Scheme : <<<<<<<<<<%@>>>>>>>>>>>", [aRequest.URL scheme]);
+    BOOL bAllow = YES;
     
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        return NO;
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        bAllow = NO;
     }
-    else if (navigationType == UIWebViewNavigationTypeOther) {
+    else if (navigationAction.navigationType == WKNavigationTypeOther) {
         if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdosmile"]) {
             
             //NSLog(@"parameterString %@", [aRequest.URL query]);
@@ -144,18 +143,22 @@
             
             [self didSelectSmile:[[[firstParam objectAtIndex:1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
             
-            return NO;
+            bAllow = NO;
         }
     }
     
-    return YES;
+    if (bAllow) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
 }
+    
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
+
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     
     // Recherche Smileys utilises
     NSFileManager *fileManager = [[NSFileManager alloc] init];
@@ -184,10 +187,6 @@
         
     }
     
-    
-    //NSLog(@"rehostImagesArray AT LAUNCH %@", self.rehostImagesArray);
-    //NSLog(@"rehostImagesSortedArray AT LAUNCH %@", self.rehostImagesSortedArray);
-    
     //Smileys / Rehost
     
     //Bouton Annuler
@@ -203,14 +202,9 @@
     [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:0];
     [self.segmentControlerPage setWidth:40.0 forSegmentAtIndex:0];
     [self.segmentControlerPage setWidth:40.0 forSegmentAtIndex:2];
-    
     [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
     
-    
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        self.segmentControlerPage.tintColor = [UIColor darkGrayColor];
-        self.segmentControler.tintColor = [UIColor darkGrayColor];
-    }
+    self.smileView.navigationDelegate = self;
 }
 
 - (NSString*) getBrouillonExtract {
@@ -254,7 +248,6 @@
     
     tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
     
-    [self.smileView hideGradientBackground];
     [self.smileView loadHTMLString:[tempHTML stringByReplacingOccurrencesOfString:@"%SMILEYCUSTOM%"
                                                                        withString:[NSString stringWithFormat:@"<div id='smileperso'>%@</div>",
                                                                                    self.smileyCustom]] baseURL:baseURL];
@@ -928,9 +921,11 @@
                         doubleSmileysCSS = @"#smileperso img.smile {max-height:60px;min-height: 30px;} #smileperso .button {height:60px;min-width:45px;} #smileperso .button img {max-height:60px;}";
                     }
                     
-                    [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
-                                                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
-                                                                            ", [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]], doubleSmileysCSS]];
+                    [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
+                                                        $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
+                                                        ", [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]], doubleSmileysCSS]
+                                     completionHandler:nil];
+                    
                     self.loaded = NO;
                     [textView resignFirstResponder];
                     [textFieldSmileys resignFirstResponder];
@@ -939,10 +934,7 @@
                     textView.selectedRange = newRange;
                     
                     [self.smileView setHidden:NO];
-                    
                     [self segmentToWhite];
-                    
-                    
                     
                     [UIView beginAnimations:nil context:nil];
                     [UIView setAnimationDuration:0.2];
@@ -954,8 +946,6 @@
                     [self.segmentControlerPage setAlpha:1];
                     
                     [UIView commitAnimations];
-                    
-                    //NSLog(@"======= 2222");
                 }
                 else {
                     [UIView beginAnimations:nil context:nil];
@@ -966,11 +956,6 @@
                     [self.textView becomeFirstResponder];
                     
                     [self segmentToBlue];
-                    
-                    
-                    
-                    
-                    //NSLog(@"======= 3333");
                 }
                 break;
             }
@@ -984,11 +969,7 @@
                     textView.selectedRange = newRange;
                     
                     [self.rehostTableView setHidden:NO];
-                    
-                    //[self segmentToWhite];
                     [self segmentToBlue];
-                    
-                    
                     
                     [UIView beginAnimations:nil context:nil];
                     [UIView setAnimationDuration:0.2];
@@ -1000,8 +981,6 @@
                     [self.segmentControlerPage setAlpha:1];
                     
                     [UIView commitAnimations];
-                    
-                    NSLog(@"======= 2222");
                 }
                 else {
                     [UIView beginAnimations:nil context:nil];
@@ -1012,11 +991,6 @@
                     [self.textView becomeFirstResponder];
                     
                     [self segmentToBlue];
-                    
-                    
-                    
-                    
-                    //NSLog(@"======= 3333");
                 }
                 
                 break;
@@ -1038,20 +1012,19 @@
                 break;
             case 1:
             {
-                //NSLog(@"smile");
-                NSString *translatable = [self.smileView stringByEvaluatingJavaScriptFromString:@"$('#container').css('display');"];
-                
-                if ([translatable isEqualToString:@"none"]) {
-                    [self.smileView stringByEvaluatingJavaScriptFromString:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');"];
-                    [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:0];
-                    [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
-                    [self.segmentControlerPage setTitle:@"Annuler" forSegmentAtIndex:1];
-                    
-                    [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$('head > style').remove();"]];
-                }
-                else {
-                    [self cancel];
-                }
+                [self.smileView evaluateJavaScript:@"$('#container').css('display');" completionHandler:^(id result, NSError*  error) {
+                    if (error == nil && result != nil && [[NSString stringWithFormat:@"%@", result] isEqualToString:@"none"]) {
+                        [self.smileView evaluateJavaScript:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');" completionHandler:nil];
+                        [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:0];
+                        [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
+                        [self.segmentControlerPage setTitle:@"Annuler" forSegmentAtIndex:1];
+                        
+                        [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"$('head > style').remove();"] completionHandler:nil];
+                    }
+                    else {
+                        [self cancel];
+                    }
+                }];
                 
                 break;
             }
@@ -1187,10 +1160,8 @@
                 $(this).delay(800).removeClass('selected');\
                 });"];
     
-    [self.smileView stringByEvaluatingJavaScriptFromString:jsString];
-    
+    [self.smileView evaluateJavaScript:jsString completionHandler:nil];
     [self cancel];
-    
 }
 
 #pragma mark -
@@ -1485,10 +1456,8 @@
     [requestSmile setDidFinishSelector:@selector(fetchSmileContentComplete:)];
     [requestSmile setDidFailSelector:@selector(fetchSmileContentFailed:)];
     
-    [self.smileView stringByEvaluatingJavaScriptFromString:@"$('#container').hide();$('#container_ajax').show();$('#container_ajax').html('<div class=\"loading\"><span class=\"spinner\">&#xe800;</span> Recherche en cours...</div>');"];
+    [self.smileView evaluateJavaScript:@"$('#container').hide();$('#container_ajax').show();$('#container_ajax').html('<div class=\"loading\"><span class=\"spinner\">&#xe800;</span> Recherche en cours...</div>');" completionHandler:nil];
     [requestSmile startAsynchronous];
-    //NSLog(@"fetchSmileys");
-    
 }
 
 - (void)fetchSmileContentStarted:(ASIHTTPRequest *)theRequest
@@ -1518,7 +1487,7 @@
     
     if (self.smileyArray.count == 0) {
         [self.textFieldSmileys becomeFirstResponder];
-        [self.smileView stringByEvaluatingJavaScriptFromString:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');"];
+        [self.smileView evaluateJavaScript:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');" completionHandler:nil];
         [HFRAlertView DisplayOKAlertViewWithTitle:nil andMessage:@"Aucun résultat !"];
         return;
     }
@@ -1540,12 +1509,11 @@
 -(void)loadSmileys:(int)page;
 {
     self.smileyPage = page;
-    
-    [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
+    [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
                                                             $('#container').hide();\
                                                             $('#container_ajax').show();\
                                                             $('#container_ajax').html('<div class=\"loading\"><span class=\"spinner\">&#xe800;</span> Page n˚%d...</div>');\
-                                                            ", page + 1]];
+                                                            ", page + 1] completionHandler:nil];
     
     [self performSelectorInBackground:@selector(loadSmileys) withObject:nil];
     
@@ -1677,7 +1645,7 @@
     }
     
     
-    [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
+    [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
                                                             $('#container').hide();\
                                                             $('#container_ajax').show();\
                                                             $('#container_ajax').html('%@');\
@@ -1692,9 +1660,7 @@
                                                             }\
                                                             });\
                                                             $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
-                                                            ", tmpHTML, [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]],doubleSmileysCSS]];
-    
-    
+                                                            ", tmpHTML, [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]],doubleSmileysCSS] completionHandler:nil];
 }
 
 #pragma mark -
@@ -2050,7 +2016,7 @@
     self.accessoryView = nil;
     
     [self.smileView stopLoading];
-    self.smileView.delegate = nil;
+    self.smileView.navigationDelegate = nil;
     self.smileView = nil;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;	
     

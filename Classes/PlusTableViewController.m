@@ -11,13 +11,14 @@
 #import "OfflineTableViewController.h"
 #import "CompteViewController.h"
 #import "CreditsViewController.h"
+#import "BookmarksTableViewController.h"
 #import "AQTableViewController.h"
 #import "PlusCellView.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 
 @implementation PlusTableViewController;
-@synthesize plusTableView, iAQBadgeNumer, settingsViewController, compteViewController, aqTableViewController, offlineTableViewController, creditsViewController;
+@synthesize plusTableView, iAQBadgeNumer, settingsViewController, compteViewController, aqTableViewController, offlineTableViewController, bookmarksTableViewController,  creditsViewController;
 ;
 
 
@@ -44,6 +45,7 @@
     self.aqTableViewController = [[AQTableViewController alloc] initWithNibName:@"AQTableView" bundle:nil];
     self.creditsViewController = [[CreditsViewController alloc] initWithNibName:@"CreditsViewController" bundle:nil filename:@"credits"];
     self.charteViewController = [[CreditsViewController alloc] initWithNibName:@"CreditsViewController" bundle:nil filename:@"charte"];
+    self.bookmarksTableViewController = [[BookmarksTableViewController alloc] initWithNibName:@"BookmarksTableView" bundle:nil];
     self.offlineTableViewController = [[OfflineTableViewController alloc] initWithNibName:@"OfflineTableView" bundle:nil];
 
     iAQBadgeNumer = 0;
@@ -69,18 +71,21 @@
             [self.navigationController pushViewController:self.compteViewController animated:YES];
             break;
         case 1:
-            [self.navigationController pushViewController:self.aqTableViewController animated:YES];
+            [self.navigationController pushViewController:self.bookmarksTableViewController animated:YES];
             break;
         case 2:
-            [self.navigationController pushViewController:self.settingsViewController animated:YES];
+            [self.navigationController pushViewController:self.aqTableViewController animated:YES];
             break;
         case 3:
             [self.navigationController pushViewController:self.offlineTableViewController animated:YES];
             break;
         case 4:
-            [self.navigationController pushViewController:self.creditsViewController animated:YES];
+            [self.navigationController pushViewController:self.settingsViewController animated:YES];
             break;
         case 5:
+            [self.navigationController pushViewController:self.creditsViewController animated:YES];
+            break;
+        case 6:
             [self.navigationController pushViewController:self.charteViewController animated:YES];
             break;
     }
@@ -96,7 +101,7 @@
     return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 6;
+    return 7;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -109,6 +114,12 @@
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 1:
+            cell.titleLabel.text = @"Bookmarks";
+            cell.titleImage.image = [UIImage imageNamed:@"08-pin"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
+            break;
+        case 2:
             cell.titleLabel.text = @"Alertes Qualitay";
             cell.titleImage.image = [UIImage imageNamed:@"08-chat"];
             cell.badgeLabel.clipsToBounds = YES;
@@ -123,12 +134,6 @@
                 cell.badgeLabel.text = @"";
             }
             break;
-        case 2:
-            cell.titleLabel.text = @"Réglages";
-            cell.titleImage.image = [UIImage imageNamed:@"20-gear2"];
-            cell.badgeLabel.text = @"";
-            cell.badgeLabel.backgroundColor = [UIColor clearColor];
-            break;
         case 3:
             cell.titleLabel.text = @"Favoris hors ligne";
             cell.titleImage.image = [UIImage imageNamed:@"offline"];
@@ -136,12 +141,18 @@
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
         case 4:
+            cell.titleLabel.text = @"Réglages";
+            cell.titleImage.image = [UIImage imageNamed:@"20-gear2"];
+            cell.badgeLabel.text = @"";
+            cell.badgeLabel.backgroundColor = [UIColor clearColor];
+            break;
+        case 5:
             cell.titleLabel.text = @"Crédits";
             cell.titleImage.image = [UIImage imageNamed:@"AboutFilled-25"];
             cell.badgeLabel.text = @"";
             cell.badgeLabel.backgroundColor = [UIColor clearColor];
             break;
-        case 5:
+        case 6:
             cell.titleLabel.text = @"Charte du forum";
             cell.titleImage.image = [UIImage imageNamed:@"sign-25"];
             cell.badgeLabel.text = @"";

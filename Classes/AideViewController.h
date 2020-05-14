@@ -5,14 +5,13 @@
 //  Created by FLK on 25/07/10.
 //
 
-#import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
-
-@interface AideViewController : UIViewController <UIWebViewDelegate> {
-	UIWebView* myWebView;
+@interface AideViewController : UIViewController <WKNavigationDelegate, WKUIDelegate> {
+	WKWebView* myWebView;
 }
 
-@property (nonatomic, strong) IBOutlet UIWebView* myWebView;
+@property (nonatomic, strong) IBOutlet WKWebView* myWebView;
 
 
 @end

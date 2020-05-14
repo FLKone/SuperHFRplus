@@ -14,7 +14,7 @@
 
 @implementation PageViewController
 @synthesize previousPageUrl, nextPageUrl;
-@synthesize currentUrl, currentOfflineTopic, pageNumber;
+@synthesize currentUrl, originalUrl, currentOfflineTopic, pageNumber;
 @synthesize firstPageNumber, lastPageNumber;
 @synthesize firstPageUrl, lastPageUrl;
 @synthesize filterPostsQuotes;
@@ -31,6 +31,7 @@
 		self.lastPageUrl = [[NSString alloc] init];
         self.currentOfflineTopic = nil;
         self.filterPostsQuotes = nil;
+        self.originalUrl = nil;
     }
     return self;
 }
