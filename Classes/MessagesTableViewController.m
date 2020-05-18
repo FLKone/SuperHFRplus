@@ -1344,15 +1344,23 @@
 	int selectedIndex = 0;
     
 	for (HTMLNode * imgNode in tmpImageArray) { //Loop through all the tags
-		//NSLog(@"======\nalt %@", [imgNode getAttributeNamed:@"alt"]);
+		NSLog(@"======\nalt %@", [imgNode getAttributeNamed:@"alt"]);
         //NSLog(@"longdesc %@", [imgNode getAttributeNamed:@"longdesc"]);
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            [imageArray addObject:[MWPhoto photoWithURL:[NSURL URLWithString:[[imgNode getAttributeNamed:@"alt"] stringByReplacingOccurrencesOfString:@"reho.st/thumb/" withString:@"reho.st/"]]]];
-        else
-            [imageArray addObject:[MWPhoto photoWithURL:[NSURL URLWithString:[[imgNode getAttributeNamed:@"alt"] stringByReplacingOccurrencesOfString:@"reho.st/thumb/" withString:@"reho.st/preview/"]]]];
-            
-            
+        NSString* sImgUrl = [imgNode getAttributeNamed:@"alt"];
+        if ([sImgUrl containsString:@"https://img3.super-h.fr/images/"]) { // cheveretp
+            sImgUrl = [sImgUrl stringByReplacingOccurrencesOfString:@".th." withString:@"."];
+        }
+        else if ([[imgNode getAttributeNamed:@"alt"] containsString:@"reho.st/"]) { // Rehost
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                sImgUrl = [sImgUrl stringByReplacingOccurrencesOfString:@"reho.st/thumb/" withString:@"reho.st/"];
+            }
+            else {
+                sImgUrl = [sImgUrl stringByReplacingOccurrencesOfString:@"reho.st/thumb/" withString:@"reho.st/preview/"];
+            }
+        }
+        NSLog(@"url> %@", sImgUrl);
+        [imageArray addObject:[MWPhoto photoWithURL:[NSURL URLWithString:sImgUrl]]];
+                                                     
         if ([selectedURL isEqualToString:[imgNode getAttributeNamed:@"alt"]]) {
             selectedIndex = [imageArray count] - 1;
         }
