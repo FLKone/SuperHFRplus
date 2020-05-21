@@ -22,8 +22,6 @@ typedef NS_ENUM(NSInteger, bbcodeLinkType) {
     bbcodeLinkOnly
 };
 
-
-
 @interface RehostCell : UITableViewCell <UIAlertViewDelegate> {
     UIImageView *previewImage;
     UIButton *miniBtn;

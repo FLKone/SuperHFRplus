@@ -50,7 +50,7 @@
     self.fullBtn.layer.cornerRadius = 5; // this value vary as per your desire
     self.fullBtn.layer.borderWidth = 1; // this value vary as per your desire
     self.fullBtn.clipsToBounds = YES;
-        
+    
     [self applyTheme];
 }
 
@@ -108,11 +108,29 @@
             
             if (self.rehostImage.link_full) {
                 [self_.fullBtn setHidden:NO];
+                self_.fullBtn.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                self_.fullBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                
+                if (self_.rehostImage.full_width && [self_.rehostImage.full_width intValue] > 0 && self_.rehostImage.full_height && [self_.rehostImage.full_height intValue] > 0) {
+                    // Only display maximum dimension
+                    if ([self_.rehostImage.full_width intValue] > [self_.rehostImage.full_height intValue]) {
+                        [self_.fullBtn setTitle:[NSString stringWithFormat:@"Maxi\n%@ px", self_.rehostImage.full_width] forState: UIControlStateNormal];
+                    }
+                    else {
+                        [self_.fullBtn setTitle:[NSString stringWithFormat:@"Maxi\n%@ px", self_.rehostImage.full_height] forState: UIControlStateNormal];
+                    }
+                }
+                else {
+                    [self_.fullBtn setTitle:[NSString stringWithFormat:@"Maxi"] forState: UIControlStateNormal];
+                }
             } else {
                 [self_.fullBtn setHidden:YES];
             }
             if (self.rehostImage.link_medium) {
                 [self_.mediumBtn setHidden:NO];
+                self_.mediumBtn.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                self_.mediumBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                [self_.mediumBtn setTitle:@"Medium\n800 px" forState: UIControlStateNormal];
             } else {
                 [self_.mediumBtn setHidden:YES];
             }
@@ -123,11 +141,27 @@
             }
             if (self.rehostImage.link_miniature) {
                 [self_.miniBtn setHidden:NO];
+                self_.miniBtn.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                self_.miniBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                [self_.miniBtn setTitle:@"Mini\n120 px" forState: UIControlStateNormal];
             } else {
                 [self_.miniBtn setHidden:YES];
             }
         }
         
+        float height = self.bounds.size.height;
+        float width = self.bounds.size.width;
+        float b = 20; // Border size of every button
+        float s = 50; // Shift to center a little more when there are only 2 buttons
+        if ([self.mediumBtn isHidden]) {
+            self.fullBtn.frame = CGRectMake(b + s, b, width/3 - 2*b, height - 2*b);
+            self.miniBtn.frame = CGRectMake(width*2/3 + b - s, b, width/3 - 2*b, height - 2*b);
+        }
+        else {
+            self.fullBtn.frame = CGRectMake(b, b, width/3 - 2*b, height - 2*b);
+            self.mediumBtn.frame = CGRectMake(width/3 + b, b, width/3 - 2*b, height - 2*b);
+            self.miniBtn.frame = CGRectMake(width*2/3 + b, b, width/3 - 2*b, height - 2*b);
+        }
         [self_.spinner stopAnimating];
     }];
     

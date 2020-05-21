@@ -265,7 +265,7 @@
     [self.rehostTableView setTableFooterView:v];
     
     float headerWidth = self.view.bounds.size.width;
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90+50)];
     
     Theme theme = [[ThemeManager sharedManager] theme];
     
@@ -273,25 +273,36 @@
     [newPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [newPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
     [newPhotoBtn setTitle:@"  Caméra" forState:UIControlStateNormal];
-    newPhotoBtn.frame = CGRectMake(headerWidth*0/2, 3, headerWidth*1/2, 50);
+    newPhotoBtn.frame = CGRectMake(headerWidth*0/2+10, 5, headerWidth*1/2 - 20, 50);
     [newPhotoBtn addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
-
+    newPhotoBtn.layer.cornerRadius = 15;
+    newPhotoBtn.layer.borderWidth = 1;
+    newPhotoBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
+    newPhotoBtn.clipsToBounds = YES;
+    
     UIButton* oldPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
     [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
-    oldPhotoBtn.frame = CGRectMake(headerWidth*1/2, 3, headerWidth*1/2, 50);
+    oldPhotoBtn.frame = CGRectMake(headerWidth*1/2 + 12, 5, headerWidth*1/2 - 20, 50);
     [oldPhotoBtn addTarget:self action:@selector(uploadExistingPhoto:) forControlEvents:UIControlEventTouchUpInside];
-    
+    oldPhotoBtn.layer.cornerRadius = 15;
+    oldPhotoBtn.layer.borderWidth = 1;
+    oldPhotoBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
+    oldPhotoBtn.clipsToBounds = YES;
+
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"rehost_use_link"] == nil) {
         [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
+    }
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"rehost_resize_before_upload"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setInteger:1200 forKey:@"rehost_resize_before_upload"];
     }
 
     // Segmented control for BBCode url type
     NSArray *itemArray = [NSArray arrayWithObjects: @"Image et lien", @"Image sans lien", @"Lien seul", nil];
     UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     //segmentedControl.frame = CGRectMake(headerWidth*1/4, 56, headerWidth*3/4-3, 30);
-    segmentedControl.frame = CGRectMake(3, 56, headerWidth-6, 29);
+    segmentedControl.frame = CGRectMake(3, 10 + 56, headerWidth-6, 29);
     [segmentedControl addTarget:self action:@selector(segmentedControlValueDidChange:) forControlEvents:UIControlEventValueChanged];
     if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
         segmentedControl.selectedSegmentIndex = 0;
@@ -307,6 +318,42 @@
         [segmentedControl setSelectedSegmentTintColor:[ThemeColors tabBackgroundColor:[[ThemeManager sharedManager] theme]]];
     }
 
+    // Segmented control for BBCode url type
+    float largeurLabel = 150;
+    UILabel* lblMaxSize = [[UILabel alloc] initWithFrame:CGRectMake(5, 10 + 56 + 40, largeurLabel, 29)];
+    [lblMaxSize setText:@"Dimensions maximales :"];
+    [lblMaxSize setTextAlignment:NSTextAlignmentLeft];
+    [lblMaxSize setFont:[UIFont systemFontOfSize:14]];
+    [lblMaxSize setNumberOfLines:1];
+
+    [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
+    [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
+    [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
+
+    NSArray *itemArraySize = [NSArray arrayWithObjects: @"1200", @"1000", @"800", @"600", nil];
+    UISegmentedControl *segmentedControlSize = [[UISegmentedControl alloc] initWithItems:itemArraySize];
+    //segmentedControl.frame = CGRectMake(headerWidth*1/4, 56, headerWidth*3/4-3, 30);
+    segmentedControlSize.frame = CGRectMake(largeurLabel, 10 + 56 + 40, headerWidth-6-largeurLabel, 29);
+    [segmentedControlSize addTarget:self action:@selector(segmentedControlResizeValueDidChange:) forControlEvents:UIControlEventValueChanged];
+    segmentedControlSize.selectedSegmentIndex = 0;
+    
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 1000) {
+        segmentedControlSize.selectedSegmentIndex = 1;
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 800) {
+        segmentedControlSize.selectedSegmentIndex = 2;
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 600) {
+        segmentedControlSize.selectedSegmentIndex = 3;
+    } else {
+        segmentedControlSize.selectedSegmentIndex = 0;
+    }
+    
+    if (@available(iOS 13.0, *)) {
+        [segmentedControlSize setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
+        [segmentedControlSize setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
+        [segmentedControlSize setSelectedSegmentTintColor:[ThemeColors tabBackgroundColor:[[ThemeManager sharedManager] theme]]];
+    }
+
+    
     // Label
     UILabel *bbcodeLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 56, headerWidth*1/4, 30)];
     bbcodeLabel.text = @"Copier le lien";
@@ -317,9 +364,10 @@
 
     
     UIView *borderT = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 1.0f)];
-    UIView *borderM = [[UIView alloc] initWithFrame:CGRectMake(0, 50, headerWidth, 1.0f)];
-    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 90, headerWidth, 1.0f)];
-    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*1/2, 0, 1, 50)];
+    UIView *borderM = [[UIView alloc] initWithFrame:CGRectMake(0, 10 + 50, headerWidth, 1.0f)];
+    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 10 + 90, headerWidth, 1.0f)];
+    UIView *borderB2 = [[UIView alloc] initWithFrame:CGRectMake(0, 10 + 90+40, headerWidth, 1.0f)];
+    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*1/2, 0, 1, 60)];
 
     [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
     [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
@@ -338,21 +386,25 @@
 
     border.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
     borderB.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
+    borderB2.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     borderT.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     borderM.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     
     [headerView addSubview:newPhotoBtn];
     [headerView addSubview:oldPhotoBtn];
     [headerView addSubview:segmentedControl];
-    //[headerView addSubview:bbcodeLabel];
+    [headerView addSubview:segmentedControlSize];
+    [headerView addSubview:lblMaxSize];
 
     [border setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderB setBackgroundColor:[ThemeColors cellBorderColor:theme]];
+    [borderB2 setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderT setBackgroundColor:[ThemeColors cellBorderColor:theme]];
     [borderM setBackgroundColor:[ThemeColors cellBorderColor:theme]];
 
     [headerView addSubview:border];
     [headerView addSubview:borderB];
+    [headerView addSubview:borderB2];
     [headerView addSubview:borderT];
     [headerView addSubview:borderM];
     
@@ -384,19 +436,7 @@
     [headerView addSubview:progressView];
     
     [self.rehostTableView setTableHeaderView:headerView];
-    
-    /*
-     
-     self.smileysWebView.layer.cornerRadius = 10;
-     [self.smileysWebView.layer setBorderColor: [[UIColor darkGrayColor] CGColor]];
-     [self.smileysWebView.layer setBorderWidth: 1.0];
-     
-     for (id subview in smileView.subviews)
-     if ([[subview class] isSubclassOfClass: [UIScrollView class]])
-     ((UIScrollView *)subview).bounces = NO;
-     
-     */
-    
+        
     // Observe keyboard hide and show notifications to resize the text view appropriately.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
@@ -1886,6 +1926,27 @@
             break;}
     }
 }
+
+-(void)segmentedControlResizeValueDidChange:(UISegmentedControl *)segment {
+    switch (segment.selectedSegmentIndex) {
+        case 0:{
+            [[NSUserDefaults standardUserDefaults] setInteger:1200 forKey:@"rehost_resize_before_upload"];
+            break;}
+        case 1:{
+            [[NSUserDefaults standardUserDefaults] setInteger:1000 forKey:@"rehost_resize_before_upload"];
+            break;}
+        case 2:{
+            [[NSUserDefaults standardUserDefaults] setInteger:800 forKey:@"rehost_resize_before_upload"];
+            break;}
+        case 3:{
+            [[NSUserDefaults standardUserDefaults] setInteger:600 forKey:@"rehost_resize_before_upload"];
+            break;}
+        case 4:{
+            [[NSUserDefaults standardUserDefaults] setInteger:400 forKey:@"rehost_resize_before_upload"];
+            break;}
+    }
+}
+
 
 - (void)showImagePicker:(UIImagePickerControllerSourceType)sourceType withSender:(UIButton *)sender
 {
