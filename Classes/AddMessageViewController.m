@@ -30,6 +30,7 @@
 
 @synthesize lastSelectedRange, loaded;//navBar,
 @synthesize segmentControler, isDragging, textFieldSmileys, smileyArray, segmentControlerPage, smileyPage, commonTableView, usedSearchDict, usedSearchSortedArray;
+@synthesize btnToolbarImage, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
 
 @synthesize rehostTableView, rehostImagesArray, rehostImagesSortedArray;
 
@@ -442,8 +443,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
-    [segmentControler setEnabled:YES forSegmentAtIndex:0];
-    [segmentControler setEnabled:YES forSegmentAtIndex:1];
+    //[segmentControler setEnabled:YES forSegmentAtIndex:0];
+    //[segmentControler setEnabled:YES forSegmentAtIndex:1];
 
     // MULTIS
     MultisManager *manager = [MultisManager sharedManager];
@@ -572,6 +573,21 @@
     } else {
         [self segmentToBlue];
     }
+    
+    Theme theme = [[ThemeManager sharedManager] theme];
+    [self.btnToolbarImage  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"photogallery2"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarImage setImage:[ThemeColors tintImage:[UIImage imageNamed:@"photogallery2"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnToolbarSmiley setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarSmiley setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnToolbarUndo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo-redo"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarUndo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo-redo"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateHighlighted];
+
+    [self.btnToolbarImage addTarget:self action:@selector(actionImage:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnToolbarSmiley addTarget:self action:@selector(actionSmiley:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnToolbarUndo addTarget:self action:@selector(actionUndo:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnToolbarRedo addTarget:self action:@selector(actionRedo:) forControlEvents:UIControlEventTouchUpInside];
 
     [self.view endEditing:YES];
     self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
@@ -684,7 +700,11 @@
         [UIView setAnimationDuration:0.2];
         [self.smileView setAlpha:0];
         
-        [self.segmentControler setAlpha:1];
+        //[self.segmentControler setAlpha:1];
+        [self.btnToolbarImage setHidden:NO];
+        [self.btnToolbarSmiley setHidden:NO];
+        [self.btnToolbarUndo setHidden:NO];
+        [self.btnToolbarRedo setHidden:NO];
         [self.segmentControlerPage setAlpha:0];
         
         [UIView commitAnimations];
@@ -700,7 +720,11 @@
         [UIView setAnimationDuration:0.2];
         [self.commonTableView setAlpha:0];
         
-        [self.segmentControler setAlpha:1];
+        //[self.segmentControler setAlpha:1];
+        [self.btnToolbarImage setHidden:NO];
+        [self.btnToolbarSmiley setHidden:NO];
+        [self.btnToolbarUndo setHidden:NO];
+        [self.btnToolbarRedo setHidden:NO];
         [self.segmentControlerPage setAlpha:0];
         
         [UIView commitAnimations];
@@ -716,7 +740,12 @@
         [UIView setAnimationDuration:0.2];
         [self.rehostTableView setAlpha:0];
         
-        [self.segmentControler setAlpha:1];
+        //[self.segmentControler setAlpha:1];
+        [self.btnToolbarImage setHidden:NO];
+        [self.btnToolbarSmiley setHidden:NO];
+        [self.btnToolbarUndo setHidden:NO];
+        [self.btnToolbarRedo setHidden:NO];
+
         [self.segmentControlerPage setAlpha:0];
         
         [UIView commitAnimations];
@@ -942,6 +971,109 @@
     }
 }
 
+- (void)actionImage:(id)sender
+{
+    if (self.rehostTableView.alpha == 0.0) {
+        [textView resignFirstResponder];
+        [textFieldSmileys resignFirstResponder];
+        NSRange newRange = textView.selectedRange;
+        newRange.length = 0;
+        textView.selectedRange = newRange;
+        
+        [self.rehostTableView setHidden:NO];
+        [self segmentToBlue];
+        
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        [self.smileView setAlpha:0];
+        [self.commonTableView setAlpha:0];
+        [self.rehostTableView setAlpha:1];
+        
+        //[self.segmentControler setAlpha:0];
+        [self.btnToolbarImage setHidden:YES];
+        [self.btnToolbarSmiley setHidden:YES];
+        [self.btnToolbarUndo setHidden:YES];
+        [self.btnToolbarRedo setHidden:YES];
+
+        [self.segmentControlerPage setAlpha:1];
+        
+        [UIView commitAnimations];
+    }
+    else {
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        [self.rehostTableView setAlpha:0];
+        [UIView commitAnimations];
+        [self.textView becomeFirstResponder];
+        
+        [self segmentToBlue];
+    }
+}
+
+- (void)actionSmiley:(id)sender
+{
+    if (self.smileView.alpha == 0.0) {
+        
+        NSString *doubleSmileysCSS = @"";
+        if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
+            doubleSmileysCSS = @"#smileperso img.smile {max-height:60px;min-height: 30px;} #smileperso .button {height:60px;min-width:45px;} #smileperso .button img {max-height:60px;}";
+        }
+        
+        [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
+                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
+                                            ", [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]], doubleSmileysCSS]
+                         completionHandler:nil];
+        
+        self.loaded = NO;
+        [textView resignFirstResponder];
+        [textFieldSmileys resignFirstResponder];
+        NSRange newRange = textView.selectedRange;
+        newRange.length = 0;
+        textView.selectedRange = newRange;
+        
+        [self.smileView setHidden:NO];
+        [self segmentToWhite];
+        
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        [self.commonTableView setAlpha:0];
+        [self.rehostTableView setAlpha:0];
+        
+        [self.smileView setAlpha:1];
+        //[self.segmentControler setAlpha:0];
+        [self.btnToolbarImage setHidden:YES];
+        [self.btnToolbarSmiley setHidden:YES];
+        [self.btnToolbarUndo setHidden:YES];
+        [self.btnToolbarRedo setHidden:YES];
+
+        [self.segmentControlerPage setAlpha:1];
+        
+        [UIView commitAnimations];
+    }
+    else {
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        [self.smileView setAlpha:0];
+        [UIView commitAnimations];
+        // [(UISegmentedControl *)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
+        [self.textView becomeFirstResponder];
+        
+        [self segmentToBlue];
+    }
+}
+
+- (IBAction)actionUndo:(id)sender
+{
+
+}
+
+- (IBAction)actionRedo:(id)sender
+{
+
+}
+
+
+// To delete
 - (IBAction)segmentFilterAction:(id)sender
 {
     
@@ -982,7 +1114,12 @@
                     [self.rehostTableView setAlpha:0];
                     
                     [self.smileView setAlpha:1];
-                    [self.segmentControler setAlpha:0];
+                    //[self.segmentControler setAlpha:0];
+                    [self.btnToolbarImage setHidden:YES];
+                    [self.btnToolbarSmiley setHidden:YES];
+                    [self.btnToolbarUndo setHidden:YES];
+                    [self.btnToolbarRedo setHidden:YES];
+
                     [self.segmentControlerPage setAlpha:1];
                     
                     [UIView commitAnimations];
@@ -1017,7 +1154,12 @@
                     [self.commonTableView setAlpha:0];
                     [self.rehostTableView setAlpha:1];
                     
-                    [self.segmentControler setAlpha:0];
+                    //[self.segmentControler setAlpha:0];
+                    [self.btnToolbarImage setHidden:YES];
+                    [self.btnToolbarSmiley setHidden:YES];
+                    [self.btnToolbarUndo setHidden:YES];
+                    [self.btnToolbarRedo setHidden:YES];
+
                     [self.segmentControlerPage setAlpha:1];
                     
                     [UIView commitAnimations];
@@ -1300,8 +1442,13 @@
     //NSLog(@"textFieldDidBeginEditing BEGIN %@", self.usedSearchDict);
     
     if (textField != textFieldSmileys) {
-        [segmentControler setEnabled:NO forSegmentAtIndex:0];
-        [segmentControler setEnabled:NO forSegmentAtIndex:1];
+        //[segmentControler setEnabled:NO forSegmentAtIndex:0];
+        //[segmentControler setEnabled:NO forSegmentAtIndex:1];
+        [self.btnToolbarImage setEnabled:NO];
+        [self.btnToolbarSmiley setEnabled:NO];
+        [self.btnToolbarUndo setEnabled:NO];
+        [self.btnToolbarRedo setEnabled:NO];
+
         [textFieldSmileys setEnabled:NO];
     }
     else {
@@ -1310,7 +1457,12 @@
         [self.smileView setAlpha:0];
         [self.rehostTableView setAlpha:0];
         
-        [self.segmentControler setAlpha:1];
+        //[self.segmentControler setAlpha:1];
+        [self.btnToolbarImage setHidden:NO];
+        [self.btnToolbarSmiley setHidden:NO];
+        [self.btnToolbarUndo setHidden:NO];
+        [self.btnToolbarRedo setHidden:NO];
+
         [self.segmentControlerPage setAlpha:0];
         
         [UIView commitAnimations];
@@ -1340,8 +1492,13 @@
 {
     //NSLog(@"textFieldDidEndEditing %@", textField);
     
-    [segmentControler setEnabled:YES forSegmentAtIndex:0];
-    [segmentControler setEnabled:YES forSegmentAtIndex:1];
+    //[segmentControler setEnabled:YES forSegmentAtIndex:0];
+    //[segmentControler setEnabled:YES forSegmentAtIndex:1];
+    [self.btnToolbarImage setEnabled:YES];
+    [self.btnToolbarSmiley setEnabled:YES];
+    [self.btnToolbarUndo setEnabled:YES];
+    [self.btnToolbarRedo setEnabled:YES];
+
     [textFieldSmileys setEnabled:YES];
 }
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -1651,7 +1808,12 @@
         
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.segmentControler setAlpha:0];
+            //[self.segmentControler setAlpha:0];
+            [self.btnToolbarImage setHidden:NO];
+            [self.btnToolbarSmiley setHidden:NO];
+            [self.btnToolbarUndo setHidden:NO];
+            [self.btnToolbarRedo setHidden:NO];
+
             [self.segmentControlerPage setAlpha:1];
 
             if (firstSmile > 0) {

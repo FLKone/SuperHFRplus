@@ -15,13 +15,13 @@
 		15167EB12330210600D64651 /* Heart-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15167EB02330210600D64651 /* Heart-20@2x.png */; };
 		151DE8D523AAC73D003E6D1B /* OldFavoritesTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */; };
 		151DE8D723AAC74D003E6D1B /* OldFavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */; };
-		152D2D472455916000D9D644 /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */; };
-		152D2D4A2456E56500D9D644 /* ASIHTTPRequest+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */; };
 		152D2D3B244C79EB00D9D644 /* BookmarksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */; };
 		152D2D3D244C7A0200D9D644 /* BookmarksTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D3C244C7A0200D9D644 /* BookmarksTableView.xib */; };
 		152D2D40244C7A2700D9D644 /* BookmarksCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D3F244C7A2700D9D644 /* BookmarksCellView.m */; };
 		152D2D42244C7A3A00D9D644 /* BookmarksCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D41244C7A3A00D9D644 /* BookmarksCellView.xib */; };
 		152D2D45244CBA1100D9D644 /* Bookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D44244CBA1100D9D644 /* Bookmark.m */; };
+		152D2D472455916000D9D644 /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */; };
+		152D2D4A2456E56500D9D644 /* ASIHTTPRequest+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */; };
 		152D2D4C24619CC500D9D644 /* 08-pin-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D4B24619CC400D9D644 /* 08-pin-20@2x.png */; };
 		152D2D4E2461AE1900D9D644 /* 08-pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D4D2461AE1900D9D644 /* 08-pin@2x.png */; };
 		15357D64234BA620002D5C2E /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15357D62234BA61F002D5C2E /* offline@2x.png */; };
@@ -43,6 +43,12 @@
 		1556409322D9297C0018A619 /* WhiteListTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1556409222D9297C0018A619 /* WhiteListTableViewController.xib */; };
 		1556409622D92D4F0018A619 /* HeartBlack-23.png in Resources */ = {isa = PBXBuildFile; fileRef = 1556409422D92D4F0018A619 /* HeartBlack-23.png */; };
 		1556409722D92D4F0018A619 /* HeartWhite-23.png in Resources */ = {isa = PBXBuildFile; fileRef = 1556409522D92D4F0018A619 /* HeartWhite-23.png */; };
+		155A991B24768FE6002968CD /* photogallery.png in Resources */ = {isa = PBXBuildFile; fileRef = 155A991A24768FE6002968CD /* photogallery.png */; };
+		155A991D2476A881002968CD /* redface.png in Resources */ = {isa = PBXBuildFile; fileRef = 155A991C2476A880002968CD /* redface.png */; };
+		155A99202476AC41002968CD /* undo-redo.png in Resources */ = {isa = PBXBuildFile; fileRef = 155A991E2476AC41002968CD /* undo-redo.png */; };
+		155A99212476AC41002968CD /* undo.png in Resources */ = {isa = PBXBuildFile; fileRef = 155A991F2476AC41002968CD /* undo.png */; };
+		155A992424771684002968CD /* photogallery@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 155A992224771681002968CD /* photogallery@2x.png */; };
+		155A992524771684002968CD /* photogallery2.png in Resources */ = {isa = PBXBuildFile; fileRef = 155A992324771682002968CD /* photogallery2.png */; };
 		156246D8218230DC00F5B8DC /* plus.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D7218230DC00F5B8DC /* plus.svg */; };
 		156246DD2182310000F5B8DC /* arrowend.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246D92182310000F5B8DC /* arrowend.svg */; };
 		156246DE2182310000F5B8DC /* arrowforward.svg in Resources */ = {isa = PBXBuildFile; fileRef = 156246DA2182310000F5B8DC /* arrowforward.svg */; };
@@ -802,9 +808,6 @@
 		151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OldFavoritesTableViewController.xib; sourceTree = "<group>"; };
 		151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldFavoritesTableViewController.m; sourceTree = "<group>"; };
 		151DE8D823AAC756003E6D1B /* OldFavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldFavoritesTableViewController.h; sourceTree = "<group>"; };
-		152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
-		152D2D482456E55400D9D644 /* ASIHTTPRequest+Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ASIHTTPRequest+Tools.h"; sourceTree = "<group>"; };
-		152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ASIHTTPRequest+Tools.m"; sourceTree = "<group>"; };
 		152D2D39244C79D700D9D644 /* BookmarksTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BookmarksTableViewController.h; sourceTree = "<group>"; };
 		152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BookmarksTableViewController.m; sourceTree = "<group>"; };
 		152D2D3C244C7A0200D9D644 /* BookmarksTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarksTableView.xib; sourceTree = "<group>"; };
@@ -813,6 +816,9 @@
 		152D2D41244C7A3A00D9D644 /* BookmarksCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarksCellView.xib; sourceTree = "<group>"; };
 		152D2D43244CBA0200D9D644 /* Bookmark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
 		152D2D44244CBA1100D9D644 /* Bookmark.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bookmark.m; sourceTree = "<group>"; };
+		152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
+		152D2D482456E55400D9D644 /* ASIHTTPRequest+Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ASIHTTPRequest+Tools.h"; sourceTree = "<group>"; };
+		152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ASIHTTPRequest+Tools.m"; sourceTree = "<group>"; };
 		152D2D4B24619CC400D9D644 /* 08-pin-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "08-pin-20@2x.png"; path = "SuperHFRplus/Assets/UI/08-pin-20@2x.png"; sourceTree = SOURCE_ROOT; };
 		152D2D4D2461AE1900D9D644 /* 08-pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-pin@2x.png"; sourceTree = "<group>"; };
 		15357D62234BA61F002D5C2E /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
@@ -842,6 +848,12 @@
 		1556409222D9297C0018A619 /* WhiteListTableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WhiteListTableViewController.xib; sourceTree = "<group>"; };
 		1556409422D92D4F0018A619 /* HeartBlack-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HeartBlack-23.png"; sourceTree = "<group>"; };
 		1556409522D92D4F0018A619 /* HeartWhite-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HeartWhite-23.png"; sourceTree = "<group>"; };
+		155A991A24768FE6002968CD /* photogallery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photogallery.png; sourceTree = "<group>"; };
+		155A991C2476A880002968CD /* redface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redface.png; sourceTree = "<group>"; };
+		155A991E2476AC41002968CD /* undo-redo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "undo-redo.png"; sourceTree = "<group>"; };
+		155A991F2476AC41002968CD /* undo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undo.png; sourceTree = "<group>"; };
+		155A992224771681002968CD /* photogallery@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photogallery@2x.png"; sourceTree = "<group>"; };
+		155A992324771682002968CD /* photogallery2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photogallery2.png; sourceTree = "<group>"; };
 		156246D7218230DC00F5B8DC /* plus.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plus.svg; sourceTree = "<group>"; };
 		156246D92182310000F5B8DC /* arrowend.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowend.svg; sourceTree = "<group>"; };
 		156246DA2182310000F5B8DC /* arrowforward.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrowforward.svg; sourceTree = "<group>"; };
@@ -2593,6 +2605,18 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				155A992224771681002968CD /* photogallery@2x.png */,
+				155A992324771682002968CD /* photogallery2.png */,
+				CA7472D317E14D4500B45E15 /* iOS7 */,
+				4C21E9321BA5C5E200691D65 /* Editor */,
+				4C0B8D4F1BA4521000D329BA /* CatIcons */,
+				4CB132A91B9094BD0081B44D /* MenuItem */,
+				CA00C5DD17C30C370067B457 /* html */,
+				CA00C5D117C30C370067B457 /* flags */,
+				155A991F2476AC41002968CD /* undo.png */,
+				155A991E2476AC41002968CD /* undo-redo.png */,
+				155A991C2476A880002968CD /* redface.png */,
+				155A991A24768FE6002968CD /* photogallery.png */,
 				D8CA2764246C535C008FC72C /* sign-25.png */,
 				D8CA2763246C535C008FC72C /* sign-25@2x.png */,
 				152D2D4D2461AE1900D9D644 /* 08-pin@2x.png */,
@@ -2603,10 +2627,6 @@
 				1572FC4C22F3826100D40789 /* icons8-reset-50.png */,
 				1572FC4822F37F3100D40789 /* Brightness-black-512.png */,
 				1572FC4922F37F3100D40789 /* Brightness-white-512.png */,
-				4CB132A91B9094BD0081B44D /* MenuItem */,
-				CA7472D317E14D4500B45E15 /* iOS7 */,
-				4C0B8D4F1BA4521000D329BA /* CatIcons */,
-				4C21E9321BA5C5E200691D65 /* Editor */,
 				4CD6B8B51B97AEF5007FC29E /* 6-Folder-32@2x.png */,
 				4CD6B8B61B97AEF5007FC29E /* 6-Folder-32.png */,
 				4CD6B8B71B97AEF5007FC29E /* 6-Camera-32@2x.png */,
@@ -2673,8 +2693,6 @@
 				CA00C5CF17C30C370067B457 /* compose.png */,
 				CAA1F68F17E5DFA20006E785 /* plus.png */,
 				CAA1F69017E5DFA20006E785 /* plus@2x.png */,
-				CA00C5D117C30C370067B457 /* flags */,
-				CA00C5DD17C30C370067B457 /* html */,
 				CA00C60717C30C370067B457 /* icon_list_bullets.png */,
 				CAAFF8AC17DF89DA00C120BC /* lightBlue.png */,
 				CAAFF8A817DF7A0900C120BC /* all_categories@2x.png */,
@@ -3200,6 +3218,7 @@
 				CA7C6FCC185EF50E00B348BA /* pouah.gif in Resources */,
 				4C21E96A1BA5C70400691D65 /* PasteFilled-20.png in Resources */,
 				CA7C6FCD185EF50E00B348BA /* icon_text_align_justify.png in Resources */,
+				155A991B24768FE6002968CD /* photogallery.png in Resources */,
 				CA7C6FCE185EF50E00B348BA /* upsmall7@2x.png in Resources */,
 				CA7C6FCF185EF50E00B348BA /* templatev2.htm in Resources */,
 				D8B4EDED21C184970042C392 /* snow8.png in Resources */,
@@ -3257,6 +3276,7 @@
 				CAF5DB911936D013000B5215 /* 71-compass@2x.png in Resources */,
 				CA7C6FF1185EF50E00B348BA /* vomi.gif in Resources */,
 				4C21E95C1BA5C70400691D65 /* CutFilled-20@2x.png in Resources */,
+				155A992524771684002968CD /* photogallery2.png in Resources */,
 				CA7C6FF2185EF50E00B348BA /* nextIcon@2x.png in Resources */,
 				4CB132D31B9099950081B44D /* MessageFilled-20@2x.png in Resources */,
 				D8B4EDF521C184970042C392 /* snow1.png in Resources */,
@@ -3342,6 +3362,7 @@
 				D8DDF2AF1E58810A002F1484 /* ToolBarFastRewind_on_tinted@2x.png in Resources */,
 				D89FB5AF2332380800023213 /* HeartBlack-20@2x.png in Resources */,
 				D82690441E585CAC006971C3 /* style-liste-dark.css in Resources */,
+				155A99212476AC41002968CD /* undo.png in Resources */,
 				CA7C701D185EF50E00B348BA /* flagyellow@2x.png in Resources */,
 				4C80A4FB1CF1B0E60093CF9B /* ResistorFilled-40.png in Resources */,
 				CA7C701F185EF50E00B348BA /* AccessoryView.xib in Resources */,
@@ -3422,6 +3443,7 @@
 				4C193E741FA8820200434A37 /* Icons.xcassets in Resources */,
 				CA7C7046185EF50E00B348BA /* endhover.png in Resources */,
 				15357D64234BA620002D5C2E /* offline@2x.png in Resources */,
+				155A99202476AC41002968CD /* undo-redo.png in Resources */,
 				4C052E1B1BA86C9400B61952 /* Flat-RedFlag-25.png in Resources */,
 				15AEF9FF223E9053005E6739 /* Icon-BLUE@2x.png in Resources */,
 				CA7C7047185EF50E00B348BA /* upsmall@2x.png in Resources */,
@@ -3487,6 +3509,7 @@
 				CA7C7066185EF50E00B348BA /* spookie.gif in Resources */,
 				4C0B8DCF1BA4522900D329BA /* ControllerFilled-40.png in Resources */,
 				15AEFA09223E9435005E6739 /* Icon-BLUE-IPAD@1x.png in Resources */,
+				155A992424771684002968CD /* photogallery@2x.png in Resources */,
 				CA7C7067185EF50E00B348BA /* MainWindow.xib in Resources */,
 				CA7C7068185EF50E00B348BA /* toolbar3.png in Resources */,
 				4C21E9601BA5C70400691D65 /* InvisibleFilled-20@2x.png in Resources */,
@@ -3597,6 +3620,7 @@
 				4C21E96E1BA5C70400691D65 /* QuoteEFilled-20.png in Resources */,
 				15EBFD152206211500A37CED /* AQCellView.xib in Resources */,
 				1556409622D92D4F0018A619 /* HeartBlack-23.png in Resources */,
+				155A991D2476A881002968CD /* redface.png in Resources */,
 				CA7C709C185EF50E00B348BA /* buttonbeginon.png in Resources */,
 				CA7C709D185EF50E00B348BA /* plus.png in Resources */,
 				CA7C709E185EF50E00B348BA /* downsmall.png in Resources */,

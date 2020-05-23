@@ -95,7 +95,11 @@
 @property (nonatomic, strong) IBOutlet WKWebView *smileView;
 @property (nonatomic, strong) NSString *smileyCustom;
 
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarImage;
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarSmiley;
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarUndo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControler;
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarRedo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControlerPage;
 @property (nonatomic, strong) IBOutlet UITextField *textFieldSmileys;
 @property (nonatomic, strong) NSMutableArray *smileyArray;
@@ -134,6 +138,7 @@
 -(IBAction)done;
 -(IBAction)segmentFilterAction:(id)sender;
 -(IBAction)textFieldSmileChange:(id)sender;
+
 
 -(void)fetchSmileys;
 -(void)loadSmileys:(int)page;
