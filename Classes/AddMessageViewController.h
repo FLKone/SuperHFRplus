@@ -13,7 +13,7 @@
 
 @protocol AddMessageViewControllerDelegate;
 
-@interface AddMessageViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, WKNavigationDelegate, WKUIDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface AddMessageViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, WKNavigationDelegate, WKUIDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource> {
     id <AddMessageViewControllerDelegate> __weak delegate;
     
     //bb
@@ -107,6 +107,7 @@
 @property (nonatomic, strong) IBOutlet UITableView *commonTableView;
 @property (nonatomic, strong) NSMutableDictionary *usedSearchDict;
 @property (nonatomic, strong) NSMutableArray *usedSearchSortedArray;
+@property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
 
 @property (nonatomic, strong) IBOutlet UITableView *rehostTableView;
 @property (nonatomic, strong) NSMutableArray *rehostImagesArray;

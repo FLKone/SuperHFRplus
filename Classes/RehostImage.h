@@ -8,6 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, bbcodeImageSizeType) {
+    bbcodeImageFull,
+    bbcodeImageMedium,
+    bbcodeImagePreview,
+    bbcodeImageMini
+};
+
+typedef NS_ENUM(NSInteger, bbcodeLinkType) {
+    bbcodeImageWithLink,
+    bbcodeImageNoLink,
+    bbcodeLinkOnly
+};
+
 @interface RehostImage : NSObject <NSCoding> {
 }
 
@@ -29,7 +42,8 @@
 @property int version;
 @property BOOL deleted;
 
--(void)create;
--(void)upload:(UIImage *)picture;
+- (void)create;
+- (void)upload:(UIImage *)picture;
+- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType;
 
 @end

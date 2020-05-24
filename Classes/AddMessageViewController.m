@@ -23,6 +23,7 @@
 #import "HFRAlertView.h"
 #import "EditMessageViewController.h"
 #import "ASIHTTPRequest+Tools.h"
+#import "RehostCollectionCell.h"
 
 @implementation AddMessageViewController
 @synthesize delegate, textView, arrayInputData, formSubmit, accessoryView, smileView;
@@ -31,9 +32,7 @@
 @synthesize lastSelectedRange, loaded;//navBar,
 @synthesize segmentControler, isDragging, textFieldSmileys, smileyArray, segmentControlerPage, smileyPage, commonTableView, usedSearchDict, usedSearchSortedArray;
 @synthesize btnToolbarImage, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
-
-@synthesize rehostTableView, rehostImagesArray, rehostImagesSortedArray;
-
+@synthesize rehostTableView, rehostImagesArray, rehostImagesSortedArray, collectionImages;
 @synthesize haveTitle, textFieldTitle;
 @synthesize haveTo, textFieldTo;
 @synthesize haveCategory, textFieldCat;
@@ -206,6 +205,8 @@
     [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
     
     self.smileView.navigationDelegate = self;
+    
+    [self setupCollectionImage];
 }
 
 - (NSString*) getBrouillonExtract {
@@ -1994,8 +1995,57 @@
     }
 }
 
-#pragma mark -
-#pragma mark Rehost
+#pragma mark - Collection Images
+
+- (void) setupCollectionImage
+{
+    self.collectionImages.backgroundColor = UIColor.clearColor;
+
+    [self.collectionImages registerClass:[RehostCollectionCell class] forCellWithReuseIdentifier:@"RehostCollectionCellId"];
+
+    [self.collectionImages  setDataSource:self];
+    [self.collectionImages  setDelegate:self];
+
+   // [self.view addSubview:self.collectionImages];
+}
+
+- (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
+    if (indexPath.row == 0) {
+        [cell configureWithIcon:[UIImage imageNamed:@"Camera-32"]];
+        cell.layer.borderWidth = 1.0f;
+        cell.layer.borderColor = [ThemeColors tintColor].CGColor;
+    } else {
+        [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row - 1]];
+    }
+    cell.layer.cornerRadius = 10;
+    cell.layer.masksToBounds = true;
+
+    return cell;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.rehostImagesSortedArray.count + 1;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(80, 80);
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(0, 5, 0, 0);
+}
+
+#pragma mark - Rehost
 - (void) uploadProgress: (NSNotification *) notification {
     // NSLog(@"notif %@", notification);
     

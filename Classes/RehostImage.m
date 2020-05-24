@@ -375,5 +375,71 @@
     NSLog(@"deallocdealloc");
 }
 
+- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType
+{
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = @"";
+    
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"]) {
+        case bbcodeLinkOnly:
+        {
+            switch (imageSizeType) {
+                case bbcodeImageFull:
+                    pasteboard.string = self.link_full;
+                    break;
+                case bbcodeImageMedium:
+                    pasteboard.string = self.link_medium;
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = self.link_preview;
+                    break;
+                case bbcodeImageMini:
+                    pasteboard.string = self.link_miniature;
+                    break;
+            }
+            break;
+        }
+        case bbcodeImageNoLink:
+            switch (imageSizeType) {
+                case bbcodeImageFull:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.link_full];
+                    break;
+                case bbcodeImageMedium:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_medium];
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_preview];
+                    break;
+                case bbcodeImageMini:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_miniature];
+                    break;
+            }
+            break;
+        case bbcodeImageWithLink:
+        {
+            switch (imageSizeType) {
+                case bbcodeImageFull:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_full];
+                    break;
+                case bbcodeImageMedium:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_medium];
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_preview];
+                    break;
+                case bbcodeImageMini:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_miniature];
+                    break;
+            }
+            break;
+        }
+    }
+
+    //NSLog(@"%@", pasteboard.string);
+    if (pasteboard.string.length) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"imageReceived" object:pasteboard.string];
+    }
+}
+
 
 @end
