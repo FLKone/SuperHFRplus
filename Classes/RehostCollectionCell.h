@@ -28,7 +28,7 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) RehostImage *rehostImage;
 
-- (void)configureWithIcon:(UIImage *)image;
+- (void)configureWithIcon:(UIImage *)image border:(int)border;
 - (void)configureWithRehostImage:(RehostImage *)image;
 
 - (IBAction)copyFull;

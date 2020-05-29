@@ -53,15 +53,30 @@
      */
 }
 
--(void)configureWithIcon:(UIImage *)image {
-    self.previewImage = [[UIImageView alloc] initWithFrame:(CGRectInset(self.bounds, 25, 25))];
-    [self addSubview:self.previewImage];
+-(void)configureWithIcon:(UIImage *)image border:(int)border {
     __weak RehostCollectionCell *self_ = self;
-    UIImage *myImage = [UIImage imageNamed:@"Camera-32"];
-    [self_.previewImage setImage:myImage];
-    [self_.previewImage setHidden:NO];
+    CGFloat w = image.size.width;
+    CGFloat h = image.size.height;
 
+    self.previewImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, w, h)];
+    //[self addSubview:self.previewImage];
+    [self_.previewImage setImage:image];
+    //[self_.previewImage setHidden:NO];
+    self_.previewImage.clipsToBounds = NO;
+    //[self addSubview:self.previewImage];
+    
+    /*
+    self.fullBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.fullBtn setTitle:@"" forState:UIControlStateNormal];
     self.fullBtn.frame = self.bounds;
+    //[newPhotoBtn addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
+    self.fullBtn.layer.cornerRadius = 15;
+    self.fullBtn.layer.borderWidth = 1;
+    self.fullBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
+    self.fullBtn.clipsToBounds = YES;
+    [self.fullBtn setImage:image forState:UIControlStateNormal];
+
+    [self addSubview:self.fullBtn];*/
     [self_.spinner stopAnimating];
 }
 

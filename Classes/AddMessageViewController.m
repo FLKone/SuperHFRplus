@@ -24,15 +24,15 @@
 #import "EditMessageViewController.h"
 #import "ASIHTTPRequest+Tools.h"
 #import "RehostCollectionCell.h"
+#import "SmileyCache.h"
 
 @implementation AddMessageViewController
 @synthesize delegate, textView, arrayInputData, formSubmit, accessoryView, smileView;
-@synthesize request, loadingView, requestSmile;
-
+@synthesize request, loadingView, requestSmile, dicCommonSmileys;
 @synthesize lastSelectedRange, loaded;//navBar,
 @synthesize segmentControler, isDragging, textFieldSmileys, smileyArray, segmentControlerPage, smileyPage, commonTableView, usedSearchDict, usedSearchSortedArray;
 @synthesize btnToolbarImage, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
-@synthesize rehostTableView, rehostImagesArray, rehostImagesSortedArray, collectionImages;
+@synthesize rehostTableView, rehostImagesArray, rehostImagesSortedArray, collectionImages, collectionSmileysDefault;
 @synthesize haveTitle, textFieldTitle;
 @synthesize haveTo, textFieldTo;
 @synthesize haveCategory, textFieldCat;
@@ -206,7 +206,7 @@
     
     self.smileView.navigationDelegate = self;
     
-    [self setupCollectionImage];
+    [self setupCollections];
 }
 
 - (NSString*) getBrouillonExtract {
@@ -974,6 +974,13 @@
 
 - (void)actionImage:(id)sender
 {
+    if ([self.collectionImages isHidden]) {
+        [self.collectionImages setHidden:NO];
+    }
+    else {
+        [self.collectionImages setHidden:YES];
+    }
+    /*
     if (self.rehostTableView.alpha == 0.0) {
         [textView resignFirstResponder];
         [textFieldSmileys resignFirstResponder];
@@ -1009,10 +1016,18 @@
         
         [self segmentToBlue];
     }
+     */
 }
 
 - (void)actionSmiley:(id)sender
 {
+    if ([self.collectionSmileysDefault isHidden]) {
+        [self.collectionSmileysDefault setHidden:NO];
+    }
+    else {
+        [self.collectionSmileysDefault setHidden:YES];
+    }
+/*
     if (self.smileView.alpha == 0.0) {
         
         NSString *doubleSmileysCSS = @"";
@@ -1061,6 +1076,7 @@
         
         [self segmentToBlue];
     }
+ */
 }
 
 - (IBAction)actionUndo:(id)sender
@@ -1521,7 +1537,7 @@
             [alert show];
         }
         else {
-            
+            /*
             if (self.smileView.alpha == 0.0) {
                 // BUG pas de selection ///
                 self.loaded = NO;
@@ -1543,7 +1559,7 @@
             
             [self.commonTableView setAlpha:0];
             
-            [textFieldSmileys resignFirstResponder];
+            [textFieldSmileys resignFirstResponder];*/
             [self fetchSmileys];
             /*
              [self.smileView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"\
@@ -1654,7 +1670,7 @@
     [requestSmile setDidFinishSelector:@selector(fetchSmileContentComplete:)];
     [requestSmile setDidFailSelector:@selector(fetchSmileContentFailed:)];
     
-    [self.smileView evaluateJavaScript:@"$('#container').hide();$('#container_ajax').show();$('#container_ajax').html('<div class=\"loading\"><span class=\"spinner\">&#xe800;</span> Recherche en cours...</div>');" completionHandler:nil];
+    //[self.smileView evaluateJavaScript:@"$('#container').hide();$('#container_ajax').show();$('#container_ajax').html('<div class=\"loading\"><span class=\"spinner\">&#xe800;</span> Recherche en cours...</div>');" completionHandler:nil];
     [requestSmile startAsynchronous];
 }
 
@@ -1666,7 +1682,11 @@
 - (void)fetchSmileContentComplete:(ASIHTTPRequest *)theRequest
 {
     NSLog(@"fetchSmileContentComplete %@", theRequest);
-    [self.segmentControlerPage setTitle:@"Smilies" forSegmentAtIndex:1];
+    //Traitement des smileys (to Array)
+    [self.smileyArray removeAllObjects]; //RaZ
+
+    /*
+    [self.segmentControlerPage setTitle:@"Smilies" forSegmentAtIndex:1];*/
     
     //NSDate *thenT = [NSDate date]; // Create a current date
     
@@ -1675,8 +1695,6 @@
     
     NSArray * tmpImageArray =  [smileNode findChildTags:@"img"];
     
-    //Traitement des smileys (to Array)
-    [self.smileyArray removeAllObjects]; //RaZ
     
     for (HTMLNode * imgNode in tmpImageArray) { //Loop through all the tags
         [self.smileyArray addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[imgNode getAttributeNamed:@"src"], [imgNode getAttributeNamed:@"alt"], nil] forKeys:[NSArray arrayWithObjects:@"source", @"code", nil]]];
@@ -1684,12 +1702,14 @@
     //NSLog(@"%@", self.smileyArray);
     
     if (self.smileyArray.count == 0) {
-        [self.textFieldSmileys becomeFirstResponder];
-        [self.smileView evaluateJavaScript:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');" completionHandler:nil];
+        //[self.textFieldSmileys becomeFirstResponder];
+        //[self.smileView evaluateJavaScript:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');" completionHandler:nil];
         [HFRAlertView DisplayOKAlertViewWithTitle:nil andMessage:@"Aucun résultat !"];
         return;
     }
     
+    //[self.collectionSmileysDefault reloadData];
+     
     [self loadSmileys:0];
     //[self loadSmileys:smileyPage];
     
@@ -1706,13 +1726,14 @@
 
 -(void)loadSmileys:(int)page;
 {
+    /*
     self.smileyPage = page;
     [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
                                                             $('#container').hide();\
                                                             $('#container_ajax').show();\
                                                             $('#container_ajax').html('<div class=\"loading\"><span class=\"spinner\">&#xe800;</span> Page n˚%d...</div>');\
                                                             ", page + 1] completionHandler:nil];
-    
+    */
     [self performSelectorInBackground:@selector(loadSmileys) withObject:nil];
     
 }
@@ -1721,6 +1742,8 @@
 {
     @autoreleasepool {
         
+        [[SmileyCache shared] handleSmileyArray:self.smileyArray forCollection:self.collectionSmileysDefault];
+        /*
         int page = self.smileyPage;
         
         
@@ -1806,7 +1829,7 @@
         //Pagination
         //if (firstSmile > 0 || lastSmile < [self.smileyArray count]) {
         //NSLog(@"pagination needed");
-        
+        */
         
         dispatch_async(dispatch_get_main_queue(), ^{
             //[self.segmentControler setAlpha:0];
@@ -1814,7 +1837,8 @@
             [self.btnToolbarSmiley setHidden:NO];
             [self.btnToolbarUndo setHidden:NO];
             [self.btnToolbarRedo setHidden:NO];
-
+            [self.collectionSmileysDefault setHidden:NO];
+/*
             [self.segmentControlerPage setAlpha:1];
 
             if (firstSmile > 0) {
@@ -1829,7 +1853,7 @@
             }
             else {
                 [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
-            }
+            }*/
         });
         
         //}
@@ -1994,11 +2018,24 @@
         
     }
 }
+#pragma mark - Collection Smileys Default and Images
 
-#pragma mark - Collection Images
-
-- (void) setupCollectionImage
+- (void) setupCollections
 {
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
+    self.dicCommonSmileys = [NSMutableArray arrayWithContentsOfFile:plistPath];
+
+    // Collection Smileys defaults
+    [self.collectionSmileysDefault setHidden:YES];
+    self.collectionSmileysDefault.backgroundColor = UIColor.clearColor;
+
+    [self.collectionSmileysDefault registerClass:[RehostCollectionCell class] forCellWithReuseIdentifier:@"RehostCollectionCellId"];
+
+    [self.collectionSmileysDefault  setDataSource:self];
+    [self.collectionSmileysDefault  setDelegate:self];
+
+    // Collection Image
+    [self.collectionImages setHidden:YES];
     self.collectionImages.backgroundColor = UIColor.clearColor;
 
     [self.collectionImages registerClass:[RehostCollectionCell class] forCellWithReuseIdentifier:@"RehostCollectionCellId"];
@@ -2012,22 +2049,137 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
-    if (indexPath.row == 0) {
-        [cell configureWithIcon:[UIImage imageNamed:@"Camera-32"]];
+    if (collectionView == self.collectionSmileysDefault) {
+        /*
+         // Default smileys
+        NSMutableDictionary* dic = self.dicCommonSmileys[indexPath.row];
+        NSString* sSmileyResource = dic[@"resource"];
+        UIImage* image = [UIImage imageNamed:sSmileyResource];
+        CGFloat l = 50; // Largeur cellule
+        CGFloat w = image.size.width;
+        CGFloat h = image.size.height;
+        NSLog(@"Image %d : %@", (int)indexPath.row, sSmileyResource);
+        if (cell.previewImage == nil) {
+            cell.previewImage = [[UIImageView alloc] initWithFrame:CGRectMake(l/2-w/2, l/2-h/2, w, h)];
+            [cell addSubview:cell.previewImage];
+        }
+        [cell.previewImage setImage:image];
+        cell.previewImage.clipsToBounds = NO;
+
         cell.layer.borderWidth = 1.0f;
         cell.layer.borderColor = [ThemeColors tintColor].CGColor;
-    } else {
-        [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row - 1]];
-    }
-    cell.layer.cornerRadius = 10;
-    cell.layer.masksToBounds = true;
+        cell.layer.cornerRadius = 5;
+        cell.layer.masksToBounds = true;
 
-    return cell;
+        return cell;*/
+        UIImage* image = [[SmileyCache shared] getImageForIndex:(int)indexPath.row];
+        if (image == nil) {
+            NSLog(@"IMAGE for %d", (int)indexPath.row);
+            image = [UIImage imageNamed:@"19-gear"];
+        }
+        else {
+            NSLog(@"Nothing yet for %d", (int)indexPath.row);
+        }
+
+        CGFloat ch = cell.bounds.size.height;
+        CGFloat cw = cell.bounds.size.width;
+        CGFloat w = image.size.width;
+        CGFloat h = image.size.height;
+        
+        if (cell.previewImage == nil) {
+            cell.previewImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
+            [cell addSubview:cell.previewImage];
+        }
+        
+        cell.previewImage.clipsToBounds = NO;
+        //cell.previewImage.layer.borderColor = [ThemeColors loveColor].CGColor;
+        //cell.previewImage.layer.borderWidth = 1.0f;
+        //cell.previewImage.layer.cornerRadius = 5;
+        cell.previewImage.layer.masksToBounds = true;
+
+        cell.layer.borderColor = [ThemeColors headSectionTextColor].CGColor;
+        cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
+        cell.layer.borderWidth = 1.0f;
+        cell.layer.cornerRadius = 5;
+        cell.layer.masksToBounds = true;
+        
+        [cell.previewImage setImage:image];
+
+        /*
+        NSString* sImageUrl = [[self.smileyArray objectAtIndex:indexPath.row] objectForKey:@"source"];
+        NSLog(@"Loading %d - url %@", (int)indexPath.row, sImageUrl);
+        NSURL *url = [NSURL URLWithString:[sImageUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@":/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-"]]];
+        NSURLSessionTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (data) {
+                UIImage *image = [UIImage imageWithData:data];
+                if (image) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        RehostCollectionCell *updateCell = (id)[collectionView cellForItemAtIndexPath:indexPath];
+                        if (updateCell) {
+                            [cell.previewImage setImage:image];
+                            NSLog(@"---> LOADED %d", (int)indexPath.row);
+                        }
+                    });
+                }
+            }
+        }];
+        [task resume];
+        */
+        return cell;
+
+        /*
+        }
+        else {
+            [cell configureWithIcon:[UIImage imageNamed:@"19-gear"] border:5];
+            NSString* sImageUrl = [[self.smileyArray objectAtIndex:indexPath.row] objectForKey:@"source"];
+            NSURL *url = [NSURL URLWithString:sImageUrl];
+            NSURLSessionTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                if (data) {
+                    UIImage *image = [UIImage imageWithData:data];
+                    if (image) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            RehostCollectionCell *updateCell = (id)[collectionView cellForItemAtIndexPath:indexPath];
+                            if (updateCell) {
+                                [cell configureWithIcon:image border:5];
+                            }
+                        });
+                    }
+                }
+            }];
+            [task resume];
+            return cell;
+         */
+        
+    }
+    else {
+        if (indexPath.row == 0) {
+            [cell configureWithIcon:[UIImage imageNamed:@"Camera-32"] border:15];
+            cell.layer.borderWidth = 1.0f;
+            cell.layer.borderColor = [ThemeColors tintColor].CGColor;
+        } else {
+            [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row - 1]];
+        }
+        cell.layer.cornerRadius = 5;
+        cell.layer.masksToBounds = true;
+
+        return cell;
+    }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.rehostImagesSortedArray.count + 1;
+    if (collectionView == self.collectionSmileysDefault) {
+        return self.smileyArray.count;
+        /*if (self.smileyArray.count > 0) { // default smileys
+            return self.smileyArray.count;
+        }
+        else {*/
+//            return self.dicCommonSmileys.count;
+        //}
+    }
+    else {
+        return self.rehostImagesSortedArray.count + 1;
+    }
 }
 
 - (NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView
@@ -2037,12 +2189,45 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(80, 80);
+    if (collectionView == self.collectionSmileysDefault) {
+        
+        UIImage* image = [[SmileyCache shared] getImageForIndex:(int)indexPath.row];
+        if (image == nil) {
+            NSLog(@"IMAGE for %d", (int)indexPath.row);
+            image = [UIImage imageNamed:@"19-gear"];
+        }
+        else {
+            NSLog(@"Nothing yet for %d", (int)indexPath.row);
+        }
+
+        CGFloat w = MAX(MIN(70,image.size.width), 50);
+
+        //return CGSizeMake(w, 50);
+        return CGSizeMake(70, 50);
+    }
+    else {
+        return CGSizeMake(60, 60);
+    }
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(0, 5, 0, 0);
+    if (collectionView == self.collectionSmileysDefault) {
+        return UIEdgeInsetsMake(20, 0, 0, 0);
+    }
+    else {
+        return UIEdgeInsetsMake(0, 2, 0, 0);
+    }
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+{
+    if (collectionView == self.collectionSmileysDefault) {
+        return 1.0;
+    }
+    else {
+        return 1.0;
+    }
 }
 
 #pragma mark - Rehost

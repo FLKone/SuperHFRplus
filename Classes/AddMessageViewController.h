@@ -108,10 +108,12 @@
 @property (nonatomic, strong) NSMutableDictionary *usedSearchDict;
 @property (nonatomic, strong) NSMutableArray *usedSearchSortedArray;
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionSmileysDefault;
 
 @property (nonatomic, strong) IBOutlet UITableView *rehostTableView;
 @property (nonatomic, strong) NSMutableArray *rehostImagesArray;
 @property (nonatomic, strong) NSMutableArray *rehostImagesSortedArray;
+@property (nonatomic, strong) NSMutableArray *dicCommonSmileys;
 
 //@property (nonatomic, retain) IBOutlet UIScrollView *scrollViewer;
 @property (nonatomic, strong) id popover;
