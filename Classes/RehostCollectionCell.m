@@ -20,28 +20,17 @@
 #define IMAGEVIEW_BORDER_LENGTH 0
 #define CELL_INDEX_0 0
 
-/*
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void) setup {
-}*/
-
 -(void)layoutSubviews
 {
     [super layoutSubviews];
 
+    /*
     [self.fullBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.7]];
     self.fullBtn.layer.cornerRadius = 5; // this value vary as per your desire
     self.fullBtn.layer.borderWidth = 1; // this value vary as per your desire
     self.fullBtn.clipsToBounds = YES;
     
-    [self applyTheme];
+    [self applyTheme];*/
 }
 
 -(void)applyTheme {
@@ -130,5 +119,32 @@
     [self.rehostImage copyToPasteBoard:bbcodeImageFull];
 }
 
+
+@end
+
+@implementation SmileyCollectionCell
+@synthesize smileyImage, smileyButton, smileyCode;
+
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    /*
+    [self.fullBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.7]];
+    self.fullBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.fullBtn.layer.borderWidth = 1; // this value vary as per your desire
+    self.fullBtn.clipsToBounds = YES;
+    
+    [self applyTheme];*/
+}
+
+-(void)applyTheme {
+    /*
+    Theme theme = [[ThemeManager sharedManager] theme];
+    self.backgroundColor = [ThemeColors cellBackgroundColor:theme];
+    self.contentView.superview.backgroundColor =[ThemeColors cellBackgroundColor:theme];
+    self.fullBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
+     */
+}
 
 @end

@@ -9,18 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "RehostImage.h"
 
-/*
-@interface RehostCollectionCell : UICollectionViewCell <UIAlertViewDelegate> {
-}
-
-@property (nonatomic, strong) RehostImage *rehostImage;
-
--(IBAction)copyImage;
-
--(void)configureWithRehostImage:(RehostImage *)image;
-
-- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType withLink:(bbcodeLinkType)linkType;
-*/
 @interface RehostCollectionCell : UICollectionViewCell
 
 @property (strong,nonatomic) UIImageView *previewImage;
@@ -31,6 +19,12 @@
 - (void)configureWithIcon:(UIImage *)image border:(int)border;
 - (void)configureWithRehostImage:(RehostImage *)image;
 
-- (IBAction)copyFull;
+@end
+
+@interface SmileyCollectionCell : UICollectionViewCell
+
+@property (strong,nonatomic) UIImageView *smileyImage;
+@property (strong,nonatomic) UIButton *smileyButton;
+@property (strong, nonatomic) NSString *smileyCode;
 
 @end

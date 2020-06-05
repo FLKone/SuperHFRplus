@@ -1047,10 +1047,9 @@
 - (void)actionSmiley:(id)sender
 {
     if ([self.collectionSmileys isHidden]) {
-        [self.collectionSmileys reloadData];
-        [self.collectionSmileys setHidden:NO];
         self.bSearchSmileysActivated = NO;
         [self.collectionSmileys reloadData];
+        [self.collectionSmileys setHidden:NO];
     }
     else {
         if (!self.bSearchSmileysAvailable) {
@@ -1381,9 +1380,14 @@
     }
     
     NSMutableString *text = [textView.text mutableCopy];
+    if (!lastSelectedRange.location) {
+        lastSelectedRange = NSMakeRange(0, 0);
+    }
     
-    //NSLog(@"%@ - %d - %d", smile, text.length, lastSelectedRange.location);
-    
+    if (text.length < lastSelectedRange.location) {
+        lastSelectedRange.location = text.length;
+    }
+        
     [text insertString:smile atIndex:lastSelectedRange.location];
     
     lastSelectedRange.location += [smile length];
@@ -1394,7 +1398,7 @@
     
     self.loaded = YES;
     [self textViewDidChange:self.textView];
-    
+    /*
     
     
     NSString *jsString = @"";
@@ -1403,7 +1407,7 @@
                 });"];
     
     [self.smileView evaluateJavaScript:jsString completionHandler:nil];
-    [self cancel];
+    [self cancel];*/
 }
 
 #pragma mark -
@@ -1501,7 +1505,7 @@
     
     //NSLog(@"textFieldDidBeginEditing BEGIN %@", self.usedSearchDict);
     
-t    if (textField != textFieldSmileys) {
+    if (textField != textFieldSmileys) {
         //[segmentControler setEnabled:NO forSegmentAtIndex:0];
         //[segmentControler setEnabled:NO forSegmentAtIndex:1];
         [self.btnToolbarImage setEnabled:NO];
@@ -2090,7 +2094,7 @@ static CGFloat fCellImageSize = 1;
     [self.collectionSmileys setHidden:YES];
     self.collectionSmileys.backgroundColor = UIColor.clearColor;
 
-    [self.collectionSmileys registerClass:[RehostCollectionCell class] forCellWithReuseIdentifier:@"RehostCollectionCellId"];
+    [self.collectionSmileys registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
 
     [self.collectionSmileys  setDataSource:self];
     [self.collectionSmileys  setDelegate:self];
@@ -2109,68 +2113,47 @@ static CGFloat fCellImageSize = 1;
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
     if (collectionView == self.collectionSmileys) {
+        SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
+        UIImage* image = [UIImage imageNamed:@"19-gear"];
         if (!self.bSearchSmileysActivated) {
              // Default smileys
-            NSMutableDictionary* dic = self.dicCommonSmileys[indexPath.row];
-            NSString* sSmileyResource = dic[@"resource"];
-            UIImage* image = [UIImage imageNamed:sSmileyResource];
-            CGFloat l = 50; // Largeur cellule
-            CGFloat w = image.size.width;
-            CGFloat h = image.size.height;
-            NSLog(@"Image %d : %@", (int)indexPath.row, sSmileyResource);
-            if (cell.previewImage == nil) {
-                cell.previewImage = [[UIImageView alloc] initWithFrame:CGRectMake(l/2-w/2, l/2-h/2, w, h)];
-                [cell addSubview:cell.previewImage];
-            }
-            [cell.previewImage setImage:image];
-            cell.previewImage.clipsToBounds = NO;
-
-            cell.layer.borderWidth = 1.0f;
-            cell.layer.borderColor = [ThemeColors tintColor].CGColor;
-            cell.layer.cornerRadius = 5;
-            cell.layer.masksToBounds = true;
-
-            return cell;
+            image = [UIImage imageNamed:self.dicCommonSmileys[indexPath.row][@"resource"]];
+            cell.smileyCode = self.dicCommonSmileys[indexPath.row][@"code"];
         }
         else {
-            UIImage* image = [[SmileyCache shared] getImageForIndex:(int)indexPath.row];
-            if (image == nil) {
-                NSLog(@"IMAGE for %d", (int)indexPath.row);
-                image = [UIImage imageNamed:@"19-gear"];
+            UIImage* tmpImage = [[SmileyCache shared] getImageForIndex:(int)indexPath.row];
+            if (tmpImage != nil) {
+                image = tmpImage;
             }
-            else {
-                NSLog(@"Nothing yet for %d", (int)indexPath.row);
-            }
-
-            CGFloat ch = cell.bounds.size.height;
-            CGFloat cw = cell.bounds.size.width;
-            CGFloat w = image.size.width*fCellImageSize;
-            CGFloat h = image.size.height*fCellImageSize;
-            
-            if (cell.previewImage == nil) {
-                cell.previewImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
-                [cell addSubview:cell.previewImage];
-            }
-            else {
-                cell.previewImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
-            }
-            cell.previewImage.clipsToBounds = NO;
-            cell.previewImage.layer.masksToBounds = true;
-
-            cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
-            cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
-            cell.layer.borderWidth = 1.0f;
-            cell.layer.cornerRadius = 5;
-            cell.layer.masksToBounds = true;
-            
-            [cell.previewImage setImage:image];
-
-            return cell;
         }
+        
+        CGFloat ch = cell.bounds.size.height;
+        CGFloat cw = cell.bounds.size.width;
+        CGFloat w = image.size.width*fCellImageSize;
+        CGFloat h = image.size.height*fCellImageSize;
+        
+        if (cell.smileyImage == nil) {
+            cell.smileyImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
+            [cell addSubview:cell.smileyImage];
+        }
+        else {
+            cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
+        }
+        [cell.smileyImage setImage:image];
+
+        cell.smileyImage.clipsToBounds = NO;
+        cell.smileyImage.layer.masksToBounds = true;
+        cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
+        cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
+        cell.layer.borderWidth = 1.0f;
+        cell.layer.cornerRadius = 5;
+        cell.layer.masksToBounds = true;
+        
+        return cell;
     }
     else {
+        RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
         if (indexPath.row == 0) {
             [cell configureWithIcon:[UIImage imageNamed:@"Camera-32"] border:15];
             cell.layer.borderWidth = 1.0f;
@@ -2182,6 +2165,18 @@ static CGFloat fCellImageSize = 1;
         cell.layer.masksToBounds = true;
 
         return cell;
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (collectionView == self.collectionSmileys) {
+        SmileyCollectionCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+        if (!self.bSearchSmileysActivated) {
+            [self didSelectSmile:cell.smileyCode];
+        }
+        else {
+            [self didSelectSmile:@"totoz"];
+        }
     }
 }
 
