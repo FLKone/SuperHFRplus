@@ -2926,8 +2926,11 @@
 				CA63F38A185EC1220092E9F9 /* RehostCell.h */,
 				CA63F38B185EC1220092E9F9 /* RehostCell.m */,
 				CA63F38D185EC18B0092E9F9 /* RehostCell.xib */,
+				155A99282479A585002968CD /* RehostCollectionCell.h */,
+				155A99292479A5A3002968CD /* RehostCollectionCell.m */,
 				013F0E9F121E117900BEBEB1 /* AddMessageViewController.h */,
 				013F0EA0121E117900BEBEB1 /* AddMessageViewController.m */,
+				013F0EA3121E117900BEBEB1 /* AddMessageViewController.xib */,
 				013F0EA1121E117900BEBEB1 /* QuoteMessageViewController.h */,
 				013F0EA2121E117900BEBEB1 /* QuoteMessageViewController.m */,
 				CA81D28B12281D5800AC6ADA /* EditMessageViewController.h */,
@@ -2936,7 +2939,6 @@
 				CAAFAFDB125E2A58001B90EC /* NewMessageViewController.m */,
 				4CC3C74E1B99BB6F001B8632 /* DeleteMessageViewController.h */,
 				4CC3C74F1B99BB6F001B8632 /* DeleteMessageViewController.m */,
-				013F0EA3121E117900BEBEB1 /* AddMessageViewController.xib */,
 				CAF03C551245612800897C3B /* AccessoryView.xib */,
 				4C21E9811BA5CC1200691D65 /* HFRTextView.h */,
 				4C21E9821BA5CC1200691D65 /* HFRTextView.m */,
@@ -2945,8 +2947,6 @@
 				4CC3C7561B99BC18001B8632 /* AlerteModoViewController.h */,
 				4CC3C7571B99BC18001B8632 /* AlerteModoViewController.m */,
 				4CC3C7581B99BC18001B8632 /* AlerteModoViewController.xib */,
-				155A99282479A585002968CD /* RehostCollectionCell.h */,
-				155A99292479A5A3002968CD /* RehostCollectionCell.m */,
 			);
 			name = Forms;
 			sourceTree = "<group>";

@@ -29,6 +29,7 @@
                 <outlet property="smileView" destination="SvM-lI-LQX" id="XUX-1L-Qn7"/>
                 <outlet property="spinnerSmileys" destination="3gf-gU-Igu" id="3Wi-Wu-uVU"/>
                 <outlet property="textFieldSmileys" destination="69" id="71"/>
+                <outlet property="textFieldSmileysWidth" destination="kSz-Un-goG" id="xzU-sc-1Q5"/>
                 <outlet property="textView" destination="62" id="64"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>

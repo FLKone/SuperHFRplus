@@ -103,6 +103,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnToolbarRedo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControlerPage;
 @property (nonatomic, strong) IBOutlet UITextField *textFieldSmileys;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *testFieldSmileysWidth;
+
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *textFieldSmileysWidth;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinnerSmileys;
 @property (nonatomic, strong) NSMutableArray *smileyArray;
 @property int smileyPage;
