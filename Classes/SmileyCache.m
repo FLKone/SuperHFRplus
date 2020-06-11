@@ -21,7 +21,7 @@
 
 @implementation SmileyCache
 
-@synthesize arrCurrentSmileyArray, cacheSmileys;
+@synthesize arrCurrentSmileyArray, cacheSmileys, bStopLoadingSmileysToCache;
 
 static SmileyCache *_shared = nil;    // static instance variable
 
@@ -38,12 +38,14 @@ static SmileyCache *_shared = nil;    // static instance variable
         self.arrCurrentSmileyArray = nil;
         self.cacheSmileys = [[NSCache alloc] init];
         self.cacheSmileys.countLimit = IMAGE_CACHE_MAX_ELEMENTS;
+        self.bStopLoadingSmileysToCache = NO;
     }
     return self;
 }
 
 - (void)handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*) cv
 {
+    self.bStopLoadingSmileysToCache = NO;
     self.arrCurrentSmileyArray = [arrSmileys mutableCopy];
     dispatch_async(dispatch_get_main_queue(), ^{
         [cv reloadData];
@@ -84,7 +86,9 @@ static SmileyCache *_shared = nil;    // static instance variable
             });
             bHasbeenReloaded = YES;
         }
-
+        if (self.bStopLoadingSmileysToCache) {
+            break;
+        }
      }
     if (!bHasbeenReloaded) {
         dispatch_async(dispatch_get_main_queue(), ^{

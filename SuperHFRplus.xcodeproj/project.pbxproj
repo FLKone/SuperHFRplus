@@ -60,6 +60,7 @@
 		1572FC4D22F3826100D40789 /* icons8-reset-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 1572FC4C22F3826100D40789 /* icons8-reset-50.png */; };
 		1572FC4F22F384AA00D40789 /* reset-512.png in Resources */ = {isa = PBXBuildFile; fileRef = 1572FC4E22F384AA00D40789 /* reset-512.png */; };
 		158D498B2240618C00AFDBDE /* 08-chat-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */; };
+		1591C0E02490170D0025560A /* SmileyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1591C0DF2490170D0025560A /* SmileyViewController.m */; };
 		15960FE522F6147B006BBD34 /* MPStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 15960FE422F6147B006BBD34 /* MPStorage.m */; };
 		159CE15024801E1500BC17DA /* SmileyCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 159CE14F24801E1500BC17DA /* SmileyCache.m */; };
 		15A1238D22D659CB00C3DFEC /* Heart-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A1238C22D659CB00C3DFEC /* Heart-20.png */; };
@@ -85,6 +86,7 @@
 		15EBFD112206207B00A37CED /* AQCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD102206207B00A37CED /* AQCellView.m */; };
 		15EBFD132206210000A37CED /* AQTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD122206210000A37CED /* AQTableView.xib */; };
 		15EBFD152206211500A37CED /* AQCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD142206211500A37CED /* AQCellView.xib */; };
+		15F42B1D248EB8F8003B2FC6 /* SmileyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15F42B1C248EB8F8003B2FC6 /* SmileyViewController.xib */; };
 		15F4F46222F1D1F100A7AC97 /* ThemeBrightnessCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15F4F46122F1D1F100A7AC97 /* ThemeBrightnessCellView.xib */; };
 		15F4F46522F1D32F00A7AC97 /* ThemeBrightnessCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15F4F46422F1D32F00A7AC97 /* ThemeBrightnessCellView.m */; };
 		4C0031241BD01CE700F87F13 /* HFRTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C0031221BD01CE700F87F13 /* HFRTabBar.m */; };
@@ -870,6 +872,8 @@
 		1572FC4C22F3826100D40789 /* icons8-reset-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-reset-50.png"; sourceTree = "<group>"; };
 		1572FC4E22F384AA00D40789 /* reset-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reset-512.png"; sourceTree = "<group>"; };
 		158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "08-chat-20@2x.png"; path = "SuperHFRplus/Assets/UI/08-chat-20@2x.png"; sourceTree = SOURCE_ROOT; };
+		1591C0DE2490165B0025560A /* SmileyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmileyViewController.h; sourceTree = "<group>"; };
+		1591C0DF2490170D0025560A /* SmileyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmileyViewController.m; sourceTree = "<group>"; };
 		15960FE322F6146B006BBD34 /* MPStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPStorage.h; sourceTree = "<group>"; };
 		15960FE422F6147B006BBD34 /* MPStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPStorage.m; sourceTree = "<group>"; };
 		159CE14E24801DFA00BC17DA /* SmileyCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmileyCache.h; sourceTree = "<group>"; };
@@ -903,6 +907,7 @@
 		15EBFD102206207B00A37CED /* AQCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AQCellView.m; sourceTree = "<group>"; };
 		15EBFD122206210000A37CED /* AQTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AQTableView.xib; sourceTree = "<group>"; };
 		15EBFD142206211500A37CED /* AQCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AQCellView.xib; sourceTree = "<group>"; };
+		15F42B1C248EB8F8003B2FC6 /* SmileyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SmileyViewController.xib; sourceTree = "<group>"; };
 		15F4F46122F1D1F100A7AC97 /* ThemeBrightnessCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThemeBrightnessCellView.xib; sourceTree = "<group>"; };
 		15F4F46322F1D31700A7AC97 /* ThemeBrightnessCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeBrightnessCellView.h; sourceTree = "<group>"; };
 		15F4F46422F1D32F00A7AC97 /* ThemeBrightnessCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThemeBrightnessCellView.m; sourceTree = "<group>"; };
@@ -2931,6 +2936,9 @@
 				013F0E9F121E117900BEBEB1 /* AddMessageViewController.h */,
 				013F0EA0121E117900BEBEB1 /* AddMessageViewController.m */,
 				013F0EA3121E117900BEBEB1 /* AddMessageViewController.xib */,
+				1591C0DE2490165B0025560A /* SmileyViewController.h */,
+				1591C0DF2490170D0025560A /* SmileyViewController.m */,
+				15F42B1C248EB8F8003B2FC6 /* SmileyViewController.xib */,
 				013F0EA1121E117900BEBEB1 /* QuoteMessageViewController.h */,
 				013F0EA2121E117900BEBEB1 /* QuoteMessageViewController.m */,
 				CA81D28B12281D5800AC6ADA /* EditMessageViewController.h */,
@@ -3465,6 +3473,7 @@
 				15AEF9FF223E9053005E6739 /* Icon-BLUE@2x.png in Resources */,
 				CA7C7047185EF50E00B348BA /* upsmall@2x.png in Resources */,
 				1503755521FE249300A5F7E1 /* PlusCellView.xib in Resources */,
+				15F42B1D248EB8F8003B2FC6 /* SmileyViewController.xib in Resources */,
 				CA7C7048185EF50E00B348BA /* buttonendon@2x.png in Resources */,
 				4C0B8DB31BA4522900D329BA /* DesignFilled-40@2x.png in Resources */,
 				4C9C2B221BAE66EB00511853 /* ThorHammerBlack-20.png in Resources */,
@@ -3783,6 +3792,7 @@
 				4CC3C75A1B99BC18001B8632 /* AlerteModoViewController.m in Sources */,
 				CA7C70D8185EF50E00B348BA /* MessagesTableViewController.m in Sources */,
 				CA7C70DA185EF50E00B348BA /* MessageDetailViewController.m in Sources */,
+				1591C0E02490170D0025560A /* SmileyViewController.m in Sources */,
 				4C0B8E051BA45B0100D329BA /* ForumCellView.m in Sources */,
 				CA7C70DF185EF50E00B348BA /* AddMessageViewController.m in Sources */,
 				D80DBD6E1E55BE730051B751 /* ASIDataDecompressor.m in Sources */,

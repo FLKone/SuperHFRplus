@@ -146,7 +146,7 @@
         <key>resource</key>
         <string>sarcastic.gif</string>
 	</dict>
-	<!--dict>
+	<dict>
 		<key>code</key>
 		<string>:pt1cable:</string>
 		<key>src</key>
@@ -466,6 +466,6 @@
 		<string>https://forum-images.hardware.fr/icones/smilies/24.gif</string>
         <key>resource</key>
         <string>24.gif</string>
-	</dict-->
+	</dict>
 </array>
 </plist>

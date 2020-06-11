@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSMutableArray* arrCurrentSmileyArray;
 @property (nonatomic, strong) NSCache* cacheSmileys;
 @property (nonatomic, strong) NSCache* cacheSmileyRequests;
+@property BOOL bStopLoadingSmileysToCache;
 
 + (SmileyCache *)shared;
 - (void)handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*) cv;

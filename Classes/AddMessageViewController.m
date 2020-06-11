@@ -7,6 +7,7 @@
 
 #import "HFRplusAppDelegate.h"
 #import "AddMessageViewController.h"
+#import "SmileyViewController.h"
 #import "ASIFormDataRequest.h"
 #import "HTMLParser.h"
 #import <QuartzCore/QuartzCore.h>
@@ -34,7 +35,7 @@
 @synthesize request, loadingView, requestSmile, dicCommonSmileys;
 @synthesize lastSelectedRange, loaded;//navBar,
 @synthesize segmentControler, isDragging, textFieldSmileys, smileyArray, segmentControlerPage, smileyPage, commonTableView, usedSearchDict, usedSearchSortedArray;
-@synthesize btnToolbarImage, btnToolbarGIF, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
+@synthesize btnToolbarImage, btnToolbarGIF, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo, btnCollectionSmileysEnlarge, btnCollectionSmileysClose;
 @synthesize rehostTableView, rehostImagesArray, rehostImagesSortedArray, collectionImages, collectionSmileys;
 @synthesize haveTitle, textFieldTitle;
 @synthesize haveTo, textFieldTo;
@@ -210,6 +211,14 @@
     [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
     
     self.smileView.navigationDelegate = self;
+    [self.spinnerSmileys setHidden:YES];
+
+    btnCollectionSmileysEnlarge.layer.cornerRadius = 10;
+    btnCollectionSmileysEnlarge.clipsToBounds = true;
+    [btnCollectionSmileysEnlarge setHidden:YES];
+    btnCollectionSmileysClose.layer.cornerRadius = 10;
+    btnCollectionSmileysClose.clipsToBounds = true;
+    [btnCollectionSmileysClose setHidden:YES];
     
     [self setupCollections];
 }
@@ -451,7 +460,7 @@
     
     //[segmentControler setEnabled:YES forSegmentAtIndex:0];
     //[segmentControler setEnabled:YES forSegmentAtIndex:1];
-
+    
     // MULTIS
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
@@ -1046,10 +1055,18 @@
 
 - (void)actionSmiley:(id)sender
 {
+    SmileyViewController *svc = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
+    //svc.delegate = self;
+    [self presentViewController:svc animated:YES completion:nil];
+
+    /*
     if ([self.collectionSmileys isHidden]) {
         self.bSearchSmileysActivated = NO;
         [self.collectionSmileys reloadData];
         [self.collectionSmileys setHidden:NO];
+        [btnCollectionSmileysEnlarge setHidden:NO];
+        [btnCollectionSmileysClose setHidden:NO];
+
     }
     else {
         if (!self.bSearchSmileysAvailable) {
@@ -1517,7 +1534,7 @@
         [textFieldSmileys setEnabled:NO];
     }
     else {
-        
+        //self.textFieldSmileysWidth.constant = 140;
         
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
@@ -1528,8 +1545,8 @@
         [self.btnToolbarImage setHidden:NO];
         [self.btnToolbarGIF setHidden:NO];
         [self.btnToolbarSmiley setHidden:NO];
-        [self.btnToolbarUndo setHidden:NO];
-        [self.btnToolbarRedo setHidden:NO];
+        //[self.btnToolbarUndo setHidden:NO];
+        //[self.btnToolbarRedo setHidden:NO];
 
         [self.segmentControlerPage setAlpha:0];
         
@@ -1557,6 +1574,8 @@
             self.bSearchSmileysActivated = YES;
             [self.collectionSmileys reloadData];
             [self.collectionSmileys setHidden:NO];
+            [btnCollectionSmileysEnlarge setHidden:NO];
+            [btnCollectionSmileysClose setHidden:NO];
         }
     }
 }
@@ -1706,6 +1725,12 @@
 
 - (void)fetchSmileys
 {
+    [self.spinnerSmileys startAnimating];
+    [self.spinnerSmileys setHidden:NO];
+
+    // Stop loading smileys of previous request
+    [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
+
     NSString *sTextSmileys = [NSString stringWithFormat:@"+%@", [[self.textFieldSmileys.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString:@" +"]];
     NSMutableArray* smileyList = [[SmileyCache shared] getSmileyListForText:sTextSmileys];
     if (smileyList) {
@@ -1770,6 +1795,8 @@
     //[self.collectionSmileys reloadData];
     self.bSearchSmileysAvailable = YES;
     self.bSearchSmileysActivated = YES;
+    [self.spinnerSmileys setHidden:YES];
+    [self.spinnerSmileys stopAnimating];
     [self loadSmileys:0];
     //[self loadSmileys:smileyPage];
     
@@ -1781,6 +1808,8 @@
 
 - (void)fetchSmileContentFailed:(ASIHTTPRequest *)theRequest
 {
+    [self.spinnerSmileys setHidden:YES];
+    [self.spinnerSmileys stopAnimating];
     [self cancelFetchContent];
 }
 
@@ -1899,6 +1928,9 @@
             [self.btnToolbarUndo setHidden:NO];
             [self.btnToolbarRedo setHidden:NO];
             [self.collectionSmileys setHidden:NO];
+            [btnCollectionSmileysEnlarge setHidden:NO];
+            [btnCollectionSmileysClose setHidden:NO];
+
 /*
             [self.segmentControlerPage setAlpha:1];
 
@@ -2115,7 +2147,7 @@ static CGFloat fCellImageSize = 1;
 {
     if (collectionView == self.collectionSmileys) {
         SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
-        UIImage* image = [UIImage imageNamed:@"19-gear"];
+        UIImage* image = nil;//[UIImage imageNamed:@"19-gear"];
         if (!self.bSearchSmileysActivated) {
              // Default smileys
             image = [UIImage imageNamed:self.dicCommonSmileys[indexPath.row][@"resource"]];
@@ -2476,6 +2508,8 @@ static CGFloat fCellImageSize = 1;
     NSLog(@"viewDidUnload ADD");
     
     [super viewDidUnload];
+    
+    [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
     
     self.loadingView = nil;	
     

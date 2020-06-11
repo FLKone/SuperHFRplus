@@ -103,8 +103,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnToolbarRedo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControlerPage;
 @property (nonatomic, strong) IBOutlet UITextField *textFieldSmileys;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *testFieldSmileysWidth;
-
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *textFieldSmileysWidth;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinnerSmileys;
 @property (nonatomic, strong) NSMutableArray *smileyArray;
@@ -114,6 +112,9 @@
 @property (nonatomic, strong) NSMutableArray *usedSearchSortedArray;
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionSmileys;
+@property (strong, nonatomic) IBOutlet UIButton *btnCollectionSmileysEnlarge;
+@property (strong, nonatomic) IBOutlet UIButton *btnCollectionSmileysClose;
+
 @property BOOL bSearchSmileysAvailable;
 @property BOOL bSearchSmileysActivated;
 
