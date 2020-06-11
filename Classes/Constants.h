@@ -117,6 +117,9 @@ typedef enum Theme : int {
 #define HASH_KEY @"HASH"
 #define MAIN_KEY @"MAIN"
 
+// Chevereto
+#define CHEVERETO_KEY @"% PUT CHEVERETO KEY HERE %"
+
 // Min & max
 #define MAXIMUM(a,b) ( ((a) > (b)) ? (a) : (b) )
 #define MINIMUM(a,b) ( ((a) < (b)) ? (a) : (b) )
