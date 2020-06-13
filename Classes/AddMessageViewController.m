@@ -31,7 +31,7 @@
 //@import GiphyCoreSDK;
 
 @implementation AddMessageViewController
-@synthesize delegate, textView, arrayInputData, formSubmit, accessoryView, smileView;
+@synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, smileView, viewControllerSmileys;
 @synthesize request, loadingView, requestSmile, dicCommonSmileys;
 @synthesize lastSelectedRange, loaded;//navBar,
 @synthesize segmentControler, isDragging, textFieldSmileys, smileyArray, segmentControlerPage, smileyPage, commonTableView, usedSearchDict, usedSearchSortedArray;
@@ -1137,13 +1137,14 @@
 }
 
 - (void) showPanelSmiley:(BOOL)bVisible reloadData:(BOOL)bReload {
-    self.bSearchSmileysActivated = NO;
-    if (bReload) {
-        [self.collectionSmileys reloadData];
-    }
-    [self.collectionSmileys setHidden:!bVisible];
-    [btnCollectionSmileysEnlarge setHidden:!bVisible];
-    [btnCollectionSmileysClose setHidden:!bVisible];
+    [self.viewSmileys setHidden:NO];
+    //self.bSearchSmileysActivated = NO;
+    //if (bReload) {
+    //    [self.collectionSmileys reloadData];
+    //}
+    //[self.collectionSmileys setHidden:!bVisible];
+    //[btnCollectionSmileysEnlarge setHidden:!bVisible];
+    //[btnCollectionSmileysClose setHidden:!bVisible];
 }
 
 - (IBAction)actionUndo:(id)sender
@@ -2134,13 +2135,14 @@ static CGFloat fCellImageSize = 1;
 
     // Collection Smileys defaults
     [self.collectionSmileys setHidden:YES];
+    
     self.collectionSmileys.backgroundColor = UIColor.clearColor;
 
     [self.collectionSmileys registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
 
     [self.collectionSmileys  setDataSource:self];
     [self.collectionSmileys  setDelegate:self];
-
+    
     // Collection Image
     [self.collectionImages setHidden:YES];
     self.collectionImages.backgroundColor = UIColor.clearColor;
@@ -2150,7 +2152,13 @@ static CGFloat fCellImageSize = 1;
     [self.collectionImages  setDataSource:self];
     [self.collectionImages  setDelegate:self];
 
-   // [self.view addSubview:self.collectionImages];
+    self.viewControllerSmileys = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
+    [self addChildViewController:self.viewControllerSmileys];
+    self.viewControllerSmileys.view.frame = self.viewSmileys.bounds;
+    NSLog(@"Bound:%.f,%.f,%.f,%.f", self.viewSmileys.bounds.origin.x,self.viewSmileys.bounds.origin.y,self.viewSmileys.bounds.size.height,self.viewSmileys.bounds.size.width);
+    [self.viewSmileys addSubview:self.viewControllerSmileys.view];
+    self.viewSmileys.backgroundColor = UIColor.greenColor;
+    [self.viewSmileys setHidden:YES];
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -2224,6 +2232,8 @@ static CGFloat fCellImageSize = 1;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    return 0;
+    /*
     if (collectionView == self.collectionSmileys) {
         if (!self.bSearchSmileysActivated) {
             return self.dicCommonSmileys.count;
@@ -2234,7 +2244,7 @@ static CGFloat fCellImageSize = 1;
     }
     else {
         return self.rehostImagesSortedArray.count + 1;
-    }
+    }*/
 }
 
 - (NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView

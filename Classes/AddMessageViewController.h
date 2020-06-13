@@ -114,6 +114,8 @@
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionSmileys;
 @property (strong, nonatomic) IBOutlet UIButton *btnCollectionSmileysEnlarge;
 @property (strong, nonatomic) IBOutlet UIButton *btnCollectionSmileysClose;
+@property (strong, nonatomic) IBOutlet UIView *viewSmileys;
+@property (strong, nonatomic) IBOutlet UIViewController *viewControllerSmileys;
 
 @property BOOL bSearchSmileysAvailable;
 @property BOOL bSearchSmileysActivated;
