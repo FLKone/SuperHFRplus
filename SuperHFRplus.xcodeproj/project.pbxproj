@@ -61,6 +61,9 @@
 		1572FC4F22F384AA00D40789 /* reset-512.png in Resources */ = {isa = PBXBuildFile; fileRef = 1572FC4E22F384AA00D40789 /* reset-512.png */; };
 		158D498B2240618C00AFDBDE /* 08-chat-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */; };
 		1591C0E02490170D0025560A /* SmileyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1591C0DF2490170D0025560A /* SmileyViewController.m */; };
+		1591C0E3249418900025560A /* smiley.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E1249418900025560A /* smiley.png */; };
+		1591C0E4249418900025560A /* smiley.psd in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E2249418900025560A /* smiley.psd */; };
+		1591C0E6249419240025560A /* smiley@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E5249419230025560A /* smiley@2x.png */; };
 		15960FE522F6147B006BBD34 /* MPStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 15960FE422F6147B006BBD34 /* MPStorage.m */; };
 		159CE15024801E1500BC17DA /* SmileyCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 159CE14F24801E1500BC17DA /* SmileyCache.m */; };
 		15A1238D22D659CB00C3DFEC /* Heart-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A1238C22D659CB00C3DFEC /* Heart-20.png */; };
@@ -874,6 +877,9 @@
 		158D498A2240618C00AFDBDE /* 08-chat-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "08-chat-20@2x.png"; path = "SuperHFRplus/Assets/UI/08-chat-20@2x.png"; sourceTree = SOURCE_ROOT; };
 		1591C0DE2490165B0025560A /* SmileyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmileyViewController.h; sourceTree = "<group>"; };
 		1591C0DF2490170D0025560A /* SmileyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmileyViewController.m; sourceTree = "<group>"; };
+		1591C0E1249418900025560A /* smiley.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = smiley.png; sourceTree = "<group>"; };
+		1591C0E2249418900025560A /* smiley.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = smiley.psd; sourceTree = "<group>"; };
+		1591C0E5249419230025560A /* smiley@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smiley@2x.png"; sourceTree = "<group>"; };
 		15960FE322F6146B006BBD34 /* MPStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPStorage.h; sourceTree = "<group>"; };
 		15960FE422F6147B006BBD34 /* MPStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPStorage.m; sourceTree = "<group>"; };
 		159CE14E24801DFA00BC17DA /* SmileyCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmileyCache.h; sourceTree = "<group>"; };
@@ -2620,6 +2626,9 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				1591C0E5249419230025560A /* smiley@2x.png */,
+				1591C0E1249418900025560A /* smiley.png */,
+				1591C0E2249418900025560A /* smiley.psd */,
 				15ABB27B2488397100E30B48 /* gif.png */,
 				15ABB27C2488397200E30B48 /* gif@2x.png */,
 				155A992224771681002968CD /* photogallery@2x.png */,
@@ -3402,6 +3411,7 @@
 				4CB132951B9058530081B44D /* 146-gavel.png in Resources */,
 				15C673CC22552B6900B9E0BE /* FavoriteCellView.xib in Resources */,
 				CA7C7023185EF50E00B348BA /* miam.gif in Resources */,
+				1591C0E6249419240025560A /* smiley@2x.png in Resources */,
 				15357D67234BA712002D5C2E /* offline2@2.png in Resources */,
 				4C0B8DE51BA4522900D329BA /* LaptopFilled-40@2x.png in Resources */,
 				4C0B8DB51BA4522900D329BA /* DesignFilled-40.png in Resources */,
@@ -3446,6 +3456,7 @@
 				CA7C7039185EF50E00B348BA /* cry.gif in Resources */,
 				CA7C703A185EF50E00B348BA /* int.gif in Resources */,
 				4C0B8DCB1BA4522900D329BA /* WindowsClientFilled-40@2x.png in Resources */,
+				1591C0E4249418900025560A /* smiley.psd in Resources */,
 				4C0B8DD51BA4522900D329BA /* CameraFilled-40.png in Resources */,
 				CA7C703B185EF50E00B348BA /* buttonprevioushover.png in Resources */,
 				CA7C703C185EF50E00B348BA /* arrowback.png in Resources */,
@@ -3650,6 +3661,7 @@
 				CA7C709C185EF50E00B348BA /* buttonbeginon.png in Resources */,
 				CA7C709D185EF50E00B348BA /* plus.png in Resources */,
 				CA7C709E185EF50E00B348BA /* downsmall.png in Resources */,
+				1591C0E3249418900025560A /* smiley.png in Resources */,
 				4CB132E21B909C820081B44D /* Quote-20@2x.png in Resources */,
 				CAF5DB651932BA58000B5215 /* error.png in Resources */,
 				CA7C709F185EF50E00B348BA /* sarcastic.gif in Resources */,

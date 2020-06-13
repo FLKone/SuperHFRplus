@@ -159,6 +159,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 -(void)setupResponder;
 -(bool)isDeleteMode;
+- (void)showPanelSmiley:(BOOL)bVisible reloadData:(BOOL)bReload;
 
 @end
 

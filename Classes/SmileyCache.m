@@ -21,7 +21,7 @@
 
 @implementation SmileyCache
 
-@synthesize arrCurrentSmileyArray, cacheSmileys, bStopLoadingSmileysToCache;
+@synthesize arrCurrentSmileyArray, cacheSmileys, bStopLoadingSmileysToCache, dicCommonSmileys, bSearchSmileysActivated;
 
 static SmileyCache *_shared = nil;    // static instance variable
 
@@ -39,6 +39,10 @@ static SmileyCache *_shared = nil;    // static instance variable
         self.cacheSmileys = [[NSCache alloc] init];
         self.cacheSmileys.countLimit = IMAGE_CACHE_MAX_ELEMENTS;
         self.bStopLoadingSmileysToCache = NO;
+        self.bSearchSmileysActivated = NO;
+        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
+        self.dicCommonSmileys = [NSMutableArray arrayWithContentsOfFile:plistPath];
+
     }
     return self;
 }

@@ -1056,7 +1056,7 @@
 - (void)actionSmiley:(id)sender
 {
     SmileyViewController *svc = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
-    //svc.delegate = self;
+    svc.addMessageVC = self;
     [self presentViewController:svc animated:YES completion:nil];
 
     /*
@@ -1134,6 +1134,16 @@
         [self segmentToBlue];
     }
  */
+}
+
+- (void) showPanelSmiley:(BOOL)bVisible reloadData:(BOOL)bReload {
+    self.bSearchSmileysActivated = NO;
+    if (bReload) {
+        [self.collectionSmileys reloadData];
+    }
+    [self.collectionSmileys setHidden:!bVisible];
+    [btnCollectionSmileysEnlarge setHidden:!bVisible];
+    [btnCollectionSmileysClose setHidden:!bVisible];
 }
 
 - (IBAction)actionUndo:(id)sender
