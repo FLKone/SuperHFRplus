@@ -36,15 +36,19 @@
     [self.fullBtn setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.7]];
     
     self.miniBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.miniBtn.layer.borderWidth = 1; // this value vary as per your desire
     self.miniBtn.clipsToBounds = YES;
-    
+
     self.mediumBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.mediumBtn.layer.borderWidth = 1; // this value vary as per your desire
     self.mediumBtn.clipsToBounds = YES;
 
     self.previewBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.previewBtn.layer.borderWidth = 1; // this value vary as per your desire
     self.previewBtn.clipsToBounds = YES;
 
     self.fullBtn.layer.cornerRadius = 5; // this value vary as per your desire
+    self.fullBtn.layer.borderWidth = 1; // this value vary as per your desire
     self.fullBtn.clipsToBounds = YES;
         
     [self applyTheme];
@@ -54,6 +58,11 @@
     Theme theme = [[ThemeManager sharedManager] theme];
     self.backgroundColor = [ThemeColors cellBackgroundColor:theme];
     self.contentView.superview.backgroundColor =[ThemeColors cellBackgroundColor:theme];
+
+    self.miniBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
+    self.mediumBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
+    self.previewBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
+    self.fullBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
 }
 
 
