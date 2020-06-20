@@ -64,6 +64,14 @@
 		1591C0E3249418900025560A /* smiley.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E1249418900025560A /* smiley.png */; };
 		1591C0E4249418900025560A /* smiley.psd in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E2249418900025560A /* smiley.psd */; };
 		1591C0E6249419240025560A /* smiley@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E5249419230025560A /* smiley@2x.png */; };
+		1591C0E92496473E0025560A /* redfaceBorder.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E72496473E0025560A /* redfaceBorder.png */; };
+		1591C0EA2496473E0025560A /* redfaceBorder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0E82496473E0025560A /* redfaceBorder@2x.png */; };
+		1591C0EC249652F60025560A /* redface@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0EB249652F50025560A /* redface@2x.png */; };
+		1591C0EE249653DD0025560A /* Embed.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0ED249653DC0025560A /* Embed.png */; };
+		1591C0F0249653EE0025560A /* Embed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0EF249653EE0025560A /* Embed@2x.png */; };
+		1591C0F2249690BF0025560A /* fond-degrade-bleu-fonce_1258-1348.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0F1249690BF0025560A /* fond-degrade-bleu-fonce_1258-1348.jpg */; };
+		1591C0F5249DF5F00025560A /* SimpleCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1591C0F4249DF5F00025560A /* SimpleCellView.m */; };
+		1591C0F7249DF60D0025560A /* SimpleCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1591C0F6249DF60D0025560A /* SimpleCellView.xib */; };
 		15960FE522F6147B006BBD34 /* MPStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 15960FE422F6147B006BBD34 /* MPStorage.m */; };
 		159CE15024801E1500BC17DA /* SmileyCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 159CE14F24801E1500BC17DA /* SmileyCache.m */; };
 		15A1238D22D659CB00C3DFEC /* Heart-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A1238C22D659CB00C3DFEC /* Heart-20.png */; };
@@ -880,6 +888,15 @@
 		1591C0E1249418900025560A /* smiley.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = smiley.png; sourceTree = "<group>"; };
 		1591C0E2249418900025560A /* smiley.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = smiley.psd; sourceTree = "<group>"; };
 		1591C0E5249419230025560A /* smiley@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smiley@2x.png"; sourceTree = "<group>"; };
+		1591C0E72496473E0025560A /* redfaceBorder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redfaceBorder.png; sourceTree = "<group>"; };
+		1591C0E82496473E0025560A /* redfaceBorder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "redfaceBorder@2x.png"; sourceTree = "<group>"; };
+		1591C0EB249652F50025560A /* redface@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "redface@2x.png"; sourceTree = "<group>"; };
+		1591C0ED249653DC0025560A /* Embed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Embed.png; sourceTree = "<group>"; };
+		1591C0EF249653EE0025560A /* Embed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Embed@2x.png"; sourceTree = "<group>"; };
+		1591C0F1249690BF0025560A /* fond-degrade-bleu-fonce_1258-1348.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "fond-degrade-bleu-fonce_1258-1348.jpg"; sourceTree = "<group>"; };
+		1591C0F3249DF5DA0025560A /* SimpleCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleCellView.h; sourceTree = "<group>"; };
+		1591C0F4249DF5F00025560A /* SimpleCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpleCellView.m; sourceTree = "<group>"; };
+		1591C0F6249DF60D0025560A /* SimpleCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SimpleCellView.xib; sourceTree = "<group>"; };
 		15960FE322F6146B006BBD34 /* MPStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPStorage.h; sourceTree = "<group>"; };
 		15960FE422F6147B006BBD34 /* MPStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPStorage.m; sourceTree = "<group>"; };
 		159CE14E24801DFA00BC17DA /* SmileyCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmileyCache.h; sourceTree = "<group>"; };
@@ -2626,6 +2643,11 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				1591C0F1249690BF0025560A /* fond-degrade-bleu-fonce_1258-1348.jpg */,
+				1591C0EF249653EE0025560A /* Embed@2x.png */,
+				1591C0ED249653DC0025560A /* Embed.png */,
+				1591C0E72496473E0025560A /* redfaceBorder.png */,
+				1591C0E82496473E0025560A /* redfaceBorder@2x.png */,
 				1591C0E5249419230025560A /* smiley@2x.png */,
 				1591C0E1249418900025560A /* smiley.png */,
 				1591C0E2249418900025560A /* smiley.psd */,
@@ -2642,6 +2664,7 @@
 				155A991F2476AC41002968CD /* undo.png */,
 				155A991E2476AC41002968CD /* undo-redo.png */,
 				155A991C2476A880002968CD /* redface.png */,
+				1591C0EB249652F50025560A /* redface@2x.png */,
 				155A991A24768FE6002968CD /* photogallery.png */,
 				D8CA2764246C535C008FC72C /* sign-25.png */,
 				D8CA2763246C535C008FC72C /* sign-25@2x.png */,
@@ -2945,6 +2968,9 @@
 				013F0E9F121E117900BEBEB1 /* AddMessageViewController.h */,
 				013F0EA0121E117900BEBEB1 /* AddMessageViewController.m */,
 				013F0EA3121E117900BEBEB1 /* AddMessageViewController.xib */,
+				1591C0F3249DF5DA0025560A /* SimpleCellView.h */,
+				1591C0F4249DF5F00025560A /* SimpleCellView.m */,
+				1591C0F6249DF60D0025560A /* SimpleCellView.xib */,
 				1591C0DE2490165B0025560A /* SmileyViewController.h */,
 				1591C0DF2490170D0025560A /* SmileyViewController.m */,
 				15F42B1C248EB8F8003B2FC6 /* SmileyViewController.xib */,
@@ -3233,6 +3259,7 @@
 				4CB133081B90B7550081B44D /* ThorHammerFilled-20@2x.png in Resources */,
 				4C052E191BA86C9400B61952 /* Flat-RedFlag-25@2x.png in Resources */,
 				D826905C1E58658D006971C3 /* avatar_male_gray_on_dark_48x48.png in Resources */,
+				1591C0EE249653DD0025560A /* Embed.png in Resources */,
 				4CB132CD1B9099270081B44D /* ReplyArrowFilled-20@2x.png in Resources */,
 				CAF5DB7E19340741000B5215 /* FeedbackTableViewCell.xib in Resources */,
 				CA7C6FC3185EF50E00B348BA /* heink.gif in Resources */,
@@ -3441,9 +3468,11 @@
 				15357D6D234BA82B002D5C2E /* OfflineTableView.xib in Resources */,
 				CA7C702F185EF50E00B348BA /* MessageDetailViewControllerv2.xib in Resources */,
 				CA7C7030185EF50E00B348BA /* fou.gif in Resources */,
+				1591C0F2249690BF0025560A /* fond-degrade-bleu-fonce_1258-1348.jpg in Resources */,
 				CA7C7031185EF50E00B348BA /* pt1cable.gif in Resources */,
 				CA7C7032185EF50E00B348BA /* 111-user@2x.png in Resources */,
 				D8B4EDF721C184970042C392 /* snow18.png in Resources */,
+				1591C0F0249653EE0025560A /* Embed@2x.png in Resources */,
 				4C0B8DE11BA4522900D329BA /* SmartphoneTabletFilled-40@2x.png in Resources */,
 				4C9C2B931BAE801700511853 /* QuestionsFilled-25.png in Resources */,
 				CA7C7035185EF50E00B348BA /* multipleflag1.gif in Resources */,
@@ -3458,6 +3487,7 @@
 				4C0B8DCB1BA4522900D329BA /* WindowsClientFilled-40@2x.png in Resources */,
 				1591C0E4249418900025560A /* smiley.psd in Resources */,
 				4C0B8DD51BA4522900D329BA /* CameraFilled-40.png in Resources */,
+				1591C0EA2496473E0025560A /* redfaceBorder@2x.png in Resources */,
 				CA7C703B185EF50E00B348BA /* buttonprevioushover.png in Resources */,
 				CA7C703C185EF50E00B348BA /* arrowback.png in Resources */,
 				4C0B8DE71BA4522900D329BA /* KeyboardFilled-40@2x.png in Resources */,
@@ -3471,11 +3501,13 @@
 				1572FC4D22F3826100D40789 /* icons8-reset-50.png in Resources */,
 				4C0B8DE91BA4522900D329BA /* KeyboardFilled-40.png in Resources */,
 				4C21E9781BA5C70400691D65 /* StrikethroughFilled-20@2x.png in Resources */,
+				1591C0E92496473E0025560A /* redfaceBorder.png in Resources */,
 				CA7C7044185EF50E00B348BA /* TopicsTableViewController.xib in Resources */,
 				D8CA2765246C535C008FC72C /* sign-25@2x.png in Resources */,
 				CA7C7045185EF50E00B348BA /* na.gif in Resources */,
 				156246DE2182310000F5B8DC /* arrowforward.svg in Resources */,
 				D87BB73F216266BA0079690C /* CompteTableViewCell.xib in Resources */,
+				1591C0EC249652F60025560A /* redface@2x.png in Resources */,
 				4C193E741FA8820200434A37 /* Icons.xcassets in Resources */,
 				CA7C7046185EF50E00B348BA /* endhover.png in Resources */,
 				15357D64234BA620002D5C2E /* offline@2x.png in Resources */,
@@ -3719,6 +3751,7 @@
 				4C0B8DF51BA4526100D329BA /* BoldFilled-20@2x.png in Resources */,
 				CA7C70B7185EF50E00B348BA /* jquery.doubletap.js in Resources */,
 				4C0B8DD71BA4522900D329BA /* VideoCallFilled-40.png in Resources */,
+				1591C0F7249DF60D0025560A /* SimpleCellView.xib in Resources */,
 				D8B4EDF221C184970042C392 /* snow6.png in Resources */,
 				D8B4EDE721C184970042C392 /* snow12.png in Resources */,
 				4CB132EB1B909D6D0081B44D /* ReplyAllArrowFilled-20@2x.png in Resources */,
@@ -3862,6 +3895,7 @@
 				CA7C70F2185EF50E00B348BA /* RangeOfCharacters.m in Sources */,
 				15C673D122567A7300B9E0BE /* FavoriteCellView.m in Sources */,
 				15EBFD112206207B00A37CED /* AQCellView.m in Sources */,
+				1591C0F5249DF5F00025560A /* SimpleCellView.m in Sources */,
 				D8835E8E1E5F13C70073398C /* SDWebImageDownloader.m in Sources */,
 				4C39038B1BCAD0C700FD6F1F /* MWPhoto.m in Sources */,
 				CA7C70F9185EF50E00B348BA /* NSData+Base64.m in Sources */,

@@ -107,11 +107,6 @@
 	[self fetchContent];
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
-}
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 -(void)loadDataInTableView:(NSData *)contentData {
 	//[NSURL URLWithString:[self.urlQuote lowercaseString]]
@@ -170,7 +165,7 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
 
     //Traitement des smileys (to Array)
-    [self.smileyArray removeAllObjects]; //RaZ
+    //[self.smileyArray removeAllObjects]; //RaZ
     
     for (HTMLNode * imgNode in tmpImageArray) { //Loop through all the tags
         
@@ -511,9 +506,6 @@
 		
 	}
 
-    //self.textView.keyboardType = UIKeyboardTypeASCIICapable;
-    self.textFieldSmileys.keyboardType = UIKeyboardTypeASCIICapable;
-
 	headerView.frame = CGRectMake(headerView.frame.origin.x, originY * -1.0f, headerView.frame.size.width, originY);
 	[self.textView addSubview:headerView];
     textView.tag = 3;        
@@ -618,25 +610,7 @@
 	//NSLog(@"self.formSubmit %@", self.formSubmit);
 
 	NSString *newSubmitForm = [[NSString alloc] initWithFormat:@"%@%@", [k ForumURL], [fastAnswerNode getAttributeNamed:@"action"]];
-	[self setFormSubmit:newSubmitForm];
-	
-    if(!isLogged) {
-        [self.textFieldSmileys setHidden:TRUE];
-    }
-    
-    if([username caseInsensitiveCompare:@"applereview"] == NSOrderedSame) {
-        [self.textFieldSmileys setHidden:TRUE];
-    }
-    
-	//self.formSubmit = [NSString stringWithFormat:@"http://forum.hardware.fr/%@", [fastAnswerNode getAttributeNamed:@"action"]];
-	//NSLog(@"self.formSubmit2 %@", self.formSubmit);
-	
-
-	//NSDate *nowT = [NSDate date]; // Create a current date
-	
-	//NSLog(@"TOPICS Time elapsed then0		: %f", [then0 timeIntervalSinceDate:thenT]);
-	//NSLog(@"TOPICS Time elapsed nowT		: %f", [nowT timeIntervalSinceDate:then0]);
-	//NSLog(@"TOPICS Time elapsed Total		: %f", [nowT timeIntervalSinceDate:thenT]);
+	[self setFormSubmit:newSubmitForm];	
 }
 
 

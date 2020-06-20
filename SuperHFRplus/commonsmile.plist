@@ -82,14 +82,14 @@
         <key>resource</key>
         <string>wahoo.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:vomi:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/vomi.gif</string>
         <key>resource</key>
         <string>vomi.gif</string>
-    </dict>
+    </dict-->
 	<dict>
 		<key>code</key>
 		<string>:sweat:</string>
@@ -98,7 +98,7 @@
         <key>resource</key>
         <string>sweat.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:sum:</string>
 		<key>src</key>
@@ -113,7 +113,7 @@
 		<string>https://forum-images.hardware.fr/icones/smilies/spookie.gif</string>
         <key>resource</key>
         <string>spookie.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:spamafote:</string>
@@ -170,14 +170,14 @@
         <key>resource</key>
         <string>pfff.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:ouimaitre:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/ouimaitre.gif</string>
         <key>resource</key>
         <string>ouimaitre.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:ouch:</string>
@@ -267,7 +267,7 @@
         <key>resource</key>
         <string>jap.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:int:</string>
 		<key>src</key>
@@ -290,7 +290,7 @@
 		<string>https://forum-images.hardware.fr/icones/smilies/hello.gif</string>
         <key>resource</key>
         <string>hello.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:heink:</string>
@@ -307,7 +307,7 @@
         <key>resource</key>
         <string>hebe.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:hap:</string>
 		<key>src</key>
@@ -322,7 +322,7 @@
 		<string>https://forum-images.hardware.fr/icones/smilies/gun.gif</string>
         <key>resource</key>
         <string>gun.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:gratgrat:</string>
@@ -339,22 +339,22 @@
         <key>resource</key>
         <string>fuck.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:fouyaya:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/fouyaya.gif</string>
         <key>resource</key>
         <string>fouyaya.gif</string>
-	</dict>
-	<dict>
+	</dict-->
+	<!--dict>
 		<key>code</key>
 		<string>:foudtag:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/foudtag.gif</string>
         <key>resource</key>
         <string>foudtag.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:fou:</string>
@@ -363,22 +363,22 @@
         <key>resource</key>
         <string>fou.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:evil:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/fou.gif</string>
         <key>resource</key>
         <string>fou.gif</string>
-	</dict>
-	<dict>
+	</dict-->
+	<!--dict>
 		<key>code</key>
 		<string>:eek2:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/eek2.gif</string>
         <key>resource</key>
         <string>eek2.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:eek:</string>
@@ -387,14 +387,14 @@
         <key>resource</key>
         <string>eek.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:dtc:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/dtc.gif</string>
         <key>resource</key>
         <string>dtc.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:cry:</string>
@@ -403,15 +403,15 @@
         <key>resource</key>
         <string>cry.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:crazy:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/crazy.gif</string>
         <key>resource</key>
         <string>crazy.gif</string>
-	</dict>
-	<dict>
+	</dict-->
+	<!--dict>
 		<key>code</key>
 		<string>:calimero:</string>
 		<key>src</key>
@@ -450,7 +450,7 @@
 		<string>https://forum-images.hardware.fr/icones/smilies/benetton.gif</string>
         <key>resource</key>
         <string>benetton.gif</string>
-	</dict>
+	</dict-->
 	<dict>
 		<key>code</key>
 		<string>:ange:</string>
@@ -459,13 +459,13 @@
         <key>resource</key>
         <string>ange.gif</string>
 	</dict>
-	<dict>
+	<!--dict>
 		<key>code</key>
 		<string>:24:</string>
 		<key>src</key>
 		<string>https://forum-images.hardware.fr/icones/smilies/24.gif</string>
         <key>resource</key>
         <string>24.gif</string>
-	</dict>
+	</dict-->
 </array>
 </plist>

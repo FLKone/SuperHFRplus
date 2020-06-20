@@ -65,6 +65,7 @@
 + (UIColor *)tintColor:(Theme)theme;
 + (UIColor *)defaultTintColor:(Theme)theme;
 + (UIColor *)tintColor;
++ (UIColor *)tintColorWithAlpha:(CGFloat)newAlpha;
 + (UIColor *)tintLightColor;
 + (UIColor *)tintWhiteColor:(Theme)theme;
 + (UIColor *)tintColorDisabled:(Theme)theme;

@@ -50,6 +50,7 @@ static SmileyCache *_shared = nil;    // static instance variable
 - (void)handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*) cv
 {
     self.bStopLoadingSmileysToCache = NO;
+    self.bSearchSmileysActivated = YES;
     self.arrCurrentSmileyArray = [arrSmileys mutableCopy];
     dispatch_async(dispatch_get_main_queue(), ^{
         [cv reloadData];

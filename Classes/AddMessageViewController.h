@@ -12,6 +12,7 @@
 #import "HFRTextView.h"
 
 @protocol AddMessageViewControllerDelegate;
+@class SmileyViewController;
 
 @interface AddMessageViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, WKNavigationDelegate, WKUIDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource> {
     id <AddMessageViewControllerDelegate> __weak delegate;
@@ -37,7 +38,6 @@
     UITextField *textFieldSmileys;
     NSMutableArray *smileyArray;
     int smileyPage;
-    UITableView *commonTableView;
     NSMutableDictionary *usedSearchDict;
     NSMutableArray *usedSearchSortedArray;
     
@@ -102,31 +102,16 @@
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControler;
 @property (weak, nonatomic) IBOutlet UIButton *btnToolbarRedo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControlerPage;
-@property (nonatomic, strong) IBOutlet UITextField *textFieldSmileys;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *textFieldSmileysWidth;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinnerSmileys;
-@property (nonatomic, strong) NSMutableArray *smileyArray;
-@property int smileyPage;
-@property (nonatomic, strong) IBOutlet UITableView *commonTableView;
-@property (nonatomic, strong) NSMutableDictionary *usedSearchDict;
-@property (nonatomic, strong) NSMutableArray *usedSearchSortedArray;
+//DELETE: @property (nonatomic, strong) NSMutableArray *smileyArray;
+
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
-@property (strong, nonatomic) IBOutlet UICollectionView *collectionSmileys;
-@property (strong, nonatomic) IBOutlet UIButton *btnCollectionSmileysEnlarge;
-@property (strong, nonatomic) IBOutlet UIButton *btnCollectionSmileysClose;
 @property (strong, nonatomic) IBOutlet UIView *viewSmileys;
-@property (strong, nonatomic) IBOutlet UIViewController *viewControllerSmileys;
-
-@property BOOL bSearchSmileysAvailable;
-@property BOOL bSearchSmileysActivated;
-
+@property  SmileyViewController *viewControllerSmileys;
 
 @property (nonatomic, strong) IBOutlet UITableView *rehostTableView;
 @property (nonatomic, strong) NSMutableArray *rehostImagesArray;
 @property (nonatomic, strong) NSMutableArray *rehostImagesSortedArray;
-@property (nonatomic, strong) NSMutableArray *dicCommonSmileys;
-
-//@property (nonatomic, retain) IBOutlet UIScrollView *scrollViewer;
 @property (nonatomic, strong) id popover;
 @property (nonatomic, strong) NSString *refreshAnchor;
 @property (nonatomic, strong) NSString *statusMessage;
@@ -151,12 +136,8 @@
 -(IBAction)cancel;
 -(IBAction)done;
 -(IBAction)segmentFilterAction:(id)sender;
--(IBAction)textFieldSmileChange:(id)sender;
 
-
--(void)fetchSmileys;
 -(void)loadSmileys:(int)page;
--(void)didSelectSmile:(NSString *)smile;
 -(void)initData;
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 -(void)setupResponder;

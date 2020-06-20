@@ -83,9 +83,11 @@
     //if ([[UITabBar appearance] respondsToSelector:@selector(setTranslucent:)]) {
       //  [[UITabBar appearance] setTranslucent:NO];
     //}
+    UIImage *tab_snow = [UIImage imageNamed:@"fond-degrade-bleu-fonce_1258-1348.jpg"];
 
     if(!self.bgView){
-        self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor clearColor]]];
+        self.bgView.image = tab_snow;
+        //[[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor clearColor]]];
         [self.tabBar addSubview:self.bgView];
         [self.tabBar sendSubviewToBack:self.bgView];
 
@@ -118,8 +120,11 @@
     
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        self.bgOverlayViewBis.image = tab_snow;
+        self.bgOverlayView.image = tab_snow;
+/*
         self.bgOverlayViewBis.image =  [ThemeColors imageFromColor:[UIColor clearColor]];
-        self.bgOverlayView.image =  [ThemeColors imageFromColor:[UIColor clearColor]];
+        self.bgOverlayView.image =  [ThemeColors imageFromColor:[UIColor clearColor]];*/
     }else{
         UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
                          resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
