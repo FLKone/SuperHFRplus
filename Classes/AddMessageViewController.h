@@ -108,6 +108,7 @@
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
 @property (strong, nonatomic) IBOutlet UIView *viewSmileys;
 @property  SmileyViewController *viewControllerSmileys;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *constraintSmileyViewHeight;
 
 @property (nonatomic, strong) IBOutlet UITableView *rehostTableView;
 @property (nonatomic, strong) NSMutableArray *rehostImagesArray;
@@ -143,7 +144,7 @@
 -(void)setupResponder;
 -(bool)isDeleteMode;
 - (void)showPanelSmiley:(BOOL)bVisible reloadData:(BOOL)bReload;
-
+- (void)actionMaximizeSmiley;
 @end
 
 @protocol AddMessageViewControllerDelegate

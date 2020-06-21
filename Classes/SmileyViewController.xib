@@ -56,7 +56,7 @@
                                 <constraint firstAttribute="width" constant="40" id="cEf-e5-TBI"/>
                             </constraints>
                             <inset key="imageEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
-                            <state key="normal" image="Embed.png"/>
+                            <state key="normal" image="fullscreen.png"/>
                         </button>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h08-FM-ezn" userLabel="Button Default">
                             <rect key="frame" x="245" y="0.0" width="40" height="30"/>
@@ -97,7 +97,7 @@
                         <constraint firstItem="PT9-SC-Pau" firstAttribute="leading" secondItem="y66-zn-kNi" secondAttribute="leading" id="6GQ-Ko-HtO"/>
                         <constraint firstItem="1SM-Z0-9dq" firstAttribute="top" secondItem="y66-zn-kNi" secondAttribute="top" id="EX6-mh-otA"/>
                         <constraint firstAttribute="bottom" secondItem="BgO-yT-g9F" secondAttribute="bottom" constant="3" id="FCK-n5-Ji9"/>
-                        <constraint firstItem="h08-FM-ezn" firstAttribute="top" secondItem="y66-zn-kNi" secondAttribute="top" id="JYs-IT-yXf"/>
+                        <constraint firstItem="h08-FM-ezn" firstAttribute="top" secondItem="y66-zn-kNi" secondAttribute="top" priority="200" id="JYs-IT-yXf"/>
                         <constraint firstAttribute="bottom" secondItem="h08-FM-ezn" secondAttribute="bottom" id="VfN-F6-Meg"/>
                         <constraint firstAttribute="bottom" secondItem="PT9-SC-Pau" secondAttribute="bottom" id="fZc-IO-8bG"/>
                         <constraint firstItem="QLi-nq-QxM" firstAttribute="leading" secondItem="BgO-yT-g9F" secondAttribute="trailing" constant="8" id="kKx-k3-Ua8"/>
@@ -105,7 +105,7 @@
                         <constraint firstAttribute="bottom" secondItem="QLi-nq-QxM" secondAttribute="bottom" constant="5" id="oos-NN-97m"/>
                         <constraint firstAttribute="bottom" secondItem="h08-FM-ezn" secondAttribute="bottom" id="pWg-HP-kiY"/>
                         <constraint firstItem="BgO-yT-g9F" firstAttribute="leading" secondItem="PT9-SC-Pau" secondAttribute="trailing" id="qf2-Fb-QTn"/>
-                        <constraint firstItem="h08-FM-ezn" firstAttribute="top" secondItem="y66-zn-kNi" secondAttribute="top" id="tuH-VU-fNI"/>
+                        <constraint firstItem="h08-FM-ezn" firstAttribute="top" secondItem="y66-zn-kNi" secondAttribute="top" priority="200" id="tuH-VU-fNI"/>
                         <constraint firstItem="PT9-SC-Pau" firstAttribute="top" secondItem="y66-zn-kNi" secondAttribute="top" id="uby-fv-ukw"/>
                         <constraint firstAttribute="height" constant="30" id="vTw-rN-j4u"/>
                     </constraints>
@@ -155,7 +155,7 @@
     </objects>
     <resources>
         <image name="06-magnify.png" width="24" height="24"/>
-        <image name="Embed.png" width="75" height="75"/>
+        <image name="fullscreen.png" width="90" height="90"/>
         <image name="redface.png" width="90" height="90"/>
         <image name="smiley.png" width="90" height="90"/>
     </resources>

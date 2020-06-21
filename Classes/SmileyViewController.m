@@ -94,8 +94,8 @@
     [self.btnSmileyDefault  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnSmileyDefault setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Embed"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Embed"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"fullscreen"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"fullscreen"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnReduce setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 5, 10)];
 
     [self.btnSmileyDefault addTarget:self action:@selector(actionSmileysDefaults:) forControlEvents:UIControlEventTouchUpInside];
@@ -133,6 +133,8 @@
             [self.textFieldSmileys resignFirstResponder];
             break;
         case DisplayModeEnumSmileysSearch:
+            NSLog(@"56 Display collection");
+
             [self.collectionSmileys setAlpha:1];
             [self.tableViewSearch setAlpha:0];
             [self.collectionSmileys reloadData];
@@ -433,7 +435,8 @@ static CGFloat fCellImageSize = 1;
             [alert show];*/
         }
         else {
-            [self fetchSmileys];
+            [self.spinnerSmileySearch startAnimating];
+            [self performSelectorInBackground:@selector(fetchSmileys) withObject:nil];
         }
     }
     return NO;
@@ -485,8 +488,6 @@ static CGFloat fCellImageSize = 1;
 
 - (void)fetchSmileys
 {
-    [self.spinnerSmileySearch startAnimating];
-
     // Stop loading smileys of previous request
     [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
 
@@ -532,38 +533,28 @@ static CGFloat fCellImageSize = 1;
     
     HTMLParser * myParser = [[HTMLParser alloc] initWithString:[theRequest safeResponseString] error:NULL];
     HTMLNode * smileNode = [myParser doc]; //Find the body tag
-    
     NSArray * tmpImageArray =  [smileNode findChildTags:@"img"];
-    
-    
     for (HTMLNode * imgNode in tmpImageArray) { //Loop through all the tags
         [self.smileyArray addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[imgNode getAttributeNamed:@"src"], [imgNode getAttributeNamed:@"alt"], nil] forKeys:[NSArray arrayWithObjects:@"source", @"code", nil]]];
     }
-    //NSLog(@"%@", self.smileyArray);
-    
+
     if (self.smileyArray.count == 0) {
-        //[self.textFieldSmileys becomeFirstResponder];
-        //[self.smileView evaluateJavaScript:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');" completionHandler:nil];
         [HFRAlertView DisplayOKAlertViewWithTitle:nil andMessage:@"Aucun résultat !"];
         return;
     }
     
+    
+    [self performSelectorOnMainThread:@selector(displaySmileys) withObject:nil waitUntilDone:YES];
+    [self performSelectorInBackground:@selector(loadSmileys) withObject:nil];
+}
+
+- (void) displaySmileys {
     [self.collectionSmileys reloadData];
-    /*self.bSearchSmileysAvailable = YES;
-    self.bSearchSmileysActivated = YES;
-    [self.spinnerSmileys setHidden:YES];
-    [self.spinnerSmileys stopAnimating];
-    [self loadSmileys:0];*/
-    //[self loadSmileys:smileyPage];
-    
-    //NSDate *nowT = [NSDate date]; // Create a current date
-    
-    //NSLog(@"SMILEYS Parse Time elapsed Total        : %f", [nowT timeIntervalSinceDate:thenT]);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
-    });
+    [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
+}
+
+- (void) loadSmileys {
     [[SmileyCache shared] handleSmileyArray:self.smileyArray forCollection:self.collectionSmileys];
-    //[self cancelFetchContent];
 }
 
 - (void)fetchSmileContentFailed:(ASIHTTPRequest *)theRequest
@@ -579,7 +570,7 @@ static CGFloat fCellImageSize = 1;
     
 }
 
-
+/*
 -(void)loadSmileys;
 {
     @autoreleasepool {
@@ -671,7 +662,7 @@ static CGFloat fCellImageSize = 1;
         //Pagination
         //if (firstSmile > 0 || lastSmile < [self.smileyArray count]) {
         //NSLog(@"pagination needed");
-        */
+        *
         
         dispatch_async(dispatch_get_main_queue(), ^{
             //[self.segmentControler setAlpha:0];
@@ -680,7 +671,6 @@ static CGFloat fCellImageSize = 1;
             [self.btnToolbarSmiley setHidden:NO];
             [self.btnToolbarUndo setHidden:NO];
             [self.btnToolbarRedo setHidden:NO];*/
-            [self.collectionSmileys setHidden:NO];
             /*
             [btnCollectionSmileysEnlarge setHidden:NO];
             [btnCollectionSmileysClose setHidden:NO];
@@ -700,14 +690,14 @@ static CGFloat fCellImageSize = 1;
             }
             else {
                 [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
-            }*/
+            }*
         });
         
         //}
         
         
     }
-}
+}*/
 
 #pragma mark - Action events
 
@@ -748,11 +738,13 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (void)actionReduce:(id)sender {
+    [self.addMessageVC actionMaximizeSmiley];
+    /*
     self.bModeFullScreen = NO;
     [self dismissViewControllerAnimated:NO completion:^{
         [self.addMessageVC showPanelSmiley:YES reloadData:YES];
         [self.addMessageVC.textView becomeFirstResponder];
-    }];
+    }];*/
 }
 
 - (void)actionSmileysDefaults:(id)sender {

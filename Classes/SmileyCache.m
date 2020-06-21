@@ -85,16 +85,21 @@ static SmileyCache *_shared = nil;    // static instance variable
         });*/
         
         // TODO: add a way to stop loading. Like when closing the smiley panel.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [cv reloadData];
+        });
+/*
         if (!bHasbeenReloaded && i >= 25) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [cv reloadData];
             });
             bHasbeenReloaded = YES;
-        }
+        }*/
         if (self.bStopLoadingSmileysToCache) {
             break;
         }
      }
+    NSLog(@"Finished loading all smileys");
     if (!bHasbeenReloaded) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [cv reloadData];

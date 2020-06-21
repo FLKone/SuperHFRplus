@@ -90,6 +90,9 @@
 		15B245AC22E6FD080091B513 /* ThemeSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15B245AB22E6FD080091B513 /* ThemeSettingsViewController.xib */; };
 		15C673CC22552B6900B9E0BE /* FavoriteCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15C673CB22552B6900B9E0BE /* FavoriteCellView.xib */; };
 		15C673D122567A7300B9E0BE /* FavoriteCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15C673D022567A7300B9E0BE /* FavoriteCellView.m */; };
+		15DE2D1B249F59DD00A80C7C /* fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 15DE2D18249F59DC00A80C7C /* fullscreen.png */; };
+		15DE2D1C249F59DD00A80C7C /* fullscreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15DE2D19249F59DD00A80C7C /* fullscreen@2x.png */; };
+		15DE2D1D249F59DD00A80C7C /* fullscreen@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15DE2D1A249F59DD00A80C7C /* fullscreen@3x.png */; };
 		15E25D68223047EF00474562 /* HFRAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E25D67223047EF00474562 /* HFRAlertView.m */; };
 		15EBFD0522021B8400A37CED /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 15EBFD0422021B8400A37CED /* SettingsView.xib */; };
 		15EBFD0822022A7500A37CED /* PlusSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EBFD0722022A7500A37CED /* PlusSettingsViewController.m */; };
@@ -919,6 +922,9 @@
 		15C673CB22552B6900B9E0BE /* FavoriteCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FavoriteCellView.xib; sourceTree = "<group>"; };
 		15C673CF22567A3C00B9E0BE /* FavoriteCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoriteCellView.h; sourceTree = "<group>"; };
 		15C673D022567A7300B9E0BE /* FavoriteCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoriteCellView.m; sourceTree = "<group>"; };
+		15DE2D18249F59DC00A80C7C /* fullscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullscreen.png; sourceTree = "<group>"; };
+		15DE2D19249F59DD00A80C7C /* fullscreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fullscreen@2x.png"; sourceTree = "<group>"; };
+		15DE2D1A249F59DD00A80C7C /* fullscreen@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fullscreen@3x.png"; sourceTree = "<group>"; };
 		15E25D66223046BD00474562 /* HFRAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HFRAlertView.h; sourceTree = "<group>"; };
 		15E25D67223047EF00474562 /* HFRAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HFRAlertView.m; sourceTree = "<group>"; };
 		15EBFD0422021B8400A37CED /* SettingsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
@@ -2643,6 +2649,9 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				15DE2D18249F59DC00A80C7C /* fullscreen.png */,
+				15DE2D19249F59DD00A80C7C /* fullscreen@2x.png */,
+				15DE2D1A249F59DD00A80C7C /* fullscreen@3x.png */,
 				1591C0F1249690BF0025560A /* fond-degrade-bleu-fonce_1258-1348.jpg */,
 				1591C0EF249653EE0025560A /* Embed@2x.png */,
 				1591C0ED249653DC0025560A /* Embed.png */,
@@ -3261,6 +3270,7 @@
 				D826905C1E58658D006971C3 /* avatar_male_gray_on_dark_48x48.png in Resources */,
 				1591C0EE249653DD0025560A /* Embed.png in Resources */,
 				4CB132CD1B9099270081B44D /* ReplyArrowFilled-20@2x.png in Resources */,
+				15DE2D1B249F59DD00A80C7C /* fullscreen.png in Resources */,
 				CAF5DB7E19340741000B5215 /* FeedbackTableViewCell.xib in Resources */,
 				CA7C6FC3185EF50E00B348BA /* heink.gif in Resources */,
 				CA7C6FC4185EF50E00B348BA /* dtc.gif in Resources */,
@@ -3322,6 +3332,7 @@
 				4CB132DC1B909C730081B44D /* QuoteFilled-20.png in Resources */,
 				4CD6B8AE1B97AC9D007FC29E /* Folder-32@2x.png in Resources */,
 				CA7C6FE8185EF50E00B348BA /* foudtag.gif in Resources */,
+				15DE2D1D249F59DD00A80C7C /* fullscreen@3x.png in Resources */,
 				CA7C6FE9185EF50E00B348BA /* ToolBarFastForward_on@2x.png in Resources */,
 				D82690461E585CAC006971C3 /* style-liste-retina-dark.css in Resources */,
 				4CD6B8BE1B97AEF5007FC29E /* 6-Camera-32@2x.png in Resources */,
@@ -3613,6 +3624,7 @@
 				CA7C7076185EF50E00B348BA /* flagred.png in Resources */,
 				CA7C7077185EF50E00B348BA /* template.htm in Resources */,
 				156246DF2182310000F5B8DC /* arrowbegin.svg in Resources */,
+				15DE2D1C249F59DD00A80C7C /* fullscreen@2x.png in Resources */,
 				CA7C7078185EF50E00B348BA /* grayButton.png in Resources */,
 				CA7C707A185EF50E00B348BA /* commonsmile.plist in Resources */,
 				CA7C707C185EF50E00B348BA /* flagblue2.png in Resources */,

@@ -31,7 +31,7 @@
 //@import GiphyCoreSDK;
 
 @implementation AddMessageViewController
-@synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, smileView, viewControllerSmileys;
+@synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, smileView, viewControllerSmileys, constraintSmileyViewHeight;
 @synthesize request, loadingView, lastSelectedRange, loaded;//navBar,
 @synthesize segmentControler, isDragging, segmentControlerPage;
 @synthesize btnToolbarImage, btnToolbarGIF, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
@@ -1026,98 +1026,48 @@
 
 - (void)actionSmiley:(id)sender
 {
-    /*
-    SmileyViewController *svc = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
-    svc.addMessageVC = self;
-    [self presentViewController:svc animated:YES completion:nil];*/
-
-    SmileyViewController *svc = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
-    svc.addMessageVC = self;
-    HFRNavigationController *navigationController = [[HFRNavigationController alloc] initWithRootViewController:svc];
-    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
-    [self presentViewController:navigationController animated:YES completion:nil];
-
+    NSLog(@"Rect: %@", NSStringFromCGRect(self.viewSmileys.frame));
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.5];
+    if (self.viewSmileys.alpha == 0) {
+        [self.viewSmileys setAlpha:1];
+    }
+    else {
+        [self.viewSmileys setAlpha:0];
+    }
+    //[self.viewSmileys setHidden:NO];
     
+    [UIView commitAnimations];
+}
 
-    /*
-    if ([self.collectionSmileys isHidden]) {
-        self.bSearchSmileysActivated = NO;
-        [self.collectionSmileys reloadData];
-        [self.collectionSmileys setHidden:NO];
-        [btnCollectionSmileysEnlarge setHidden:NO];
-        [btnCollectionSmileysClose setHidden:NO];
-
-    }
-    else {
-        if (!self.bSearchSmileysAvailable) {
-            [self.collectionSmileys setHidden:YES];
-            self.bSearchSmileysActivated = NO;
-        }
-        else { // Search smiley available
-            if (!self.bSearchSmileysActivated) {
-                self.bSearchSmileysActivated = YES;
-                [self.collectionSmileys reloadData];
-            }
-            else {
-                self.bSearchSmileysActivated = NO;
-                [self.collectionSmileys setHidden:YES];
-            }
-        }
-    }
-/*
-    if (self.smileView.alpha == 0.0) {
-        
-        NSString *doubleSmileysCSS = @"";
-        if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-            doubleSmileysCSS = @"#smileperso img.smile {max-height:60px;min-height: 30px;} #smileperso .button {height:60px;min-width:45px;} #smileperso .button img {max-height:60px;}";
-        }
-        
-        [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
-                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
-                                            ", [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]], doubleSmileysCSS]
-                         completionHandler:nil];
-        
-        self.loaded = NO;
-        [textView resignFirstResponder];
-        [textFieldSmileys resignFirstResponder];
-        NSRange newRange = textView.selectedRange;
-        newRange.length = 0;
-        textView.selectedRange = newRange;
-        
-        [self.smileView setHidden:NO];
-        [self segmentToWhite];
-        
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.commonTableView setAlpha:0];
-        [self.rehostTableView setAlpha:0];
-        
-        [self.smileView setAlpha:1];
-        //[self.segmentControler setAlpha:0];
-        [self.btnToolbarImage setHidden:YES];
-        [self.btnToolbarSmiley setHidden:YES];
-        [self.btnToolbarUndo setHidden:YES];
-        [self.btnToolbarRedo setHidden:YES];
-
-        [self.segmentControlerPage setAlpha:1];
-        
+- (void)actionMaximizeSmiley
+{
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.5];
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)[self.viewControllerSmileys.collectionSmileys collectionViewLayout];
+    if (self.constraintSmileyViewHeight.constant == 150) {
+        [self.view endEditing:YES];
+        CGRect rectA = self.view.frame;
+        CGRect rectS = self.viewSmileys.frame;
+        NSLog(@"rectA %@", NSStringFromCGRect(rectA));
+        NSLog(@"rectS %@", NSStringFromCGRect(rectS));
+        CGFloat f = rectS.size.height + rectS.origin.y;
+        self.constraintSmileyViewHeight.constant = f;
+        layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         [UIView commitAnimations];
     }
     else {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.smileView setAlpha:0];
+        self.constraintSmileyViewHeight.constant = 150;
+        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         [UIView commitAnimations];
-        // [(UISegmentedControl *)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
         [self.textView becomeFirstResponder];
-        
-        [self segmentToBlue];
     }
- */
+    
 }
 
 - (void) showPanelSmiley:(BOOL)bVisible reloadData:(BOOL)bReload {
     [self.viewSmileys setHidden:NO];
+    [self.viewControllerSmileys.view setHidden:YES];
 }
 
 - (IBAction)actionUndo:(id)sender
@@ -1447,7 +1397,6 @@ self.loaded = YES;
     //[self.accessoryView updateConstraintsIfNeeded];
 
     [UIView commitAnimations];
-
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
@@ -1702,6 +1651,7 @@ static CGFloat fCellImageSize = 1;
     [self.collectionImages  setDelegate:self];
 
     self.viewControllerSmileys = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
+    self.viewControllerSmileys.addMessageVC = self;
     [self addChildViewController:self.viewControllerSmileys];
     self.viewControllerSmileys.view.frame = self.viewSmileys.bounds;
     UICollectionViewFlowLayout *collectionViewFlowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -1712,7 +1662,7 @@ static CGFloat fCellImageSize = 1;
     [self.viewSmileys addSubview:self.viewControllerSmileys.view];
     self.viewSmileys.backgroundColor = UIColor.greenColor;
 
-    [self.viewSmileys setHidden:YES];
+    [self.viewSmileys setAlpha:0];
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath

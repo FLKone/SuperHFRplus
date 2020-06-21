@@ -17,6 +17,7 @@
                 <outlet property="btnToolbarSmiley" destination="5xY-k7-iVI" id="G0x-Vk-TkH"/>
                 <outlet property="btnToolbarUndo" destination="g2R-uw-wg6" id="T6R-2x-Lak"/>
                 <outlet property="collectionImages" destination="Kge-o4-GJe" id="VEV-ws-Gdw"/>
+                <outlet property="constraintSmileyViewHeight" destination="zaV-Uq-TiA" id="M4h-e5-ZNm"/>
                 <outlet property="loadingView" destination="65" id="68"/>
                 <outlet property="loadingViewIndicator" destination="66" id="ORt-t9-aPx"/>
                 <outlet property="loadingViewLabel" destination="67" id="lKZ-U0-rjD"/>
@@ -25,7 +26,6 @@
                 <outlet property="segmentControlerPage" destination="72" id="74"/>
                 <outlet property="selectCompte" destination="sR2-lo-g8U" id="Mwt-33-Kyf"/>
                 <outlet property="smileView" destination="SvM-lI-LQX" id="XUX-1L-Qn7"/>
-                <outlet property="spinnerSmileys" destination="3gf-gU-Igu" id="3Wi-Wu-uVU"/>
                 <outlet property="textView" destination="62" id="64"/>
                 <outlet property="view" destination="1" id="3"/>
                 <outlet property="viewSmileys" destination="qhk-Fp-roq" id="uzP-Fk-jgM"/>
@@ -59,7 +59,7 @@
                         <constraint firstAttribute="height" constant="20" id="ujp-Zd-Q1O"/>
                     </constraints>
                 </view>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="49">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="49" userLabel="View Bottom Toolbar">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <subviews>
                         <textView multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="62" customClass="HFRTextView">
@@ -194,13 +194,6 @@
                             <inset key="imageEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="2"/>
                             <state key="normal" image="gif.png"/>
                         </button>
-                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="3gf-gU-Igu">
-                            <rect key="frame" x="243" y="637" width="20" height="20"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="20" id="BRW-YT-XpY"/>
-                                <constraint firstAttribute="width" constant="20" id="rxa-xZ-rM0"/>
-                            </constraints>
-                        </activityIndicatorView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qhk-Fp-roq" userLabel="Smiley View">
                             <rect key="frame" x="0.0" y="477" width="375" height="150"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -230,7 +223,6 @@
                         <constraint firstItem="sR2-lo-g8U" firstAttribute="top" secondItem="Kge-o4-GJe" secondAttribute="bottom" constant="10" id="bU4-c4-2Z2"/>
                         <constraint firstAttribute="trailing" secondItem="qhk-Fp-roq" secondAttribute="trailing" id="dFm-0v-bHO"/>
                         <constraint firstAttribute="trailing" secondItem="Kge-o4-GJe" secondAttribute="trailing" id="dwr-Fv-W1o"/>
-                        <constraint firstAttribute="bottom" secondItem="3gf-gU-Igu" secondAttribute="bottom" constant="10" id="f9c-nY-XB0"/>
                         <constraint firstItem="62" firstAttribute="top" secondItem="49" secondAttribute="top" id="fco-PO-pbF"/>
                         <constraint firstAttribute="trailing" secondItem="iGM-pe-bhN" secondAttribute="trailing" id="gNx-9F-pfX"/>
                         <constraint firstAttribute="bottom" secondItem="62" secondAttribute="bottom" constant="60" id="hDA-GO-pwC"/>

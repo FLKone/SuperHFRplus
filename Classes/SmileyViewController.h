@@ -40,6 +40,7 @@ typedef enum {
 @property BOOL bModeFullScreen;
 @property DisplayModeEnum displayMode;
 
+- (void) changeDisplayMode:(DisplayModeEnum)newMode animate:(BOOL)bAnimate;
 - (void)actionReduce:(id)sender;
 - (void)fetchSmileys;
 
