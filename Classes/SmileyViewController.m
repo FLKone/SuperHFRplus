@@ -19,7 +19,7 @@
 @implementation SmileyViewController
 
 @synthesize smileyCache, collectionSmileys, textFieldSmileys, btnSmileySearch, btnSmileyDefault, btnReduce, tableViewSearch;
-@synthesize smileyArray, usedSearchDict, usedSearchSortedArray, request, requestSmile, bModeFullScreen;
+@synthesize arrayTmpsmileySearch, dicTopSearch, dicLastSearch, usedSearchSortedArray, request, requestSmile, bModeFullScreen;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -31,10 +31,11 @@
         self.smileyCache = [SmileyCache shared];
         self.title = @"Smileys";
         
-        self.bModeFullScreen = YES;
-        self.usedSearchDict = [[NSMutableDictionary alloc] init];
+        self.bModeFullScreen = NO;
+        self.dicTopSearch = [[NSMutableDictionary alloc] init];
+        self.dicLastSearch = [[NSMutableDictionary alloc] init];
         self.usedSearchSortedArray = [[NSMutableArray alloc] init];
-        self.smileyArray = [[NSMutableArray alloc] init];
+        self.arrayTmpsmileySearch = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -57,7 +58,7 @@
     // Dic of search smileys
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    NSString *usedSmilieys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:USED_SMILEYS_FILE]];
+    NSString *usedSmilieys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:TOP_SMILEYS_FILE]];
     if ([fileManager fileExistsAtPath:usedSmilieys]) {
         self.usedSearchDict = [NSMutableDictionary dictionaryWithContentsOfFile:usedSmilieys];
         self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
@@ -75,6 +76,7 @@
     //[self.tableViewSearch setHidden:YES];
     [self.tableViewSearch registerNib:[UINib nibWithNibName:@"SimpleCellView" bundle:nil] forCellReuseIdentifier:@"SimpleCellId"];
 
+    
     // Observe keyboard hide and show notifications to resize the text view appropriately.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
@@ -94,9 +96,10 @@
     [self.btnSmileyDefault  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnSmileyDefault setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"fullscreen"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"fullscreen"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnReduce setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 5, 10)];
+    //Image(systemName: "rectangle.expand.vertical").font(.system(size: 16, weight: .medium))
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
+    //[self.btnReduce setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 5, 10)];
 
     [self.btnSmileyDefault addTarget:self action:@selector(actionSmileysDefaults:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnReduce addTarget:self action:@selector(actionReduce:) forControlEvents:UIControlEventTouchUpInside];
@@ -170,7 +173,6 @@ static CGFloat fCellImageSize = 1;
         if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
              // Default smileys
             image = [UIImage imageNamed:self.smileyCache.dicCommonSmileys[indexPath.row][@"resource"]];
-            cell.smileyCode = self.smileyCache.dicCommonSmileys[indexPath.row][@"code"];
         }
         else {
             UIImage* tmpImage = [self.smileyCache getImageForIndex:(int)indexPath.row];
@@ -205,27 +207,26 @@ static CGFloat fCellImageSize = 1;
     }
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (collectionView == self.collectionSmileys) {
-        SmileyCollectionCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-        if (!self.smileyCache.bSearchSmileysActivated) {
-            //[self.smileyCache didSelectSmile:cell.smileyCode];
-        }
-        else {
-            //[self didSelectSmile:@"totoz"];
-        }
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    SmileyCollectionCell *cell = (SmileyCollectionCell*)[collectionView cellForItemAtIndexPath:indexPath];
+    if (!self.smileyCache.bSearchSmileysActivated) {
+        NSString* sCode = self.smileyCache.dicCommonSmileys[indexPath.row][@"code"];
+        [self didSelectSmile:sCode];
+    }
+    else {
+        NSString* sCode = [self.smileyCache getSmileyCodeForIndex:(int)indexPath.row];
+        [self didSelectSmile:sCode];
     }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if (collectionView == self.collectionSmileys) {
-        if (!self.smileyCache.bSearchSmileysActivated) {
-            return self.smileyCache.dicCommonSmileys.count;
-        }
-        else {
-            return self.smileyArray.count;
-        }
+    if (!self.smileyCache.bSearchSmileysActivated) {
+        return self.smileyCache.dicCommonSmileys.count;
+    }
+    else {
+        return self.smileyCache.arrCurrentSmileyArray.count;
     }
 }
 
@@ -236,32 +237,19 @@ static CGFloat fCellImageSize = 1;
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (collectionView == self.collectionSmileys) {
-        //return CGSizeMake(w, 50);
-        return CGSizeMake(70*fCellSize, 50*fCellSize);
-    }
-    return CGSizeMake(60, 60);
+    return CGSizeMake(70*fCellSize, 50*fCellSize);
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    if (collectionView == self.collectionSmileys) {
-        return UIEdgeInsetsMake(2, 2, 0, 0);
-    }
-    else {
-        return UIEdgeInsetsMake(0, 2, 0, 0);
-    }
+    return UIEdgeInsetsMake(2, 2, 0, 0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    if (collectionView == self.collectionSmileys) {
-        return 1.0;
-    }
-    else {
-        return 1.0;
-    }
+    return 1.0;
 }
+
 #pragma mark - Table view management
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -359,8 +347,32 @@ static CGFloat fCellImageSize = 1;
 #pragma mark - Responding to keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    //NSLog(@"keyboardWillShow ADD %@", notification);
+    if (bModeFullScreen) {
+        NSLog(@"SMILEYS :::: Keyboard will show");
 
+        NSDictionary *userInfo = [notification userInfo];
+        NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+        CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        CGRect convertedKeyboardRect = [self.view convertRect:keyboardRect fromView:self.view.window];
+
+        CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
+        CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
+
+        NSTimeInterval animationDuration;
+        [animationDurationValue getValue:&animationDuration];
+
+        // Animate the resize of the text view's frame in sync with the keyboard's appearance.
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:animationDuration];
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
+        [self.view layoutIfNeeded];
+        [UIView commitAnimations];
+    }
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    //NSLog(@"keyboardWillHide ADD");
+    NSLog(@"SMILEYS :::: Keyboard will hide");
     NSDictionary *userInfo = [notification userInfo];
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -368,11 +380,6 @@ static CGFloat fCellImageSize = 1;
 
     CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
     CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
-
-//    self.bottomGuide.constant = CGRectGetMaxY(self.view.bounds) - CGRectGetMinY(convertedKeyboardRect);
-  //  [self.accessoryView setNeedsUpdateConstraints];
-
-    //NSLog(@"Bottom Constant %@", NSStringFromCGRect(intersection));
 
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];
@@ -382,16 +389,7 @@ static CGFloat fCellImageSize = 1;
     [UIView setAnimationDuration:animationDuration];
     self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
     [self.view layoutIfNeeded];
-    //[self.accessoryView updateConstraintsIfNeeded];
-
     [UIView commitAnimations];
-
-}
-
-- (void)keyboardWillHide:(NSNotification *)notification {
-    //NSLog(@"keyboardWillHide ADD");
-    
-    [self keyboardWillShow:notification];
 
 }
 
@@ -494,7 +492,7 @@ static CGFloat fCellImageSize = 1;
     NSString *sTextSmileys = [NSString stringWithFormat:@"+%@", [[self.textFieldSmileys.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString:@" +"]];
     NSMutableArray* smileyList = [[SmileyCache shared] getSmileyListForText:sTextSmileys];
     if (smileyList) {
-        self.smileyArray = smileyList;
+        self.arrayTmpsmileySearch = smileyList;
         [self performSelectorInBackground:@selector(loadSmileys) withObject:nil];
     }
     else {
@@ -524,7 +522,7 @@ static CGFloat fCellImageSize = 1;
 {
     NSLog(@"fetchSmileContentComplete %@", theRequest);
     //Traitement des smileys (to Array)
-    [self.smileyArray removeAllObjects]; //RaZ
+    [self.arrayTmpsmileySearch removeAllObjects]; //RaZ
 
     /*
     [self.segmentControlerPage setTitle:@"Smilies" forSegmentAtIndex:1];*/
@@ -535,14 +533,13 @@ static CGFloat fCellImageSize = 1;
     HTMLNode * smileNode = [myParser doc]; //Find the body tag
     NSArray * tmpImageArray =  [smileNode findChildTags:@"img"];
     for (HTMLNode * imgNode in tmpImageArray) { //Loop through all the tags
-        [self.smileyArray addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[imgNode getAttributeNamed:@"src"], [imgNode getAttributeNamed:@"alt"], nil] forKeys:[NSArray arrayWithObjects:@"source", @"code", nil]]];
+        [self.arrayTmpsmileySearch addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[imgNode getAttributeNamed:@"src"], [imgNode getAttributeNamed:@"alt"], nil] forKeys:[NSArray arrayWithObjects:@"source", @"code", nil]]];
     }
 
-    if (self.smileyArray.count == 0) {
+    if (self.arrayTmpsmileySearch.count == 0) {
         [HFRAlertView DisplayOKAlertViewWithTitle:nil andMessage:@"Aucun résultat !"];
         return;
     }
-    
     
     [self performSelectorOnMainThread:@selector(displaySmileys) withObject:nil waitUntilDone:YES];
     [self performSelectorInBackground:@selector(loadSmileys) withObject:nil];
@@ -554,7 +551,7 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (void) loadSmileys {
-    [[SmileyCache shared] handleSmileyArray:self.smileyArray forCollection:self.collectionSmileys];
+    [[SmileyCache shared] handleSmileyArray:self.arrayTmpsmileySearch forCollection:self.collectionSmileys];
 }
 
 - (void)fetchSmileContentFailed:(ASIHTTPRequest *)theRequest
@@ -570,181 +567,64 @@ static CGFloat fCellImageSize = 1;
     
 }
 
-/*
--(void)loadSmileys;
-{
-    @autoreleasepool {
-        
-        [[SmileyCache shared] handleSmileyArray:self.smileyArray forCollection:self.collectionSmileys];
-        /*
-        int page = self.smileyPage;
-        
-        
-        
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-        NSString *diskCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"SmileCache"];
-        
-        if (![[NSFileManager defaultManager] fileExistsAtPath:diskCachePath])
-        {
-            //NSLog(@"createDirectoryAtPath");
-            [[NSFileManager defaultManager] createDirectoryAtPath:diskCachePath
-                                      withIntermediateDirectories:YES
-                                                       attributes:nil
-                                                            error:NULL];
-        }
-        else {
-            //NSLog(@"pas createDirectoryAtPath");
-        }
-        
-        int doubleSmileys = 1;
-        if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-            doubleSmileys = 2;
-        }
-        
-        int smilePerPage = 40/doubleSmileys;
-        float surface = [UIScreen mainScreen].bounds.size.height*[UIScreen mainScreen].bounds.size.width;
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            if (surface > 250000) {
-                smilePerPage = roundf(55/doubleSmileys);
-            }
-            else if (surface > 180000) {
-                smilePerPage = roundf(45/doubleSmileys);
-            }
-        }
-        
-        
-        //NSLog(@"SMILEYS %f = %d", surface, smilePerPage);
-        
-        //i4 153600
-        //i5 181760
-        //i6 250125
-        NSArray *localsmileyArray = [[NSArray alloc] initWithArray:self.smileyArray copyItems:true];
-        
-        
-        int firstSmile = page * smilePerPage;
-        int lastSmile = MIN([localsmileyArray count], (page + 1) * smilePerPage);
-        //NSLog(@"%d to %d", firstSmile, lastSmile);
-        
-        int i;
-        
-        NSString *tmpHTML = @"";
-        NSFileManager *fileManager = [[NSFileManager alloc] init];
-        
-        
-        for (i = firstSmile; i < lastSmile; i++) { //Loop through all the tags
-            NSString *filename = [[[localsmileyArray objectAtIndex:i] objectForKey:@"source"] stringByReplacingOccurrencesOfString:@"http://forum-images.hardware.fr/" withString:@""];
-            filename = [filename stringByReplacingOccurrencesOfString:@"https://forum-images.hardware.fr/" withString:@""];
-            filename = [filename stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
-            filename = [filename stringByReplacingOccurrencesOfString:@" " withString:@"-"];
-            
-            NSString *key = [diskCachePath stringByAppendingPathComponent:filename];
-            
-            //NSLog(@"url %@", [[self.smileyArray objectAtIndex:i] objectForKey:@"source"]);
-            //NSLog(@"key %@", key);
-            
-            if (![fileManager fileExistsAtPath:key])
-            {
-                //NSLog(@"dl %@", key);
-                
-                [fileManager createFileAtPath:key contents:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", [[[localsmileyArray objectAtIndex:i] objectForKey:@"source"] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]]]] attributes:nil];
-            }
-            
-            
-            tmpHTML = [tmpHTML stringByAppendingString:[NSString stringWithFormat:@"<img class=\"smile\" src=\"%@\" alt=\"%@\"/>", key, [[localsmileyArray objectAtIndex:i] objectForKey:@"code"]]];
-            
-        }
-        
-        
-        tmpHTML = [tmpHTML stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
-        
-        [self performSelectorOnMainThread:@selector(showSmileResults:) withObject:tmpHTML waitUntilDone:YES];
-        
-        //Pagination
-        //if (firstSmile > 0 || lastSmile < [self.smileyArray count]) {
-        //NSLog(@"pagination needed");
-        *
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            //[self.segmentControler setAlpha:0];
-            /*[self.btnToolbarImage setHidden:NO];
-            [self.btnToolbarGIF setHidden:NO];
-            [self.btnToolbarSmiley setHidden:NO];
-            [self.btnToolbarUndo setHidden:NO];
-            [self.btnToolbarRedo setHidden:NO];*/
-            /*
-            [btnCollectionSmileysEnlarge setHidden:NO];
-            [btnCollectionSmileysClose setHidden:NO];
-*/
-/*
-            [self.segmentControlerPage setAlpha:1];
-
-            if (firstSmile > 0) {
-                    [self.segmentControlerPage setEnabled:YES forSegmentAtIndex:0];
-            }
-            else {
-                [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:0];
-            }
-            
-            if (lastSmile < [localsmileyArray count]) {
-                [self.segmentControlerPage setEnabled:YES forSegmentAtIndex:2];
-            }
-            else {
-                [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
-            }*
-        });
-        
-        //}
-        
-        
-    }
-}*/
-
 #pragma mark - Action events
 
 - (void) didSelectSmile:(NSString *)smile
 {
-    smile = [NSString stringWithFormat:@" %@ ", smile]; // ajout des espaces avant/aprés le smiley.
-
-    // Update smiley used
     if (self.textFieldSmileys.text.length >= 3) {
         NSNumber *val;
-        if ((val = [self.usedSearchDict valueForKey:self.textFieldSmileys.text])) {
-            //NSLog(@"existe %@", val);
-            [self.usedSearchDict setObject:[NSNumber numberWithInt:[val intValue]+1] forKey:self.textFieldSmileys.text];
+        if ((val = [self.dicTopSearch valueForKey:self.textFieldSmileys.text])) {
+            [self.dicTopSearch setObject:[NSNumber numberWithInt:[val intValue]+1] forKey:self.textFieldSmileys.text];
         }
         else {
-            //NSLog(@"nouveau");
-            [self.usedSearchDict setObject:[NSNumber numberWithInt:1] forKey:self.textFieldSmileys.text];
-            
+            [self.dicTopSearch setObject:[NSNumber numberWithInt:1] forKey:self.textFieldSmileys.text];
         }
         
         NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-        NSString *usedSmilieys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:USED_SMILEYS_FILE]];
-        [self.usedSearchDict writeToFile:usedSmilieys atomically:YES];
+        NSString *usedSmilieys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:TOP_SMILEYS_FILE]];
+        
+        [self.dicTopSearch writeToFile:usedSmilieys atomically:YES];
     }
-    
-    /*
-    NSString *jsString = @"";
-    jsString = [jsString stringByAppendingString:@"$(\".selected\").each(function (i) {\
-                $(this).delay(800).removeClass('selected');\
-                });"];
-    
-    [self.smileView evaluateJavaScript:jsString completionHandler:nil];
-    [self cancel];*/
-}
 
-- (IBAction)closeView {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    smile = [NSString stringWithFormat:@" %@ ", smile]; // ajout des espaces avant/aprés le smiley.
+
+    // Update main textField
+    AddMessageViewController* vcAddMessage = (AddMessageViewController*)self.parentViewController;
+    NSRange range = [vcAddMessage lastSelectedRange];
+    if ([vcAddMessage.textView isFirstResponder]) {
+        range = vcAddMessage.textView.selectedRange;
+    }
+    if (!range.location) {
+        range = NSMakeRange(0, 0);
+    }
+    NSMutableString *text = [vcAddMessage.textView.text mutableCopy];
+    if (text.length < range.location) {
+        range.location = text.length;
+    }
+    [text insertString:smile atIndex:range.location];
+    range.location += [smile length];
+    range.length = 0;
+    [vcAddMessage setLastSelectedRange:range];
+    vcAddMessage.textView.text = text;
+    vcAddMessage.textView.selectedRange = range;
+    [vcAddMessage textViewDidChange:vcAddMessage.textView];
+    
+    if (self.bModeFullScreen) {
+        [self.addMessageVC actionHideSmileys];
+    }
 }
 
 - (void)actionReduce:(id)sender {
-    [self.addMessageVC actionMaximizeSmiley];
-    /*
-    self.bModeFullScreen = NO;
-    [self dismissViewControllerAnimated:NO completion:^{
-        [self.addMessageVC showPanelSmiley:YES reloadData:YES];
-        [self.addMessageVC.textView becomeFirstResponder];
-    }];*/
+    [self.addMessageVC actionExpandCompressSmiley];
+    NSString* sImageName = @"rectangle.expand";
+    if (self.bModeFullScreen) {
+        sImageName = @"rectangle.compress";
+    }
+    Theme theme = [[ThemeManager sharedManager] theme];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:sImageName] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:sImageName] withTheme:theme] forState:UIControlStateHighlighted];
+
 }
 
 - (void)actionSmileysDefaults:(id)sender {

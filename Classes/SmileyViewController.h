@@ -29,9 +29,10 @@ typedef enum {
 @property (strong, nonatomic) IBOutlet UITableView *tableViewSearch;
 
 @property (strong, nonatomic) SmileyCache *smileyCache;
-@property (nonatomic, strong) NSMutableDictionary *usedSearchDict;
+@property (nonatomic, strong) NSMutableDictionary *dicTopSearch;
+@property (nonatomic, strong) NSMutableDictionary *dicLastSearch;
 @property (nonatomic, strong) NSMutableArray *usedSearchSortedArray;
-@property (strong, nonatomic) NSMutableArray *smileyArray;
+@property (strong, nonatomic) NSMutableArray *arrayTmpsmileySearch;
 
 @property ASIHTTPRequest *request;
 @property ASIHTTPRequest *requestSmile;
@@ -40,7 +41,7 @@ typedef enum {
 @property BOOL bModeFullScreen;
 @property DisplayModeEnum displayMode;
 
-- (void) changeDisplayMode:(DisplayModeEnum)newMode animate:(BOOL)bAnimate;
+- (void)changeDisplayMode:(DisplayModeEnum)newMode animate:(BOOL)bAnimate;
 - (void)actionReduce:(id)sender;
 - (void)fetchSmileys;
 

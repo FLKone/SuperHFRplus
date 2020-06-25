@@ -38,6 +38,12 @@
 		1543743722ECAE3100AF00A5 /* ThemeColorCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1543743622ECAE3100AF00A5 /* ThemeColorCellView.xib */; };
 		1543743922ECB1C300AF00A5 /* ThemeColorCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1543743822ECB1C300AF00A5 /* ThemeColorCellView.m */; };
 		1543743D22EDDF7400AF00A5 /* ColorPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1543743C22EDDF7400AF00A5 /* ColorPickerViewController.m */; };
+		1553568424A500D400917DE1 /* rectangle.compress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553567E24A500D300917DE1 /* rectangle.compress@2x.png */; };
+		1553568524A500D400917DE1 /* rectangle.compress.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553567F24A500D300917DE1 /* rectangle.compress.png */; };
+		1553568624A500D400917DE1 /* rectangle.expand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568024A500D300917DE1 /* rectangle.expand@2x.png */; };
+		1553568724A500D400917DE1 /* rectangle.expand.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568124A500D300917DE1 /* rectangle.expand.png */; };
+		1553568824A500D400917DE1 /* rectangle.exPand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568224A500D300917DE1 /* rectangle.exPand@3x.png */; };
+		1553568924A500D400917DE1 /* rectangle.compress@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568324A500D400917DE1 /* rectangle.compress@3x.png */; };
 		1556408E22D91E980018A619 /* ListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556408D22D91E980018A619 /* ListTableViewController.m */; };
 		1556409122D928D30018A619 /* WhiteListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556409022D928D30018A619 /* WhiteListTableViewController.m */; };
 		1556409322D9297C0018A619 /* WhiteListTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1556409222D9297C0018A619 /* WhiteListTableViewController.xib */; };
@@ -861,6 +867,12 @@
 		1543743A22ECB1DD00AF00A5 /* ThemeColorCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeColorCellView.h; sourceTree = "<group>"; };
 		1543743B22EDDF5E00AF00A5 /* ColorPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewController.h; sourceTree = "<group>"; };
 		1543743C22EDDF7400AF00A5 /* ColorPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorPickerViewController.m; sourceTree = "<group>"; };
+		1553567E24A500D300917DE1 /* rectangle.compress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.compress@2x.png"; sourceTree = "<group>"; };
+		1553567F24A500D300917DE1 /* rectangle.compress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rectangle.compress.png; sourceTree = "<group>"; };
+		1553568024A500D300917DE1 /* rectangle.expand@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.expand@2x.png"; sourceTree = "<group>"; };
+		1553568124A500D300917DE1 /* rectangle.expand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rectangle.expand.png; sourceTree = "<group>"; };
+		1553568224A500D300917DE1 /* rectangle.exPand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.exPand@3x.png"; sourceTree = "<group>"; };
+		1553568324A500D400917DE1 /* rectangle.compress@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.compress@3x.png"; sourceTree = "<group>"; };
 		1556408C22D91E820018A619 /* ListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListTableViewController.h; sourceTree = "<group>"; };
 		1556408D22D91E980018A619 /* ListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListTableViewController.m; sourceTree = "<group>"; };
 		1556408F22D928AE0018A619 /* WhiteListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WhiteListTableViewController.h; sourceTree = "<group>"; };
@@ -2649,6 +2661,12 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				1553567F24A500D300917DE1 /* rectangle.compress.png */,
+				1553567E24A500D300917DE1 /* rectangle.compress@2x.png */,
+				1553568324A500D400917DE1 /* rectangle.compress@3x.png */,
+				1553568124A500D300917DE1 /* rectangle.expand.png */,
+				1553568024A500D300917DE1 /* rectangle.expand@2x.png */,
+				1553568224A500D300917DE1 /* rectangle.exPand@3x.png */,
 				15DE2D18249F59DC00A80C7C /* fullscreen.png */,
 				15DE2D19249F59DD00A80C7C /* fullscreen@2x.png */,
 				15DE2D1A249F59DD00A80C7C /* fullscreen@3x.png */,
@@ -3217,6 +3235,7 @@
 				4C061D731BD275410034CD0A /* smileyloading.html in Resources */,
 				CA7C6FA9185EF50E00B348BA /* global.gif in Resources */,
 				CA7C6FAA185EF50E00B348BA /* Default@2x.png in Resources */,
+				1553568424A500D400917DE1 /* rectangle.compress@2x.png in Resources */,
 				4C052E171BA86C9400B61952 /* Flat-YellowFlag-25.png in Resources */,
 				D8DDF2B51E58810A002F1484 /* ToolBarPrevious_on_tinted.png in Resources */,
 				4C21E9581BA5C70400691D65 /* CursorFilled-20@2x.png in Resources */,
@@ -3412,6 +3431,7 @@
 				15A1238D22D659CB00C3DFEC /* Heart-20.png in Resources */,
 				4C0B8D9B1BA4522900D329BA /* Settings3Filled-40@2x.png in Resources */,
 				CA7C7011185EF50E00B348BA /* Default-568h@2x.png in Resources */,
+				1553568924A500D400917DE1 /* rectangle.compress@3x.png in Resources */,
 				CA7C7012185EF50E00B348BA /* eek2.gif in Resources */,
 				4C0B8DEB1BA4522900D329BA /* ProcessorFilled-40@2x.png in Resources */,
 				CA7C7013185EF50E00B348BA /* ange.gif in Resources */,
@@ -3448,6 +3468,7 @@
 				D8B4EDFA21C1853E0042C392 /* snow20.png in Resources */,
 				4CB132951B9058530081B44D /* 146-gavel.png in Resources */,
 				15C673CC22552B6900B9E0BE /* FavoriteCellView.xib in Resources */,
+				1553568624A500D400917DE1 /* rectangle.expand@2x.png in Resources */,
 				CA7C7023185EF50E00B348BA /* miam.gif in Resources */,
 				1591C0E6249419240025560A /* smiley@2x.png in Resources */,
 				15357D67234BA712002D5C2E /* offline2@2.png in Resources */,
@@ -3498,6 +3519,7 @@
 				4C0B8DCB1BA4522900D329BA /* WindowsClientFilled-40@2x.png in Resources */,
 				1591C0E4249418900025560A /* smiley.psd in Resources */,
 				4C0B8DD51BA4522900D329BA /* CameraFilled-40.png in Resources */,
+				1553568824A500D400917DE1 /* rectangle.exPand@3x.png in Resources */,
 				1591C0EA2496473E0025560A /* redfaceBorder@2x.png in Resources */,
 				CA7C703B185EF50E00B348BA /* buttonprevioushover.png in Resources */,
 				CA7C703C185EF50E00B348BA /* arrowback.png in Resources */,
@@ -3621,6 +3643,7 @@
 				4C9C2B8F1BAE801700511853 /* BugFilled-25@2x.png in Resources */,
 				4C0B8DEF1BA4522900D329BA /* cat-apple@2x.png in Resources */,
 				4C0B8DDD1BA4522900D329BA /* SupportFilled-40.png in Resources */,
+				1553568524A500D400917DE1 /* rectangle.compress.png in Resources */,
 				CA7C7076185EF50E00B348BA /* flagred.png in Resources */,
 				CA7C7077185EF50E00B348BA /* template.htm in Resources */,
 				156246DF2182310000F5B8DC /* arrowbegin.svg in Resources */,
@@ -3724,6 +3747,7 @@
 				D8DDF2AD1E58810A002F1484 /* ToolBarFastRewind_on_tinted.png in Resources */,
 				CA7C70A5185EF50E00B348BA /* 06-magnifying-glass.png in Resources */,
 				4C59E0901FA9D9F300C902F8 /* Icon-CLASSIC@2x.png in Resources */,
+				1553568724A500D400917DE1 /* rectangle.expand.png in Resources */,
 				D826905E1E58658D006971C3 /* avatar_male_gray_on_dark_48x48@2x.png in Resources */,
 				CA7C70A6185EF50E00B348BA /* 121-lanscape.png in Resources */,
 				4C59E0851FA9D56C00C902F8 /* Icon-REDFACE@3x.png in Resources */,

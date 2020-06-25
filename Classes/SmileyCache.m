@@ -21,7 +21,7 @@
 
 @implementation SmileyCache
 
-@synthesize arrCurrentSmileyArray, cacheSmileys, bStopLoadingSmileysToCache, dicCommonSmileys, bSearchSmileysActivated;
+@synthesize arrCurrentSmileyArray, cacheSmileys, bStopLoadingSmileysToCache, dicCommonSmileys, dicSearchSmileys, bSearchSmileysActivated;
 
 static SmileyCache *_shared = nil;    // static instance variable
 
@@ -116,6 +116,13 @@ static SmileyCache *_shared = nil;    // static instance variable
     NSLog(@"getImageForIndex %d", index);
     return img;
 }
+
+- (NSString*) getSmileyCodeForIndex:(int)index
+{
+    NSString *code = [[self.arrCurrentSmileyArray objectAtIndex:index] objectForKey:@"code"];
+    return code;
+}
+
 
 - (NSMutableArray*) getSmileyListForText:(NSString*)sTextSmileys
 {

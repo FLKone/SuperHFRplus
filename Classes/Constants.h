@@ -83,7 +83,8 @@ typedef enum Theme : int {
 #define kAlertPasteBoardOK      1000003
 
 #define REHOST_IMAGE_FILE @"rehostImages.plist"
-#define USED_SMILEYS_FILE @"usedSmilieys.plist"
+#define TOP_SMILEYS_FILE @"topSmileysSearch.plist"
+#define LAST_SMILEYS_FILE @"lastSmileysSearch.plist"
 #define BLACKLIST_FILE @"blackList.plist"
 #define BLACKLISTDICO_FILE @"blackListDico.plist"
 #define WHITELIST_FILE @"whiteList.plist"

@@ -36,7 +36,6 @@
     
     //UIScrollView *scrollViewer;
     UITextField *textFieldSmileys;
-    NSMutableArray *smileyArray;
     int smileyPage;
     NSMutableDictionary *usedSearchDict;
     NSMutableArray *usedSearchSortedArray;
@@ -102,8 +101,6 @@
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControler;
 @property (weak, nonatomic) IBOutlet UIButton *btnToolbarRedo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControlerPage;
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinnerSmileys;
-//DELETE: @property (nonatomic, strong) NSMutableArray *smileyArray;
 
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
 @property (strong, nonatomic) IBOutlet UIView *viewSmileys;
@@ -143,8 +140,9 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 -(void)setupResponder;
 -(bool)isDeleteMode;
-- (void)showPanelSmiley:(BOOL)bVisible reloadData:(BOOL)bReload;
-- (void)actionMaximizeSmiley;
+- (void)actionExpandCompressSmiley;
+- (void)actionHideSmileys;
+
 @end
 
 @protocol AddMessageViewControllerDelegate

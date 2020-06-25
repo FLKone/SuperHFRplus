@@ -29,11 +29,13 @@
 @property BOOL bStopLoadingSmileysToCache;
 @property BOOL bSearchSmileysActivated;
 @property (nonatomic, strong) NSMutableArray *dicCommonSmileys;
+@property (nonatomic, strong) NSMutableArray *dicSearchSmileys;
 
-+ (SmileyCache *)shared;
-- (void)handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*) cv;
++ (SmileyCache *) shared;
+- (void) handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*) cv;
 - (UIImage*) getImageForIndex:(int)index;
 - (NSMutableArray*) getSmileyListForText:(NSString*)sTextSmileys;
+- (NSString*) getSmileyCodeForIndex:(int)index;
 
 @end
 

@@ -54,7 +54,6 @@
         //NSLog(@"initWithNibName add");
         
         self.arrayInputData = [[NSMutableDictionary alloc] init];
-        //self.smileyArray = [[NSMutableArray alloc] init];
         self.formSubmit = [[NSString alloc] init];
         self.refreshAnchor = [[NSString alloc] init];
         
@@ -158,7 +157,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"smileysviewExpanded"];
+/*
+    if(![[NSUserDefaults standardUserDefaults] objectForKey:@"smileysviewExpanded"]){
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"smileysviewExpanded"];
+    }*/
+    
     self.edgesForExtendedLayout = UIRectEdgeNone;
     //HFR REHOST
     NSFileManager *fileManager = [[NSFileManager alloc] init];
@@ -191,9 +195,9 @@
     [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
     
     self.smileView.navigationDelegate = self;
-    [self.spinnerSmileys setHidden:YES];
 
     [self setupCollections];
+    
     //TODO: clean
     [textFieldSmileys setHidden:YES];
 }
@@ -1026,48 +1030,60 @@
 
 - (void)actionSmiley:(id)sender
 {
-    NSLog(@"Rect: %@", NSStringFromCGRect(self.viewSmileys.frame));
     [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.5];
+    [UIView setAnimationDuration:0.2];
     if (self.viewSmileys.alpha == 0) {
+        self.viewControllerSmileys.bModeFullScreen = [[NSUserDefaults standardUserDefaults] boolForKey:@"smileysviewExpanded"];
         [self.viewSmileys setAlpha:1];
+        [self updateExpandCompressSmiley];
+        [UIView commitAnimations];
     }
     else {
-        [self.viewSmileys setAlpha:0];
+        [self actionHideSmileys];
     }
-    //[self.viewSmileys setHidden:NO];
-    
-    [UIView commitAnimations];
 }
 
-- (void)actionMaximizeSmiley
+- (void)actionHideSmileys
+{
+    // Memorize last state
+    [[NSUserDefaults standardUserDefaults] setBool:self.viewControllerSmileys.bModeFullScreen forKey:@"smileysviewExpanded"];
+    // Minimize before hidden
+    self.viewControllerSmileys.bModeFullScreen = NO;
+    [self.viewSmileys setAlpha:0];
+    [self updateExpandCompressSmiley];
+    [UIView commitAnimations];
+    [self.textView becomeFirstResponder];
+}
+
+- (void)actionExpandCompressSmiley
 {
     [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.5];
+    [UIView setAnimationDuration:0.2];
+    self.viewControllerSmileys.bModeFullScreen = !self.viewControllerSmileys.bModeFullScreen;
+    [self updateExpandCompressSmiley];
+    [UIView commitAnimations];
+    if (!self.viewControllerSmileys.bModeFullScreen) {
+        [self.textView becomeFirstResponder];
+    }
+}
+
+- (void)updateExpandCompressSmiley
+{
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)[self.viewControllerSmileys.collectionSmileys collectionViewLayout];
-    if (self.constraintSmileyViewHeight.constant == 150) {
+    if (self.viewControllerSmileys.bModeFullScreen) {
         [self.view endEditing:YES];
-        CGRect rectA = self.view.frame;
+        //CGRect rectA = self.view.frame;
         CGRect rectS = self.viewSmileys.frame;
-        NSLog(@"rectA %@", NSStringFromCGRect(rectA));
-        NSLog(@"rectS %@", NSStringFromCGRect(rectS));
+        //NSLog(@"rectA %@", NSStringFromCGRect(rectA));
+        //NSLog(@"rectS %@", NSStringFromCGRect(rectS));
         CGFloat f = rectS.size.height + rectS.origin.y;
         self.constraintSmileyViewHeight.constant = f;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        [UIView commitAnimations];
     }
     else {
         self.constraintSmileyViewHeight.constant = 150;
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        [UIView commitAnimations];
-        [self.textView becomeFirstResponder];
     }
-    
-}
-
-- (void) showPanelSmiley:(BOOL)bVisible reloadData:(BOOL)bReload {
-    [self.viewSmileys setHidden:NO];
-    [self.viewControllerSmileys.view setHidden:YES];
 }
 
 - (IBAction)actionUndo:(id)sender
@@ -1371,39 +1387,45 @@ self.loaded = YES;
 #pragma mark - Responding to keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    NSLog(@"keyboardWillShow ADD %@", notification);
+    if (!self.viewControllerSmileys.bModeFullScreen) {
+        NSLog(@"ADD :::: Keyboard will show");
+        NSDictionary *userInfo = [notification userInfo];
+        NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+        CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        CGRect convertedKeyboardRect = [self.view convertRect:keyboardRect fromView:self.view.window];
+        CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
+        CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
 
+
+        NSTimeInterval animationDuration;
+        [animationDurationValue getValue:&animationDuration];
+
+        // Animate the resize of the text view's frame in sync with the keyboard's appearance.
+        [UIView beginAnimations:nil context:NULL];
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
+        [self.view layoutIfNeeded];
+        [UIView commitAnimations];
+    }
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    NSLog(@"ADD :::: Keyboard will hiiiiiide");
     NSDictionary *userInfo = [notification userInfo];
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect convertedKeyboardRect = [self.view convertRect:keyboardRect fromView:self.view.window];
-
     CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
     CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
 
-//    self.bottomGuide.constant = CGRectGetMaxY(self.view.bounds) - CGRectGetMinY(convertedKeyboardRect);
-  //  [self.accessoryView setNeedsUpdateConstraints];
-
-    NSLog(@"Bottom Constant %@", NSStringFromCGRect(intersection));
 
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];
 
     // Animate the resize of the text view's frame in sync with the keyboard's appearance.
     [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:animationDuration];
     self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
     [self.view layoutIfNeeded];
-    //[self.accessoryView updateConstraintsIfNeeded];
-
     [UIView commitAnimations];
-}
-
-- (void)keyboardWillHide:(NSNotification *)notification {
-    //NSLog(@"keyboardWillHide ADD");
-    
-    [self keyboardWillShow:notification];
-
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
