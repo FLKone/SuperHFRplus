@@ -16,10 +16,18 @@
 #import "HFRAlertView.h"
 #import "SimpleCellView.h"
 
+#if !defined(MIN)
+    #define MIN(A,B)    ((A) < (B) ? (A) : (B))
+#endif
+
+@implementation SmileySearch
+@synthesize sSearchText, nSearchNumber, nSmileysResultNumber, dLastSearch;
+@end
+
 @implementation SmileyViewController
 
 @synthesize smileyCache, collectionSmileys, textFieldSmileys, btnSmileySearch, btnSmileyDefault, btnReduce, tableViewSearch;
-@synthesize arrayTmpsmileySearch, dicTopSearch, dicLastSearch, usedSearchSortedArray, request, requestSmile, bModeFullScreen;
+@synthesize arrayTmpsmileySearch, arrSearch, arrTopSearchSorted, arrLastSearchSorted, arrTopSearchSortedFiltered, arrLastSearchSortedFiltered, request, requestSmile, bModeFullScreen;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -32,9 +40,12 @@
         self.title = @"Smileys";
         
         self.bModeFullScreen = NO;
-        self.dicTopSearch = [[NSMutableDictionary alloc] init];
-        self.dicLastSearch = [[NSMutableDictionary alloc] init];
-        self.usedSearchSortedArray = [[NSMutableArray alloc] init];
+        self.arrSearch = [[NSMutableArray alloc] init];
+        self.arrTopSearchSorted = [[NSMutableArray alloc] init];
+        self.arrLastSearchSorted = [[NSMutableArray alloc] init];
+        self.arrTopSearchSortedFiltered = [[NSMutableArray alloc] init];
+        self.arrLastSearchSortedFiltered = [[NSMutableArray alloc] init];
+        
         self.arrayTmpsmileySearch = [[NSMutableArray alloc] init];
     }
     return self;
@@ -58,16 +69,11 @@
     // Dic of search smileys
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    NSString *usedSmilieys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:TOP_SMILEYS_FILE]];
-    if ([fileManager fileExistsAtPath:usedSmilieys]) {
-        self.usedSearchDict = [NSMutableDictionary dictionaryWithContentsOfFile:usedSmilieys];
-        self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    NSString *searchFile = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
+    if ([fileManager fileExistsAtPath:directory]) {
+        self.arrSearch = [NSMutableArray arrayWithContentsOfFile:searchFile];
+        [self updateSearchArraySorted];
     }
-    
-    if (self.usedSearchDict.count > 0) {
-        self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    }
-
     
     // TableView
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
@@ -261,50 +267,50 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    if (section == 0) {
+        return MIN(5, self.arrLastSearchSortedFiltered.count);
+    } else {
+        return MIN(5, self.arrTopSearchSortedFiltered.count);
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            return @"Recherches les plus fréquentes";
-            break;
-        case 1:
-            return @"Dernières recherches";
-            break;
-        default:
-            return @"Recherches les plus fréquentes";
-            break;
+    if (section == 0) {
+        return @"Dernières recherches";
+    } else {
+        return @"Recherches les plus fréquentes";
     }
 }
+
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableViewSearch) {
         NSLog(@"table rect: %@", NSStringFromCGRect(self.tableViewSearch.frame));
         SimpleCellView *cell = [tableView dequeueReusableCellWithIdentifier:@"SimpleCellId"];
+
+        SmileySearch* s = nil;
+        if (indexPath.section == 0 && self.arrLastSearchSorted.count > 0) {
+            s = [self.arrLastSearchSorted objectAtIndex:indexPath.row];
+        }
+        else if (self.arrTopSearchSorted.count > 0) {
+            s = [self.arrTopSearchSorted objectAtIndex:indexPath.row];
+        }
+        
         int iResults = 0;
-        switch (indexPath.row) {
-            case 0:
-                cell.labelText.text = @"chance";
-                iResults = 35;
-                break;
-            case 1:
-                cell.labelText.text = @"love";
-                iResults = 935;
-                break;
-            case 2:
-                cell.labelText.text = @"sadfrog";
-                iResults = 148;
-                break;
+        if (s) {
+            cell.labelText.text = s.sSearchText;
+            iResults = [s.nSearchNumber intValue];
+        }
+        else {
+            cell.labelText.text = @"Y a rien";
         }
         
         // Format badge
         if (iResults > 0) {
             cell.labelBadge.text = [NSString stringWithFormat:@"%d", iResults];
-            UIColor* c = [ThemeColors tintColorWithAlpha:0.5];
-            cell.labelBadge.backgroundColor = [ThemeColors tintColorWithAlpha:0.2];
-            cell.labelBadge.textColor = [ThemeColors tintColorWithAlpha:1];// [UIColor whiteColor];
+            cell.labelBadge.backgroundColor = [ThemeColors tintColorWithAlpha:0.1];
+            cell.labelBadge.textColor = [ThemeColors tintColorWithAlpha:0.5];// [UIColor whiteColor];
             cell.labelBadge.clipsToBounds = YES;
             NSLog(@"Rect: %@", NSStringFromCGRect(cell.labelBadge.frame));
             cell.labelBadge.layer.cornerRadius = cell.labelBadge.frame.size.height / 2;
@@ -451,7 +457,6 @@ static CGFloat fCellImageSize = 1;
 
 -(IBAction)textFieldSmileChange:(id)sender
 {
-    
     if ([(UITextField *)sender text].length > 0) {
         NSString* sText = [(UITextField *)sender text];
         sText = [sText stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
@@ -571,19 +576,29 @@ static CGFloat fCellImageSize = 1;
 
 - (void) didSelectSmile:(NSString *)smile
 {
+    // Save search when smiley is selected (this confirms the search is OK)
     if (self.textFieldSmileys.text.length >= 3) {
-        NSNumber *val;
-        if ((val = [self.dicTopSearch valueForKey:self.textFieldSmileys.text])) {
-            [self.dicTopSearch setObject:[NSNumber numberWithInt:[val intValue]+1] forKey:self.textFieldSmileys.text];
+        NSArray *arrFound = [self.arrSearch filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SmileySearch* s, NSDictionary *bindings) {
+            return [s.sSearchText isEqualToString:self.textFieldSmileys.text];  // Return YES for each object you want in filteredArray.
+        }]];
+        if (arrFound.count > 0) {
+            SmileySearch* ss = (SmileySearch*)arrFound[0];
+            ss.nSearchNumber = [NSNumber numberWithInt:[ss.nSearchNumber intValue] + 1];
+            ss.dLastSearch = [NSDate date];
         }
         else {
-            [self.dicTopSearch setObject:[NSNumber numberWithInt:1] forKey:self.textFieldSmileys.text];
+            SmileySearch* ss = [[SmileySearch alloc] init];
+            ss.nSearchNumber = [NSNumber numberWithInt:[ss.nSearchNumber intValue] + 1];
+            ss.dLastSearch = [NSDate date];
+            ss.sSearchText = self.textFieldSmileys.text;
+            [self.arrSearch addObject:ss];
         }
         
-        NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-        NSString *usedSmilieys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:TOP_SMILEYS_FILE]];
+        [self updateSearchArraySorted];
         
-        [self.dicTopSearch writeToFile:usedSmilieys atomically:YES];
+        NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *file = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
+        [self.arrSearch writeToFile:file atomically:YES];
     }
 
     
@@ -625,6 +640,16 @@ static CGFloat fCellImageSize = 1;
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:sImageName] withTheme:theme] forState:UIControlStateNormal];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:sImageName] withTheme:theme] forState:UIControlStateHighlighted];
 
+}
+
+- (void) updateSearchArraySorted
+{
+    NSSortDescriptor *sortDescriptorDate   = [[NSSortDescriptor alloc] initWithKey: @"nSearchNumber" ascending:NO selector:@selector(compare:)];
+    NSSortDescriptor *sortDescriptorNumber = [[NSSortDescriptor alloc] initWithKey: @"dLastSearch" ascending:NO selector:@selector(compare:)];
+    self.arrTopSearchSorted = (NSMutableArray *)[self.arrSearch sortedArrayUsingDescriptors: [NSArray arrayWithObject:sortDescriptorNumber]];
+    self.arrLastSearchSorted = (NSMutableArray *)[self.arrSearch sortedArrayUsingDescriptors: [NSArray arrayWithObject:sortDescriptorDate]];
+    self.arrTopSearchSortedFiltered = [self.arrTopSearchSorted mutableCopy];
+    self.arrLastSearchSortedFiltered = [self.arrLastSearchSorted mutableCopy];
 }
 
 - (void)actionSmileysDefaults:(id)sender {

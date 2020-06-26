@@ -1849,8 +1849,7 @@
 	}
 }
 
-#pragma mark -
-#pragma mark Delete
+#pragma mark - Delete
 
 -(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {

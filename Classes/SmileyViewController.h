@@ -16,6 +16,18 @@ typedef enum {
     DisplayModeEnumTableSearch              = 2,
 } DisplayModeEnum;
 
+@interface SmileySearch : NSObject
+{
+}
+
+@property (nonatomic, strong) NSString *sSearchText;
+@property (nonatomic, strong) NSNumber *nSearchNumber;
+@property (nonatomic, strong) NSNumber *nSmileysResultNumber;
+@property (nonatomic, strong) NSDate   *dLastSearch;
+
+@end
+
+
 @interface SmileyViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource> {
     
 }
@@ -29,9 +41,12 @@ typedef enum {
 @property (strong, nonatomic) IBOutlet UITableView *tableViewSearch;
 
 @property (strong, nonatomic) SmileyCache *smileyCache;
-@property (nonatomic, strong) NSMutableDictionary *dicTopSearch;
-@property (nonatomic, strong) NSMutableDictionary *dicLastSearch;
-@property (nonatomic, strong) NSMutableArray *usedSearchSortedArray;
+@property (nonatomic, strong) NSMutableArray *arrSearch;
+@property (nonatomic, strong) NSMutableArray *arrTopSearchSorted;
+@property (nonatomic, strong) NSMutableArray *arrLastSearchSorted;
+@property (nonatomic, strong) NSMutableArray *arrTopSearchSortedFiltered;
+@property (nonatomic, strong) NSMutableArray *arrLastSearchSortedFiltered;
+
 @property (strong, nonatomic) NSMutableArray *arrayTmpsmileySearch;
 
 @property ASIHTTPRequest *request;
