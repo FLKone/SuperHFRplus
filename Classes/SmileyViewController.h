@@ -44,8 +44,8 @@ typedef enum {
 @property (nonatomic, strong) NSMutableArray *arrSearch;
 @property (nonatomic, strong) NSMutableArray *arrTopSearchSorted;
 @property (nonatomic, strong) NSMutableArray *arrLastSearchSorted;
-@property (nonatomic, strong) NSMutableArray *arrTopSearchSortedFiltered;
-@property (nonatomic, strong) NSMutableArray *arrLastSearchSortedFiltered;
+@property (nonatomic, strong) NSArray *arrTopSearchSortedFiltered;
+@property (nonatomic, strong) NSArray *arrLastSearchSortedFiltered;
 
 @property (strong, nonatomic) NSMutableArray *arrayTmpsmileySearch;
 

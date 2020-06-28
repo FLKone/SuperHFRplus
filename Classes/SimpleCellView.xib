@@ -53,6 +53,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="imageIcon" destination="EVu-fH-Lce" id="r5D-rk-HnP"/>
                 <outlet property="labelBadge" destination="CaY-Cu-XB4" id="yXm-2U-XAx"/>
                 <outlet property="labelText" destination="tnJ-WT-0xN" id="pms-Aw-igT"/>
             </connections>

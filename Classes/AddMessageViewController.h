@@ -140,6 +140,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 -(void)setupResponder;
 -(bool)isDeleteMode;
+- (void)updateExpandCompressSmiley;
 - (void)actionExpandCompressSmiley;
 - (void)actionHideSmileys;
 

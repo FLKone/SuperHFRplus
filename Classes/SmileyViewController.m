@@ -15,6 +15,7 @@
 #import "HTMLParser.h"
 #import "HFRAlertView.h"
 #import "SimpleCellView.h"
+#import "UILabel+Boldify.h"
 
 #if !defined(MIN)
     #define MIN(A,B)    ((A) < (B) ? (A) : (B))
@@ -70,11 +71,34 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *searchFile = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
-    if ([fileManager fileExistsAtPath:directory]) {
+    /* TODO: uncomment
+     if ([fileManager fileExistsAtPath:directory]) {
         self.arrSearch = [NSMutableArray arrayWithContentsOfFile:searchFile];
-        [self updateSearchArraySorted];
     }
-    
+    else {*/
+    SmileySearch* ss = [[SmileySearch alloc] init];
+    ss.nSearchNumber = [NSNumber numberWithInt:4];
+    ss.dLastSearch = [NSDate dateWithTimeIntervalSince1970:0];
+    ss.sSearchText = @"rien";
+    SmileySearch* ss1 = [[SmileySearch alloc] init];
+    ss1.nSearchNumber = [NSNumber numberWithInt:3];
+    ss1.dLastSearch = [NSDate dateWithTimeIntervalSince1970:10];
+    ss1.sSearchText = @"sadfog";
+    SmileySearch* ss2 = [[SmileySearch alloc] init];
+    ss2.nSearchNumber = [NSNumber numberWithInt:2];
+    ss2.dLastSearch = [NSDate dateWithTimeIntervalSince1970:20];
+    ss2.sSearchText = @"love";
+    SmileySearch* ss3 = [[SmileySearch alloc] init];
+    ss3.nSearchNumber = [NSNumber numberWithInt:1];
+    ss3.dLastSearch = [NSDate dateWithTimeIntervalSince1970:30];
+    ss3.sSearchText = @"chance";
+    [self.arrSearch addObject:ss];
+    [self.arrSearch addObject:ss1];
+    [self.arrSearch addObject:ss2];
+    [self.arrSearch addObject:ss3];
+    //}
+    [self updateSearchArraySorted];
+
     // TableView
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
     v.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
@@ -268,9 +292,9 @@ static CGFloat fCellImageSize = 1;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return MIN(5, self.arrLastSearchSortedFiltered.count);
+        return MIN(3, self.arrLastSearchSorted.count); // Maximum 3 Last search
     } else {
-        return MIN(5, self.arrTopSearchSortedFiltered.count);
+        return MIN(10, self.arrTopSearchSortedFiltered.count);
     }
 }
 
@@ -290,20 +314,25 @@ static CGFloat fCellImageSize = 1;
         SimpleCellView *cell = [tableView dequeueReusableCellWithIdentifier:@"SimpleCellId"];
 
         SmileySearch* s = nil;
-        if (indexPath.section == 0 && self.arrLastSearchSorted.count > 0) {
+        if (indexPath.section == 0) { // Last search
             s = [self.arrLastSearchSorted objectAtIndex:indexPath.row];
+            cell.imageIcon.image = [UIImage imageNamed:@"revert"];
         }
-        else if (self.arrTopSearchSorted.count > 0) {
-            s = [self.arrTopSearchSorted objectAtIndex:indexPath.row];
+        else {
+            s = [self.arrTopSearchSortedFiltered objectAtIndex:indexPath.row];
         }
         
         int iResults = 0;
         if (s) {
             cell.labelText.text = s.sSearchText;
+            if (self.textFieldSmileys.text.length >= 1) {
+                [cell.labelText boldSubstring: self.textFieldSmileys.text];
+            }
             iResults = [s.nSearchNumber intValue];
         }
         else {
             cell.labelText.text = @"Y a rien";
+
         }
         
         // Format badge
@@ -402,27 +431,15 @@ static CGFloat fCellImageSize = 1;
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     if (textField == self.textFieldSmileys) {
-        [self changeDisplayMode:DisplayModeEnumTableSearch animate:YES];
-        /*
-         if (self.usedSearchDict.count > 0) {
-             [self textFieldSmileChange:self.textFieldSmileys]; //on affiche les recherches
-             [self.tableViewSearch reloadData];
-             
-             [UIView beginAnimations:nil context:nil];
-             [UIView setAnimationDuration:0.2];
-             [self.tableViewSearch setHidden:NO];
-             [UIView commitAnimations];
-         }
-         
-        /*
-         if (self.bSearchSmileysAvailable) {
-             self.bSearchSmileysActivated = YES;
-             [self.collectionSmileys reloadData];
-             [self.collectionSmileys setHidden:NO];
-             [btnCollectionSmileysEnlarge setHidden:NO];
-             [btnCollectionSmileysClose setHidden:NO];
-         }*/
-
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        if (!self.bModeFullScreen) {
+            self.bModeFullScreen = YES;
+            [self.addMessageVC updateExpandCompressSmiley];
+            [self updateExpandButton];
+        }
+        [self changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
+        [UIView commitAnimations];
      }
 }
 
@@ -462,8 +479,13 @@ static CGFloat fCellImageSize = 1;
         sText = [sText stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
         sText = [sText stringByReplacingOccurrencesOfString:@"\\" withString:@""];
         @try {
-            NSPredicate * predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"SELF contains[c] '%@'", sText]];
-            self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] filteredArrayUsingPredicate:predicate];
+            self.arrTopSearchSortedFiltered = [self.arrTopSearchSorted filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SmileySearch* s, NSDictionary *bindings) {
+                NSLog(@"TOP: %@ contains %@ -> %@", s.sSearchText, sText, [s.sSearchText containsString:sText] ? @"Yes" : @"No"); return [s.sSearchText containsString:sText];  // Return YES for each object you want in filteredArray.
+            }]];
+            self.arrLastSearchSortedFiltered = [self.arrLastSearchSorted filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SmileySearch* s, NSDictionary *bindings) {
+                NSLog(@"LAST: %@ contains %@ -> %@", s.sSearchText, sText, [s.sSearchText containsString:sText] ? @"Yes" : @"No"); return [s.sSearchText containsString:sText];  // Return YES for each object you want in filteredArray.
+            }]];
+
             [self.tableViewSearch reloadData];
         }
         @catch (NSException* exception) {
@@ -474,7 +496,8 @@ static CGFloat fCellImageSize = 1;
         //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
     else {
-        self.usedSearchSortedArray = (NSMutableArray *)[[self.usedSearchDict allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        self.arrTopSearchSortedFiltered = self.arrTopSearchSorted;
+        self.arrLastSearchSortedFiltered = self.arrLastSearchSorted;
         [self.tableViewSearch reloadData];
         //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
@@ -632,6 +655,10 @@ static CGFloat fCellImageSize = 1;
 
 - (void)actionReduce:(id)sender {
     [self.addMessageVC actionExpandCompressSmiley];
+    [self updateExpandButton];
+}
+
+- (void)updateExpandButton {
     NSString* sImageName = @"rectangle.expand";
     if (self.bModeFullScreen) {
         sImageName = @"rectangle.compress";
@@ -639,17 +666,16 @@ static CGFloat fCellImageSize = 1;
     Theme theme = [[ThemeManager sharedManager] theme];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:sImageName] withTheme:theme] forState:UIControlStateNormal];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:sImageName] withTheme:theme] forState:UIControlStateHighlighted];
-
 }
 
 - (void) updateSearchArraySorted
 {
-    NSSortDescriptor *sortDescriptorDate   = [[NSSortDescriptor alloc] initWithKey: @"nSearchNumber" ascending:NO selector:@selector(compare:)];
-    NSSortDescriptor *sortDescriptorNumber = [[NSSortDescriptor alloc] initWithKey: @"dLastSearch" ascending:NO selector:@selector(compare:)];
+    NSSortDescriptor *sortDescriptorNumber = [[NSSortDescriptor alloc] initWithKey: @"nSearchNumber" ascending:NO selector:@selector(compare:)];
+    NSSortDescriptor *sortDescriptorDate = [[NSSortDescriptor alloc] initWithKey: @"dLastSearch" ascending:NO selector:@selector(compare:)];
     self.arrTopSearchSorted = (NSMutableArray *)[self.arrSearch sortedArrayUsingDescriptors: [NSArray arrayWithObject:sortDescriptorNumber]];
     self.arrLastSearchSorted = (NSMutableArray *)[self.arrSearch sortedArrayUsingDescriptors: [NSArray arrayWithObject:sortDescriptorDate]];
-    self.arrTopSearchSortedFiltered = [self.arrTopSearchSorted mutableCopy];
-    self.arrLastSearchSortedFiltered = [self.arrLastSearchSorted mutableCopy];
+    self.arrTopSearchSortedFiltered = self.arrTopSearchSorted;
+    self.arrLastSearchSortedFiltered = self.arrLastSearchSorted;
 }
 
 - (void)actionSmileysDefaults:(id)sender {

@@ -44,6 +44,9 @@
 		1553568724A500D400917DE1 /* rectangle.expand.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568124A500D300917DE1 /* rectangle.expand.png */; };
 		1553568824A500D400917DE1 /* rectangle.exPand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568224A500D300917DE1 /* rectangle.exPand@3x.png */; };
 		1553568924A500D400917DE1 /* rectangle.compress@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568324A500D400917DE1 /* rectangle.compress@3x.png */; };
+		1553568C24A87EBC00917DE1 /* UILabel+Boldify.m in Sources */ = {isa = PBXBuildFile; fileRef = 1553568B24A87EBC00917DE1 /* UILabel+Boldify.m */; };
+		1553568F24A8CCDA00917DE1 /* revert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568D24A8CCD900917DE1 /* revert@2x.png */; };
+		1553569024A8CCDA00917DE1 /* revert.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568E24A8CCDA00917DE1 /* revert.png */; };
 		1556408E22D91E980018A619 /* ListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556408D22D91E980018A619 /* ListTableViewController.m */; };
 		1556409122D928D30018A619 /* WhiteListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556409022D928D30018A619 /* WhiteListTableViewController.m */; };
 		1556409322D9297C0018A619 /* WhiteListTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1556409222D9297C0018A619 /* WhiteListTableViewController.xib */; };
@@ -873,6 +876,10 @@
 		1553568124A500D300917DE1 /* rectangle.expand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rectangle.expand.png; sourceTree = "<group>"; };
 		1553568224A500D300917DE1 /* rectangle.exPand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.exPand@3x.png"; sourceTree = "<group>"; };
 		1553568324A500D400917DE1 /* rectangle.compress@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.compress@3x.png"; sourceTree = "<group>"; };
+		1553568A24A87EA200917DE1 /* UILabel+Boldify.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UILabel+Boldify.h"; sourceTree = "<group>"; };
+		1553568B24A87EBC00917DE1 /* UILabel+Boldify.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UILabel+Boldify.m"; sourceTree = "<group>"; };
+		1553568D24A8CCD900917DE1 /* revert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "revert@2x.png"; sourceTree = "<group>"; };
+		1553568E24A8CCDA00917DE1 /* revert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = revert.png; sourceTree = "<group>"; };
 		1556408C22D91E820018A619 /* ListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListTableViewController.h; sourceTree = "<group>"; };
 		1556408D22D91E980018A619 /* ListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListTableViewController.m; sourceTree = "<group>"; };
 		1556408F22D928AE0018A619 /* WhiteListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WhiteListTableViewController.h; sourceTree = "<group>"; };
@@ -2518,6 +2525,8 @@
 				D8A61744215E82E3006E9248 /* UIScrollView+Theme.m */,
 				152D2D482456E55400D9D644 /* ASIHTTPRequest+Tools.h */,
 				152D2D492456E56500D9D644 /* ASIHTTPRequest+Tools.m */,
+				1553568A24A87EA200917DE1 /* UILabel+Boldify.h */,
+				1553568B24A87EBC00917DE1 /* UILabel+Boldify.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2661,6 +2670,8 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				1553568E24A8CCDA00917DE1 /* revert.png */,
+				1553568D24A8CCD900917DE1 /* revert@2x.png */,
 				1553567F24A500D300917DE1 /* rectangle.compress.png */,
 				1553567E24A500D300917DE1 /* rectangle.compress@2x.png */,
 				1553568324A500D400917DE1 /* rectangle.compress@3x.png */,
@@ -3495,6 +3506,7 @@
 				CA7C702A185EF50E00B348BA /* 08-chat.png in Resources */,
 				CA7C702B185EF50E00B348BA /* ToolBarPlay_off@2x.png in Resources */,
 				CA7C702D185EF50E00B348BA /* all_categories_land@2x.png in Resources */,
+				1553569024A8CCDA00917DE1 /* revert.png in Resources */,
 				CA7C702E185EF50E00B348BA /* beginhover.png in Resources */,
 				4C1991911FA9E91600A07A8A /* Icon-BETA@2x.png in Resources */,
 				15357D6D234BA82B002D5C2E /* OfflineTableView.xib in Resources */,
@@ -3772,6 +3784,7 @@
 				CA7C70AE185EF50E00B348BA /* ToolBarFastForward_on.png in Resources */,
 				4CB1330B1B90B7590081B44D /* ThorHammerFilled-20.png in Resources */,
 				CA7C70AF185EF50E00B348BA /* down@2x.png in Resources */,
+				1553568F24A8CCDA00917DE1 /* revert@2x.png in Resources */,
 				CA7C70B0185EF50E00B348BA /* aide.html in Resources */,
 				CA7C70B1185EF50E00B348BA /* multiplefavoris.gif in Resources */,
 				CA5E109818AC2A4F00C481A9 /* PollTableViewController.xib in Resources */,
@@ -3922,6 +3935,7 @@
 				CA7C7111185EF50E00B348BA /* HFRDebugViewController.m in Sources */,
 				D80DBD701E55BE730051B751 /* ASIDownloadCache.m in Sources */,
 				D8835E961E5F13C70073398C /* UIButton+WebCache.m in Sources */,
+				1553568C24A87EBC00917DE1 /* UILabel+Boldify.m in Sources */,
 				CAC7FCD1190DBD450083BB4E /* PollResultTableViewCell.m in Sources */,
 				D86ED58520445F5C00A2D541 /* UIImage+BezierPath.m in Sources */,
 				4CB132A81B908EC00081B44D /* UIMenuItem+CXAImageSupport.m in Sources */,

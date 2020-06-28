@@ -13,6 +13,7 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *labelText;
 @property (strong, nonatomic) IBOutlet UILabel *labelBadge;
+@property (strong, nonatomic) IBOutlet UIImageView *imageIcon;
 
 @end
 
