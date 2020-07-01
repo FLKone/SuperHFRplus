@@ -143,6 +143,7 @@
 - (void)updateExpandCompressSmiley;
 - (void)actionExpandCompressSmiley;
 - (void)actionHideSmileys;
+- (void)resizeViewWithKeyboard:(NSNotification *)notification;
 
 @end
 

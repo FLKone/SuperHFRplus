@@ -113,7 +113,7 @@ static SmileyCache *_shared = nil;    // static instance variable
     filename = [filename stringByReplacingOccurrencesOfString:@"https://forum-images.hardware.fr/" withString:@""];
     
     UIImage* img = [self.cacheSmileys objectForKey:filename];
-    NSLog(@"getImageForIndex %d", index);
+    //NSLog(@"getImageForIndex %d", index);
     return img;
 }
 
