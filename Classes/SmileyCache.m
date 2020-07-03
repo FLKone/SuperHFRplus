@@ -47,7 +47,7 @@ static SmileyCache *_shared = nil;    // static instance variable
     return self;
 }
 
-- (void)handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*) cv
+- (void)handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*)cv spinner:(UIActivityIndicatorView*)spinner
 {
     self.bStopLoadingSmileysToCache = NO;
     self.bSearchSmileysActivated = YES;
@@ -102,6 +102,7 @@ static SmileyCache *_shared = nil;    // static instance variable
     NSLog(@"Finished loading all smileys");
     if (!bHasbeenReloaded) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            [spinner stopAnimating];
             [cv reloadData];
         });
     }

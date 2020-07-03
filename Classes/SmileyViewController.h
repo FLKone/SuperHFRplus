@@ -53,7 +53,7 @@ typedef enum {
 @property ASIHTTPRequest *requestSmile;
 
 @property AddMessageViewController* addMessageVC;
-@property BOOL bModeFullScreen, bExceptionToFullScreen;
+@property BOOL bModeFullScreen, bActivateSmileySearchTable;
 @property DisplayModeEnum displayMode;
 
 - (void)changeDisplayMode:(DisplayModeEnum)newMode animate:(BOOL)bAnimate;

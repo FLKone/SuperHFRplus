@@ -28,7 +28,7 @@
 @implementation SmileyViewController
 
 @synthesize smileyCache, collectionSmileys, textFieldSmileys, btnSmileySearch, btnSmileyDefault, btnReduce, tableViewSearch;
-@synthesize arrayTmpsmileySearch, arrSearch, arrTopSearchSorted, arrLastSearchSorted, arrTopSearchSortedFiltered, arrLastSearchSortedFiltered, request, requestSmile, bModeFullScreen, bExceptionToFullScreen;
+@synthesize arrayTmpsmileySearch, arrSearch, arrTopSearchSorted, arrLastSearchSorted, arrTopSearchSortedFiltered, arrLastSearchSortedFiltered, request, requestSmile, bModeFullScreen, bActivateSmileySearchTable;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -41,7 +41,7 @@
         self.title = @"Smileys";
         
         self.bModeFullScreen = NO;
-        self.bExceptionToFullScreen = NO;
+        self.bActivateSmileySearchTable = NO;
 
         self.arrSearch = [[NSMutableArray alloc] init];
         self.arrTopSearchSorted = [[NSMutableArray alloc] init];
@@ -165,6 +165,7 @@
             [self.collectionSmileys setAlpha:1];
             [self.tableViewSearch setAlpha:0];
             [self.textFieldSmileys resignFirstResponder];
+            [self.collectionSmileys reloadData];
             break;
         case DisplayModeEnumSmileysSearch:
             NSLog(@"56 Display collection");
@@ -252,7 +253,7 @@ static CGFloat fCellImageSize = 1;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if (!self.smileyCache.bSearchSmileysActivated) {
+    if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
         return self.smileyCache.dicCommonSmileys.count;
     }
     else {
@@ -368,9 +369,18 @@ static CGFloat fCellImageSize = 1;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableViewSearch) {
-        self.textFieldSmileys.text = @"sadfrog"; //[self.usedSearchSortedArray objectAtIndex:indexPath.row];
-        [self textFieldShouldReturn:self.textFieldSmileys];
-        [self.tableViewSearch deselectRowAtIndexPath:self.tableViewSearch.indexPathForSelectedRow animated:NO];
+        SmileySearch* s = nil;
+        if (indexPath.section == 0) { // Last search
+            s = [self.arrLastSearchSorted objectAtIndex:indexPath.row];
+        }
+        else {
+            s = [self.arrTopSearchSortedFiltered objectAtIndex:indexPath.row];
+        }
+        if (s) {
+            self.textFieldSmileys.text = s.sSearchText;
+            [self textFieldShouldReturn:self.textFieldSmileys];
+            [self.tableViewSearch deselectRowAtIndexPath:self.tableViewSearch.indexPathForSelectedRow animated:NO];
+        }
     }
 }
 
@@ -465,7 +475,7 @@ static CGFloat fCellImageSize = 1;
     /*
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.2];
-    self.bExceptionToFullScreen = NO;
+    self.bActivateSmileySearchTable = NO;
     NSLog(@"textFieldDidBeginEditing :::: 1");
     if (!self.bModeFullScreen) {
         self.bModeFullScreen = YES;
@@ -481,12 +491,7 @@ static CGFloat fCellImageSize = 1;
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     NSLog(@"textFieldDidBeginEditing");
-    self.bExceptionToFullScreen = YES;
-    /*
-    if (textField == self.textFieldSmileys) {
-        [self showTableViewInFullScreen];
-     }*/
-    //[self.textFieldSmileys becomeFirstResponder];
+    self.bActivateSmileySearchTable = YES;
 }
 
 
@@ -629,7 +634,10 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (void) loadSmileys {
-    [[SmileyCache shared] handleSmileyArray:self.arrayTmpsmileySearch forCollection:self.collectionSmileys];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.addMessageVC updateExpandCompressSmiley];
+    });
+    [[SmileyCache shared] handleSmileyArray:self.arrayTmpsmileySearch forCollection:self.collectionSmileys spinner:self.spinnerSmileySearch];
 }
 
 - (void)fetchSmileContentFailed:(ASIHTTPRequest *)theRequest
@@ -728,7 +736,21 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (void)actionSmileysDefaults:(id)sender {
-    [self changeDisplayMode:DisplayModeEnumSmileysDefault animate:NO];
+    if (self.bModeFullScreen) {
+        [self changeDisplayMode:DisplayModeEnumSmileysDefault animate:NO];
+        [self resignFirstResponder];
+    }
+    else {
+        BOOL bSetFirstResponder = NO;
+        if (self.displayMode != DisplayModeEnumSmileysDefault) {
+            bSetFirstResponder = YES;
+        }
+        [self changeDisplayMode:DisplayModeEnumSmileysDefault animate:NO];
+        [self.addMessageVC updateExpandCompressSmiley];
+        if (bSetFirstResponder) {
+            [self.addMessageVC.textView becomeFirstResponder];
+        }
+    }
 }
 
 

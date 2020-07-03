@@ -1079,7 +1079,7 @@
 {
     NSLog(@"updateExpandCompressSmiley");
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)[self.viewControllerSmileys.collectionSmileys collectionViewLayout];
-    if (self.viewControllerSmileys.bModeFullScreen) {
+    if (self.viewControllerSmileys.bModeFullScreen || self.viewControllerSmileys.displayMode == DisplayModeEnumTableSearch) {
         //CGRect rectA = self.view.frame;
         CGRect rectS = self.viewSmileys.frame;
         //NSLog(@"rectA %@", NSStringFromCGRect(rectA));
@@ -1400,15 +1400,16 @@ self.loaded = YES;
     if (!self.viewControllerSmileys.bModeFullScreen) {
         [self resizeViewWithKeyboard:notification];
     }
-    if (self.viewControllerSmileys.bExceptionToFullScreen) {
+    if (self.viewControllerSmileys.bActivateSmileySearchTable) {
         NSLog(@"actionExpandCompressSmiley");
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
-        self.viewControllerSmileys.bModeFullScreen = YES;
-        [self updateExpandCompressSmiley];
+        //self.viewControllerSmileys.bModeFullScreen = YES;
         [self.viewControllerSmileys changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
+        [self updateExpandCompressSmiley];
+        //[self.viewControllerSmileys changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
         [UIView commitAnimations];
-        self.viewControllerSmileys.bExceptionToFullScreen = NO;
+        self.viewControllerSmileys.bActivateSmileySearchTable = NO;
     }
 }
 

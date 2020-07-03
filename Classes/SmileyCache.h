@@ -32,7 +32,7 @@
 @property (nonatomic, strong) NSMutableArray *dicSearchSmileys;
 
 + (SmileyCache *) shared;
-- (void) handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*) cv;
+- (void) handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*)cv spinner:(UIActivityIndicatorView*)spinner;
 - (UIImage*) getImageForIndex:(int)index;
 - (NSMutableArray*) getSmileyListForText:(NSString*)sTextSmileys;
 - (NSString*) getSmileyCodeForIndex:(int)index;
