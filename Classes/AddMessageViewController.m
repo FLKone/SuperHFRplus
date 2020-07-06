@@ -1034,6 +1034,9 @@
     [UIView setAnimationDuration:0.2];
     if (self.viewSmileys.alpha == 0) {
         self.viewControllerSmileys.bModeFullScreen = [[NSUserDefaults standardUserDefaults] boolForKey:@"smileysviewExpanded"];
+        if (self.viewControllerSmileys.bModeFullScreen) {
+            [self.view endEditing:YES];
+        }
         [self.viewSmileys setAlpha:1];
         [self updateExpandCompressSmiley];
         [UIView commitAnimations];
@@ -1063,7 +1066,9 @@
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.2];
     self.viewControllerSmileys.bModeFullScreen = !self.viewControllerSmileys.bModeFullScreen;
-    [self.view endEditing:YES];
+    if (self.viewControllerSmileys.bModeFullScreen) {
+        [self.view endEditing:YES];
+    }
     [self updateExpandCompressSmiley];
     [UIView commitAnimations];
     if (!self.viewControllerSmileys.bModeFullScreen) {

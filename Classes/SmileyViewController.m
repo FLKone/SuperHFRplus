@@ -168,8 +168,6 @@
             [self.collectionSmileys reloadData];
             break;
         case DisplayModeEnumSmileysSearch:
-            NSLog(@"56 Display collection");
-
             [self.collectionSmileys setAlpha:1];
             [self.tableViewSearch setAlpha:0];
             [self.collectionSmileys reloadData];
@@ -197,45 +195,51 @@ static CGFloat fCellImageSize = 1;
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (collectionView == self.collectionSmileys) {
-        //CGRect f = self.collectionSmileys.frame;
-        SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
-        UIImage* image = nil;//[UIImage imageNamed:@"19-gear"];
-        if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
-             // Default smileys
-            image = [UIImage imageNamed:self.smileyCache.dicCommonSmileys[indexPath.row][@"resource"]];
-        }
-        else {
-            UIImage* tmpImage = [self.smileyCache getImageForIndex:(int)indexPath.row];
-            if (tmpImage != nil) {
-                image = tmpImage;
+    @try {
+        if (collectionView == self.collectionSmileys) {
+            //CGRect f = self.collectionSmileys.frame;
+            SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
+            UIImage* image = nil;//[UIImage imageNamed:@"19-gear"];
+            if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
+                // Default smileys
+                image = [UIImage imageNamed:self.smileyCache.dicCommonSmileys[indexPath.row][@"resource"]];
             }
-        }
-        
-        CGFloat ch = cell.bounds.size.height;
-        CGFloat cw = cell.bounds.size.width;
-        CGFloat w = image.size.width*fCellImageSize;
-        CGFloat h = image.size.height*fCellImageSize;
-        
-        if (cell.smileyImage == nil) {
-            cell.smileyImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
-            [cell addSubview:cell.smileyImage];
-        }
-        else {
-            cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
-        }
-        [cell.smileyImage setImage:image];
+            else {
+                UIImage* tmpImage = [self.smileyCache getImageForIndex:(int)indexPath.row];
+                if (tmpImage != nil) {
+                    image = tmpImage;
+                }
+            }
 
-        cell.smileyImage.clipsToBounds = NO;
-        cell.smileyImage.layer.masksToBounds = true;
-        cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
-        cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
-        cell.layer.borderWidth = 1.0f;
-        cell.layer.cornerRadius = 3;
-        cell.layer.masksToBounds = true;
-        
-        return cell;
+            CGFloat ch = cell.bounds.size.height;
+            CGFloat cw = cell.bounds.size.width;
+            CGFloat w = image.size.width*fCellImageSize;
+            CGFloat h = image.size.height*fCellImageSize;
+            
+            if (cell.smileyImage == nil) {
+                cell.smileyImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
+                [cell addSubview:cell.smileyImage];
+            }
+            else {
+                cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
+            }
+            [cell.smileyImage setImage:image];
+
+            cell.smileyImage.clipsToBounds = NO;
+            cell.smileyImage.layer.masksToBounds = true;
+            cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
+            cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
+            cell.layer.borderWidth = 1.0f;
+            cell.layer.cornerRadius = 3;
+            cell.layer.masksToBounds = true;
+            
+            return cell;
+        }
     }
+    @catch (NSException * e) {
+        NSLog(@"ERROR, empty cell for section %d / row %d", indexPath.section, indexPath.row);
+    }
+
     return nil;
 }
 
@@ -326,7 +330,7 @@ static CGFloat fCellImageSize = 1;
         int iResults = 0;
         if (s) {
             cell.labelText.text = s.sSearchText;
-            if (self.textFieldSmileys.text.length >= 1) {
+            if (indexPath.section == 1 && self.textFieldSmileys.text.length >= 1) {
                 [cell.labelText boldSubstring: self.textFieldSmileys.text];
             }
             iResults = [s.nSearchNumber intValue];
