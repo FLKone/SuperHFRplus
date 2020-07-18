@@ -686,7 +686,7 @@
 
 - (IBAction)cancel {
     //NSLog(@"cancel %@", self.formSubmit);
-    
+    /*
     if (self.smileView.alpha != 0) {
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
@@ -729,7 +729,7 @@
         [self segmentToBlue];
         
         //NSLog(@"====== 777777");
-    }*/
+    }*
     else if (self.rehostTableView.alpha != 0) {
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
@@ -752,46 +752,45 @@
         
         //NSLog(@"====== 777777");
     }
-    else {
-        if ([self.textView text].length > 0 && !self.isDeleteMode) {
-            NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
-            NSString *messageBrouillon=nil;
-            BOOL remplacerBrouillon = NO;
-            if (self.sBrouillon.length > 0) {
-                alertTitle = @"Remplacer le brouillon ?";
-                messageBrouillon = [self getBrouillonExtract];
-                remplacerBrouillon = YES;
-            }
-            
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                           message:messageBrouillon
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* yesAction = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {
-                                                                      [self modifyBrouillon:[self.textView text]];
-                                                                      [self finishMe];
-                                                                  }];
-            UIAlertAction* noAction = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {
-                                                                    if (!remplacerBrouillon) [self modifyBrouillon:@""];
-                                                                      [self finishMe];
-                                                                  }];
-            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                                 handler:^(UIAlertAction * action) {
-                                                                     [self.textView becomeFirstResponder];
-                                                                 }];
+    else {*/
+    if ([self.textView text].length > 0 && !self.isDeleteMode) {
+        NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
+        NSString *messageBrouillon=nil;
+        BOOL remplacerBrouillon = NO;
+        if (self.sBrouillon.length > 0) {
+            alertTitle = @"Remplacer le brouillon ?";
+            messageBrouillon = [self getBrouillonExtract];
+            remplacerBrouillon = YES;
+        }
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:messageBrouillon
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* yesAction = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {
+                                                                  [self modifyBrouillon:[self.textView text]];
+                                                                  [self finishMe];
+                                                              }];
+        UIAlertAction* noAction = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {
+                                                                if (!remplacerBrouillon) [self modifyBrouillon:@""];
+                                                                  [self finishMe];
+                                                              }];
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction * action) {
+                                                                 [self.textView becomeFirstResponder];
+                                                             }];
 
-            [alert addAction:yesAction];
-            [alert addAction:noAction];
-            [alert addAction:cancelAction];
-            [self presentViewController:alert animated:YES completion:^{}];
-            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        }
-        else {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-    [self.delegate addMessageViewControllerDidFinish:self];
-        }
+        [alert addAction:yesAction];
+        [alert addAction:noAction];
+        [alert addAction:cancelAction];
+        [self presentViewController:alert animated:YES completion:^{}];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+        [self.delegate addMessageViewControllerDidFinish:self];
     }
 }
 
@@ -1094,7 +1093,7 @@
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
-        self.constraintSmileyViewHeight.constant = 150;
+        self.constraintSmileyViewHeight.constant = [self.viewControllerSmileys getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
     [self.viewControllerSmileys updateExpandButton];
@@ -1673,10 +1672,6 @@ self.loaded = YES;
     }
 }
 #pragma mark - Collection Smileys Default and Images
-
-static CGFloat fCellSize = 0.7;
-static CGFloat fCellImageSize = 1;
-
 
 - (void) setupCollections
 {

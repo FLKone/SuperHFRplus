@@ -58,6 +58,7 @@ typedef enum {
 
 - (void)changeDisplayMode:(DisplayModeEnum)newMode animate:(BOOL)bAnimate;
 - (void)updateExpandButton;
+- (float)getDisplayHeight;
 - (void)actionReduce:(id)sender;
 - (void)fetchSmileys;
 

@@ -98,7 +98,7 @@
     [self.arrSearch addObject:ss1];
     [self.arrSearch addObject:ss2];
     [self.arrSearch addObject:ss3];
-    //}
+        
     [self updateSearchArraySorted];
 
     // TableView
@@ -141,8 +141,9 @@
 
     [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
     self.textFieldSmileys.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-    self.textFieldSmileys.returnKeyType = UIReturnKeyDone;
-    
+    self.textFieldSmileys.returnKeyType = UIReturnKeySearch;
+    [self.textFieldSmileys addTarget:self action:@selector(actionSmileysSearch:) forControlEvents:UIControlEventPrimaryActionTriggered];
+
     [self.spinnerSmileySearch setHidesWhenStopped:YES];
 
     // Default view displayed at startup
@@ -190,8 +191,14 @@
 
 #pragma mark - Collection management
 
-static CGFloat fCellSize = 0.7;
+static CGFloat fCellSizeDefault = 0.7*0.85;
+static CGFloat fCellSizeSearch = 1*0.85;
 static CGFloat fCellImageSize = 1;
+
+- (BOOL) displayCollectionSmileysDefault
+{
+    return (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault);
+}
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -200,15 +207,12 @@ static CGFloat fCellImageSize = 1;
             //CGRect f = self.collectionSmileys.frame;
             SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
             UIImage* image = nil;//[UIImage imageNamed:@"19-gear"];
-            if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
+            if ([self displayCollectionSmileysDefault]) {
                 // Default smileys
-                image = [UIImage imageNamed:self.smileyCache.dicCommonSmileys[indexPath.row][@"resource"]];
+                image = [self.smileyCache getImageDefaultSmileyForIndex:(int)indexPath.row];
             }
             else {
-                UIImage* tmpImage = [self.smileyCache getImageForIndex:(int)indexPath.row];
-                if (tmpImage != nil) {
-                    image = tmpImage;
-                }
+                image = [self.smileyCache getImageForIndex:(int)indexPath.row];
             }
 
             CGFloat ch = cell.bounds.size.height;
@@ -245,7 +249,8 @@ static CGFloat fCellImageSize = 1;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (!self.smileyCache.bSearchSmileysActivated) {
+    if ([self displayCollectionSmileysDefault]) {
+        // Default smileys
         NSString* sCode = self.smileyCache.dicCommonSmileys[indexPath.row][@"code"];
         [self didSelectSmile:sCode];
     }
@@ -257,7 +262,7 @@ static CGFloat fCellImageSize = 1;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
+    if ([self displayCollectionSmileysDefault]) {
         return self.smileyCache.dicCommonSmileys.count;
     }
     else {
@@ -272,17 +277,29 @@ static CGFloat fCellImageSize = 1;
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(70*fCellSize, 50*fCellSize);
+    if ([self displayCollectionSmileysDefault]) {
+        return CGSizeMake(70*fCellSizeDefault, 50*fCellSizeDefault);
+    }
+    else {
+        return CGSizeMake(70*fCellSizeSearch, 50*fCellSizeSearch);
+    }
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(2, 2, 0, 0);
+    return UIEdgeInsetsMake(0, 2, 0, 0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
     return 1.0;
+}
+
+- (float) getDisplayHeight {
+    /*if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
+        return 150 * fCellSizeDefault;
+    }*/
+    return 150 * 0.85;
 }
 
 #pragma mark - Table view management
@@ -382,7 +399,8 @@ static CGFloat fCellImageSize = 1;
         }
         if (s) {
             self.textFieldSmileys.text = s.sSearchText;
-            [self textFieldShouldReturn:self.textFieldSmileys];
+            [self fetchSmileys];
+            //[self textFieldShouldReturn:self.textFieldSmileys];
             [self.tableViewSearch deselectRowAtIndexPath:self.tableViewSearch.indexPathForSelectedRow animated:NO];
         }
     }
@@ -503,23 +521,27 @@ static CGFloat fCellImageSize = 1;
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     NSLog(@"textFieldDidEndEditing");
-
+    /*// See if it was due to a return
+    if ( [[[notification userInfo] objectForKey:@"NSTextMovement"] intValue] == NSReturnTextMovement )
+    {
+        NSLog(@"Return was pressed!");
+    }*/
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    if (textField == self.textFieldSmileys) {
-        if (self.textFieldSmileys.text.length < 3) {
-            /*UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Saisir 3 caractères minimum !"
-                                                           delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];*/
-        }
-        else {
-            [self.spinnerSmileySearch startAnimating];
-            [self performSelectorInBackground:@selector(fetchSmileys) withObject:nil];
-        }
+    if (self.textFieldSmileys.text.length < 3) {
+        return NO;/*UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Saisir 3 caractères minimum !"
+                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];*/
     }
-    return NO;
+    /*
+    else {
+        //[self.spinnerSmileySearch startAnimating];
+        [self performSelectorInBackground:@selector(fetchSmileys) withObject:nil];
+    }*/
+
+    return YES;
     
 }
 /*- (BOOL)textFieldShouldClear:(UITextField *)textField
@@ -530,6 +552,11 @@ static CGFloat fCellImageSize = 1;
     return YES;
  
  }*/
+
+- (void)actionSmileysSearch:(id)sender
+{
+    [self fetchSmileys];
+}
 
 -(IBAction)textFieldSmileChange:(id)sender
 {

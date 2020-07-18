@@ -25,6 +25,7 @@
 
 @property (nonatomic, strong) NSMutableArray* arrCurrentSmileyArray;
 @property (nonatomic, strong) NSCache* cacheSmileys;
+@property (nonatomic, strong) NSCache* cacheSmileysDefaults;
 @property (nonatomic, strong) NSCache* cacheSmileyRequests;
 @property BOOL bStopLoadingSmileysToCache;
 @property BOOL bSearchSmileysActivated;
@@ -33,6 +34,7 @@
 
 + (SmileyCache *) shared;
 - (void) handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*)cv spinner:(UIActivityIndicatorView*)spinner;
+- (UIImage*) getImageDefaultSmileyForIndex:(int)index;
 - (UIImage*) getImageForIndex:(int)index;
 - (NSMutableArray*) getSmileyListForText:(NSString*)sTextSmileys;
 - (NSString*) getSmileyCodeForIndex:(int)index;

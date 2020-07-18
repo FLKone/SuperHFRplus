@@ -15,13 +15,14 @@
 #import "UIImage+GIF.h"
 
 #define IMAGE_CACHE_MAX_ELEMENTS 1000
+#define IMAGE_CACHE_SMILEYS_DEFAULTS_MAX_ELEMENTS 50
 
 @implementation SmileyRequest
 @end
 
 @implementation SmileyCache
 
-@synthesize arrCurrentSmileyArray, cacheSmileys, bStopLoadingSmileysToCache, dicCommonSmileys, dicSearchSmileys, bSearchSmileysActivated;
+@synthesize arrCurrentSmileyArray, cacheSmileys, cacheSmileysDefaults, bStopLoadingSmileysToCache, dicCommonSmileys, dicSearchSmileys, bSearchSmileysActivated;
 
 static SmileyCache *_shared = nil;    // static instance variable
 
@@ -38,6 +39,8 @@ static SmileyCache *_shared = nil;    // static instance variable
         self.arrCurrentSmileyArray = nil;
         self.cacheSmileys = [[NSCache alloc] init];
         self.cacheSmileys.countLimit = IMAGE_CACHE_MAX_ELEMENTS;
+        self.cacheSmileysDefaults = [[NSCache alloc] init];
+        self.cacheSmileysDefaults.countLimit = IMAGE_CACHE_SMILEYS_DEFAULTS_MAX_ELEMENTS;
         self.bStopLoadingSmileysToCache = NO;
         self.bSearchSmileysActivated = NO;
         NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
@@ -116,6 +119,20 @@ static SmileyCache *_shared = nil;    // static instance variable
     UIImage* img = [self.cacheSmileys objectForKey:filename];
     //NSLog(@"getImageForIndex %d", index);
     return img;
+}
+
+- (UIImage*) getImageDefaultSmileyForIndex:(int)index
+{
+    NSString *filename = [self.dicCommonSmileys[index][@"resource"] stringByReplacingOccurrencesOfString:@"http://forum-images.hardware.fr/" withString:@""];
+    UIImage* image = [self.cacheSmileysDefaults objectForKey:filename];
+    if (image == nil) {
+        NSString *filenameShort = [filename stringByDeletingPathExtension];
+        NSString* filepath = [[NSBundle mainBundle] pathForResource:filenameShort ofType:@"gif"];
+        NSData* imgData = [NSData dataWithContentsOfFile:filepath];
+        image = [UIImage sd_animatedGIFWithData:imgData];
+        [self.cacheSmileysDefaults setObject:image forKey:filename];
+    }
+    return image;
 }
 
 - (NSString*) getSmileyCodeForIndex:(int)index

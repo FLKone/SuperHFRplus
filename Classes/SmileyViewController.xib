@@ -83,7 +83,7 @@
                             <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                             <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                             <connections>
                                 <action selector="textFieldSmileChange:" destination="-1" eventType="editingChanged" id="sNa-WK-0nk"/>
                                 <outlet property="delegate" destination="-1" id="gHf-jb-QXO"/>
