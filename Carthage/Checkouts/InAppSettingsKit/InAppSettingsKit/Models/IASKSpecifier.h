@@ -43,6 +43,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Settings schema: `IASKSubtitle`
 @property (nullable, nonatomic, copy, readonly) NSString *subtitle;
 
+// internal: Whether or not this setting has a subtitle.
+@property (nonatomic, readonly) BOOL hasSubtitle;
+
+// internal: Returns the subtitle for the current value of the setting
+- (nullable NSString*)subtitleForValue:(nullable id)value;
+
 @property (nonatomic, copy, readonly) NSString *type;
 @property (nullable, nonatomic, strong, readonly) id defaultValue;
 @property (nullable, nonatomic, strong, readonly) id defaultStringValue;
@@ -208,8 +214,14 @@ typedef NS_ENUM(NSUInteger, IASKToggleStyle) {
 /// Settings schema: `DatePickerMode` with values `Date`, `Time`, and `DateAndTime` (default)
 @property (nonatomic, readonly) UIDatePickerMode datePickerMode;
 
+/// Settings schema: `DatePickerStyle` with values `Compact` (default), `Inline`, and `Wheels`
+@property (nonatomic, readonly) UIDatePickerStyle datePickerStyle API_AVAILABLE(ios(13.4));
+
 /// Settings schema: `MinuteInterval` with an integer value (default: 1)
 @property (nonatomic, readonly) NSInteger datePickerMinuteInterval;
+
+// internal: the date picker doesn't expand/collapse (datePickerStyle is `Compact`)
+@property (nonatomic, readonly) BOOL embeddedDatePicker;
 
 // internal: represents the actual date picker cell below the title cell
 @property (nonatomic, strong, readonly) IASKSpecifier *editSpecifier;

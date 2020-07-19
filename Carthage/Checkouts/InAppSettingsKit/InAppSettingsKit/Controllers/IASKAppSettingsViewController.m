@@ -30,6 +30,7 @@
 #import "IASKMultipleValueSelection.h"
 #import "IASKDatePicker.h"
 #import "IASKDatePickerViewCell.h"
+#import "IASKEmbeddedDatePickerViewCell.h"
 
 #if !__has_feature(objc_arc)
 #error "IASK needs ARC"
@@ -166,10 +167,8 @@ CGRect IASKCGRectSwap(CGRect rect);
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	if (@available(iOS 9.0, *)) {
-        self.tableView.cellLayoutMarginsFollowReadableWidth = self.cellLayoutMarginsFollowReadableWidth;
-    }
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapToEndEdit:)];
+	self.tableView.cellLayoutMarginsFollowReadableWidth = self.cellLayoutMarginsFollowReadableWidth;
+	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapToEndEdit:)];
     tapGesture.cancelsTouchesInView = NO;
     [self.tableView addGestureRecognizer:tapGesture];
 
@@ -377,9 +376,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 
 - (void)setCellLayoutMarginsFollowReadableWidth:(BOOL)cellLayoutMarginsFollowReadableWidth {
     _cellLayoutMarginsFollowReadableWidth = cellLayoutMarginsFollowReadableWidth;
-	if (@available(iOS 9.0, *)) {
-        self.tableView.cellLayoutMarginsFollowReadableWidth = cellLayoutMarginsFollowReadableWidth;
-    }
+	self.tableView.cellLayoutMarginsFollowReadableWidth = cellLayoutMarginsFollowReadableWidth;
 }
 
 
@@ -418,6 +415,12 @@ CGRect IASKCGRectSwap(CGRect rect);
 			[self.settingsStore setBool:NO forSpecifier:specifier];
 		}
 	}
+	NSString* key = specifier.key;
+	if (key != nil) {
+		NSIndexPath* indexPath = [_settingsReader indexPathForKey:key];
+		UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
+		cell.detailTextLabel.text = [specifier subtitleForValue:on ? @"YES" : @"NO"];
+	}
 	[[NSNotificationCenter defaultCenter] postNotificationName:kIASKAppSettingChanged
 														object:self
 													  userInfo:@{(id)specifier.key: [self.settingsStore objectForSpecifier:specifier] ?: NSNull.null}];
@@ -432,11 +435,13 @@ CGRect IASKCGRectSwap(CGRect rect);
 }
 
 - (void)datePickerChangedValue:(IASKDatePicker*)datePicker {
+	datePicker.editing = YES;
 	if ([self.delegate respondsToSelector:@selector(settingsViewController:setDate:forSpecifier:)]) {
 		[self.delegate settingsViewController:self setDate:datePicker.date forSpecifier:datePicker.specifier];
 	} else {
 		[self.settingsStore setObject:datePicker.date forSpecifier:datePicker.specifier];
 	}
+	datePicker.editing = NO;
 }
 
 #pragma mark -
@@ -542,15 +547,19 @@ CGRect IASKCGRectSwap(CGRect rect);
 
 - (UITableViewCell*)tableView:(UITableView *)tableView newCellForSpecifier:(IASKSpecifier*)specifier {
 
-	NSString *identifier = [NSString stringWithFormat:@"%@-%ld-%d", specifier.type, (long)specifier.textAlignment, !!specifier.subtitle.length];
+	NSString *identifier = [NSString stringWithFormat:@"%@-%ld-%d-%d", specifier.type, (long)specifier.textAlignment, !!specifier.hasSubtitle, specifier.embeddedDatePicker];
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 	if (cell) {
 		return cell;
 	}
-	UITableViewCellStyle style = (specifier.textAlignment == NSTextAlignmentLeft || specifier.subtitle.length) ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault;
+	UITableViewCellStyle style = (specifier.textAlignment == NSTextAlignmentLeft || specifier.hasSubtitle) ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault;
 	if ([identifier hasPrefix:kIASKPSToggleSwitchSpecifier]) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
 	}
+	else if (specifier.embeddedDatePicker) {
+		cell = [[IASKEmbeddedDatePickerViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+		[((IASKDatePickerViewCell*)cell).datePicker addTarget:self action:@selector(datePickerChangedValue:) forControlEvents:UIControlEventValueChanged];
+}
 	else if ([@[kIASKPSMultiValueSpecifier, kIASKPSTitleValueSpecifier, kIASKDatePickerSpecifier] containsObject:specifier.type]) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
 		cell.accessoryType = [identifier hasPrefix:kIASKPSMultiValueSpecifier] ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
@@ -565,7 +574,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 	else if ([identifier hasPrefix:kIASKPSSliderSpecifier]) {
         cell = [[IASKPSSliderSpecifierViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 	} else if ([identifier hasPrefix:kIASKPSChildPaneSpecifier]) {
-		if (!specifier.subtitle.length) {
+		if (!specifier.hasSubtitle) {
 			style = UITableViewCellStyleValue1;
 		}
 		cell = [[UITableViewCell alloc] initWithStyle:style reuseIdentifier:identifier];
@@ -595,7 +604,6 @@ CGRect IASKCGRectSwap(CGRect rect);
 	
 	if ([specifier.type isEqualToString:kIASKPSToggleSwitchSpecifier]) {
 		cell.textLabel.text = title;
-		cell.detailTextLabel.text = specifier.subtitle;
 
 		BOOL toggleState;
 		if (currentValue) {
@@ -609,6 +617,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 		} else {
 			toggleState = specifier.defaultBoolValue;
 		}
+		cell.detailTextLabel.text = [specifier subtitleForValue:toggleState ? @"YES" : @"NO"];
 		if (specifier.toggleStyle == IASKToggleStyleSwitch) {
 			IASKSwitch *toggle = [[IASKSwitch alloc] initWithFrame:CGRectMake(0, 0, 79, 27)];
 			[toggle addTarget:self action:@selector(toggledValue:) forControlEvents:UIControlEventValueChanged];
@@ -633,6 +642,21 @@ CGRect IASKCGRectSwap(CGRect rect);
 			cell.detailTextLabel.text = nil;
 		}
 	}
+	else if (specifier.embeddedDatePicker) {
+		IASKEmbeddedDatePickerViewCell *datePickerCell = (id)cell;
+		datePickerCell.titleLabel.text = title;
+		datePickerCell.datePicker.specifier = specifier;
+		datePickerCell.datePicker.datePickerMode = specifier.datePickerMode;
+		if (@available(iOS 14.0, *)) {
+			datePickerCell.datePicker.preferredDatePickerStyle = specifier.datePickerStyle;
+		}
+		datePickerCell.datePicker.minuteInterval = specifier.datePickerMinuteInterval;
+		if ([self.delegate respondsToSelector:@selector(settingsViewController:dateForSpecifier:)]) {
+			datePickerCell.datePicker.date = [self.delegate settingsViewController:self dateForSpecifier:specifier];
+		} else {
+			datePickerCell.datePicker.date = currentValue ?: NSDate.date;
+		}
+	}
 	else if ([@[kIASKPSTitleValueSpecifier, kIASKDatePickerSpecifier] containsObject:specifier.type]) {
 		cell.textLabel.text = title;
 		id value = currentValue ?: specifier.defaultValue;
@@ -654,7 +678,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 		}
 		cell.userInteractionEnabled = [specifier.type isEqualToString:kIASKDatePickerSpecifier];
 		if ([specifier.type isEqualToString:kIASKDatePickerSpecifier]) {
-			cell.detailTextLabel.textColor = [specifier isEqual:self.settingsReader.selectedSpecifier] ? [UILabel appearanceWhenContainedIn:UITableViewCell.class, nil].textColor : self.tintColor;
+			cell.detailTextLabel.textColor = [specifier isEqual:self.settingsReader.selectedSpecifier] ? [UILabel appearanceWhenContainedInInstancesOfClasses:@[UITableViewCell.class]].textColor : self.tintColor;
 		}
 	}
 	else if ([specifier.type isEqualToString:kIASKPSTextFieldSpecifier]) {
@@ -712,26 +736,26 @@ CGRect IASKCGRectSwap(CGRect rect);
 	}
 	else if ([specifier.type isEqualToString:kIASKPSChildPaneSpecifier]) {
 		cell.textLabel.text = title;
-		if (specifier.subtitle.length) {
-			cell.detailTextLabel.text = specifier.subtitle;
+		if (specifier.hasSubtitle) {
+			cell.detailTextLabel.text = [specifier subtitleForValue:currentValue];
 		} else if (specifier.key) {
 			NSString *valueString = currentValue ?: specifier.defaultValue;
 			valueString = [valueString isKindOfClass:NSString.class] ? valueString : nil;
 			if (valueString) {
 				if (specifier.textAlignment == NSTextAlignmentLeft) {
-					cell.textLabel.text = valueString;
+					cell.textLabel.text = [self.settingsReader titleForId:valueString];
 				} else {
-					cell.detailTextLabel.text = valueString;
+					cell.detailTextLabel.text = [self.settingsReader titleForId:valueString];
 				}
 			}
 		}
 	} else if ([@[kIASKMailComposeSpecifier, kIASKOpenURLSpecifier] containsObject:specifier.type]) {
 		cell.textLabel.text = title;
-		cell.detailTextLabel.text = specifier.subtitle ? : [specifier.defaultValue description];
+		cell.detailTextLabel.text = [specifier subtitleForValue:currentValue] ? : [specifier.defaultValue description];
 		cell.accessoryType = (specifier.textAlignment == NSTextAlignmentLeft) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
 	} else if ([specifier.type isEqualToString:kIASKButtonSpecifier]) {
 		cell.textLabel.text = ([currentValue isKindOfClass:NSString.class] && [self.settingsReader titleForId:currentValue].length) ? [self.settingsReader titleForId:currentValue] : title;
-		cell.detailTextLabel.text = specifier.subtitle;
+		cell.detailTextLabel.text = [specifier subtitleForValue:currentValue];
 		cell.textLabel.textAlignment = specifier.textAlignment;
 		cell.accessoryType = (specifier.textAlignment == NSTextAlignmentLeft) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
 	} else if ([specifier.type isEqualToString:kIASKPSRadioGroupSpecifier]) {
@@ -742,11 +766,14 @@ CGRect IASKCGRectSwap(CGRect rect);
 		IASKDatePickerViewCell *datePickerCell = (id)cell;
 		datePickerCell.datePicker.specifier = specifier;
 		datePickerCell.datePicker.datePickerMode = specifier.datePickerMode;
+		if (@available(iOS 14.0, *)) {
+			datePickerCell.datePicker.preferredDatePickerStyle = specifier.datePickerStyle;
+		}
 		datePickerCell.datePicker.minuteInterval = specifier.datePickerMinuteInterval;
 		if ([self.delegate respondsToSelector:@selector(settingsViewController:dateForSpecifier:)]) {
 			datePickerCell.datePicker.date = [self.delegate settingsViewController:self dateForSpecifier:specifier];
 		} else {
-			datePickerCell.datePicker.date = currentValue;
+			datePickerCell.datePicker.date = currentValue ?: NSDate.date;
 		}
 	} else {
 		cell.textLabel.text = title;
@@ -761,13 +788,13 @@ CGRect IASKCGRectSwap(CGRect rect);
 	cell.detailTextLabel.textAlignment = specifier.textAlignment;
 	cell.textLabel.adjustsFontSizeToFitWidth = specifier.adjustsFontSizeToFitWidth;
 	cell.detailTextLabel.adjustsFontSizeToFitWidth = specifier.adjustsFontSizeToFitWidth;
-	cell.textLabel.textColor = (specifier.isAddSpecifier || specifier.textAlignment == NSTextAlignmentCenter) ? self.tintColor : [UILabel appearanceWhenContainedIn:UITableViewCell.class, nil].textColor;
+	cell.textLabel.textColor = (specifier.isAddSpecifier || specifier.textAlignment == NSTextAlignmentCenter) ? self.tintColor : [UILabel appearanceWhenContainedInInstancesOfClasses:@[UITableViewCell.class]].textColor;
 	return cell;
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	IASKSpecifier *specifier  = [self.settingsReader specifierForIndexPath:indexPath];
-	if ([specifier.type isEqualToString:kIASKPSSliderSpecifier] || ([specifier.type isEqualToString:kIASKPSToggleSwitchSpecifier] && specifier.toggleStyle == IASKToggleStyleSwitch)) {
+	if ([specifier.type isEqualToString:kIASKPSSliderSpecifier] || ([specifier.type isEqualToString:kIASKPSToggleSwitchSpecifier] && specifier.toggleStyle == IASKToggleStyleSwitch) || specifier.embeddedDatePicker) {
 		return nil;
 	} else {
 		return indexPath;
@@ -803,6 +830,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 		IASKSpecifier *childSpecifier = [[IASKSpecifier alloc] initWithSpecifier:specifier.specifierDict];
 		childSpecifier.settingsReader = self.settingsReader;
 		IASKSpecifierValuesViewController *targetViewController = [[IASKSpecifierValuesViewController alloc] initWithSpecifier:childSpecifier];
+        targetViewController.view.backgroundColor = self.view.backgroundColor;
 		targetViewController.settingsReader = self.settingsReader;
 		[self setMultiValuesFromDelegateIfNeeded:childSpecifier];
 
@@ -885,6 +913,7 @@ CGRect IASKCGRectSwap(CGRect rect);
         targetViewController.file = (id)specifier.file;
         targetViewController.hiddenKeys = self.hiddenKeys;
         targetViewController.title = specifier.title;
+		targetViewController.view.backgroundColor = self.view.backgroundColor;
         _currentChildViewController = targetViewController;
         
         _reloadDisabled = NO;
@@ -986,9 +1015,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 }
 
 - (void)presentChildViewController:(UITableViewController<IASKViewController> *)targetViewController specifier:(IASKSpecifier *)specifier indexPath:(NSIndexPath*)indexPath {
-	if (@available(iOS 9.0, *)) {
-		targetViewController.tableView.cellLayoutMarginsFollowReadableWidth = self.cellLayoutMarginsFollowReadableWidth;
-	}
+	targetViewController.tableView.cellLayoutMarginsFollowReadableWidth = self.cellLayoutMarginsFollowReadableWidth;
 	_currentChildViewController = targetViewController;
 	targetViewController.settingsStore = self.settingsStore;
 	targetViewController.view.tintColor = self.tintColor;
@@ -1218,6 +1245,8 @@ static NSMutableDictionary *oldUserDefaults = nil;
 		for (UITableViewCell *cell in self.tableView.visibleCells) {
             NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
 			if ([cell isKindOfClass:[IASKPSTextFieldSpecifierViewCell class]] && [((IASKPSTextFieldSpecifierViewCell*)cell).textField isFirstResponder] && indexPath) {
+				[indexPathsToUpdate removeObject:indexPath];
+			} else if ([cell isKindOfClass:IASKEmbeddedDatePickerViewCell.class] && !((IASKEmbeddedDatePickerViewCell*)cell).datePicker.editing) {
 				[indexPathsToUpdate removeObject:indexPath];
 			}
 		}

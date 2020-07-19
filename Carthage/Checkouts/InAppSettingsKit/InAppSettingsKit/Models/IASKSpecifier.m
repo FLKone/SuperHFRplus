@@ -183,7 +183,27 @@
     return [self localizedObjectForKey:kIASKTitle];
 }
 
+- (BOOL)hasSubtitle {
+	return [_specifierDict objectForKey:kIASKSubtitle] != nil;
+}
+
 - (NSString*)subtitle {
+	return [self subtitleForValue:nil];
+}
+
+- (NSString*)subtitleForValue:(id)value {
+	id subtitleValue = [_specifierDict objectForKey:kIASKSubtitle];
+	if ([subtitleValue isKindOfClass:[NSDictionary class]]) {
+		id subtitleForValue = nil;
+		if (value != nil) {
+			subtitleForValue = [(NSDictionary*) subtitleValue objectForKey:value];
+		}
+		if (subtitleForValue == nil) {
+			subtitleForValue = [(NSDictionary*) subtitleValue objectForKey:@"__default__"];
+		}
+		IASKSettingsReader *settingsReader = self.settingsReader;
+		return [settingsReader titleForId:subtitleForValue];
+	}
 	return [self localizedObjectForKey:kIASKSubtitle];
 }
 
@@ -456,7 +476,7 @@
 
 - (NSTextAlignment)textAlignment
 {
-    if (self.subtitle.length || [[_specifierDict objectForKey:kIASKTextLabelAlignment] isEqualToString:kIASKTextLabelAlignmentLeft]) {
+    if (self.hasSubtitle || [[_specifierDict objectForKey:kIASKTextLabelAlignment] isEqualToString:kIASKTextLabelAlignmentLeft]) {
         return NSTextAlignmentLeft;
     } else if ([[_specifierDict objectForKey:kIASKTextLabelAlignment] isEqualToString:kIASKTextLabelAlignmentCenter]) {
         return NSTextAlignmentCenter;
@@ -545,6 +565,32 @@
 	NSString *string = [_specifierDict objectForKey:kIASKDatePickerMode];
 	NSNumber *value = dict[string];
 	return value == nil ? UIDatePickerModeDateAndTime : value.integerValue;
+}
+
+- (UIDatePickerStyle)datePickerStyle {
+	NSDictionary *dict = @{kIASKDatePickerStyleCompact: @(UIDatePickerStyleCompact),
+						   kIASKDatePickerStyleWheels: @(UIDatePickerStyleWheels)};
+	if (@available(iOS 14.0, *)) {
+		IASK_IF_IOS14_OR_GREATER(
+		 dict = @{kIASKDatePickerStyleCompact: @(UIDatePickerStyleCompact),
+				  kIASKDatePickerStyleWheels: @(UIDatePickerStyleWheels),
+				  kIASKDatePickerStyleInline: @(UIDatePickerStyleInline)};
+		);
+	}
+	NSString *string = [_specifierDict objectForKey:kIASKDatePickerStyle];
+	NSNumber *value = dict[string];
+	return value == nil ? UIDatePickerStyleWheels : value.integerValue;
+}
+
+- (BOOL)embeddedDatePicker {
+	BOOL embeddedDatePicker = NO;
+	if (@available(iOS 14.0, *)) {
+		IASK_IF_IOS14_OR_GREATER(
+		 embeddedDatePicker = [self.type isEqualToString:kIASKDatePickerSpecifier] &&
+		 (self.datePickerStyle == UIDatePickerStyleCompact || (self.datePickerStyle == UIDatePickerStyleInline && self.datePickerMode == UIDatePickerModeTime));
+        );
+	}
+	return embeddedDatePicker;
 }
 
 - (NSInteger)datePickerMinuteInterval {

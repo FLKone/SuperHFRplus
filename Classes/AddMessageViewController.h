@@ -11,10 +11,13 @@
 #import "ASIHTTPRequest.h"
 #import "HFRTextView.h"
 
+@import GiphyUISDK;
+@import GiphyCoreSDK;
+
 @protocol AddMessageViewControllerDelegate;
 @class SmileyViewController;
 
-@interface AddMessageViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, WKNavigationDelegate, WKUIDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource> {
+@interface AddMessageViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, WKNavigationDelegate, WKUIDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, GiphyDelegate>  {
     id <AddMessageViewControllerDelegate> __weak delegate;
     
     //bb

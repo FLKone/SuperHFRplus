@@ -32,6 +32,9 @@
 		AA627D3B19F695F30079AAE8 /* IASKLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA627D2B19F695F30079AAE8 /* IASKLocalizable.strings */; };
 		AADCA136233142C700D55F13 /* IASKColor.m in Sources */ = {isa = PBXBuildFile; fileRef = AADCA134233142C700D55F13 /* IASKColor.m */; };
 		AADCA137233142C700D55F13 /* IASKColor.h in Headers */ = {isa = PBXBuildFile; fileRef = AADCA135233142C700D55F13 /* IASKColor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AAE0B5B724AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AAE0B5B524AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.h */; };
+		AAE0B5B824AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE0B5B624AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.m */; };
+		AAE0B5B924AE864900A3FB5F /* IASKEmbeddedDatePickerViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE0B5B624AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.m */; };
 		DAC156261B54533D00655031 /* InAppSettingsKit.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC156251B54533D00655031 /* InAppSettingsKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DAC1562B1B54537200655031 /* IASKPSSliderSpecifierViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = E42ADAD41682036500295D85 /* IASKPSSliderSpecifierViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DAC1562C1B54537200655031 /* IASKPSSliderSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E42ADAD51682036500295D85 /* IASKPSSliderSpecifierViewCell.m */; };
@@ -123,6 +126,7 @@
 		AA1C3AD924602B650081582F /* IASKDatePickerViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IASKDatePickerViewCell.m; sourceTree = "<group>"; };
 		AA1C3ADD24604C220081582F /* IASKDatePicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IASKDatePicker.h; sourceTree = "<group>"; };
 		AA1C3ADE24604C220081582F /* IASKDatePicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IASKDatePicker.m; sourceTree = "<group>"; };
+		AA391E6F24AFA23700973930 /* RELEASE_NOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = RELEASE_NOTES.md; sourceTree = "<group>"; };
 		AA5AB5261C88974100B20124 /* IASKTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = IASKTextView.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; };
 		AA5AB5271C88974100B20124 /* IASKTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = IASKTextView.m; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; };
 		AA5AB5281C88974100B20124 /* IASKTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = IASKTextViewCell.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; };
@@ -146,6 +150,8 @@
 		AA627D6F19F69A7F0079AAE8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AADCA134233142C700D55F13 /* IASKColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKColor.m; sourceTree = "<group>"; };
 		AADCA135233142C700D55F13 /* IASKColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKColor.h; sourceTree = "<group>"; };
+		AAE0B5B524AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IASKEmbeddedDatePickerViewCell.h; sourceTree = "<group>"; };
+		AAE0B5B624AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IASKEmbeddedDatePickerViewCell.m; sourceTree = "<group>"; };
 		AAE500261A82A1D600C445B0 /* InAppSettingsKit.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = InAppSettingsKit.podspec; sourceTree = "<group>"; };
 		B1FF720F1F7771810021E9C6 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
 		B1FF72101F77719A0021E9C6 /* hr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hr; path = hr.lproj/IASKLocalizable.strings; sourceTree = "<group>"; };
@@ -269,6 +275,7 @@
 			children = (
 				AAE500261A82A1D600C445B0 /* InAppSettingsKit.podspec */,
 				AA627D6F19F69A7F0079AAE8 /* README.md */,
+				AA391E6F24AFA23700973930 /* RELEASE_NOTES.md */,
 				E42ADA94168202D700295D85 /* InAppSettingsKit */,
 				E42ADAAB168202D700295D85 /* InAppSettingsKitTests */,
 				E42ADABC1682033800295D85 /* Configurations */,
@@ -380,6 +387,8 @@
 				AADCA134233142C700D55F13 /* IASKColor.m */,
 				AA1C3AD824602B650081582F /* IASKDatePickerViewCell.h */,
 				AA1C3AD924602B650081582F /* IASKDatePickerViewCell.m */,
+				AAE0B5B524AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.h */,
+				AAE0B5B624AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.m */,
 				AA1C3ADD24604C220081582F /* IASKDatePicker.h */,
 				AA1C3ADE24604C220081582F /* IASKDatePicker.m */,
 				E42ADAD41682036500295D85 /* IASKPSSliderSpecifierViewCell.h */,
@@ -516,6 +525,7 @@
 				E401BD4316820A2400EAF534 /* IASKSettingsStoreFile.h in Headers */,
 				E401BD4416820A2D00EAF534 /* IASKPSSliderSpecifierViewCell.h in Headers */,
 				E401BD4516820A2D00EAF534 /* IASKPSTextFieldSpecifierViewCell.h in Headers */,
+				AAE0B5B724AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.h in Headers */,
 				AA5AB52C1C88974100B20124 /* IASKTextViewCell.h in Headers */,
 				E401BD4716820A2D00EAF534 /* IASKSlider.h in Headers */,
 				E401BD4816820A2D00EAF534 /* IASKSwitch.h in Headers */,
@@ -593,7 +603,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0730;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = InAppSettingsKit;
 				TargetAttributes = {
 					DAC156221B54533D00655031 = {
@@ -669,6 +679,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DAC1563B1B54538500655031 /* IASKSettingsStoreFile.m in Sources */,
+				AAE0B5B924AE864900A3FB5F /* IASKEmbeddedDatePickerViewCell.m in Sources */,
 				DAC156301B54537200655031 /* IASKSlider.m in Sources */,
 				DAC156421B54538D00655031 /* IASKAppSettingsViewController.m in Sources */,
 				DAC156441B54538D00655031 /* IASKSpecifierValuesViewController.m in Sources */,
@@ -696,6 +707,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4EDC59D16820D9500BD3CA9 /* IASKAppSettingsViewController.m in Sources */,
+				AAE0B5B824AE863D00A3FB5F /* IASKEmbeddedDatePickerViewCell.m in Sources */,
 				E4EDC59E16820D9500BD3CA9 /* IASKSpecifierValuesViewController.m in Sources */,
 				E4EDC59F16820D9500BD3CA9 /* IASKAppSettingsWebViewController.m in Sources */,
 				E4EDC5A016820D9500BD3CA9 /* IASKSettingsReader.m in Sources */,
@@ -823,7 +835,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E4A95F30177DB25C00FF0906 /* Debug.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -832,7 +844,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E4A95F32177DB25C00FF0906 /* Release.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				SDKROOT = iphoneos;
 			};
 			name = Release;

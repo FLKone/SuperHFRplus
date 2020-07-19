@@ -47,6 +47,11 @@
 		1553568C24A87EBC00917DE1 /* UILabel+Boldify.m in Sources */ = {isa = PBXBuildFile; fileRef = 1553568B24A87EBC00917DE1 /* UILabel+Boldify.m */; };
 		1553568F24A8CCDA00917DE1 /* revert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568D24A8CCD900917DE1 /* revert@2x.png */; };
 		1553569024A8CCDA00917DE1 /* revert.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568E24A8CCDA00917DE1 /* revert.png */; };
+		1553569524C3227700917DE1 /* PINCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1553569124C3227600917DE1 /* PINCache.framework */; };
+		1553569624C3227700917DE1 /* DeepDiff.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1553569224C3227700917DE1 /* DeepDiff.framework */; };
+		1553569724C3227700917DE1 /* GiphyCoreSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1553569324C3227700917DE1 /* GiphyCoreSDK.framework */; };
+		1553569824C3227700917DE1 /* GiphyUISDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1553569424C3227700917DE1 /* GiphyUISDK.framework */; };
+		1553569A24C3228300917DE1 /* WebP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1553569924C3228300917DE1 /* WebP.framework */; };
 		1556408E22D91E980018A619 /* ListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556408D22D91E980018A619 /* ListTableViewController.m */; };
 		1556409122D928D30018A619 /* WhiteListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1556409022D928D30018A619 /* WhiteListTableViewController.m */; };
 		1556409322D9297C0018A619 /* WhiteListTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1556409222D9297C0018A619 /* WhiteListTableViewController.xib */; };
@@ -880,6 +885,11 @@
 		1553568B24A87EBC00917DE1 /* UILabel+Boldify.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UILabel+Boldify.m"; sourceTree = "<group>"; };
 		1553568D24A8CCD900917DE1 /* revert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "revert@2x.png"; sourceTree = "<group>"; };
 		1553568E24A8CCDA00917DE1 /* revert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = revert.png; sourceTree = "<group>"; };
+		1553569124C3227600917DE1 /* PINCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINCache.framework; path = Carthage/Build/iOS/PINCache.framework; sourceTree = "<group>"; };
+		1553569224C3227700917DE1 /* DeepDiff.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeepDiff.framework; path = Carthage/Build/iOS/DeepDiff.framework; sourceTree = "<group>"; };
+		1553569324C3227700917DE1 /* GiphyCoreSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GiphyCoreSDK.framework; path = Carthage/Build/iOS/GiphyCoreSDK.framework; sourceTree = "<group>"; };
+		1553569424C3227700917DE1 /* GiphyUISDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GiphyUISDK.framework; path = Carthage/Build/iOS/GiphyUISDK.framework; sourceTree = "<group>"; };
+		1553569924C3228300917DE1 /* WebP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebP.framework; path = Carthage/Build/iOS/WebP.framework; sourceTree = "<group>"; };
 		1556408C22D91E820018A619 /* ListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListTableViewController.h; sourceTree = "<group>"; };
 		1556408D22D91E980018A619 /* ListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListTableViewController.m; sourceTree = "<group>"; };
 		1556408F22D928AE0018A619 /* WhiteListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WhiteListTableViewController.h; sourceTree = "<group>"; };
@@ -1731,6 +1741,8 @@
 				CA7C7121185EF50E00B348BA /* MessageUI.framework in Frameworks */,
 				CA7C7122185EF50E00B348BA /* Foundation.framework in Frameworks */,
 				CA7C7123185EF50E00B348BA /* UIKit.framework in Frameworks */,
+				1553569524C3227700917DE1 /* PINCache.framework in Frameworks */,
+				1553569A24C3228300917DE1 /* WebP.framework in Frameworks */,
 				CA7C7124185EF50E00B348BA /* CoreGraphics.framework in Frameworks */,
 				CA7C7125185EF50E00B348BA /* CFNetwork.framework in Frameworks */,
 				CA7C7126185EF50E00B348BA /* MobileCoreServices.framework in Frameworks */,
@@ -1740,7 +1752,10 @@
 				CA7C712C185EF50E00B348BA /* libxml2.dylib in Frameworks */,
 				CA7C712D185EF50E00B348BA /* libsqlite3.dylib in Frameworks */,
 				CA7C712E185EF50E00B348BA /* libz.dylib in Frameworks */,
+				1553569624C3227700917DE1 /* DeepDiff.framework in Frameworks */,
+				1553569724C3227700917DE1 /* GiphyCoreSDK.framework in Frameworks */,
 				D87BB73C21624AEC0079690C /* SimpleKeychain.framework in Frameworks */,
+				1553569824C3227700917DE1 /* GiphyUISDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2074,6 +2089,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1553569924C3228300917DE1 /* WebP.framework */,
+				1553569224C3227700917DE1 /* DeepDiff.framework */,
+				1553569324C3227700917DE1 /* GiphyCoreSDK.framework */,
+				1553569424C3227700917DE1 /* GiphyUISDK.framework */,
+				1553569124C3227600917DE1 /* PINCache.framework */,
 				152D2D462455916000D9D644 /* libiconv.2.4.0.tbd */,
 				D87BB73A21624AEB0079690C /* SimpleKeychain.framework */,
 				D87BB73B21624AEC0079690C /* SimpleKeychain.framework.dSYM */,
@@ -3822,8 +3842,12 @@
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/InAppSettingsKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SimpleKeychain.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PINCache.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/DeepDiff.framework",
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/PINCache.framework",
+				"$(DERIVED_FILE_DIR)/DeepDiff.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4158,7 +4182,10 @@
 					"$(PROJECT_DIR)/**",
 				);
 				MARKETING_VERSION = 2.1.12;
-				OTHER_LDFLAGS = "-licucore";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super82;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4205,7 +4232,10 @@
 					"$(PROJECT_DIR)/**",
 				);
 				MARKETING_VERSION = 2.1.12;
-				OTHER_LDFLAGS = "-licucore";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super82;
 				PRODUCT_NAME = SuperHFRplusSwift;
 				PROVISIONING_PROFILE_SPECIFIER = "";

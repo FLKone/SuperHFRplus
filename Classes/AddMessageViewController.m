@@ -27,8 +27,9 @@
 #import "RehostCollectionCell.h"
 #import "SmileyCache.h"
 
-//@import GiphyUISDK;
-//@import GiphyCoreSDK;
+@import GiphyUISDK;
+@import GiphyCoreSDK;
+
 
 @implementation AddMessageViewController
 @synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, smileView, viewControllerSmileys, constraintSmileyViewHeight;
@@ -199,6 +200,8 @@
     
     //TODO: clean
     [textFieldSmileys setHidden:YES];
+    
+    [Giphy configureWithApiKey:API_KEY_GIPHY verificationMode:false];
 }
 
 - (NSString*) getBrouillonExtract {
@@ -1014,16 +1017,41 @@
 
 - (void)actionGIF:(id)sender
 {
-    /*
-    GiphyViewController *giphy = [[GiphyViewController alloc]init ] ;
+    GiphyViewController *giphy = [[GiphyViewController alloc] init];
     giphy.layout = GPHGridLayoutWaterfall;
-    giphy.theme = GPHThemeLight;
-    giphy.rating = GPHRatingTypeRatedPG13;
+    //giphy.theme = ThemeLight;
+    giphy.rating = GPHRatingTypeRatedR;
     giphy.delegate = self;
-    giphy.showConfirmationScreen = true ;
-    [giphy setMediaConfigWithTypes: [ [NSMutableArray alloc] initWithObjects:
-                                     @(GPHContentTypeGifs),@(GPHContentTypeStickers), @(GPHContentTypeText),@(GPHContentTypeEmoji), nil] ];
-    [self presentViewController:giphy animated:true completion:nil];*/
+    giphy.showConfirmationScreen = false;
+    [giphy setMediaConfigWithTypes: [[NSMutableArray alloc] initWithObjects: @(GPHContentTypeGifs), @(GPHContentTypeRecents), nil]];
+    [self presentViewController:giphy animated:true completion:nil];
+}
+
+- (void) didSelectMediaWithGiphyViewController:(GiphyViewController *)giphyViewController media:(GPHMedia *)media
+{
+    NSString* sTextToAdd = [NSString stringWithFormat:@"[img]%@[/img]", media.images.original.gifUrl];
+    NSRange range = [self lastSelectedRange];
+    if ([self.textView isFirstResponder]) {
+        range = self.textView.selectedRange;
+    }
+    if (!range.location) {
+        range = NSMakeRange(0, 0);
+    }
+    NSMutableString *text = [self.textView.text mutableCopy];
+    if (text.length < range.location) {
+        range.location = text.length;
+    }
+    [text insertString:sTextToAdd atIndex:range.location];
+    range.location += [sTextToAdd length];
+    range.length = 0;
+    [self setLastSelectedRange:range];
+    self.textView.text = text;
+    self.textView.selectedRange = range;
+    [self textViewDidChange:self.textView];
+}
+
+- (void) didDismissWithController:(GiphyViewController *)controller {
+    NSLog(@"");
 }
 
 - (void)actionSmiley:(id)sender

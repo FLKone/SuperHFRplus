@@ -56,6 +56,10 @@ NS_ASSUME_NONNULL_BEGIN
 #define kIASKDatePickerModeTime               @"Time"
 #define kIASKDatePickerModeDate               @"Date"
 #define kIASKDatePickerModeDateAndTime        @"DateAndTime"
+#define kIASKDatePickerStyle                  @"DatePickerStyle"
+#define kIASKDatePickerStyleCompact           @"Compact"
+#define kIASKDatePickerStyleInline            @"Inline"
+#define kIASKDatePickerStyleWheels            @"Wheels"
 #define kIASKDatePickerMinuteInterval         @"MinuteInterval"
 #define kIASKMailComposeToRecipents           @"IASKMailComposeToRecipents"
 #define kIASKMailComposeCcRecipents           @"IASKMailComposeCcRecipents"
@@ -178,14 +182,8 @@ extern NSString * const IASKSettingChangedNotification;
 #define kCFCoreFoundationVersionNumber_iOS_11_0 1429.150000
 #endif
 
-#ifdef __IPHONE_8_0
-#define IASK_IF_IOS8_OR_GREATER(...) \
-if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_8_0) \
-{ \
-__VA_ARGS__ \
-}
-#else
-#define IASK_IF_IOS8_OR_GREATER(...)
+#ifndef kCFCoreFoundationVersionNumber_iOS_14_0
+#define kCFCoreFoundationVersionNumber_iOS_14_0 1740.0
 #endif
 
 #ifdef __IPHONE_11_0
@@ -208,6 +206,15 @@ _Pragma("clang diagnostic pop")
 #define IASK_IF_PRE_IOS11(...)
 #endif
 
+#ifdef __IPHONE_14_0
+#define IASK_IF_IOS14_OR_GREATER(...) \
+if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_14_0) \
+{ \
+__VA_ARGS__ \
+}
+#else
+#define IASK_IF_IOS14_OR_GREATER(...)
+#endif
 
 @class IASKSpecifier;
 @protocol IASKSettingsStore;

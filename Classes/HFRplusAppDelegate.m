@@ -23,8 +23,8 @@
 #import "MultisManager.h"
 #import "MPStorage.h"
 #import "BlackList.h"
-#import "WEBPURLProtocol.h"
-#import "WEBPDemoDecoder.h"
+// TODO: UNCOMMENT #import "WEBPURLProtocol.h"
+// TODO: UNCOMMENT #import "WEBPDemoDecoder.h"
 
 #import <SafariServices/SafariServices.h>
 
@@ -63,7 +63,7 @@
 
     NSLog(@"didFinishLaunchingWithOptions");
     
-    [WEBPURLProtocol registerWebP:[WEBPDemoDecoder new]];
+// TODO: UNCOMMENT     [WEBPURLProtocol registerWebP:[WEBPDemoDecoder new]];
 
     //self.hash_check = [[NSString alloc] init];
     

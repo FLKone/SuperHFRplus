@@ -848,7 +848,7 @@
     
     
     //NSLog(@"loadCatForType %d", [sender tag]);
-    int section = [sender tag];
+    int section = [(UIButton*)sender tag];
     
     [self loadCatForSection:section];
 

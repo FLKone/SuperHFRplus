@@ -135,6 +135,7 @@ Similar to standard text fields, `IASKTextViewSpecifier` displays a full-width, 
 `IASKDatePickerSpecifier` displays a `UIDatePicker` to set a date and/or time. It supports the following options:
 
  - `DatePickerMode`: one of `Date`, `Time`, or `DateAndTime` (see [UIDatePickerMode](https://developer.apple.com/documentation/uikit/uidatepickermode)). Default is `DateAndTime`.
+ - `DatePickerStyle`: one of `Compact`, `Wheels`, or `Inline` (see [UIDatePickerStyle](https://developer.apple.com/documentation/uikit/uidatepickerstyle)). Default is `Wheels`. Feature requires iOS 14 or higher. If the OS doesn't support it, IASK falls back to `Wheels`.
  - `MinuteInterval`: The interval at which the date picker displays minutes. Default: 1.
 
 There are 3 optional delegate methods to customize how to store and display dates and times:
@@ -168,13 +169,15 @@ The Done button is disabled when returning false from this method. Also note tha
 ## Custom Views
 You can specify your own `UITableViewCell` within InAppSettingsKit by using the type `IASKCustomViewSpecifier`. A mandatory field in this case is the `Key` attribute. Also, you have to support the `IASKSettingsDelegate` protocol and implement these methods:
 
-    - (CGFloat)tableView:(UITableView*)tableView heightForSpecifier:(IASKSpecifier*)specifier;
-    - (UITableViewCell*)tableView:(UITableView*)tableView cellForSpecifier:(IASKSpecifier*)specifier;
+    - (CGFloat)settingsViewController:(UITableViewController<IASKViewController> *)settingsViewController heightForSpecifier:(IASKSpecifier *)specifier;
+    - (UITableViewCell*)settingsViewController:(UITableViewController<IASKViewController> *)settingsViewController cellForSpecifier:(IASKSpecifier*)specifier;
 
 Both methods are called for all your `IASKCustomViewSpecifier` entries. To differentiate them, you can access the `Key` attribute using `specifier.key`. In the first method you return the height of the cell, in the second method the cell itself. You should use reusable `UITableViewCell` objects as usual in table view programming. There's an example in the Demo app.
+
 Optionally you can implement
 
-    - (void)settingsViewController:(IASKAppSettingsViewController*)sender tableView:(UITableView *)tableView didSelectCustomViewSpecifier:(IASKSpecifier*)specifier;
+    - (void)settingsViewController:(IASKAppSettingsViewController*)settingsViewController
+   didSelectCustomViewSpecifier:(IASKSpecifier*)specifier;
 
 to catch tap events for your custom view.
 
@@ -226,6 +229,7 @@ As an alternative to `IASKViewControllerClass` and `IASKViewControllerSelector` 
 ### Subtitles
 The `IASKSubtitle` key allows to define subtitles for these elements: Toggle, ChildPane, OpenURL, MailCompose, Button. Using a subtitle implies left alignment.
 A child pane displays its value as a subtitle, if available and no `IASKSubtitle` is specified.
+The subtitle can be a localizable String or a Dictionary with localizable subtitles depending on the current value. `YES` and `NO` are used as keys for boolean toggle values. The dictionary may contain a `__default__` key to define a subtitle if no key is matching.
 
 ### Text alignment
 For some element types, a `IASKTextAlignment` attribute may be added with the following values to override the default alignment:
