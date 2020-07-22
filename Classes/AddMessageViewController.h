@@ -104,6 +104,7 @@
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControler;
 @property (weak, nonatomic) IBOutlet UIButton *btnToolbarRedo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControlerPage;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *constraintToolbarHeight;
 
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
 @property (strong, nonatomic) IBOutlet UIView *viewSmileys;

@@ -130,6 +130,7 @@ static SmileyCache *_shared = nil;    // static instance variable
         NSString* filepath = [[NSBundle mainBundle] pathForResource:filenameShort ofType:@"gif"];
         NSData* imgData = [NSData dataWithContentsOfFile:filepath];
         image = [UIImage sd_animatedGIFWithData:imgData];
+        //NSLog(@"%@ size : (%f) %f x %f", filename, image.scale, image.size.width, image.size.height);
         [self.cacheSmileysDefaults setObject:image forKey:filename];
     }
     return image;

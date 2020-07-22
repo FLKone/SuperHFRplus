@@ -217,8 +217,8 @@ static CGFloat fCellImageSize = 1;
 
             CGFloat ch = cell.bounds.size.height;
             CGFloat cw = cell.bounds.size.width;
-            CGFloat w = image.size.width*fCellImageSize;
-            CGFloat h = image.size.height*fCellImageSize;
+            CGFloat w = image.scale*image.size.width*fCellImageSize;
+            CGFloat h = image.scale*image.size.height*fCellImageSize;
             
             if (cell.smileyImage == nil) {
                 cell.smileyImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
@@ -227,6 +227,9 @@ static CGFloat fCellImageSize = 1;
             else {
                 cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
             }
+
+            NSLog(@"row %d - %@", (int)indexPath.row, NSStringFromCGRect(CGRectMake(cw/2-w/2, ch/2-h/2, w, h)));
+
             [cell.smileyImage setImage:image];
 
             cell.smileyImage.clipsToBounds = NO;
@@ -294,6 +297,16 @@ static CGFloat fCellImageSize = 1;
 {
     return 1.0;
 }
+
+/*
+ UICollectionViewFlowLayout *flowLayout = [UICollectionViewFlowLayout new];
+ flowLayout.itemSize = CGSizeMake(180, 255);
+ flowLayout.sectionInset = UIEdgeInsetsMake(10, 30, 0, 30);
+ flowLayout.minimumInteritemSpacing = 0.0f;
+ flowLayout.minimumLineSpacing = 0.0f;
+ flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+ return flowLayout;
+ */
 
 - (float) getDisplayHeight {
     /*if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {

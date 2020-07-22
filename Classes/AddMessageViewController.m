@@ -32,7 +32,7 @@
 
 
 @implementation AddMessageViewController
-@synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, smileView, viewControllerSmileys, constraintSmileyViewHeight;
+@synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, smileView, viewControllerSmileys, constraintSmileyViewHeight, constraintToolbarHeight;
 @synthesize request, loadingView, lastSelectedRange, loaded;//navBar,
 @synthesize segmentControler, isDragging, segmentControlerPage;
 @synthesize btnToolbarImage, btnToolbarGIF, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
@@ -201,7 +201,7 @@
     //TODO: clean
     [textFieldSmileys setHidden:YES];
     
-    [Giphy configureWithApiKey:API_KEY_GIPHY verificationMode:false];
+    [Giphy configureWithApiKey:@"API_KEY" verificationMode:false];
 }
 
 - (NSString*) getBrouillonExtract {
@@ -1117,10 +1117,12 @@
         //NSLog(@"rectA %@", NSStringFromCGRect(rectA));
         //NSLog(@"rectS %@", NSStringFromCGRect(rectS));
         CGFloat f = rectS.size.height + rectS.origin.y;
+        //self.constraintToolbarHeight.constant = 38;
         self.constraintSmileyViewHeight.constant = f;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
+        //self.constraintToolbarHeight.constant = 0;
         self.constraintSmileyViewHeight.constant = [self.viewControllerSmileys getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
@@ -1707,6 +1709,7 @@ self.loaded = YES;
     [self.collectionImages setHidden:YES];
     self.collectionImages.backgroundColor = UIColor.clearColor;
 
+    [self.collectionImages registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
     [self.collectionImages registerClass:[RehostCollectionCell class] forCellWithReuseIdentifier:@"RehostCollectionCellId"];
 
     [self.collectionImages  setDataSource:self];
@@ -1729,28 +1732,73 @@ self.loaded = YES;
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (collectionView == self.collectionImages) {
-        RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
-        if (indexPath.row == 0) {
-            [cell configureWithIcon:[UIImage imageNamed:@"Camera-32"] border:15];
-            cell.layer.borderWidth = 1.0f;
-            cell.layer.borderColor = [ThemeColors tintColor].CGColor;
-        } else {
-            [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row - 1]];
+    if (indexPath.row == 0) {
+        SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
+        UIImage* image = [UIImage imageNamed:@"Camera-32"];
+        CGFloat ch = cell.bounds.size.height;
+        CGFloat cw = cell.bounds.size.width;
+        CGFloat w = image.scale*image.size.width*0.4;
+        CGFloat h = image.scale*image.size.height*0.4;
+        if (cell.smileyImage == nil) {
+            cell.smileyImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
+            [cell addSubview:cell.smileyImage];
         }
+        else {
+            cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
+        }
+
+        [cell.smileyImage setImage:image];
+
+        cell.smileyImage.clipsToBounds = NO;
+        cell.smileyImage.layer.masksToBounds = true;
+        cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
+        cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
+        cell.layer.borderWidth = 1.0f;
+        cell.layer.cornerRadius = 3;
+        cell.layer.masksToBounds = true;
+        return cell;
+    } else {
+        RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
+        [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row - 1]];
         cell.layer.cornerRadius = 5;
         cell.layer.masksToBounds = true;
-
         return cell;
     }
+
+    return nil;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        [textView resignFirstResponder];
+        [textFieldSmileys resignFirstResponder];
+        NSRange newRange = textView.selectedRange;
+        newRange.length = 0;
+        textView.selectedRange = newRange;
+        
+        [self.rehostTableView setHidden:NO];
+        [self segmentToBlue];
+        
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        [self.smileView setAlpha:0];
+        self.constraintToolbarHeight.constant = 0;
+        [self.rehostTableView setAlpha:1];
+        [self.collectionImages setHidden:YES];
+
+        [self.segmentControlerPage setAlpha:1];
+        
+        [UIView commitAnimations];
+    }
+    else {
+        
+    }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 0;
+    return rehostImagesSortedArray.count + 1;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView
