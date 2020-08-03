@@ -14,6 +14,7 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "HFRAlertView.h"
+#import "api_keys.h"
 
 #define CHEVERETO_UPLOAD_SUCCESS_OK 200
 
@@ -164,7 +165,7 @@
 -(void)loadDataChevereto:(NSData *)jpegImageData {
     //Example : https://img3.super-h.fr/api/1/upload/?key=af34631bb9b18fd4ef1ee46acae65976&source=https://img.super-h.fr/upload/images/U28P.jpg&format=json
     ASIFormDataRequest* request = [ASIFormDataRequest requestWithURL:
-                                   [NSURL URLWithString:@"https://img3.super-h.fr/api/1/upload/?key=af34631bb9b18fd4ef1ee46acae65976"]];//&format=txt"]];
+                                   [NSURL URLWithString:[NSString stringWithFormat: @"https://img3.super-h.fr/api/1/upload/?key=%@", API_KEY_CHEVERETO_IMG3]]];
     
     
     NSString* filename = [NSString stringWithFormat:@"snapshot_%d.jpg", rand()];

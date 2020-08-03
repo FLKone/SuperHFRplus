@@ -38,6 +38,8 @@
 		1543743722ECAE3100AF00A5 /* ThemeColorCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1543743622ECAE3100AF00A5 /* ThemeColorCellView.xib */; };
 		1543743922ECB1C300AF00A5 /* ThemeColorCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1543743822ECB1C300AF00A5 /* ThemeColorCellView.m */; };
 		1543743D22EDDF7400AF00A5 /* ColorPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1543743C22EDDF7400AF00A5 /* ColorPickerViewController.m */; };
+		154F823724C8893500BC46B2 /* RehostImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 154F823624C8893500BC46B2 /* RehostImageViewController.xib */; };
+		154F823924C8898000BC46B2 /* RehostImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 154F823824C8898000BC46B2 /* RehostImageViewController.m */; };
 		1553568424A500D400917DE1 /* rectangle.compress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553567E24A500D300917DE1 /* rectangle.compress@2x.png */; };
 		1553568524A500D400917DE1 /* rectangle.compress.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553567F24A500D300917DE1 /* rectangle.compress.png */; };
 		1553568624A500D400917DE1 /* rectangle.expand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553568024A500D300917DE1 /* rectangle.expand@2x.png */; };
@@ -836,6 +838,7 @@
 		1503755421FE249300A5F7E1 /* PlusCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlusCellView.xib; sourceTree = "<group>"; };
 		1503755621FE26C900A5F7E1 /* PlusCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlusCellView.h; sourceTree = "<group>"; };
 		1503755721FF794200A5F7E1 /* PlusCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlusCellView.m; sourceTree = "<group>"; };
+		150A228A24CB7D140071F9DE /* api_keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api_keys.h; sourceTree = "<group>"; };
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15167EB02330210600D64651 /* Heart-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Heart-20@2x.png"; sourceTree = "<group>"; };
@@ -875,6 +878,9 @@
 		1543743A22ECB1DD00AF00A5 /* ThemeColorCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeColorCellView.h; sourceTree = "<group>"; };
 		1543743B22EDDF5E00AF00A5 /* ColorPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewController.h; sourceTree = "<group>"; };
 		1543743C22EDDF7400AF00A5 /* ColorPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorPickerViewController.m; sourceTree = "<group>"; };
+		154F823624C8893500BC46B2 /* RehostImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RehostImageViewController.xib; sourceTree = "<group>"; };
+		154F823824C8898000BC46B2 /* RehostImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RehostImageViewController.m; sourceTree = "<group>"; };
+		154F823A24C8899300BC46B2 /* RehostImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RehostImageViewController.h; sourceTree = "<group>"; };
 		1553567E24A500D300917DE1 /* rectangle.compress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.compress@2x.png"; sourceTree = "<group>"; };
 		1553567F24A500D300917DE1 /* rectangle.compress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rectangle.compress.png; sourceTree = "<group>"; };
 		1553568024A500D300917DE1 /* rectangle.expand@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rectangle.expand@2x.png"; sourceTree = "<group>"; };
@@ -1960,6 +1966,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				150A228924CB7CE20071F9DE /* API */,
 				152D2D38244C798A00D9D644 /* Bookmarks */,
 				15357D68234BA77F002D5C2E /* Offline */,
 				15EBFD0922061ECD00A37CED /* AlertesQualitay */,
@@ -1990,6 +1997,14 @@
 				1503755421FE249300A5F7E1 /* PlusCellView.xib */,
 			);
 			name = Plus;
+			sourceTree = "<group>";
+		};
+		150A228924CB7CE20071F9DE /* API */ = {
+			isa = PBXGroup;
+			children = (
+				150A228A24CB7D140071F9DE /* api_keys.h */,
+			);
+			name = API;
 			sourceTree = "<group>";
 		};
 		152D2D38244C798A00D9D644 /* Bookmarks */ = {
@@ -3026,6 +3041,9 @@
 				013F0E9F121E117900BEBEB1 /* AddMessageViewController.h */,
 				013F0EA0121E117900BEBEB1 /* AddMessageViewController.m */,
 				013F0EA3121E117900BEBEB1 /* AddMessageViewController.xib */,
+				154F823A24C8899300BC46B2 /* RehostImageViewController.h */,
+				154F823824C8898000BC46B2 /* RehostImageViewController.m */,
+				154F823624C8893500BC46B2 /* RehostImageViewController.xib */,
 				1591C0F3249DF5DA0025560A /* SimpleCellView.h */,
 				1591C0F4249DF5F00025560A /* SimpleCellView.m */,
 				1591C0F6249DF60D0025560A /* SimpleCellView.xib */,
@@ -3326,6 +3344,7 @@
 				CA7C6FC4185EF50E00B348BA /* dtc.gif in Resources */,
 				CA7C6FC5185EF50E00B348BA /* endoff.png in Resources */,
 				CA7C6FC6185EF50E00B348BA /* bgiPad@2x.png in Resources */,
+				154F823724C8893500BC46B2 /* RehostImageViewController.xib in Resources */,
 				D8B4EDF121C184970042C392 /* snow7.png in Resources */,
 				CA7C6FC7185EF50E00B348BA /* style-liste.css in Resources */,
 				CA7C6FC8185EF50E00B348BA /* hebe.gif in Resources */,
@@ -3873,6 +3892,7 @@
 				D8FEA7EB2245459C0096602D /* WEBPURLProtocol.m in Sources */,
 				D89AB2E11FB459F9007A4281 /* UIImpactFeedbackGenerator+UserDefaults.m in Sources */,
 				4C39035D1BCACEC200FD6F1F /* PSTCollectionViewController.m in Sources */,
+				154F823924C8898000BC46B2 /* RehostImageViewController.m in Sources */,
 				CA7C70C2185EF50E00B348BA /* IdentificationViewController.m in Sources */,
 				CA7C70C3185EF50E00B348BA /* CompteViewController.m in Sources */,
 				D8835E861E5F13C70073398C /* NSData+ImageContentType.m in Sources */,

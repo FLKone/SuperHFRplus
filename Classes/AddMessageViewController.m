@@ -8,42 +8,37 @@
 #import "HFRplusAppDelegate.h"
 #import "AddMessageViewController.h"
 #import "SmileyViewController.h"
+#import "RehostImageViewController.h"
 #import "ASIFormDataRequest.h"
 #import "HTMLParser.h"
 #import <QuartzCore/QuartzCore.h>
 #import "NSData+Base64.h"
 #import "RegexKitLite.h"
 #import "RangeOfCharacters.h"
-#import "RehostImage.h"
-#import "RehostCell.h"
 #import "UIMenuItem+CXAImageSupport.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
-#import "HFRUIImagePickerController.h"
 #import "MultisManager.h"
 #import "HFRAlertView.h"
 #import "EditMessageViewController.h"
 #import "ASIHTTPRequest+Tools.h"
 #import "RehostCollectionCell.h"
 #import "SmileyCache.h"
+#import "api_keys.h"
 
 @import GiphyUISDK;
 @import GiphyCoreSDK;
 
 
 @implementation AddMessageViewController
-@synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, smileView, viewControllerSmileys, constraintSmileyViewHeight, constraintToolbarHeight;
-@synthesize request, loadingView, lastSelectedRange, loaded;//navBar,
+
+@synthesize delegate, textView, sBrouillon, arrayInputData, formSubmit, accessoryView, viewToolbar, smileView, viewControllerSmileys, constraintSmileyViewHeight, constraintToolbarHeight;
+@synthesize viewRehostImage, viewControllerRehostImage, constraintRehostImageViewHeight, request, loadingView, lastSelectedRange, loaded;
 @synthesize segmentControler, isDragging, segmentControlerPage;
 @synthesize btnToolbarImage, btnToolbarGIF, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
-@synthesize rehostTableView, rehostImagesArray, rehostImagesSortedArray, collectionImages;
-@synthesize haveTitle, textFieldTitle;
-@synthesize haveTo, textFieldTo;
-@synthesize haveCategory, textFieldCat;
-@synthesize offsetY;
-@synthesize selectCompte, selectedCompte;
-@synthesize popover = _popover, refreshAnchor, statusMessage;
-
+@synthesize haveTitle, textFieldTitle, haveTo, textFieldTo, haveCategory, textFieldCat;
+@synthesize offsetY, selectCompte, selectedCompte;
+@synthesize refreshAnchor, statusMessage;
 
 #pragma mark - View lifecycle
 
@@ -68,10 +63,6 @@
         
         self.offsetY = 0;
             
-        //Smileys / Rehost
-        self.rehostImagesArray = [[NSMutableArray alloc] init];
-        self.rehostImagesSortedArray = [[NSMutableArray alloc] init];
-        
         self.sBrouillon = [[NSUserDefaults standardUserDefaults] stringForKey:@"brouillon"];
         if (self.sBrouillon == nil) self.sBrouillon = [[NSString alloc] init];
         self.sBrouillonUtilise = NO;
@@ -164,20 +155,6 @@
     }*/
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    //HFR REHOST
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    NSString *rehostImages = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:REHOST_IMAGE_FILE]];
-    
-    if ([fileManager fileExistsAtPath:rehostImages]) {
-        
-        NSData *savedData = [NSData dataWithContentsOfFile:rehostImages];
-        self.rehostImagesArray = [NSKeyedUnarchiver unarchiveObjectWithData:savedData];
-        self.rehostImagesSortedArray =  [NSMutableArray arrayWithArray:[[self.rehostImagesArray reverseObjectEnumerator] allObjects]];
-        
-    }
-    
-    //Smileys / Rehost
     
     //Bouton Annuler
     UIBarButtonItem *cancelBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Annuler" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
@@ -196,12 +173,33 @@
     
     self.smileView.navigationDelegate = self;
 
-    [self setupCollections];
+    self.viewControllerSmileys = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
+    self.viewControllerSmileys.addMessageVC = self;
+    [self addChildViewController:self.viewControllerSmileys];
+    self.viewControllerSmileys.view.frame = self.viewSmileys.bounds;
+    UICollectionViewFlowLayout *collectionViewFlowLayout = [[UICollectionViewFlowLayout alloc] init];
+    collectionViewFlowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    self.viewControllerSmileys.collectionSmileys.collectionViewLayout = collectionViewFlowLayout;
+    [self.viewSmileys addSubview:self.viewControllerSmileys.view];
+    [self.viewSmileys setAlpha:0];
+
+    self.viewControllerRehostImage = [[RehostImageViewController alloc] initWithNibName:@"RehostImageViewController" bundle:nil];
+    self.viewControllerRehostImage.addMessageVC = self;
+    [self addChildViewController:self.viewControllerRehostImage];
+    self.viewControllerRehostImage.view.frame = self.viewRehostImage.bounds;
+    UICollectionViewFlowLayout *collectionViewFlowLayout2 = [[UICollectionViewFlowLayout alloc] init];
+    collectionViewFlowLayout2.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    self.viewControllerRehostImage.collectionImages.collectionViewLayout = collectionViewFlowLayout2;
+    [self.viewRehostImage addSubview:self.viewControllerRehostImage.view];
+    [self.viewRehostImage setAlpha:0];
+    [self.viewRehostImage addSubview:self.viewControllerRehostImage.view];
+    [self.viewRehostImage setAlpha:0];
+
     
     //TODO: clean
     [textFieldSmileys setHidden:YES];
     
-    [Giphy configureWithApiKey:@"API_KEY" verificationMode:false];
+    [Giphy configureWithApiKey:API_KEY_GIPHY verificationMode:false];
 }
 
 - (NSString*) getBrouillonExtract {
@@ -253,18 +251,13 @@
     self.formSubmit = [NSString stringWithFormat:@"%@/bddpost.php", [k ForumURL]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(smileyReceived:) name:@"smileyReceived" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadProgress:) name:@"uploadProgress" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageReceived:) name:@"imageReceived" object:nil];
-    
-    UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
-    v.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
-    [self.rehostTableView setTableFooterView:v];
-    
+        
     float headerWidth = self.view.bounds.size.width;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90+50)];
     
     Theme theme = [[ThemeManager sharedManager] theme];
-    
+    /*
     UIButton* newPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [newPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
     [newPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
@@ -431,16 +424,18 @@
     [progressView addSubview:subProgressView];
     [headerView addSubview:progressView];
     
-    [self.rehostTableView setTableHeaderView:headerView];
+    [self.tableViewImages setTableHeaderView:headerView];
         
+    
+    //[segmentControler setEnabled:YES forSegmentAtIndex:0];
+    //[segmentControler setEnabled:YES forSegmentAtIndex:1];
+    */
+    
     // Observe keyboard hide and show notifications to resize the text view appropriately.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    
-    //[segmentControler setEnabled:YES forSegmentAtIndex:0];
-    //[segmentControler setEnabled:YES forSegmentAtIndex:1];
-    
+
     // MULTIS
     MultisManager *manager = [MultisManager sharedManager];
     NSDictionary *mainCompte = [manager getMainCompte];
@@ -552,14 +547,12 @@
         self.textView.selectedRange = lastSelectedRange;
     }
     
-    self.view.backgroundColor = self.loadingView.backgroundColor = self.accessoryView.backgroundColor = self.textView.backgroundColor = self.rehostTableView.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
+    self.view.backgroundColor = self.loadingView.backgroundColor = self.accessoryView.backgroundColor = self.textView.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
     self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
     self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
     NSInteger iSizeTextReply = [[NSUserDefaults standardUserDefaults] integerForKey:@"size_text_reply"];
     [self.textView setFont:[UIFont systemFontOfSize:iSizeTextReply]];
-    
-    [self.rehostTableView reloadData];
 
     if (self.segmentControler.tintColor == [UIColor whiteColor]) {
 
@@ -645,47 +638,6 @@
     
 }
 
-/* for iOS6 support */
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"landscape_mode"] isEqualToString:@"all"]) {
-        return UIInterfaceOrientationMaskAll;
-    } else {
-        return UIInterfaceOrientationMaskPortrait;
-    }
-}
-
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    [_popover dismissPopoverAnimated:YES];
-}
-
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    
-    // Return YES for supported orientations
-    // Get user preference
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *enabled = [defaults stringForKey:@"landscape_mode"];
-    
-    if (![enabled isEqualToString:@"none"]) {
-        return YES;
-    } else {
-        return (interfaceOrientation == UIInterfaceOrientationPortrait);
-    }
-}
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
 
 - (IBAction)cancel {
     //NSLog(@"cancel %@", self.formSubmit);
@@ -970,49 +922,81 @@
 
 - (void)actionImage:(id)sender
 {
-    if ([self.collectionImages isHidden]) {
-        [self.collectionImages setHidden:NO];
+    NSLog(@"actionImage");
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.2];
+    if (self.viewRehostImage.alpha == 0) {
+        self.viewControllerRehostImage.bModeFullScreen = [[NSUserDefaults standardUserDefaults] boolForKey:@"rehostimageviewExpanded"];
+        if (self.viewControllerRehostImage.bModeFullScreen) {
+            [self.view endEditing:YES];
+        }
+        [self.viewRehostImage setAlpha:1];
+        [self updateExpandCompressRehostImage];
+        [UIView commitAnimations];
     }
     else {
-        [self.collectionImages setHidden:YES];
+        [self actionHideRehostImage];
     }
-    /*
-    if (self.rehostTableView.alpha == 0.0) {
-        [textView resignFirstResponder];
-        [textFieldSmileys resignFirstResponder];
-        NSRange newRange = textView.selectedRange;
-        newRange.length = 0;
-        textView.selectedRange = newRange;
-        
-        [self.rehostTableView setHidden:NO];
-        [self segmentToBlue];
-        
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.smileView setAlpha:0];
-        [self.commonTableView setAlpha:0];
-        [self.rehostTableView setAlpha:1];
-        
-        //[self.segmentControler setAlpha:0];
-        [self.btnToolbarImage setHidden:YES];
-        [self.btnToolbarSmiley setHidden:YES];
-        [self.btnToolbarUndo setHidden:YES];
-        [self.btnToolbarRedo setHidden:YES];
+}
 
-        [self.segmentControlerPage setAlpha:1];
-        
-        [UIView commitAnimations];
+- (void)actionHideRehostImage
+{
+    NSLog(@"actionHideSmileys");
+
+    // Memorize last state
+    [[NSUserDefaults standardUserDefaults] setBool:self.viewControllerRehostImage.bModeFullScreen forKey:@"rehostimageviewExpanded"];
+    // Minimize before hidden
+    self.viewControllerRehostImage.bModeFullScreen = NO;
+    [self.viewRehostImage setAlpha:0];
+    [self updateExpandCompressRehostImage];
+    [UIView commitAnimations];
+    [self.textView becomeFirstResponder];
+}
+
+- (void)actionExpandCompressRehostImage
+{
+    NSLog(@"actionExpandCompressSmiley");
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.2];
+    self.viewControllerRehostImage.bModeFullScreen = !self.viewControllerRehostImage.bModeFullScreen;
+    if (self.viewControllerRehostImage.bModeFullScreen) {
+        [self.view endEditing:YES];
+        [self.viewControllerRehostImage.tableViewImages setAlpha:1];
+        [self.viewControllerRehostImage.collectionImages setAlpha:0];
+        [viewToolbar setHidden:YES];
+        self.constraintToolbarHeight.constant = 0;
+    }
+    [self updateExpandCompressRehostImage];
+    [UIView commitAnimations];
+    if (!self.viewControllerRehostImage.bModeFullScreen) {
+        [self.viewControllerRehostImage.tableViewImages setAlpha:0];
+        [self.viewControllerRehostImage.collectionImages setAlpha:1];
+        [viewToolbar setHidden:NO];
+        self.constraintToolbarHeight.constant = 38;
+        [self.textView becomeFirstResponder];
+    }
+}
+
+- (void)updateExpandCompressRehostImage
+{
+    NSLog(@"updateExpandCompressSmiley");
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)[self.viewControllerRehostImage.collectionImages collectionViewLayout];
+    if (self.viewControllerRehostImage.bModeFullScreen) {
+        //CGRect rectA = self.view.frame;
+        CGRect rectS = self.viewRehostImage.frame;
+        //NSLog(@"rectA %@", NSStringFromCGRect(rectA));
+        //NSLog(@"rectS %@", NSStringFromCGRect(rectS));
+        CGFloat f = rectS.size.height + rectS.origin.y;
+        //self.constraintToolbarHeight.constant = 38;
+        self.constraintRehostImageViewHeight.constant = f + 38;
+        layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.rehostTableView setAlpha:0];
-        [UIView commitAnimations];
-        [self.textView becomeFirstResponder];
-        
-        [self segmentToBlue];
+        //self.constraintToolbarHeight.constant = 0;
+        self.constraintRehostImageViewHeight.constant = [self.viewControllerRehostImage getDisplayHeight];
+        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
-     */
+    [self.viewControllerSmileys updateExpandButton];
 }
 
 - (void)actionGIF:(id)sender
@@ -1114,15 +1098,19 @@
     if (self.viewControllerSmileys.bModeFullScreen || self.viewControllerSmileys.displayMode == DisplayModeEnumTableSearch) {
         //CGRect rectA = self.view.frame;
         CGRect rectS = self.viewSmileys.frame;
-        //NSLog(@"rectA %@", NSStringFromCGRect(rectA));
-        //NSLog(@"rectS %@", NSStringFromCGRect(rectS));
         CGFloat f = rectS.size.height + rectS.origin.y;
         //self.constraintToolbarHeight.constant = 38;
-        self.constraintSmileyViewHeight.constant = f;
+        self.constraintSmileyViewHeight.constant = f + 38;
+        [viewToolbar setHidden:YES];
+        self.constraintToolbarHeight.constant = 0;
+
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
         //self.constraintToolbarHeight.constant = 0;
+        [viewToolbar setHidden:NO];
+        self.constraintToolbarHeight.constant = 38;
+
         self.constraintSmileyViewHeight.constant = [self.viewControllerSmileys getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
@@ -1140,162 +1128,7 @@
 }
 
 
-// To delete
-- (IBAction)segmentFilterAction:(id)sender
-{
-    
-    // The segmented control was clicked, handle it here
-    
-    //NSLog(@"Segment clicked: %d", [(UISegmentedControl *)sender selectedSegmentIndex]);
-    
-    //[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:NO];
-    if (sender == self.segmentControler) {
-        switch ([(UISegmentedControl *)sender selectedSegmentIndex]) {
-            case 0:
-            {
-                if (self.smileView.alpha == 0.0) {
-                    
-                    NSString *doubleSmileysCSS = @"";
-                    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-                        doubleSmileysCSS = @"#smileperso img.smile {max-height:60px;min-height: 30px;} #smileperso .button {height:60px;min-width:45px;} #smileperso .button img {max-height:60px;}";
-                    }
-                    
-                    [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
-                                                        $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
-                                                        ", [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]], doubleSmileysCSS]
-                                     completionHandler:nil];
-                    
-                    self.loaded = NO;
-                    [textView resignFirstResponder];
-                    [textFieldSmileys resignFirstResponder];
-                    NSRange newRange = textView.selectedRange;
-                    newRange.length = 0;
-                    textView.selectedRange = newRange;
-                    
-                    [self.smileView setHidden:NO];
-                    [self segmentToWhite];
-                    
-                    [UIView beginAnimations:nil context:nil];
-                    [UIView setAnimationDuration:0.2];
-                    //[self.commonTableView setAlpha:0];
-                    [self.rehostTableView setAlpha:0];
-                    
-                    [self.smileView setAlpha:1];
-                    //[self.segmentControler setAlpha:0];
-                    [self.btnToolbarImage setHidden:YES];
-                    [self.btnToolbarGIF setHidden:YES];
-                    [self.btnToolbarSmiley setHidden:YES];
-                    [self.btnToolbarUndo setHidden:YES];
-                    [self.btnToolbarRedo setHidden:YES];
-
-                    [self.segmentControlerPage setAlpha:1];
-                    
-                    [UIView commitAnimations];
-                }
-                else {
-                    [UIView beginAnimations:nil context:nil];
-                    [UIView setAnimationDuration:0.2];
-                    [self.smileView setAlpha:0];
-                    [UIView commitAnimations];
-                    [(UISegmentedControl *)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
-                    [self.textView becomeFirstResponder];
-                    
-                    [self segmentToBlue];
-                }
-                break;
-            }
-            case 1:
-            {
-                if (self.rehostTableView.alpha == 0.0) {
-                    [textView resignFirstResponder];
-                    [textFieldSmileys resignFirstResponder];
-                    NSRange newRange = textView.selectedRange;
-                    newRange.length = 0;
-                    textView.selectedRange = newRange;
-                    
-                    [self.rehostTableView setHidden:NO];
-                    [self segmentToBlue];
-                    
-                    [UIView beginAnimations:nil context:nil];
-                    [UIView setAnimationDuration:0.2];
-                    [self.smileView setAlpha:0];
-                    //[self.commonTableView setAlpha:0];
-                    [self.rehostTableView setAlpha:1];
-                    
-                    //[self.segmentControler setAlpha:0];
-                    [self.btnToolbarImage setHidden:YES];
-                    [self.btnToolbarGIF setHidden:YES];
-                    [self.btnToolbarSmiley setHidden:YES];
-                    [self.btnToolbarUndo setHidden:YES];
-                    [self.btnToolbarRedo setHidden:YES];
-
-                    [self.segmentControlerPage setAlpha:1];
-                    
-                    [UIView commitAnimations];
-                }
-                else {
-                    [UIView beginAnimations:nil context:nil];
-                    [UIView setAnimationDuration:0.2];
-                    [self.rehostTableView setAlpha:0];
-                    [UIView commitAnimations];
-                    [(UISegmentedControl *)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
-                    [self.textView becomeFirstResponder];
-                    
-                    [self segmentToBlue];
-                }
-                
-                break;
-            }
-            case 2:
-            {
-                [self.textView setText:self.sBrouillon];
-            }
-            default:
-                break;
-        }
-    }
-    else if (sender == self.segmentControlerPage) {
-        /*
-        switch ([(UISegmentedControl *)sender selectedSegmentIndex]) {
-                
-            case 0:
-                //NSLog(@"previous");
-                [self loadSmileys:--self.smileyPage];
-                break;
-            case 1:
-            {
-                [self.smileView evaluateJavaScript:@"$('#container').css('display');" completionHandler:^(id result, NSError*  error) {
-                    if (error == nil && result != nil && [[NSString stringWithFormat:@"%@", result] isEqualToString:@"none"]) {
-                        [self.smileView evaluateJavaScript:@"$('#container').show();$('#container_ajax').hide();$('#container_ajax').html('');" completionHandler:nil];
-                        [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:0];
-                        [self.segmentControlerPage setEnabled:NO forSegmentAtIndex:2];
-                        [self.segmentControlerPage setTitle:@"Annuler" forSegmentAtIndex:1];
-                        
-                        [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"$('head > style').remove();"] completionHandler:nil];
-                    }
-                    else {
-                        [self cancel];
-                    }
-                }];
-                
-                break;
-            }
-                
-            case 2:
-                //NSLog(@"next");
-                [self loadSmileys:++self.smileyPage];
-                break;
-            default:
-                break;
-        }*/
-    }
-    
-    
-}
-
-
-#pragma mark -
-#pragma mark TextView Mod
+#pragma mark - TextView Mod
 
 - (void) smileyReceived: (NSNotification *) notification {
     //NSLog(@"%@", notification);
@@ -1610,401 +1443,7 @@ self.loaded = YES;
 }
 */
 
-#pragma mark -
-#pragma mark Table view data source
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView == self.rehostTableView) {
-        return 100.0f;
-    }
-    
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-/* (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
- {
-	return @"Recherche(s)";
- }
- */
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //NSLog(@"%@", self.usedSearchDict);
-    
-    if (tableView == self.rehostTableView) {
-        return self.rehostImagesSortedArray.count;
-    }
-    
-    
-}
-
-
-// Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
-    if (tableView == self.rehostTableView) {
-        static NSString *CellRehostIdentifier = @"RehostCell";
-        
-        RehostCell *cell = (RehostCell *)[tableView dequeueReusableCellWithIdentifier:CellRehostIdentifier];
-        
-        if (cell == nil)
-        {
-            
-            NSArray *nib=[[NSBundle mainBundle] loadNibNamed:CellRehostIdentifier owner:self options:nil];
-            
-            cell = [nib objectAtIndex:0];
-            cell.accessoryType = UITableViewCellAccessoryNone;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
-        }
-        
-        [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row]];
-        [[ThemeManager sharedManager] applyThemeToCell:cell];
-        
-        return cell;
-        
-    }
-    
-    
-}
-
-
-#pragma mark -
-#pragma mark Table view delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView == self.rehostTableView) {
-        [self.rehostTableView deselectRowAtIndexPath:self.rehostTableView.indexPathForSelectedRow animated:NO];
-    }
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // If row is deleted, remove it from the list.
-    if (editingStyle == UITableViewCellEditingStyleDelete && tableView == rehostTableView)
-    {
-        NSLog(@"DELTE REHOST");
-        RehostImage*rehostImage = [self.rehostImagesSortedArray objectAtIndex:indexPath.row];
-        NSLog(@"rehostImage %@", rehostImage.nolink_full);
-        
-        [self.rehostImagesArray removeObjectIdenticalTo:rehostImage];
-        
-        NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-        NSString *rehostImages = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:REHOST_IMAGE_FILE]];
-        NSData *savedData = [NSKeyedArchiver archivedDataWithRootObject:self.rehostImagesArray];
-        [savedData writeToFile:rehostImages atomically:YES];
-        
-        self.rehostImagesSortedArray =  [NSMutableArray arrayWithArray:[[self.rehostImagesArray reverseObjectEnumerator] allObjects]];
-        
-        [self.rehostTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-        
-    }
-}
-#pragma mark - Collection Smileys Default and Images
-
-- (void) setupCollections
-{
-    // Collection Image
-    [self.collectionImages setHidden:YES];
-    self.collectionImages.backgroundColor = UIColor.clearColor;
-
-    [self.collectionImages registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
-    [self.collectionImages registerClass:[RehostCollectionCell class] forCellWithReuseIdentifier:@"RehostCollectionCellId"];
-
-    [self.collectionImages  setDataSource:self];
-    [self.collectionImages  setDelegate:self];
-
-    self.viewControllerSmileys = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
-    self.viewControllerSmileys.addMessageVC = self;
-    [self addChildViewController:self.viewControllerSmileys];
-    self.viewControllerSmileys.view.frame = self.viewSmileys.bounds;
-    UICollectionViewFlowLayout *collectionViewFlowLayout = [[UICollectionViewFlowLayout alloc] init];
-    collectionViewFlowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    self.viewControllerSmileys.collectionSmileys.collectionViewLayout = collectionViewFlowLayout;
-
-    NSLog(@"Bound:%.f,%.f,%.f,%.f", self.viewSmileys.bounds.origin.x,self.viewSmileys.bounds.origin.y,self.viewSmileys.bounds.size.height,self.viewSmileys.bounds.size.width);
-    [self.viewSmileys addSubview:self.viewControllerSmileys.view];
-    self.viewSmileys.backgroundColor = UIColor.greenColor;
-
-    [self.viewSmileys setAlpha:0];
-}
-
-- (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == 0) {
-        SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
-        UIImage* image = [UIImage imageNamed:@"Camera-32"];
-        CGFloat ch = cell.bounds.size.height;
-        CGFloat cw = cell.bounds.size.width;
-        CGFloat w = image.scale*image.size.width*0.4;
-        CGFloat h = image.scale*image.size.height*0.4;
-        if (cell.smileyImage == nil) {
-            cell.smileyImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
-            [cell addSubview:cell.smileyImage];
-        }
-        else {
-            cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
-        }
-
-        [cell.smileyImage setImage:image];
-
-        cell.smileyImage.clipsToBounds = NO;
-        cell.smileyImage.layer.masksToBounds = true;
-        cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
-        cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
-        cell.layer.borderWidth = 1.0f;
-        cell.layer.cornerRadius = 3;
-        cell.layer.masksToBounds = true;
-        return cell;
-    } else {
-        RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
-        [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row - 1]];
-        cell.layer.cornerRadius = 5;
-        cell.layer.masksToBounds = true;
-        return cell;
-    }
-
-    return nil;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == 0) {
-        [textView resignFirstResponder];
-        [textFieldSmileys resignFirstResponder];
-        NSRange newRange = textView.selectedRange;
-        newRange.length = 0;
-        textView.selectedRange = newRange;
-        
-        [self.rehostTableView setHidden:NO];
-        [self segmentToBlue];
-        
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.smileView setAlpha:0];
-        self.constraintToolbarHeight.constant = 0;
-        [self.rehostTableView setAlpha:1];
-        [self.collectionImages setHidden:YES];
-
-        [self.segmentControlerPage setAlpha:1];
-        
-        [UIView commitAnimations];
-    }
-    else {
-        
-    }
-}
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return rehostImagesSortedArray.count + 1;
-}
-
-- (NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView
-{
-    return 1;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return CGSizeMake(60, 60);
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
-{
-    return UIEdgeInsetsMake(0, 2, 0, 0);
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 1.0;
-}
-
-#pragma mark - Rehost
-- (void) uploadProgress: (NSNotification *) notification {
-    // NSLog(@"notif %@", notification);
-    
-    float progressFloat = [[[notification object] valueForKey:@"progress"] floatValue];
-    
-    if (progressFloat > 0) {
-        if (progressFloat == 2) {
-            RehostImage* rehostImage = (RehostImage *)[[notification object] objectForKey:@"rehostImage"];
-            
-            [self.rehostImagesArray addObject:rehostImage];
-            
-            NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-            NSString *rehostImages = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:REHOST_IMAGE_FILE]];
-            
-            NSData *savedData = [NSKeyedArchiver archivedDataWithRootObject:self.rehostImagesArray];
-            [savedData writeToFile:rehostImages atomically:YES];
-            
-            self.rehostImagesSortedArray =  [NSMutableArray arrayWithArray:[[self.rehostImagesArray reverseObjectEnumerator] allObjects]];
-            [self.rehostTableView reloadData];
-            
-            
-        }
-        else {
-            [UIView beginAnimations:nil context:nil];
-            [UIView setAnimationDuration:0.1];
-            [[[self.rehostTableView tableHeaderView] viewWithTag:12345] setHidden:NO];
-            
-            [[[self.rehostTableView tableHeaderView] viewWithTag:12345] setAlpha:1];
-            
-            
-            [UIView commitAnimations];
-            
-            UIView* progressView = [[self.rehostTableView tableHeaderView] viewWithTag:54321];
-            CGRect globalFrame = [progressView superview].frame;
-            CGRect progressFrame = progressView.frame;
-            
-            progressFrame.size.width = progressFloat * globalFrame.size.width;
-            
-            progressView.frame = progressFrame;
-            progressView.superview.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
-            progressView.backgroundColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-            
-            if (progressFloat == 1) {
-                [UIView beginAnimations:nil context:nil];
-                [UIView setAnimationDuration:0.5];
-                
-                [[[self.rehostTableView tableHeaderView] viewWithTag:12345] setAlpha:0];
-                
-                
-                [UIView commitAnimations];
-                
-                
-            }
-        }
-        
-        
-    }
-    else {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.5];
-        
-        [[[self.rehostTableView tableHeaderView] viewWithTag:12345] setAlpha:0];
-        
-        [UIView commitAnimations];
-    }
-}
-
-
-
-- (void)uploadNewPhoto:(id)sender {
-    //NSLog(@"uploadNewPhoto");
-    [self showImagePicker:UIImagePickerControllerSourceTypeCamera withSender:sender];
-}
-
-- (void)uploadExistingPhoto:(id)sender {
-    //NSLog(@"uploadExistingPhoto");
-    [self showImagePicker:UIImagePickerControllerSourceTypePhotoLibrary withSender:sender];
-}
-
--(void)segmentedControlValueDidChange:(UISegmentedControl *)segment {
-    switch (segment.selectedSegmentIndex) {
-        case 0:{
-            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
-            break;}
-        case 1:{
-            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageNoLink forKey:@"rehost_use_link"];
-            break;}
-        case 2:{
-            [[NSUserDefaults standardUserDefaults] setInteger:bbcodeLinkOnly forKey:@"rehost_use_link"];
-            break;}
-    }
-}
-
--(void)segmentedControlResizeValueDidChange:(UISegmentedControl *)segment {
-    switch (segment.selectedSegmentIndex) {
-        case 0:{
-            [[NSUserDefaults standardUserDefaults] setInteger:1200 forKey:@"rehost_resize_before_upload"];
-            break;}
-        case 1:{
-            [[NSUserDefaults standardUserDefaults] setInteger:1000 forKey:@"rehost_resize_before_upload"];
-            break;}
-        case 2:{
-            [[NSUserDefaults standardUserDefaults] setInteger:800 forKey:@"rehost_resize_before_upload"];
-            break;}
-        case 3:{
-            [[NSUserDefaults standardUserDefaults] setInteger:600 forKey:@"rehost_resize_before_upload"];
-            break;}
-        case 4:{
-            [[NSUserDefaults standardUserDefaults] setInteger:400 forKey:@"rehost_resize_before_upload"];
-            break;}
-    }
-}
-
-
-- (void)showImagePicker:(UIImagePickerControllerSourceType)sourceType withSender:(UIButton *)sender
-{
-    if ([UIImagePickerController isSourceTypeAvailable:sourceType])
-    {
-        HFRUIImagePickerController *picker = [[HFRUIImagePickerController alloc] init];
-        picker.delegate = self;
-        picker.allowsEditing = NO;
-        picker.sourceType = sourceType;
-        picker.modalPresentationStyle = UIModalPresentationFullScreen;
-
-        
-        if ([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact){
-            
-            [self presentViewController:picker animated:YES completion:^{
-                //NSLog(@"présenté");
-            }];
-        }
-        else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            self.popover = nil;
-            UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:picker];
-            [popover presentPopoverFromRect:sender.frame inView:[self.rehostTableView tableHeaderView] permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-            self.popover = popover;
-        } else {
-            [self presentViewController:picker animated:YES completion:^{
-                //NSLog(@"présenté");
-            }];
-            //[self presentModalViewController:picker animated:YES];
-        }
-    }
-    
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    
-    NSLog(@"imagePickerControllerDidCancel");
-    if ([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact){
-        
-        [picker dismissModalViewControllerAnimated:YES];
-        
-    }
-    else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        [_popover dismissPopoverAnimated:YES];
-    }
-    else
-    {
-        [picker dismissModalViewControllerAnimated:YES];
-    }
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    NSLog(@"didFinishPickingMediaWithInfo %@", info);
-    
-    [self imagePickerControllerDidCancel:picker];
-    
-    RehostImage *rehostImage = [[RehostImage alloc] init];
-    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    
-    [rehostImage upload:image];
-    
-    //[self dismissViewControllerAnimated:YES completion:^{
-    //  NSLog(@"dismissed!");
-    //}];
-    //    [self imagePickerControllerDidCancel:picker];
-    
-}
-
-#pragma mark -
-#pragma mark Multis
+#pragma mark - Multis
 
 - (void)selectCompteFn:(id)sender {
     NSLog(@"SELECT");
@@ -2043,71 +1482,4 @@ self.loaded = YES;
     selectedCompte = newSelectedCompte;
     [selectCompte setImage:[manager getAvatarForCompte:selectedCompte] forState:UIControlStateNormal];
 }
-
-
-//TODO: DELETE if not needed
-/*
-#pragma mark -
-#pragma mark Memory
-
-- (void)viewDidUnload {
-    NSLog(@"viewDidUnload ADD");
-    
-    [super viewDidUnload];
-    
-    [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
-    
-    self.loadingView = nil;	
-    
-    self.textView.delegate = nil;
-    self.textView = nil;
-    
-    self.formSubmit = nil;
-    self.refreshAnchor = nil;
-    self.accessoryView = nil;
-    
-    [self.smileView stopLoading];
-    self.smileView.navigationDelegate = nil;
-    self.smileView = nil;
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;	
-    
-    self.segmentControler = nil;
-    
-    self.textFieldTitle = nil;
-    self.textFieldTo = nil;
-    
-    self.commonTableView = nil;
-    self.rehostTableView = nil;
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-
-}
-
-- (void)dealloc {
-    NSLog(@"dealloc ADD");
-    
-    [textView resignFirstResponder];
-    [self viewDidUnload];
-    
-    [request cancel];
-    [request setDelegate:nil];
-    
-    [requestSmile cancel];
-    [requestSmile setDelegate:nil];
-    [self.rehostImagesArray removeAllObjects];
-    [self.rehostImagesSortedArray removeAllObjects];
-    
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"smileyReceived" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"uploadProgress" object:nil];
-    
-    self.delegate = nil;
-    
-    
-    
-    
-    
-}*/
-
 @end

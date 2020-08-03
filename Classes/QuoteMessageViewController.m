@@ -615,21 +615,15 @@
 
 
 
-#pragma mark -
-#pragma mark UIPickerViewDelegate
+#pragma mark - UIPickerViewDelegate
 
 -(void)loadSubCat
 {
-    [_popover dismissPopoverAnimated:YES];
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
 	[catButton setTitle:[[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle] forState:UIControlStateNormal];
 	[textFieldCat setText:[[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aID]];
 	
 	[self dismissActionSheet];
-	
 }
 
 
@@ -729,62 +723,26 @@
 
 -(void)showPicker:(id)sender{
 	
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-        
-        [textFieldTitle resignFirstResponder];
-        [textView resignFirstResponder];
-        [textFieldSmileys resignFirstResponder];
-        
-        //NSLog(@"TT %@", [[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle]);
-        
-        SubCatTableViewController *subCatTableViewController = [[SubCatTableViewController alloc] initWithStyle:UITableViewStylePlain];
-        subCatTableViewController.suPicker = myPickerView;
-        subCatTableViewController.arrayData = pickerViewArray;
-        subCatTableViewController.notification = @"CatSelected";
-        
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-            subCatTableViewController.modalPresentationStyle = UIModalPresentationPopover;
-            UIPopoverPresentationController *pc = [subCatTableViewController popoverPresentationController];
-            //pc.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
-            pc.permittedArrowDirections = UIPopoverArrowDirectionUp;
-            pc.delegate = self;
-            pc.sourceView = (UIButton *)sender;
-            pc.sourceRect = CGRectMake(0, 0, ((UIButton *)sender).frame.size.width, 35);
-            
-            [self presentViewController:subCatTableViewController animated:YES completion:nil];
-        }
-        else {
-            self.popover = nil;
-            self.popover = [[UIPopoverController alloc] initWithContentViewController:subCatTableViewController];
-            //[(UIPopoverController *)self.popover setBackgroundColor:[ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]]];
-            [_popover presentPopoverFromRect:[(UIButton *)sender frame] inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
-
-        }
-
+    [textFieldTitle resignFirstResponder];
+    [textView resignFirstResponder];
+    [textFieldSmileys resignFirstResponder];
     
-        
-        
-    } else {
-        CGSize pickerSize = [myPickerView sizeThatFits:CGSizeZero];
-        myPickerView.frame = [self pickerFrameWithSize:pickerSize];
-        
-        
-        [actionSheet showInView:self.view];
-        
-        CGRect curFrame = [[actionSheet viewWithTag:546] frame];
-        curFrame.origin.x =  self.view.frame.size.width - curFrame.size.width - 10;
-        [[actionSheet viewWithTag:546] setFrame:curFrame];
-        
-        [UIView beginAnimations:nil context:nil];
-        [actionSheet setFrame:CGRectMake(0, self.view.frame.size.height - myPickerView.frame.size.height - 44,
-                                         self.view.frame.size.width, myPickerView.frame.size.height + 44)];
-        
-        [actionSheet setBounds:CGRectMake(0, 0,
-                                          self.view.frame.size.width, myPickerView.frame.size.height + 44)];
-        
-        [UIView commitAnimations]; 
-    }
-
+    //NSLog(@"TT %@", [[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle]);
+    
+    SubCatTableViewController *subCatTableViewController = [[SubCatTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    subCatTableViewController.suPicker = myPickerView;
+    subCatTableViewController.arrayData = pickerViewArray;
+    subCatTableViewController.notification = @"CatSelected";
+    
+    subCatTableViewController.modalPresentationStyle = UIModalPresentationPopover;
+    UIPopoverPresentationController *pc = [subCatTableViewController popoverPresentationController];
+    //pc.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
+    pc.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    pc.delegate = self;
+    pc.sourceView = (UIButton *)sender;
+    pc.sourceRect = CGRectMake(0, 0, ((UIButton *)sender).frame.size.width, 35);
+    
+    [self presentViewController:subCatTableViewController animated:YES completion:nil];
 }
 
 #pragma mark -

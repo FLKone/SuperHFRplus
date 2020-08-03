@@ -2,7 +2,7 @@
 //  SmileyViewController.m
 //  SuperHFRplus
 //
-//  Created by Bruno ARENE on 09/06/2020.
+//  Created by ezzz on 09/06/2020.
 //
 
 #import "SmileyViewController.h"
@@ -127,7 +127,6 @@
     [self.btnSmileyDefault  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnSmileyDefault setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
-    //Image(systemName: "rectangle.expand.vertical").font(.system(size: 16, weight: .medium))
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
     //[self.btnReduce setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 5, 10)];
@@ -244,7 +243,7 @@ static CGFloat fCellImageSize = 1;
         }
     }
     @catch (NSException * e) {
-        NSLog(@"ERROR, empty cell for section %d / row %d", indexPath.section, indexPath.row);
+        NSLog(@"ERROR, empty cell for section %d / row %d", (int)indexPath.section, (int)indexPath.row);
     }
 
     return nil;
