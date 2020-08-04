@@ -150,11 +150,6 @@
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <variation key="default">
-                <mask key="subviews">
-                    <exclude reference="NqH-TX-J1I"/>
-                </mask>
-            </variation>
             <point key="canvasLocation" x="138.40000000000001" y="136.28185907046478"/>
         </view>
     </objects>

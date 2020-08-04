@@ -357,9 +357,12 @@ static CGFloat fCellImageSize = 1;
         }
         
         int iResults = 0;
+        //NSLog(@"reload: %@ / %@", s.sSearchText, self.textFieldSmileys.text);
         if (s) {
             cell.labelText.text = s.sSearchText;
-            if (indexPath.section == 1 && self.textFieldSmileys.text.length >= 1) {
+            if (indexPath.section == 1) {//} && self.textFieldSmileys.text.length >= 1) {
+                NSRange range = [s.sSearchText rangeOfString:self.textFieldSmileys.text];
+                //NSLog(@"-> bold %@ of %@?: %@", self.textFieldSmileys.text, s.sSearchText, NSStringFromRange(range));
                 [cell.labelText boldSubstring: self.textFieldSmileys.text];
             }
             iResults = [s.nSearchNumber intValue];

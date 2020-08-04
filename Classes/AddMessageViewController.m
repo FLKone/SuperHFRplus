@@ -996,7 +996,7 @@
         self.constraintRehostImageViewHeight.constant = [self.viewControllerRehostImage getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
-    [self.viewControllerSmileys updateExpandButton];
+    [self.viewControllerRehostImage updateExpandButton];
 }
 
 - (void)actionGIF:(id)sender
