@@ -85,7 +85,9 @@
                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                             <connections>
+                                <action selector="textFieldSmileChange:" destination="-1" eventType="editingDidBegin" id="Wxo-hN-vOL"/>
                                 <action selector="textFieldSmileChange:" destination="-1" eventType="editingChanged" id="sNa-WK-0nk"/>
+                                <action selector="textFieldSmileChange:" destination="-1" eventType="editingDidEnd" id="zpc-4z-TL8"/>
                                 <outlet property="delegate" destination="-1" id="gHf-jb-QXO"/>
                             </connections>
                         </textField>

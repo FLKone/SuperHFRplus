@@ -528,7 +528,11 @@ static CGFloat fCellImageSize = 1;
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     NSLog(@"textFieldDidBeginEditing");
-    self.bActivateSmileySearchTable = YES;
+    if (self.smileyCache.bSearchSmileysActivated) {
+        [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:YES];
+    } else {
+        self.bActivateSmileySearchTable = YES;
+    }
 }
 
 
@@ -581,10 +585,10 @@ static CGFloat fCellImageSize = 1;
         sText = [sText stringByReplacingOccurrencesOfString:@"\\" withString:@""];
         @try {
             self.arrTopSearchSortedFiltered = [self.arrTopSearchSorted filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SmileySearch* s, NSDictionary *bindings) {
-                NSLog(@"TOP: %@ contains %@ -> %@", s.sSearchText, sText, [s.sSearchText containsString:sText] ? @"Yes" : @"No"); return [s.sSearchText containsString:sText];  // Return YES for each object you want in filteredArray.
+                return [s.sSearchText containsString:sText];  // Return YES for each object you want in filteredArray.
             }]];
             self.arrLastSearchSortedFiltered = [self.arrLastSearchSorted filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SmileySearch* s, NSDictionary *bindings) {
-                NSLog(@"LAST: %@ contains %@ -> %@", s.sSearchText, sText, [s.sSearchText containsString:sText] ? @"Yes" : @"No"); return [s.sSearchText containsString:sText];  // Return YES for each object you want in filteredArray.
+                return [s.sSearchText containsString:sText];  // Return YES for each object you want in filteredArray.
             }]];
 
             [self.tableViewSearch reloadData];
@@ -600,6 +604,10 @@ static CGFloat fCellImageSize = 1;
         self.arrTopSearchSortedFiltered = self.arrTopSearchSorted;
         self.arrLastSearchSortedFiltered = self.arrLastSearchSorted;
         [self.tableViewSearch reloadData];
+        if (self.smileyCache.bSearchSmileysActivated && self.displayMode == DisplayModeEnumSmileysSearch && self.bActivateSmileySearchTable == NO) {
+            [self changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
+            //self.bActivateSmileySearchTable = YES;
+        }
         //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
     /*
