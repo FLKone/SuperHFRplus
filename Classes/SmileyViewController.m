@@ -121,17 +121,18 @@
     self.view.backgroundColor = [UIColor whiteColor];
 
     Theme theme = [[ThemeManager sharedManager] theme];
-    [self.btnSmileySearch  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnSmileySearch setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnSmileySearch setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 5, 10)];
     [self.btnSmileyDefault  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnSmileyDefault setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
+    [self.btnSmileySearch  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnSmileySearch setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnSmileySearch setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
     //[self.btnReduce setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 5, 10)];
 
     [self.btnSmileyDefault addTarget:self action:@selector(actionSmileysDefaults:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnSmileySearch addTarget:self action:@selector(actionSmileysSearch:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnReduce addTarget:self action:@selector(actionReduce:) forControlEvents:UIControlEventTouchUpInside];
 
     self.tableViewSearch.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
@@ -141,7 +142,7 @@
     [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
     self.textFieldSmileys.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     self.textFieldSmileys.returnKeyType = UIReturnKeySearch;
-    [self.textFieldSmileys addTarget:self action:@selector(actionSmileysSearch:) forControlEvents:UIControlEventPrimaryActionTriggered];
+    [self.textFieldSmileys addTarget:self action:@selector(actionSearch:) forControlEvents:UIControlEventPrimaryActionTriggered];
 
     [self.spinnerSmileySearch setHidesWhenStopped:YES];
 
@@ -572,7 +573,7 @@ static CGFloat fCellImageSize = 1;
  
  }*/
 
-- (void)actionSmileysSearch:(id)sender
+- (void)actionSearch:(id)sender
 {
     [self fetchSmileys];
 }
@@ -800,6 +801,25 @@ static CGFloat fCellImageSize = 1;
             bSetFirstResponder = YES;
         }
         [self changeDisplayMode:DisplayModeEnumSmileysDefault animate:NO];
+        [self.addMessageVC updateExpandCompressSmiley];
+        if (bSetFirstResponder) {
+            [self.addMessageVC.textView becomeFirstResponder];
+        }
+    }
+}
+
+
+- (void)actionSmileysSearch:(id)sender {
+    if (self.bModeFullScreen) {
+        [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
+        [self resignFirstResponder];
+    }
+    else {
+        BOOL bSetFirstResponder = NO;
+        if (self.displayMode != DisplayModeEnumSmileysSearch) {
+            bSetFirstResponder = YES;
+        }
+        [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
         [self.addMessageVC updateExpandCompressSmiley];
         if (bSetFirstResponder) {
             [self.addMessageVC.textView becomeFirstResponder];
