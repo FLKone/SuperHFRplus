@@ -32,7 +32,8 @@ typedef enum {
     
 }
 
-@property (strong, nonatomic) IBOutlet UICollectionView *collectionSmileys;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionViewSmileysDefault;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionViewSmileysSearch;
 @property (strong, nonatomic) IBOutlet UITextField *textFieldSmileys;
 @property (strong, nonatomic) IBOutlet UIButton *btnSmileySearch;
 @property (strong, nonatomic) IBOutlet UIButton *btnSmileyDefault;

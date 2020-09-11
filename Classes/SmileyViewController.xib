@@ -13,7 +13,8 @@
                 <outlet property="btnReduce" destination="1SM-Z0-9dq" id="q2r-F6-QcS"/>
                 <outlet property="btnSmileyDefault" destination="PT9-SC-Pau" id="hcA-zh-04Y"/>
                 <outlet property="btnSmileySearch" destination="3r6-19-t8K" id="zQk-JP-T1s"/>
-                <outlet property="collectionSmileys" destination="x84-dh-hwd" id="rtL-5M-7Xc"/>
+                <outlet property="collectionViewSmileysDefault" destination="x84-dh-hwd" id="Pve-pI-UI7"/>
+                <outlet property="collectionViewSmileysSearch" destination="3pM-oP-sQP" id="xD9-pH-VCO"/>
                 <outlet property="spinnerSmileySearch" destination="QLi-nq-QxM" id="2qa-Hk-E2t"/>
                 <outlet property="tableViewSearch" destination="NqH-TX-J1I" id="vqT-6I-qQG"/>
                 <outlet property="textFieldSmileys" destination="BgO-yT-g9F" id="y1U-UB-Uqc"/>
@@ -25,7 +26,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="x84-dh-hwd">
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="x84-dh-hwd" userLabel="Collection View Default">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="637"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="azj-1x-yMU">
@@ -37,6 +38,20 @@
                     <connections>
                         <outlet property="dataSource" destination="-1" id="p0c-7V-DlG"/>
                         <outlet property="delegate" destination="-1" id="woC-Ot-hUE"/>
+                    </connections>
+                </collectionView>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="3pM-oP-sQP" userLabel="Collection View Search">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="637"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="RDG-WS-Qpf">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="4" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="hSr-zy-0Rc"/>
+                        <outlet property="delegate" destination="-1" id="Jep-6j-1nS"/>
                     </connections>
                 </collectionView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y66-zn-kNi">
@@ -132,8 +147,11 @@
                 <constraint firstItem="y66-zn-kNi" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="6Bq-rP-ura"/>
                 <constraint firstItem="x84-dh-hwd" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="7Dh-xQ-s2Z"/>
                 <constraint firstItem="NqH-TX-J1I" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="8eD-m2-V8Y"/>
+                <constraint firstItem="3pM-oP-sQP" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="92w-Of-UPD"/>
                 <constraint firstItem="x84-dh-hwd" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="ApQ-IZ-an5"/>
+                <constraint firstItem="3pM-oP-sQP" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="D1q-Dt-523"/>
                 <constraint firstItem="x84-dh-hwd" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="I4f-nH-b24"/>
+                <constraint firstItem="3pM-oP-sQP" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="M7d-ev-638"/>
                 <constraint firstItem="y66-zn-kNi" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Rcp-ia-xrS"/>
                 <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="xQF-IK-Thi" secondAttribute="bottom" id="Rny-6i-xKz"/>
                 <constraint firstItem="NqH-TX-J1I" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="eHm-Sv-LuG"/>
@@ -142,6 +160,7 @@
                 <constraint firstItem="y66-zn-kNi" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="fw0-9q-ban"/>
                 <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="x84-dh-hwd" secondAttribute="bottom" id="mBv-Po-V6D"/>
                 <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="NqH-TX-J1I" secondAttribute="bottom" id="mfK-pp-Zdc"/>
+                <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="3pM-oP-sQP" secondAttribute="bottom" id="oWM-k3-7hq"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
