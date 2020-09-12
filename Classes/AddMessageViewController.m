@@ -192,7 +192,7 @@
     self.viewControllerRehostImage.view.frame = self.viewRehostImage.bounds;
     UICollectionViewFlowLayout *collectionViewFlowLayout3 = [[UICollectionViewFlowLayout alloc] init];
     collectionViewFlowLayout3.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    self.viewControllerRehostImage.collectionImages.collectionViewLayout = collectionViewFlowLayout2;
+    self.viewControllerRehostImage.collectionImages.collectionViewLayout = collectionViewFlowLayout3;
     [self.viewRehostImage addSubview:self.viewControllerRehostImage.view];
     [self.viewRehostImage setAlpha:0];
     [self.viewRehostImage addSubview:self.viewControllerRehostImage.view];
@@ -928,6 +928,9 @@
     NSLog(@"actionImage");
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.2];
+    if (self.viewSmileys.alpha == 1) {
+        [self actionHideSmileys];
+    }
     if (self.viewRehostImage.alpha == 0) {
         self.viewControllerRehostImage.bModeFullScreen = [[NSUserDefaults standardUserDefaults] boolForKey:@"rehostimageviewExpanded"];
         if (self.viewControllerRehostImage.bModeFullScreen) {
@@ -1012,6 +1015,12 @@
     giphy.showConfirmationScreen = false;
     [giphy setMediaConfigWithTypes: [[NSMutableArray alloc] initWithObjects: @(GPHContentTypeGifs), @(GPHContentTypeRecents), nil]];
     [self presentViewController:giphy animated:true completion:nil];
+    if (self.viewSmileys.alpha == 1) {
+        [self actionHideSmileys];
+    }
+    if (self.viewRehostImage.alpha == 1) {
+        [self actionHideRehostImage];
+    }
 }
 
 - (void) didSelectMediaWithGiphyViewController:(GiphyViewController *)giphyViewController media:(GPHMedia *)media
@@ -1047,6 +1056,9 @@
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.2];
     if (self.viewSmileys.alpha == 0) {
+        if (self.viewRehostImage.alpha == 1) {
+            [self actionHideRehostImage];
+        }
         self.viewControllerSmileys.bModeFullScreen = [[NSUserDefaults standardUserDefaults] boolForKey:@"smileysviewExpanded"];
         if (self.viewControllerSmileys.bModeFullScreen) {
             [self.view endEditing:YES];

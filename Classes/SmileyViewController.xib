@@ -27,7 +27,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="x84-dh-hwd" userLabel="Collection View Default">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="637"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="634"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="azj-1x-yMU">
                         <size key="itemSize" width="128" height="128"/>
@@ -41,7 +41,7 @@
                     </connections>
                 </collectionView>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="3pM-oP-sQP" userLabel="Collection View Search">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="637"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="634"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="RDG-WS-Qpf">
                         <size key="itemSize" width="128" height="128"/>
@@ -158,9 +158,9 @@
                 <constraint firstItem="NqH-TX-J1I" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="fN5-QI-EiE"/>
                 <constraint firstItem="xQF-IK-Thi" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="fqe-xL-y6R"/>
                 <constraint firstItem="y66-zn-kNi" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="fw0-9q-ban"/>
-                <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="x84-dh-hwd" secondAttribute="bottom" id="mBv-Po-V6D"/>
+                <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="x84-dh-hwd" secondAttribute="bottom" constant="3" id="mBv-Po-V6D"/>
                 <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="NqH-TX-J1I" secondAttribute="bottom" id="mfK-pp-Zdc"/>
-                <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="3pM-oP-sQP" secondAttribute="bottom" id="oWM-k3-7hq"/>
+                <constraint firstItem="y66-zn-kNi" firstAttribute="top" secondItem="3pM-oP-sQP" secondAttribute="bottom" constant="3" id="oWM-k3-7hq"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>

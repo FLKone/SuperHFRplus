@@ -333,7 +333,8 @@
 		titleLabel.font = [UIFont systemFontOfSize:15];
 		titleLabel.userInteractionEnabled = NO;
 		titleLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		
+        titleLabel.autocorrectionType = UITextAutocorrectionTypeNo;
+
 		textFieldTo = [[UITextField alloc] initWithFrame:CGRectMake(38, originY, frameWidth - 55, 43)];
         textFieldTo.tag = 1;
 		textFieldTo.backgroundColor = [UIColor clearColor];
@@ -345,8 +346,8 @@
 		textFieldTo.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         textFieldTo.keyboardType = UIKeyboardTypeASCIICapable;
         textFieldTo.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-        
-        
+        textFieldTo.autocorrectionType = UITextAutocorrectionTypeNo;
+
 		originY += textFieldTo.frame.size.height;
 		
 		UIView* separator = [[UIView alloc] initWithFrame:CGRectMake(0, originY, frameWidth, 1)];
@@ -371,7 +372,8 @@
 		titleLabel.font = [UIFont systemFontOfSize:15];
 		titleLabel.userInteractionEnabled = NO;
 		titleLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		
+		titleLabel.autocorrectionType = UITextAutocorrectionTypeNo;
+        
 		textFieldTitle = [[UITextField alloc] initWithFrame:CGRectMake(58, originY, frameWidth - 75, 43)];
         textFieldTitle.tag = 2;
 		textFieldTitle.backgroundColor = [UIColor clearColor];
@@ -384,7 +386,7 @@
         textFieldTitle.keyboardType = UIKeyboardTypeASCIICapable;
         textFieldTitle.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
         textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance];
-		//[textFieldTitle setText:[[fastAnswerNode findChildWithAttribute:@"name" matchingName:@"sujet" allowPartial:NO] getAttributeNamed:@"value"]];
+        textFieldTitle.autocorrectionType = UITextAutocorrectionTypeNo;
 
 		originY += textFieldTitle.frame.size.height;
 		

@@ -62,7 +62,7 @@
     
       // Configure Collection Smileys defaults
      [self.collectionViewSmileysDefault setHidden:NO];
-     self.collectionViewSmileysDefault.backgroundColor = UIColor.clearColor;
+     self.collectionViewSmileysDefault.backgroundColor = [UIColor clearColor];
      [self.collectionViewSmileysDefault registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
      [self.collectionViewSmileysDefault  setDataSource:self];
      [self.collectionViewSmileysDefault  setDelegate:self];
@@ -70,7 +70,7 @@
      // Configure Collection Smileys search
     [self.collectionViewSmileysSearch setHidden:NO];
     [self.collectionViewSmileysSearch setAlpha:0];
-    self.collectionViewSmileysSearch.backgroundColor = UIColor.clearColor;
+    self.collectionViewSmileysSearch.backgroundColor = [UIColor clearColor];
     [self.collectionViewSmileysSearch registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
     [self.collectionViewSmileysSearch  setDataSource:self];
     [self.collectionViewSmileysSearch  setDelegate:self];
@@ -79,11 +79,11 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *searchFile = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
-    /* TODO: uncomment
      if ([fileManager fileExistsAtPath:directory]) {
         self.arrSearch = [NSMutableArray arrayWithContentsOfFile:searchFile];
     }
-    else {*/
+    /*
+    else {
     SmileySearch* ss = [[SmileySearch alloc] init];
     ss.nSearchNumber = [NSNumber numberWithInt:4];
     ss.dLastSearch = [NSDate dateWithTimeIntervalSince1970:0];
@@ -104,14 +104,13 @@
     [self.arrSearch addObject:ss1];
     [self.arrSearch addObject:ss2];
     [self.arrSearch addObject:ss3];
-        
+    */
     [self updateSearchArraySorted];
 
     // TableView
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
     v.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     [self.tableViewSearch setTableFooterView:v];
-    //[self.tableViewSearch setHidden:YES];
     [self.tableViewSearch registerNib:[UINib nibWithNibName:@"SimpleCellView" bundle:nil] forCellReuseIdentifier:@"SimpleCellId"];
 
     // Observe keyboard hide and show notifications to resize the text view appropriately.
@@ -139,6 +138,9 @@
 
     [self.btnSmileyDefault addTarget:self action:@selector(actionSmileysDefaults:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnSmileySearch addTarget:self action:@selector(actionSmileysSearch:) forControlEvents:UIControlEventTouchUpInside];
+    if (self.smileyCache.arrCurrentSmileyArray.count == 0) {
+        [self.btnSmileySearch setEnabled:NO];
+    }
     [self.btnReduce addTarget:self action:@selector(actionReduce:) forControlEvents:UIControlEventTouchUpInside];
 
     self.tableViewSearch.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
@@ -201,9 +203,14 @@
 
 #pragma mark - Collection management
 
-static CGFloat fCellSizeDefault = 0.7*0.85;
-static CGFloat fCellSizeSearch = 1*0.8;
+static CGFloat fCellSizeDefault = 0.65*0.85;
+static CGFloat fCellSizeSearch = 1*0.85;
 static CGFloat fCellImageSize = 1;
+
+- (float) getDisplayHeight {
+    //return 150 * 0.85;
+    return fCellSizeSearch * 2 * 50 + 34;
+}
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -272,6 +279,7 @@ static CGFloat fCellImageSize = 1;
         return self.smileyCache.dicCommonSmileys.count;
     }
     else {
+        NSLog(@"smileyCache.arrCurrentSmileyArray %d", (long)self.smileyCache.arrCurrentSmileyArray.count);
         return self.smileyCache.arrCurrentSmileyArray.count;
     }
 }
@@ -293,7 +301,7 @@ static CGFloat fCellImageSize = 1;
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(0, 2, 0, 0);
+    return UIEdgeInsetsMake(0,0,0,0);  // top, left, bottom, right
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
@@ -301,21 +309,8 @@ static CGFloat fCellImageSize = 1;
     return 1.0;
 }
 
-/*
- UICollectionViewFlowLayout *flowLayout = [UICollectionViewFlowLayout new];
- flowLayout.itemSize = CGSizeMake(180, 255);
- flowLayout.sectionInset = UIEdgeInsetsMake(10, 30, 0, 30);
- flowLayout.minimumInteritemSpacing = 0.0f;
- flowLayout.minimumLineSpacing = 0.0f;
- flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
- return flowLayout;
- */
-
-- (float) getDisplayHeight {
-    /*if (!self.smileyCache.bSearchSmileysActivated || self.displayMode == DisplayModeEnumSmileysDefault) {
-        return 150 * fCellSizeDefault;
-    }*/
-    return 150 * 0.85;
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return 2.0;
 }
 
 #pragma mark - Table view management
@@ -325,10 +320,16 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.arrSearch.count == 0) {
+        return 1;
+    }
     return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.arrSearch.count == 0) {
+        return 1;
+    }
     if (section == 0) {
         return MIN(3, self.arrLastSearchSorted.count); // Maximum 3 Last search
     } else {
@@ -337,8 +338,11 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (self.arrSearch.count == 0) {
+        return @"Recherches précédentes";
+    }
     if (section == 0) {
-        return @"Dernières recherches";
+        return @"Recherches précédentes";
     } else {
         return @"Recherches les plus fréquentes";
     }
@@ -350,46 +354,55 @@ static CGFloat fCellImageSize = 1;
     if (tableView == self.tableViewSearch) {
         //NSLog(@"table rect: %@", NSStringFromCGRect(self.tableViewSearch.frame));
         SimpleCellView *cell = [tableView dequeueReusableCellWithIdentifier:@"SimpleCellId"];
-
-        SmileySearch* s = nil;
-        if (indexPath.section == 0) { // Last search
-            s = [self.arrLastSearchSorted objectAtIndex:indexPath.row];
-            cell.imageIcon.image = [UIImage imageNamed:@"revert"];
-        }
-        else {
-            s = [self.arrTopSearchSortedFiltered objectAtIndex:indexPath.row];
-        }
-        
-        int iResults = 0;
-        //NSLog(@"reload: %@ / %@", s.sSearchText, self.textFieldSmileys.text);
-        if (s) {
-            cell.labelText.text = s.sSearchText;
-            if (indexPath.section == 1) {//} && self.textFieldSmileys.text.length >= 1) {
-                NSRange range = [s.sSearchText rangeOfString:self.textFieldSmileys.text];
-                //NSLog(@"-> bold %@ of %@?: %@", self.textFieldSmileys.text, s.sSearchText, NSStringFromRange(range));
-                [cell.labelText boldSubstring: self.textFieldSmileys.text];
-            }
-            iResults = [s.nSearchNumber intValue];
-        }
-        else {
-            cell.labelText.text = @"Y a rien";
-
-        }
-        
-        // Format badge
-        if (iResults > 0) {
-            cell.labelBadge.text = [NSString stringWithFormat:@"%d", iResults];
-            cell.labelBadge.backgroundColor = [ThemeColors tintColorWithAlpha:0.1];
-            cell.labelBadge.textColor = [ThemeColors tintColorWithAlpha:0.5];// [UIColor whiteColor];
-            cell.labelBadge.clipsToBounds = YES;
-            //NSLog(@"Rect: %@", NSStringFromCGRect(cell.labelBadge.frame));
-            cell.labelBadge.layer.cornerRadius = cell.labelBadge.frame.size.height / 2;
-        } else {
+        if (self.arrSearch.count == 0) {
+            cell.labelText.text = @"rien du tout :(";
+            UIFontDescriptor * fontD = [cell.labelText.font.fontDescriptor fontDescriptorWithSymbolicTraits:UIFontDescriptorTraitItalic];
+            cell.labelText.font = [UIFont fontWithDescriptor:fontD size:0];
+            cell.imageIcon.image = nil;
             cell.labelBadge.backgroundColor = [UIColor clearColor];
             cell.labelBadge.textColor = [UIColor clearColor];
-            cell.labelBadge.text = @"";
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
+        else {
+            SmileySearch* s = nil;
+            if (indexPath.section == 0) { // Last search
+                s = [self.arrLastSearchSorted objectAtIndex:indexPath.row];
+                cell.imageIcon.image = [UIImage imageNamed:@"revert"];
+            }
+            else {
+                s = [self.arrTopSearchSortedFiltered objectAtIndex:indexPath.row];
+            }
+            
+            int iResults = 0;
+            //NSLog(@"reload: %@ / %@", s.sSearchText, self.textFieldSmileys.text);
+            if (s) {
+                cell.labelText.text = s.sSearchText;
+                if (indexPath.section == 1) {//} && self.textFieldSmileys.text.length >= 1) {
+                    NSRange range = [s.sSearchText rangeOfString:self.textFieldSmileys.text];
+                    //NSLog(@"-> bold %@ of %@?: %@", self.textFieldSmileys.text, s.sSearchText, NSStringFromRange(range));
+                    [cell.labelText boldSubstring: self.textFieldSmileys.text];
+                }
+                iResults = [s.nSearchNumber intValue];
+            }
+            else {
+                cell.labelText.text = @"Y a rien";
 
+            }
+            
+            // Format badge
+            if (iResults > 0) {
+                cell.labelBadge.text = [NSString stringWithFormat:@"%d", iResults];
+                cell.labelBadge.backgroundColor = [ThemeColors tintColorWithAlpha:0.1];
+                cell.labelBadge.textColor = [ThemeColors tintColorWithAlpha:0.5];// [UIColor whiteColor];
+                cell.labelBadge.clipsToBounds = YES;
+                //NSLog(@"Rect: %@", NSStringFromCGRect(cell.labelBadge.frame));
+                cell.labelBadge.layer.cornerRadius = cell.labelBadge.frame.size.height / 2;
+            } else {
+                cell.labelBadge.backgroundColor = [UIColor clearColor];
+                cell.labelBadge.textColor = [UIColor clearColor];
+                cell.labelBadge.text = @"";
+            }
+        }
         cell.backgroundColor = [UIColor systemPinkColor];
         //[[ThemeManager sharedManager] applyThemeToCell:cell];
         return cell;
@@ -408,7 +421,7 @@ static CGFloat fCellImageSize = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.tableViewSearch) {
+    if (self.arrSearch.count > 0 && tableView == self.tableViewSearch) {
         SmileySearch* s = nil;
         if (indexPath.section == 0) { // Last search
             s = [self.arrLastSearchSorted objectAtIndex:indexPath.row];
@@ -682,6 +695,7 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (void) displaySmileys {
+    [self.btnSmileySearch setEnabled:YES];
     [self.collectionViewSmileysSearch reloadData];
     self.bActivateSmileySearchTable = NO;
     [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
@@ -708,7 +722,6 @@ static CGFloat fCellImageSize = 1;
 {
     [self.request cancel];
     [self setRequest:nil];
-    
 }
 
 #pragma mark - Action events
