@@ -66,7 +66,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="375" height="569"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="15"/>
-                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no"/>
                             <connections>
                                 <outlet property="delegate" destination="-1" id="63"/>
                             </connections>

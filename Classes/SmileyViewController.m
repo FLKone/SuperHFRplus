@@ -534,6 +534,11 @@ static CGFloat fCellImageSize = 1;
     NSLog(@"textFieldDidBeginEditing");
     self.bActivateSmileySearchTable = YES;
     [self changeDisplayMode:DisplayModeEnumTableSearch animate:YES];
+    if (self.bModeFullScreen) {
+        self.bModeFullScreen = NO;
+        [self.addMessageVC updateExpandCompressSmiley];
+        [self updateExpandButton];
+    }
 }
 
 
@@ -551,27 +556,20 @@ static CGFloat fCellImageSize = 1;
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     if (self.textFieldSmileys.text.length < 3) {
-        return NO;/*UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Saisir 3 caractères minimum !"
-                                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];*/
+        return NO;
     }
-    /*
-    else {
-        //[self.spinnerSmileySearch startAnimating];
-        [self performSelectorInBackground:@selector(fetchSmileys) withObject:nil];
-    }*/
-
-    return YES;
     
+    return YES;
 }
-/*- (BOOL)textFieldShouldClear:(UITextField *)textField
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField
  {
     NSLog(@"textFieldShouldClear %@", textField.text);
  
     
     return YES;
  
- }*/
+ }
 
 - (void)actionSearch:(id)sender
 {
@@ -685,7 +683,11 @@ static CGFloat fCellImageSize = 1;
 
 - (void) displaySmileys {
     [self.collectionViewSmileysSearch reloadData];
+    self.bActivateSmileySearchTable = NO;
     [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
+    if (self.bModeFullScreen == NO) {
+        [self.addMessageVC.textView becomeFirstResponder];
+    }
 }
 
 - (void) loadSmileys {
