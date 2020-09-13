@@ -932,7 +932,10 @@
         [self actionHideSmileys];
     }
     if (self.viewRehostImage.alpha == 0) {
-        self.viewControllerRehostImage.bModeFullScreen = [[NSUserDefaults standardUserDefaults] boolForKey:@"rehostimageviewExpanded"];
+        bool bExpanded = [[NSUserDefaults standardUserDefaults] boolForKey:@"rehostimageviewExpanded"];
+        if (self.viewControllerRehostImage.bModeFullScreen != bExpanded) {
+            [self actionExpandCompressRehostImage];
+        }
         if (self.viewControllerRehostImage.bModeFullScreen) {
             [self.view endEditing:YES];
         }
@@ -973,7 +976,6 @@
         self.constraintToolbarHeight.constant = 0;
     }
     [self updateExpandCompressRehostImage];
-    [UIView commitAnimations];
     if (!self.viewControllerRehostImage.bModeFullScreen) {
         [self.viewControllerRehostImage.tableViewImages setAlpha:0];
         [self.viewControllerRehostImage.collectionImages setAlpha:1];
@@ -981,24 +983,23 @@
         self.constraintToolbarHeight.constant = 38;
         [self.textView becomeFirstResponder];
     }
+    [UIView commitAnimations];
 }
 
 - (void)updateExpandCompressRehostImage
 {
-    NSLog(@"updateExpandCompressSmiley");
+    NSLog(@"updateExpandCompressRehostImage");
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)[self.viewControllerRehostImage.collectionImages collectionViewLayout];
     if (self.viewControllerRehostImage.bModeFullScreen) {
-        //CGRect rectA = self.view.frame;
         CGRect rectS = self.viewRehostImage.frame;
-        //NSLog(@"rectA %@", NSStringFromCGRect(rectA));
-        //NSLog(@"rectS %@", NSStringFromCGRect(rectS));
         CGFloat f = rectS.size.height + rectS.origin.y;
-        //self.constraintToolbarHeight.constant = 38;
         self.constraintRehostImageViewHeight.constant = f + 38;
+        self.constraintToolbarHeight.constant = 0;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
-        //self.constraintToolbarHeight.constant = 0;
+        [viewToolbar setHidden:NO];
+        self.constraintToolbarHeight.constant = 38;
         self.constraintRehostImageViewHeight.constant = [self.viewControllerRehostImage getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
@@ -1143,6 +1144,10 @@
     [self.viewControllerSmileys updateExpandButton];
 }
 
+
+
+
+
 - (IBAction)actionUndo:(id)sender
 {
 
@@ -1185,14 +1190,9 @@
     
 }
 
-- (void) imageReceived: (NSNotification *) notification {
-    //NSLog(@"%@", notification);
-    
-    // When the accessory view button is tapped, add a suitable string to the text view.
+- (void) imageReceived: (NSNotification *) notification
+{
     NSMutableString *text = [textView.text mutableCopy];
-    
-    //NSLog(@"%d - %d", text.length, lastSelectedRange.location);
-    
     if (!lastSelectedRange.location) {
         lastSelectedRange = NSMakeRange(0, 0);
     }
@@ -1209,10 +1209,11 @@
     lastSelectedRange.length = 0;
     
     textView.text = text;
-    
-    [self cancel];
-    
-    [self textViewDidChange:self.textView];
+
+    if (self.viewControllerRehostImage.bModeFullScreen) {
+        [self actionHideRehostImage];
+    }
+    //[self textViewDidChange:self.textView];
 }
 
 /*

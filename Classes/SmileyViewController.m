@@ -436,6 +436,9 @@ static CGFloat fCellImageSize = 1;
             [self.tableViewSearch deselectRowAtIndexPath:self.tableViewSearch.indexPathForSelectedRow animated:NO];
         }
     }
+    else {
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
