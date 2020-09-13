@@ -23,7 +23,7 @@
 @property Theme theme;
 @property LuminosityHandler *luminosityHandler;
     
-+ (id)sharedManager;
++ (ThemeManager*)sharedManager;
 + (Theme)currentTheme;
 - (void)applyThemeToCell:(UITableViewCell *)cell;
 - (void)applyThemeToTextField:(UITextField *)textfield;

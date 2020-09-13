@@ -123,12 +123,14 @@
     switch (theme) {
         case ThemeLight:
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
-                return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+                return [UIColor whiteColor];
+                //return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
             } else {
                 return [UIColor whiteColor];
             }
         case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:23.0/255.0 green:24.0/255.0 blue:26.0/255.0 alpha:1.0]];
-        default:         return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+        default:                         return [UIColor whiteColor];
+//return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
     }
 }
 
@@ -539,6 +541,13 @@
 
 + (UIColor *)tintColor {
     return [self tintColor:[ThemeManager currentTheme]];
+}
+
++ (UIColor *)tintColorWithAlpha:(CGFloat)newAlpha {
+    UIColor* c = [self tintColor:[ThemeManager currentTheme]];
+    CGFloat r, g, b, alpha;
+    [c getRed:&r green:&g blue:&b alpha:&alpha];
+    return [UIColor colorWithRed:r green:g blue:b alpha:newAlpha];
 }
 
 

@@ -14,6 +14,7 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "HFRAlertView.h"
+#import "api_keys.h"
 
 #define CHEVERETO_UPLOAD_SUCCESS_OK 200
 
@@ -21,6 +22,7 @@
 
 @synthesize version;
 
+@synthesize full_width, full_height;
 @synthesize link_full;
 @synthesize link_miniature;
 @synthesize link_preview;
@@ -35,6 +37,9 @@
 - (id)init {
 	self = [super init];
 	if (self) {
+        self.full_width = [NSString string];
+        self.full_height = [NSString string];
+        
         self.link_full = [NSString string];
         self.link_miniature = [NSString string];
         self.link_preview = [NSString string];
@@ -56,6 +61,9 @@
 - (void) encodeWithCoder:(NSCoder *)encoder {
     //NSLog(@"encodeWithCoder %@", self);
     
+    [encoder encodeObject:full_width forKey:@"full_width"];
+    [encoder encodeObject:full_height forKey:@"full_height"];
+
     [encoder encodeObject:link_full forKey:@"link_full"];
     [encoder encodeObject:link_miniature forKey:@"link_miniature"];
     [encoder encodeObject:link_preview forKey:@"link_preview"];
@@ -77,6 +85,9 @@
     self = [super init];
     if (self) {
 
+        full_width = [decoder decodeObjectForKey:@"full_width"];
+        full_height = [decoder decodeObjectForKey:@"full_height"];
+
         link_full = [decoder decodeObjectForKey:@"link_full"];
         link_miniature = [decoder decodeObjectForKey:@"link_miniature"];
         link_preview = [decoder decodeObjectForKey:@"link_preview"];
@@ -97,6 +108,8 @@
 }
 
 -(void)create {
+    self.full_width = @"nil";
+    self.full_height = @"nil";
     self.link_full = @"link_full";
     self.link_miniature = @"link_miniature";
     self.link_preview = @"link_preview";
@@ -114,7 +127,8 @@
 }
 -(void)loadData:(UIImage *)picture {
 	@autoreleasepool {
-        picture = [picture scaleAndRotateImage:picture];
+        int iNewSize = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"];
+        picture = [picture scaleAndRotateImage:picture withMaxResolution:iNewSize];
         
         NSData* jpegImageData = UIImageJPEGRepresentation(picture, 1);
 	
@@ -149,9 +163,9 @@
 }
 
 -(void)loadDataChevereto:(NSData *)jpegImageData {
-    //Example : https://img3.super-h.fr/api/1/upload/?key=CHEVERETO_KEY&source=https://img.super-h.fr/upload/images/U28P.jpg&format=json
+    //Example : https://img3.super-h.fr/api/1/upload/?key=af34631bb9b18fd4ef1ee46acae65976&source=https://img.super-h.fr/upload/images/U28P.jpg&format=json
     ASIFormDataRequest* request = [ASIFormDataRequest requestWithURL:
-                                   [NSURL URLWithString:[NSString stringWithFormat:@"https://img3.super-h.fr/api/1/upload/?key=%@", CHEVERETO_KEY]]];//&format=txt"]];
+                                   [NSURL URLWithString:[NSString stringWithFormat: @"https://img3.super-h.fr/api/1/upload/?key=%@", API_KEY_CHEVERETO_IMG3]]];
     
     
     NSString* filename = [NSString stringWithFormat:@"snapshot_%d.jpg", rand()];
@@ -171,7 +185,6 @@
     
     [request startAsynchronous];
 }
-
 
 - (void)setProgress:(float)progress
 {
@@ -303,6 +316,9 @@
         
         if ([[dReply objectForKey:@"status_code"] intValue] == CHEVERETO_UPLOAD_SUCCESS_OK) {
             bSuccess = YES;
+            self.full_width = [dReply[@"image"] valueForKey:@"width"];
+            self.full_height = [dReply[@"image"] valueForKey:@"height"];
+            
             self.link_full = [dReply[@"image"] objectForKey:@"url"];
             self.nolink_full = [dReply[@"image"] objectForKey:@"url"];
             self.link_preview = nil;
@@ -358,6 +374,72 @@
 
 -(void)dealloc {
     NSLog(@"deallocdealloc");
+}
+
+- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType
+{
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = @"";
+    
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"]) {
+        case bbcodeLinkOnly:
+        {
+            switch (imageSizeType) {
+                case bbcodeImageFull:
+                    pasteboard.string = self.link_full;
+                    break;
+                case bbcodeImageMedium:
+                    pasteboard.string = self.link_medium;
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = self.link_preview;
+                    break;
+                case bbcodeImageMini:
+                    pasteboard.string = self.link_miniature;
+                    break;
+            }
+            break;
+        }
+        case bbcodeImageNoLink:
+            switch (imageSizeType) {
+                case bbcodeImageFull:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.link_full];
+                    break;
+                case bbcodeImageMedium:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_medium];
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_preview];
+                    break;
+                case bbcodeImageMini:
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_miniature];
+                    break;
+            }
+            break;
+        case bbcodeImageWithLink:
+        {
+            switch (imageSizeType) {
+                case bbcodeImageFull:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_full];
+                    break;
+                case bbcodeImageMedium:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_medium];
+                    break;
+                case bbcodeImagePreview:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_preview];
+                    break;
+                case bbcodeImageMini:
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_miniature];
+                    break;
+            }
+            break;
+        }
+    }
+
+    //NSLog(@"%@", pasteboard.string);
+    if (pasteboard.string.length) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"imageReceived" object:pasteboard.string];
+    }
 }
 
 

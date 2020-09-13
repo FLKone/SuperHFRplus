@@ -848,7 +848,7 @@
     
     
     //NSLog(@"loadCatForType %d", [sender tag]);
-    int section = [sender tag];
+    int section = [(UIButton*)sender tag];
     
     [self loadCatForSection:section];
 
@@ -1849,8 +1849,7 @@
 	}
 }
 
-#pragma mark -
-#pragma mark Delete
+#pragma mark - Delete
 
 -(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {

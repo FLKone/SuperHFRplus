@@ -1358,7 +1358,15 @@
                 sImgUrl = [sImgUrl stringByReplacingOccurrencesOfString:@"reho.st/thumb/" withString:@"reho.st/preview/"];
             }
         }
+        else if ([[imgNode getAttributeNamed:@"alt"] containsString:@"imgur.com/"]) { // imgur
+            NSString* sLongdesc = [imgNode getAttributeNamed:@"longdesc"];
+            if (sLongdesc.length > 0) {
+                sImgUrl = sLongdesc;
+            }
+        }
+        
         NSLog(@"url> %@", sImgUrl);
+        NSLog(@"longdesc> %@", [imgNode getAttributeNamed:@"longdesc"]);
         [imageArray addObject:[MWPhoto photoWithURL:[NSURL URLWithString:sImgUrl]]];
                                                      
         if ([selectedURL isEqualToString:[imgNode getAttributeNamed:@"alt"]]) {

@@ -14,7 +14,7 @@
 	BOOL boldQuote;
     
 	UIPickerView		*myPickerView;
-	NSMutableArray				*pickerViewArray;
+	NSMutableArray		*pickerViewArray;
 	UIActionSheet		*actionSheet;
 	
 	UIButton		*catButton;

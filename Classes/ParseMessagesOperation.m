@@ -226,8 +226,8 @@
                     linkItem.url = [linkItem.url stringByReplacingOccurrencesOfRegex:@"#t[0-9]+" withString:[NSString stringWithFormat:@"#%@", linkItem.postID]];
                 }
             }
-            
-            if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"embedded_videos"] isEqualToString:@"yes"]) {
+            NSString* sVideoEmbedded = [[NSUserDefaults standardUserDefaults] stringForKey:@"embedded_videos"];
+            if ([sVideoEmbedded isEqualToString:@"yes"] || [sVideoEmbedded isEqualToString:@"both"]) {
                 NSArray *arr = [NSArray arrayWithObjects: \
                 @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
                 @"^http(?:s)?://(youtu).be/([\\w-]+)/?", \

@@ -1,2 +1,3 @@
+binary "https://s3.amazonaws.com/sdk.mobile.giphy.com/SDK/GiphySDK.json" "1.3.0"
 github "auth0/SimpleKeychain" "0.11.1"
-github "futuretap/InAppSettingsKit" "46f623db4facadfcfce638feee175aed28cf1bca"
+github "futuretap/InAppSettingsKit" "27d7a1c29fe86ebd97a803bfc319b96123baeda6"

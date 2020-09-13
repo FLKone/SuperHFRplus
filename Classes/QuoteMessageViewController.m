@@ -107,11 +107,6 @@
 	[self fetchContent];
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
-}
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 -(void)loadDataInTableView:(NSData *)contentData {
 	//[NSURL URLWithString:[self.urlQuote lowercaseString]]
@@ -170,7 +165,7 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
 
     //Traitement des smileys (to Array)
-    [self.smileyArray removeAllObjects]; //RaZ
+    //[self.smileyArray removeAllObjects]; //RaZ
     
     for (HTMLNode * imgNode in tmpImageArray) { //Loop through all the tags
         
@@ -338,7 +333,8 @@
 		titleLabel.font = [UIFont systemFontOfSize:15];
 		titleLabel.userInteractionEnabled = NO;
 		titleLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		
+        titleLabel.autocorrectionType = UITextAutocorrectionTypeNo;
+
 		textFieldTo = [[UITextField alloc] initWithFrame:CGRectMake(38, originY, frameWidth - 55, 43)];
         textFieldTo.tag = 1;
 		textFieldTo.backgroundColor = [UIColor clearColor];
@@ -350,8 +346,8 @@
 		textFieldTo.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         textFieldTo.keyboardType = UIKeyboardTypeASCIICapable;
         textFieldTo.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-        
-        
+        textFieldTo.autocorrectionType = UITextAutocorrectionTypeNo;
+
 		originY += textFieldTo.frame.size.height;
 		
 		UIView* separator = [[UIView alloc] initWithFrame:CGRectMake(0, originY, frameWidth, 1)];
@@ -376,7 +372,8 @@
 		titleLabel.font = [UIFont systemFontOfSize:15];
 		titleLabel.userInteractionEnabled = NO;
 		titleLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		
+		titleLabel.autocorrectionType = UITextAutocorrectionTypeNo;
+        
 		textFieldTitle = [[UITextField alloc] initWithFrame:CGRectMake(58, originY, frameWidth - 75, 43)];
         textFieldTitle.tag = 2;
 		textFieldTitle.backgroundColor = [UIColor clearColor];
@@ -389,7 +386,7 @@
         textFieldTitle.keyboardType = UIKeyboardTypeASCIICapable;
         textFieldTitle.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
         textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance];
-		//[textFieldTitle setText:[[fastAnswerNode findChildWithAttribute:@"name" matchingName:@"sujet" allowPartial:NO] getAttributeNamed:@"value"]];
+        textFieldTitle.autocorrectionType = UITextAutocorrectionTypeNo;
 
 		originY += textFieldTitle.frame.size.height;
 		
@@ -511,9 +508,6 @@
 		
 	}
 
-    //self.textView.keyboardType = UIKeyboardTypeASCIICapable;
-    self.textFieldSmileys.keyboardType = UIKeyboardTypeASCIICapable;
-
 	headerView.frame = CGRectMake(headerView.frame.origin.x, originY * -1.0f, headerView.frame.size.width, originY);
 	[self.textView addSubview:headerView];
     textView.tag = 3;        
@@ -618,44 +612,20 @@
 	//NSLog(@"self.formSubmit %@", self.formSubmit);
 
 	NSString *newSubmitForm = [[NSString alloc] initWithFormat:@"%@%@", [k ForumURL], [fastAnswerNode getAttributeNamed:@"action"]];
-	[self setFormSubmit:newSubmitForm];
-	
-    if(!isLogged) {
-        [self.textFieldSmileys setHidden:TRUE];
-    }
-    
-    if([username caseInsensitiveCompare:@"applereview"] == NSOrderedSame) {
-        [self.textFieldSmileys setHidden:TRUE];
-    }
-    
-	//self.formSubmit = [NSString stringWithFormat:@"http://forum.hardware.fr/%@", [fastAnswerNode getAttributeNamed:@"action"]];
-	//NSLog(@"self.formSubmit2 %@", self.formSubmit);
-	
-
-	//NSDate *nowT = [NSDate date]; // Create a current date
-	
-	//NSLog(@"TOPICS Time elapsed then0		: %f", [then0 timeIntervalSinceDate:thenT]);
-	//NSLog(@"TOPICS Time elapsed nowT		: %f", [nowT timeIntervalSinceDate:then0]);
-	//NSLog(@"TOPICS Time elapsed Total		: %f", [nowT timeIntervalSinceDate:thenT]);
+	[self setFormSubmit:newSubmitForm];	
 }
 
 
 
-#pragma mark -
-#pragma mark UIPickerViewDelegate
+#pragma mark - UIPickerViewDelegate
 
 -(void)loadSubCat
 {
-    [_popover dismissPopoverAnimated:YES];
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
 	[catButton setTitle:[[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle] forState:UIControlStateNormal];
 	[textFieldCat setText:[[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aID]];
 	
 	[self dismissActionSheet];
-	
 }
 
 
@@ -755,62 +725,26 @@
 
 -(void)showPicker:(id)sender{
 	
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-        
-        [textFieldTitle resignFirstResponder];
-        [textView resignFirstResponder];
-        [textFieldSmileys resignFirstResponder];
-        
-        //NSLog(@"TT %@", [[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle]);
-        
-        SubCatTableViewController *subCatTableViewController = [[SubCatTableViewController alloc] initWithStyle:UITableViewStylePlain];
-        subCatTableViewController.suPicker = myPickerView;
-        subCatTableViewController.arrayData = pickerViewArray;
-        subCatTableViewController.notification = @"CatSelected";
-        
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-            subCatTableViewController.modalPresentationStyle = UIModalPresentationPopover;
-            UIPopoverPresentationController *pc = [subCatTableViewController popoverPresentationController];
-            //pc.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
-            pc.permittedArrowDirections = UIPopoverArrowDirectionUp;
-            pc.delegate = self;
-            pc.sourceView = (UIButton *)sender;
-            pc.sourceRect = CGRectMake(0, 0, ((UIButton *)sender).frame.size.width, 35);
-            
-            [self presentViewController:subCatTableViewController animated:YES completion:nil];
-        }
-        else {
-            self.popover = nil;
-            self.popover = [[UIPopoverController alloc] initWithContentViewController:subCatTableViewController];
-            //[(UIPopoverController *)self.popover setBackgroundColor:[ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]]];
-            [_popover presentPopoverFromRect:[(UIButton *)sender frame] inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
-
-        }
-
+    [textFieldTitle resignFirstResponder];
+    [textView resignFirstResponder];
+    [textFieldSmileys resignFirstResponder];
     
-        
-        
-    } else {
-        CGSize pickerSize = [myPickerView sizeThatFits:CGSizeZero];
-        myPickerView.frame = [self pickerFrameWithSize:pickerSize];
-        
-        
-        [actionSheet showInView:self.view];
-        
-        CGRect curFrame = [[actionSheet viewWithTag:546] frame];
-        curFrame.origin.x =  self.view.frame.size.width - curFrame.size.width - 10;
-        [[actionSheet viewWithTag:546] setFrame:curFrame];
-        
-        [UIView beginAnimations:nil context:nil];
-        [actionSheet setFrame:CGRectMake(0, self.view.frame.size.height - myPickerView.frame.size.height - 44,
-                                         self.view.frame.size.width, myPickerView.frame.size.height + 44)];
-        
-        [actionSheet setBounds:CGRectMake(0, 0,
-                                          self.view.frame.size.width, myPickerView.frame.size.height + 44)];
-        
-        [UIView commitAnimations]; 
-    }
-
+    //NSLog(@"TT %@", [[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle]);
+    
+    SubCatTableViewController *subCatTableViewController = [[SubCatTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    subCatTableViewController.suPicker = myPickerView;
+    subCatTableViewController.arrayData = pickerViewArray;
+    subCatTableViewController.notification = @"CatSelected";
+    
+    subCatTableViewController.modalPresentationStyle = UIModalPresentationPopover;
+    UIPopoverPresentationController *pc = [subCatTableViewController popoverPresentationController];
+    //pc.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
+    pc.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    pc.delegate = self;
+    pc.sourceView = (UIButton *)sender;
+    pc.sourceRect = CGRectMake(0, 0, ((UIButton *)sender).frame.size.width, 35);
+    
+    [self presentViewController:subCatTableViewController animated:YES completion:nil];
 }
 
 #pragma mark -

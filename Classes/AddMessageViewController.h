@@ -11,9 +11,13 @@
 #import "ASIHTTPRequest.h"
 #import "HFRTextView.h"
 
-@protocol AddMessageViewControllerDelegate;
+@import GiphyUISDK;
+@import GiphyCoreSDK;
 
-@interface AddMessageViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, WKNavigationDelegate, WKUIDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@protocol AddMessageViewControllerDelegate;
+@class SmileyViewController, RehostImageViewController;
+
+@interface AddMessageViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, WKNavigationDelegate, WKUIDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, GiphyDelegate>  {
     id <AddMessageViewControllerDelegate> __weak delegate;
     
     //bb
@@ -35,18 +39,17 @@
     
     //UIScrollView *scrollViewer;
     UITextField *textFieldSmileys;
-    NSMutableArray *smileyArray;
     int smileyPage;
-    UITableView *commonTableView;
     NSMutableDictionary *usedSearchDict;
     NSMutableArray *usedSearchSortedArray;
     
     NSString *smileyCustom;
     
     //HFR REHOST
-    UITableView *rehostTableView;
-    NSMutableArray *rehostImagesArray;
-    NSMutableArray* rehostImagesSortedArray;
+
+// TODO: delete    UITableView *rehostTableView;
+// TODO: delete     NSMutableArray *rehostImagesArray;
+// TODO: delete     NSMutableArray* rehostImagesSortedArray;
     
     BOOL haveTitle;
     UITextField *textFieldTitle;
@@ -63,7 +66,6 @@
     ASIHTTPRequest *request;
     ASIHTTPRequest *requestSmile;
     
-    id _popover;
     NSString *refreshAnchor;
     
     NSString *statusMessage;
@@ -95,21 +97,28 @@
 @property (nonatomic, strong) IBOutlet WKWebView *smileView;
 @property (nonatomic, strong) NSString *smileyCustom;
 
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarImage;
+@property (strong, nonatomic) IBOutlet UIButton *btnToolbarGIF;
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarSmiley;
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarUndo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControler;
+@property (weak, nonatomic) IBOutlet UIButton *btnToolbarRedo;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentControlerPage;
-@property (nonatomic, strong) IBOutlet UITextField *textFieldSmileys;
-@property (nonatomic, strong) NSMutableArray *smileyArray;
-@property int smileyPage;
-@property (nonatomic, strong) IBOutlet UITableView *commonTableView;
-@property (nonatomic, strong) NSMutableDictionary *usedSearchDict;
-@property (nonatomic, strong) NSMutableArray *usedSearchSortedArray;
+@property (strong, nonatomic) IBOutlet UIView *viewToolbar;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *constraintToolbarHeight;
 
-@property (nonatomic, strong) IBOutlet UITableView *rehostTableView;
-@property (nonatomic, strong) NSMutableArray *rehostImagesArray;
-@property (nonatomic, strong) NSMutableArray *rehostImagesSortedArray;
+//TODO: delete @property (nonatomic, strong) IBOutlet UICollectionView *collectionImages;
+@property (strong, nonatomic) IBOutlet UIView *viewSmileys;
+@property  SmileyViewController *viewControllerSmileys;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *constraintSmileyViewHeight;
 
-//@property (nonatomic, retain) IBOutlet UIScrollView *scrollViewer;
-@property (nonatomic, strong) id popover;
+@property (strong, nonatomic) IBOutlet UIView *viewRehostImage;
+@property  RehostImageViewController *viewControllerRehostImage;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *constraintRehostImageViewHeight;
+
+//delete @property (nonatomic, strong) IBOutlet UITableView *rehostTableView;
+//delete @property (nonatomic, strong) NSMutableArray *rehostImagesArray;
+//Delte @property (nonatomic, strong) NSMutableArray *rehostImagesSortedArray;
 @property (nonatomic, strong) NSString *refreshAnchor;
 @property (nonatomic, strong) NSString *statusMessage;
 
@@ -133,15 +142,18 @@
 -(IBAction)cancel;
 -(IBAction)done;
 -(IBAction)segmentFilterAction:(id)sender;
--(IBAction)textFieldSmileChange:(id)sender;
 
--(void)fetchSmileys;
 -(void)loadSmileys:(int)page;
--(void)didSelectSmile:(NSString *)smile;
 -(void)initData;
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 -(void)setupResponder;
 -(bool)isDeleteMode;
+- (void)updateExpandCompressRehostImage;
+- (void)actionExpandCompressRehostImage;
+- (void)updateExpandCompressSmiley;
+- (void)actionExpandCompressSmiley;
+- (void)actionHideSmileys;
+- (void)resizeViewWithKeyboard:(NSNotification *)notification;
 
 @end
 

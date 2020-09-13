@@ -106,7 +106,7 @@
 
 - (void)fetchContentComplete:(ASIHTTPRequest *)theRequest
 {
-    [self loadDataInTableView:[theRequest safeResponseData]];
+    [self loadDataInTableView:[theRequest responseData]];
 	
     [self.arrayData removeAllObjects];
     

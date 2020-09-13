@@ -83,6 +83,7 @@
     //if ([[UITabBar appearance] respondsToSelector:@selector(setTranslucent:)]) {
       //  [[UITabBar appearance] setTranslucent:NO];
     //}
+    //UIImage *tab_snow = [UIImage imageNamed:@"fond-degrade-bleu-fonce_1258-1348.jpg"];
 
     if(!self.bgView){
         self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor clearColor]]];

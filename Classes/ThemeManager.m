@@ -21,7 +21,7 @@ int nightDelay;
 
 #pragma mark Singleton Methods
 
-+ (id)sharedManager {
++ (ThemeManager*)sharedManager {
     static ThemeManager *sharedThemeManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -90,10 +90,11 @@ int nightDelay;
     [self applyAppearance];
 }
 
+/*
 - (Theme)theme{
     //NSLog(@"%lu",(unsigned long)theme);
     return theme;
-}
+}*/
 
 - (void)switchTheme {
     if (self.theme == ThemeLight) {
