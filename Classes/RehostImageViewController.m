@@ -71,6 +71,12 @@
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90+50)];
     
     Theme theme = [[ThemeManager sharedManager] theme];
+    [self.btnCamera setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnCamera setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3, 12, 3, 12)];
+    [self.btnPhoto setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnPhoto setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4, 13, 4, 13)];
     [self.btnCamera addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnPhoto addTarget:self action:@selector(uploadExistingPhoto:) forControlEvents:UIControlEventTouchUpInside];
 
