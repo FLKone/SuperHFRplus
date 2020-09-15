@@ -16,6 +16,7 @@
 @synthesize titleLabel;
 @synthesize msgLabel;
 @synthesize timeLabel;
+@synthesize imgGroup;
 
 - (void)awakeFromNib {
     
