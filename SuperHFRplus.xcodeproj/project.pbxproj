@@ -38,6 +38,8 @@
 		1543743722ECAE3100AF00A5 /* ThemeColorCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1543743622ECAE3100AF00A5 /* ThemeColorCellView.xib */; };
 		1543743922ECB1C300AF00A5 /* ThemeColorCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1543743822ECB1C300AF00A5 /* ThemeColorCellView.m */; };
 		1543743D22EDDF7400AF00A5 /* ColorPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1543743C22EDDF7400AF00A5 /* ColorPickerViewController.m */; };
+		154C0D03250FD66F00294ECC /* person.3.fill-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 154C0D01250FD66E00294ECC /* person.3.fill-2.png */; };
+		154C0D04250FD66F00294ECC /* person.3.fill-2@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 154C0D02250FD66E00294ECC /* person.3.fill-2@2.png */; };
 		154F823724C8893500BC46B2 /* RehostImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 154F823624C8893500BC46B2 /* RehostImageViewController.xib */; };
 		154F823924C8898000BC46B2 /* RehostImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 154F823824C8898000BC46B2 /* RehostImageViewController.m */; };
 		1553568424A500D400917DE1 /* rectangle.compress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1553567E24A500D300917DE1 /* rectangle.compress@2x.png */; };
@@ -878,6 +880,8 @@
 		1543743A22ECB1DD00AF00A5 /* ThemeColorCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThemeColorCellView.h; sourceTree = "<group>"; };
 		1543743B22EDDF5E00AF00A5 /* ColorPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPickerViewController.h; sourceTree = "<group>"; };
 		1543743C22EDDF7400AF00A5 /* ColorPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorPickerViewController.m; sourceTree = "<group>"; };
+		154C0D01250FD66E00294ECC /* person.3.fill-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "person.3.fill-2.png"; sourceTree = "<group>"; };
+		154C0D02250FD66E00294ECC /* person.3.fill-2@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "person.3.fill-2@2.png"; sourceTree = "<group>"; };
 		154F823624C8893500BC46B2 /* RehostImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RehostImageViewController.xib; sourceTree = "<group>"; };
 		154F823824C8898000BC46B2 /* RehostImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RehostImageViewController.m; sourceTree = "<group>"; };
 		154F823A24C8899300BC46B2 /* RehostImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RehostImageViewController.h; sourceTree = "<group>"; };
@@ -2705,6 +2709,8 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				154C0D01250FD66E00294ECC /* person.3.fill-2.png */,
+				154C0D02250FD66E00294ECC /* person.3.fill-2@2.png */,
 				1553568E24A8CCDA00917DE1 /* revert.png */,
 				1553568D24A8CCD900917DE1 /* revert@2x.png */,
 				1553567F24A500D300917DE1 /* rectangle.compress.png */,
@@ -3675,6 +3681,7 @@
 				4C0B8DB91BA4522900D329BA /* SourceCodeFilled-40@2x.png in Resources */,
 				4C0B8DC51BA4522900D329BA /* GraduationCapFilled-40.png in Resources */,
 				CA7C706B185EF50E00B348BA /* TopicSearchCellView.xib in Resources */,
+				154C0D03250FD66F00294ECC /* person.3.fill-2.png in Resources */,
 				CA7C706C185EF50E00B348BA /* gun.gif in Resources */,
 				CA7C706D185EF50E00B348BA /* sweat.gif in Resources */,
 				D8EFB18E1E59F23B000E45A2 /* loadinfo-white@2x.gif in Resources */,
@@ -3754,6 +3761,7 @@
 				4C052DF91BA8537E00B61952 /* fontello.ttf in Resources */,
 				4C0B8D8D1BA4522900D329BA /* MoneyBoxFilled-40.png in Resources */,
 				CA7C7095185EF50E00B348BA /* icon_list_bullets.png in Resources */,
+				154C0D04250FD66F00294ECC /* person.3.fill-2@2.png in Resources */,
 				4C21E9661BA5C70400691D65 /* LinkFilled-20.png in Resources */,
 				15AEFA08223E9435005E6739 /* Icon-WHITE-IPAD@1x.png in Resources */,
 				4CD6B8C01B97AEF5007FC29E /* 6-Camera-32.png in Resources */,
