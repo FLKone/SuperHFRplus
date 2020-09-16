@@ -46,6 +46,10 @@
     [titleLabel setTextColor:[ThemeColors textColor:theme]];
     [msgLabel setTextColor:[ThemeColors topicMsgTextColor:theme]];
     [timeLabel setTextColor:[ThemeColors cellTintColor:theme]];
+
+    self.imgGroup.image = [self.imgGroup.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.imgGroup.tintColor = [ThemeColors topicMsgTextColor:theme];
+
     self.selectionStyle = [ThemeColors cellSelectionStyle:theme];
     if(topicViewed){
         Theme theme = [[ThemeManager sharedManager] theme];
