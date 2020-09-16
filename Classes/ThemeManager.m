@@ -14,6 +14,8 @@
 
 @implementation ThemeManager
 
+@synthesize theme;
+
 int dayDelayMin = 40;
 int nightDelayMin = 10;
 int dayDelay;
@@ -56,9 +58,9 @@ int nightDelay;
 
 
 
-- (void)setTheme:(Theme)newTheme {
-    theme = newTheme;
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:theme] forKey:@"theme"];
+- (void)changeTheme:(Theme)newTheme {
+    self.theme = newTheme;
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:self.theme] forKey:@"theme"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     NSNotification *myNotification = [NSNotification notificationWithName:kThemeChangedNotification
                                                                    object:self  //object is usually the object posting the notification
@@ -249,7 +251,7 @@ int nightDelay;
         }
     }
     
-    [self setTheme:newTheme];
+    [self changeTheme:newTheme];
 }
 
 - (void) checkTheme {

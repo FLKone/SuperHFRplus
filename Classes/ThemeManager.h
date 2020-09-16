@@ -17,7 +17,6 @@
 
 
 @interface ThemeManager : NSObject <LuminosityHandlerDelegate>  {
-    Theme theme;
 }
 
 @property Theme theme;
