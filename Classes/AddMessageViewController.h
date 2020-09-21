@@ -139,6 +139,7 @@
 // Brouillon
 @property (nonatomic, strong) NSString *sBrouillon;
 @property (nonatomic) BOOL sBrouillonUtilise;
+
 -(IBAction)cancel;
 -(IBAction)done;
 -(IBAction)segmentFilterAction:(id)sender;

@@ -588,7 +588,7 @@
         </dict>
         <dict>
             <key>DefaultValue</key>
-            <integer>20</integer>
+            <integer>21</integer>
             <key>Key</key>
             <string>offline_max_pages</string>
             <key>Title</key>

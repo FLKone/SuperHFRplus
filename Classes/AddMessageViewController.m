@@ -198,7 +198,6 @@
     [self.viewRehostImage addSubview:self.viewControllerRehostImage.view];
     [self.viewRehostImage setAlpha:0];
 
-    
     //TODO: clean
     [textFieldSmileys setHidden:YES];
     
@@ -537,6 +536,8 @@
             [ftextView setContentOffset:offset];
         }];
     }
+    
+    [self enableDisableUndoButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -580,6 +581,7 @@
     [self.btnToolbarSmiley addTarget:self action:@selector(actionSmiley:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnToolbarUndo addTarget:self action:@selector(actionUndo:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnToolbarRedo addTarget:self action:@selector(actionRedo:) forControlEvents:UIControlEventTouchUpInside];
+    [self enableDisableUndoButton];
 
     [self.view endEditing:YES];
     self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
@@ -622,14 +624,19 @@
     if (self.haveTo && ![[textFieldTo text] length]) {
         self.textFieldTo.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
         [self.textFieldTo becomeFirstResponder];
+        self.btnToolbarUndo.enabled = false;
+        self.btnToolbarUndo.enabled = false;
     }
     else if (self.haveTitle) {
         self.textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
         [self.textFieldTitle becomeFirstResponder];
+        self.btnToolbarUndo.enabled = false;
+        self.btnToolbarUndo.enabled = false;
     }
     else {
         self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
         [self.textView becomeFirstResponder];
+        [self enableDisableUndoButton];
     }
 }
 
@@ -1150,14 +1157,30 @@
 
 - (IBAction)actionUndo:(id)sender
 {
-
+    [self.textView.undoManager undo];
+    [self enableDisableUndoButton];
 }
 
 - (IBAction)actionRedo:(id)sender
 {
-
+    [self.textView.undoManager redo];
+    [self enableDisableUndoButton];
 }
 
+// to disable or enable the button when needed
+- (void)enableDisableUndoButton
+{
+    if (self.textView.undoManager.canUndo) {
+        self.btnToolbarUndo.enabled = true;
+    } else {
+        self.btnToolbarUndo.enabled = false;
+    }
+    if (self.textView.undoManager.canRedo) {
+        self.btnToolbarRedo.enabled = true;
+    } else {
+        self.btnToolbarRedo.enabled = false;
+    }
+}
 
 #pragma mark - TextView Mod
 
@@ -1346,9 +1369,6 @@ self.loaded = YES;
         [self.btnToolbarImage setEnabled:NO];
         [self.btnToolbarGIF setEnabled:NO];
         [self.btnToolbarSmiley setEnabled:NO];
-        [self.btnToolbarUndo setEnabled:NO];
-        [self.btnToolbarRedo setEnabled:NO];
-
         [textFieldSmileys setEnabled:NO];
     }
     else {
@@ -1407,8 +1427,6 @@ self.loaded = YES;
     [self.btnToolbarImage setEnabled:YES];
     [self.btnToolbarGIF setEnabled:YES];
     [self.btnToolbarSmiley setEnabled:YES];
-    [self.btnToolbarUndo setEnabled:YES];
-    [self.btnToolbarRedo setEnabled:YES];
 
     [textFieldSmileys setEnabled:YES];
 }
