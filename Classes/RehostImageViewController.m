@@ -426,13 +426,11 @@
     RehostCell *cell = (RehostCell *)[tableView dequeueReusableCellWithIdentifier:CellRehostIdentifier];
     if (cell == nil)
     {
-
         NSArray *nib=[[NSBundle mainBundle] loadNibNamed:CellRehostIdentifier owner:self options:nil];
-        
+    
         cell = [nib objectAtIndex:0];
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
     }
 
     [cell configureWithRehostImage:[self.rehostImagesSortedArray objectAtIndex:indexPath.row]];
@@ -444,45 +442,17 @@
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == -1) { //No more used
-        SmileyCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SmileyCollectionCellId" forIndexPath:indexPath];
-        Theme theme = [[ThemeManager sharedManager] theme];
-        UIImage* image = [ThemeColors tintImage:[UIImage imageNamed:@"plus-tinted"] withTheme:theme];
-        CGFloat ch = cell.bounds.size.height;
-        CGFloat cw = cell.bounds.size.width;
-        CGFloat w = image.scale*image.size.width*0.6;
-        CGFloat h = image.scale*image.size.height*0.6;
-        if (cell.smileyImage == nil) {
-            cell.smileyImage = [[UIImageView alloc] initWithFrame:CGRectMake(cw/2-w/2, ch/2-h/2, w, h)];
-            [cell addSubview:cell.smileyImage];
-        }
-        else {
-            cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
-        }
-
-        [cell.smileyImage setImage:image];
-
-        cell.smileyImage.clipsToBounds = NO;
-        cell.smileyImage.layer.masksToBounds = true;
-        cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
-        cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
-        cell.layer.borderWidth = 1.0f;
-        cell.layer.cornerRadius = 3;
-        cell.layer.masksToBounds = true;
-        return cell;
-    } else {
-        RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
-        [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row]];
-        cell.layer.cornerRadius = 5;
-        cell.layer.masksToBounds = true;
-        return cell;
-    }
-
-    return nil;
+    RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
+    [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row]];
+    cell.layer.cornerRadius = 5;
+    cell.layer.masksToBounds = true;
+    return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    RehostImage* rehostImage = [self.rehostImagesSortedArray objectAtIndex:indexPath.row];
+    [rehostImage copyToPasteBoard:bbcodeImageFull];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

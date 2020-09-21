@@ -400,11 +400,7 @@
 		[headerView addSubview:textFieldTitle];
 		[headerView addSubview:separator];
 		
-
 		headerView.frame = CGRectMake(headerView.frame.origin.x, headerView.frame.origin.x, headerView.frame.size.width, originY);
-		
-		//[titleLabel release];
-		//[separator release];
 	}
 	
 	if (self.haveCategory) {
@@ -470,11 +466,6 @@
 
 		headerView.frame = CGRectMake(headerView.frame.origin.x, headerView.frame.origin.x, headerView.frame.size.width, originY);
 
-		//[titleLabel release];
-		//[catButton release];
-		//[separator release];
-		
-		//-- PICKER
 		actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		[actionSheet setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
 		
@@ -491,7 +482,6 @@
 		UISegmentedControl *closeButton = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:@"Retour"]];
 		closeButton.momentary = YES; 
 		closeButton.frame = CGRectMake(10, 7.0f, 55.0f, 30.0f);
-		closeButton.segmentedControlStyle = UISegmentedControlStyleBar;
 		closeButton.tintColor = [UIColor blackColor];
 		[closeButton addTarget:self action:@selector(dismissActionSheet) forControlEvents:UIControlEventValueChanged];
 		[actionSheet addSubview:closeButton];
@@ -500,7 +490,6 @@
 		confirmButton.momentary = YES; 
 		confirmButton.tag = 546; 
 		confirmButton.frame = CGRectMake(255, 7.0f, 55.0f, 30.0f);
-		confirmButton.segmentedControlStyle = UISegmentedControlStyleBar;
 		confirmButton.tintColor = [UIColor colorWithRed:60/255.f green:136/255.f blue:230/255.f alpha:1.00];
 		[confirmButton addTarget:self action:@selector(loadSubCat) forControlEvents:UIControlEventValueChanged];
 		[actionSheet addSubview:confirmButton];
@@ -666,19 +655,7 @@
 	
 	return returnStr;
 }
-/*
- - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
- {
- CGFloat componentWidth = 0.0;
- 
- if (component == 0)
- componentWidth = 240.0;	// first column size is wider to hold names
- else
- componentWidth = 40.0;	// second column is narrower to show numbers
- 
- return componentWidth;
- }
- */
+
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
 {
 	return 40.0;
@@ -745,31 +722,6 @@
     pc.sourceRect = CGRectMake(0, 0, ((UIButton *)sender).frame.size.width, 35);
     
     [self presentViewController:subCatTableViewController animated:YES completion:nil];
-}
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-
-- (void)dealloc {
-    NSLog(@"dealloc Quote");
-	//Picker
-	
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CatSelected" object:nil];
-    
 }
 
 @end

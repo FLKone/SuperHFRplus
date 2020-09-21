@@ -112,39 +112,7 @@
     [webView evaluateJavaScript:jsString completionHandler:nil];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
-// TODO: delete
-/* was shouldStartLoadWithRequest
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
 
-    NSURLRequest *aRequest = navigationAction.request;
-    NSLog(@"URL Scheme : <<<<<<<<<<%@>>>>>>>>>>>", [aRequest.URL scheme]);
-    BOOL bAllow = YES;
-    
-    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
-        bAllow = NO;
-    }
-    else if (navigationAction.navigationType == WKNavigationTypeOther) {
-        if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdosmile"]) {
-            
-            //NSLog(@"parameterString %@", [aRequest.URL query]);
-            
-            NSArray *queryComponents = [[aRequest.URL query] componentsSeparatedByString:@"&"];
-            NSArray *firstParam = [[queryComponents objectAtIndex:0] componentsSeparatedByString:@"="];
-            
-            [self didSelectSmile:[[[firstParam objectAtIndex:1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-            
-            bAllow = NO;
-        }
-    }
-    
-    if (bAllow) {
-        decisionHandler(WKNavigationActionPolicyAllow);
-    }
-    else {
-        decisionHandler(WKNavigationActionPolicyCancel);
-    }
-}
-*/
 
 - (void)viewDidLoad {
     [super viewDidLoad];
