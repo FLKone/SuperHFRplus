@@ -984,7 +984,7 @@
 - (void)actionGIF:(id)sender
 {
     GiphyViewController *giphy = [[GiphyViewController alloc] init];
-    giphy.layout = GPHGridLayoutWaterfall;
+    //giphy.layout = GPHGridLayoutWaterfall;
     //giphy.theme = ThemeLight;
     giphy.rating = GPHRatingTypeRatedR;
     giphy.delegate = self;

@@ -1,3 +1,4 @@
 github "futuretap/InAppSettingsKit" "master"
 github "auth0/SimpleKeychain"
 binary "https://s3.amazonaws.com/sdk.mobile.giphy.com/SDK/GiphySDK.json"
+github "pinterest/PINOperation"

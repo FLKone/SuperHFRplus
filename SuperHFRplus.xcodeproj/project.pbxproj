@@ -13,6 +13,8 @@
 		1503755821FF794200A5F7E1 /* PlusCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1503755721FF794200A5F7E1 /* PlusCellView.m */; };
 		1512A7932232F6C9000C9B1D /* 08-chat-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1512A7922232F6C8000C9B1D /* 08-chat-20.png */; };
 		15167EB12330210600D64651 /* Heart-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15167EB02330210600D64651 /* Heart-20@2x.png */; };
+		151B6CA0251D1D66007C28C3 /* PINOperation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 151B6C9F251D1D66007C28C3 /* PINOperation.framework */; };
+		151B6CA1251D1D66007C28C3 /* PINOperation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 151B6C9F251D1D66007C28C3 /* PINOperation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		151DE8D523AAC73D003E6D1B /* OldFavoritesTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */; };
 		151DE8D723AAC74D003E6D1B /* OldFavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */; };
 		152D2D3B244C79EB00D9D644 /* BookmarksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */; };
@@ -777,6 +779,20 @@
 		D8FEA7EE224545F00096602D /* WEBPDemoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = D8FEA7ED224545F00096602D /* WEBPDemoDecoder.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		151B6CA2251D1D66007C28C3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				151B6CA1251D1D66007C28C3 /* PINOperation.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		013F0DB4121E0E8700BEBEB1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		013F0E95121E117800BEBEB1 /* LinkItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LinkItem.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -844,6 +860,7 @@
 		1512A7922232F6C8000C9B1D /* 08-chat-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat-20.png"; sourceTree = "<group>"; };
 		15141AA221E7ADE800811E5A /* link_url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = link_url.png; path = ../../../../../Icones/link_url.png; sourceTree = "<group>"; };
 		15167EB02330210600D64651 /* Heart-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Heart-20@2x.png"; sourceTree = "<group>"; };
+		151B6C9F251D1D66007C28C3 /* PINOperation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINOperation.framework; path = Carthage/Build/iOS/PINOperation.framework; sourceTree = "<group>"; };
 		151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OldFavoritesTableViewController.xib; sourceTree = "<group>"; };
 		151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldFavoritesTableViewController.m; sourceTree = "<group>"; };
 		151DE8D823AAC756003E6D1B /* OldFavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldFavoritesTableViewController.h; sourceTree = "<group>"; };
@@ -1744,6 +1761,7 @@
 				D8FEA7E7224542540096602D /* WebP.framework in Frameworks */,
 				4CD6B8811B977E0E007FC29E /* SafariServices.framework in Frameworks */,
 				D8672D35203F0AD00045785C /* InAppSettingsKit.framework in Frameworks */,
+				151B6CA0251D1D66007C28C3 /* PINOperation.framework in Frameworks */,
 				CA2E6DE619DB08D50089B5CF /* WebKit.framework in Frameworks */,
 				CA7C711E185EF50E00B348BA /* CoreData.framework in Frameworks */,
 				CA7C711F185EF50E00B348BA /* CoreText.framework in Frameworks */,
@@ -2108,6 +2126,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				151B6C9F251D1D66007C28C3 /* PINOperation.framework */,
 				1553569924C3228300917DE1 /* WebP.framework */,
 				1553569224C3227700917DE1 /* DeepDiff.framework */,
 				1553569324C3227700917DE1 /* GiphyCoreSDK.framework */,
@@ -3225,6 +3244,7 @@
 				CA7C70B9185EF50E00B348BA /* Sources */,
 				CA7C711D185EF50E00B348BA /* Frameworks */,
 				4CFB848B1FB4BC6F0014BE6D /* ShellScript */,
+				151B6CA2251D1D66007C28C3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -3245,9 +3265,9 @@
 				LastUpgradeCheck = 1020;
 				TargetAttributes = {
 					CA7C6FA3185EF50E00B348BA = {
-						DevelopmentTeam = QMG83DG7YP;
+						DevelopmentTeam = NCJNK4ZZ54;
 						LastSwiftMigration = 0910;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -4179,12 +4199,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 78;
-				DEVELOPMENT_TEAM = QMG83DG7YP;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4214,9 +4234,9 @@
 					"-licucore",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super82;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.test;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Hfrplus for ezzz";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -4231,12 +4251,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Classic-Red";
 				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 78;
-				DEVELOPMENT_TEAM = QMG83DG7YP;
+				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4264,9 +4284,9 @@
 					"-licucore",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.red.super82;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.test;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Hfrplus for ezzz";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
