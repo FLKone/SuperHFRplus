@@ -1911,7 +1911,7 @@
          */
         self.loaded = NO;
         
-        NSURL* fileURL = [[OfflineStorage shared] createHtmlFileInCacheForTopic:topic withContent:HTMLString];
+        NSURL* fileURL = [[OfflineStorage shared] createHtmlFileInCacheForTopic:nil withContent:HTMLString];
         NSURL* cacheURL = [[OfflineStorage shared] cacheURL];
 
         [self.messagesWebView loadFileURL:fileURL allowingReadAccessToURL:cacheURL];
@@ -2026,7 +2026,6 @@
 }
 
 - (BOOL) canBecomeFirstResponder {
-	NSLog(@"===== canBecomeFirstResponder");
 	
     return NO;
 }
