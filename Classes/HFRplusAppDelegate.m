@@ -19,6 +19,7 @@
 
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "OfflineStorage.h"
 
 #import "MultisManager.h"
 #import "MPStorage.h"
@@ -91,7 +92,7 @@
 #endif
     */
     [self registerDefaultsFromSettingsBundle];
-    
+    [[OfflineStorage shared] copyAllRequiredResourcesFromBundleToCache];
     
     NSString *version = [NSString stringWithFormat:@"HFR+ %@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"], [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
 
@@ -320,7 +321,7 @@
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
     NSLog(@"applicationWillEnterForeground");
-
+    
     periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
                                                                 target:self
                                                               selector:@selector(periodicMaintenance)
@@ -347,11 +348,6 @@
     //[periodicMaintenanceOperation cancel];
     //self.periodicMaintenanceOperation = nil;
 
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-        NSString *diskCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"ImageCache"];
-
         /*NSError *error = nil;
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSArray *URLResources = [NSArray arrayWithObject:@"NSURLCreationDateKey"];
@@ -362,7 +358,10 @@
 
         
         */
-        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSString *diskCachePath = [[[paths objectAtIndex:0] stringByAppendingPathComponent:@"cache"] stringByAppendingPathComponent:@"avatars"];
+
         if (![fileManager fileExistsAtPath:diskCachePath])
         {
             //NSLog(@"createDirectoryAtPath");

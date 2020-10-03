@@ -1809,6 +1809,7 @@
                                 <script type='text/javascript' src='jquery.doubletap.js'></script>\
                                 <script type='text/javascript' src='jquery.base64.js'></script>\
                                 <meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />\
+                                <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />\
                                 <link type='text/css' rel='stylesheet' href='%@' id='light-styles'/>\
                                 <style type='text/css'>\
                                 %@\
@@ -1903,21 +1904,17 @@
         else {
             HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"iosversion" withString:@"ios7"];
         }
-        
-        NSString *path = [[NSBundle mainBundle] bundlePath];
-        NSURL *baseURL = [NSURL fileURLWithPath:path];
-
-        
-        NSLog(@"======================================================================================================");
+            
+        /*NSLog(@"======================================================================================================");
         NSLog(@"HTMLString %@", HTMLString);
         NSLog(@"======================================================================================================");
-        NSLog(@"baseURL %@", baseURL);
-        NSLog(@"======================================================================================================");
-        
+         */
         self.loaded = NO;
-
-        [self.messagesWebView loadHTMLString:HTMLString baseURL:baseURL];
         
+        NSURL* fileURL = [[OfflineStorage shared] createHtmlFileInCacheForTopic:topic withContent:HTMLString];
+        NSURL* cacheURL = [[OfflineStorage shared] cacheURL];
+
+        [self.messagesWebView loadFileURL:fileURL allowingReadAccessToURL:cacheURL];
         [self.messagesWebView setUserInteractionEnabled:YES];
     }
 }

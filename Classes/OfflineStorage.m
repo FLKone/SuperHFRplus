@@ -433,6 +433,82 @@ static OfflineStorage *_shared = nil;    // static instance variable
     return  [fileManager contentsAtPath:filename];
 }
 
+- (void)copyAllRequiredResourcesFromBundleToCache
+{
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-liste.css"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-aide.css"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-liste-light.css"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-aide.css"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery-2.1.1.min.js"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery.base64.js"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery.doubletap.js"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery.hammer.js"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowback.svg"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowbegin.svg"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowend.svg"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowforward.svg"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"plus.svg"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"avatar_male_gray_on_light_48x48.png"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"avatar_male_gray_on_dark_48x48.png"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"08-chat.png"];
+
+    // Copy default smileys
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
+    NSMutableArray* dicCommonSmileys = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    for (NSDictionary* smiley in dicCommonSmileys) {
+        NSString* sFilename = smiley[@"resource"];
+        [[OfflineStorage shared] copyFromBundleToCacheForFilename:sFilename];
+    }
+
+}
+
+- (void)copyFromBundleToCacheForFilename:(NSString*)filename
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSArray* cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString* diskCachePath = [[cachePaths objectAtIndex:0] stringByAppendingPathComponent:@"cache"];
+    NSString* cssFilePathOri = [bundlePath stringByAppendingPathComponent:filename];
+    NSString* cssFilePathDest = [diskCachePath stringByAppendingPathComponent:filename];
+    NSLog(@"CSS file path %@", cssFilePathOri);
+    unsigned long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:cssFilePathOri error:nil] fileSize];
+    NSLog(@"Fichier CSS, taille : %ld", fileSize);
+
+    NSError* error;
+    if ([fileManager fileExistsAtPath:cssFilePathDest]) {
+        [fileManager removeItemAtPath:cssFilePathDest error:&error];
+        NSLog(@"Fichier CSS existing -> removed %@", cssFilePathDest);
+    }
+
+    [fileManager copyItemAtPath:cssFilePathOri toPath:cssFilePathDest error:&error];
+    fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:cssFilePathDest error:nil] fileSize];
+    if (fileSize > 0) {
+        NSLog(@"File %@ (%ld)copied fromv bundle to NSCachesDirectory", filename, fileSize);
+    }
+}
+
+- (NSURL*)createHtmlFileInCacheForTopic:(Topic*)topic withContent:(NSString*)sHtml
+{
+    NSArray* cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString* diskCachePath = [[cachePaths objectAtIndex:0] stringByAppendingPathComponent:@"cache"];
+    NSString* filenameHTMLshort = [NSString stringWithFormat:@"topic-%ld.htm", (long)topic.curTopicPage];
+    NSString *filenameHTML = [[NSString alloc] initWithString:[diskCachePath stringByAppendingPathComponent:filenameHTMLshort]];
+
+    NSError* error;
+    [sHtml writeToFile:filenameHTML atomically:NO encoding:NSUTF8StringEncoding error:&error];
+    if (error) {
+        NSLog(@"Error saving file %@ into cache: %@ ", filenameHTML, [error userInfo]);
+    }
+    
+    return [NSURL fileURLWithPath:filenameHTML];
+}
+
+- (NSURL*)cacheURL
+{
+    NSArray* cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString* diskCachePath = [[cachePaths objectAtIndex:0] stringByAppendingPathComponent:@"cache"];
+    return [NSURL fileURLWithPath:diskCachePath];
+}
 
 @end
 
