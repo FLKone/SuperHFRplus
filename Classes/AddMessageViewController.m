@@ -1086,12 +1086,10 @@
 {
     NSLog(@"updateExpandCompressSmiley");
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)[self.viewControllerSmileys.collectionViewSmileysDefault collectionViewLayout];
-    UICollectionViewFlowLayout *layout2 = (UICollectionViewFlowLayout *)[self.viewControllerSmileys.collectionViewSmileysDefault collectionViewLayout];
+    UICollectionViewFlowLayout *layout2 = (UICollectionViewFlowLayout *)[self.viewControllerSmileys.collectionViewSmileysSearch collectionViewLayout];
     if (self.viewControllerSmileys.displayMode == DisplayModeEnumTableSearch) {
-        //CGRect rectA = self.view.frame;
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
-        //self.constraintToolbarHeight.constant = 38;
         self.constraintSmileyViewHeight.constant = f;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -1204,7 +1202,7 @@
     if (self.viewControllerRehostImage.bModeFullScreen) {
         [self actionHideRehostImage];
     }
-    //[self textViewDidChange:self.textView];
+    [self textViewDidChange:self.textView];
 }
 
 /*

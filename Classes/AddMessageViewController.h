@@ -153,6 +153,7 @@
 - (void)actionExpandCompressRehostImage;
 - (void)updateExpandCompressSmiley;
 - (void)actionExpandCompressSmiley;
+- (void)actionHideRehostImage;
 - (void)actionHideSmileys;
 - (void)resizeViewWithKeyboard:(NSNotification *)notification;
 

@@ -44,8 +44,18 @@ static SmileyCache *_shared = nil;    // static instance variable
         self.bStopLoadingSmileysToCache = NO;
         self.bSearchSmileysActivated = NO;
         NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
-        self.dicCommonSmileys = [NSMutableArray arrayWithContentsOfFile:plistPath];
-
+        NSMutableArray* arr = [NSMutableArray arrayWithContentsOfFile:plistPath];
+        self.dicCommonSmileys = [[NSMutableArray alloc] init];
+        for (int index = 0; index < arr.count; index++) {
+            NSNumber* n =  arr[index][@"editor"];
+            int i = [n intValue];
+            if (i == 1) {
+                [self.dicCommonSmileys addObject:arr[index]];
+            }
+            else {
+                NSLog(@"index %ld not imported", (long)index);
+            }
+        }
     }
     return self;
 }

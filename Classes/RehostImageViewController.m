@@ -44,9 +44,17 @@
     
     if ([fileManager fileExistsAtPath:rehostImages]) {
         NSData *savedData = [NSData dataWithContentsOfFile:rehostImages];
-        self.rehostImagesArray = [NSKeyedUnarchiver unarchiveObjectWithData:savedData];
+        NSError* error;
+        self.rehostImagesArray = [NSKeyedUnarchiver unarchiveTopLevelObjectWithData:savedData error:&error];
         self.rehostImagesSortedArray =  [NSMutableArray arrayWithArray:[[self.rehostImagesArray reverseObjectEnumerator] allObjects]];
-        
+        if (self.rehostImagesArray == nil) {
+            self.rehostImagesArray = [[NSMutableArray alloc] init];
+            self.rehostImagesSortedArray = [[NSMutableArray alloc] init];
+        }
+    }
+    else {
+        self.rehostImagesArray = [[NSMutableArray alloc] init];
+        self.rehostImagesSortedArray = [[NSMutableArray alloc] init];
     }
 
     //Bouton Annuler
@@ -311,10 +319,9 @@
 {
     
     NSLog(@"imagePickerControllerDidCancel");
-    if ([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact){
-        
+    if ([self respondsToSelector:@selector(traitCollection)] && [HFRplusAppDelegate sharedAppDelegate].window.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact)
+    {
         [picker dismissModalViewControllerAnimated:YES];
-        
     }
     else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [_popover dismissPopoverAnimated:YES];
@@ -322,6 +329,11 @@
     else
     {
         [picker dismissModalViewControllerAnimated:YES];
+    }
+    
+    if (self.bModeFullScreen == NO) {
+        // Give back focus to textview
+        [self.addMessageVC.textView becomeFirstResponder];
     }
 }
 
@@ -334,12 +346,6 @@
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
     
     [rehostImage upload:image];
-    
-    //[self dismissViewControllerAnimated:YES completion:^{
-    //  NSLog(@"dismissed!");
-    //}];
-    //    [self imagePickerControllerDidCancel:picker];
-    
 }
 
 #pragma mark - Table view delegate
@@ -451,6 +457,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self.addMessageVC actionHideRehostImage];
     RehostImage* rehostImage = [self.rehostImagesSortedArray objectAtIndex:indexPath.row];
     [rehostImage copyToPasteBoard:bbcodeImageFull];
 }

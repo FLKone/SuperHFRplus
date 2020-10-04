@@ -123,7 +123,7 @@
 {
     [super viewWillAppear:animated];
 
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor clearColor];
 
     Theme theme = [[ThemeManager sharedManager] theme];
     [self.btnSmileyDefault  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateNormal];
@@ -203,7 +203,7 @@
 
 #pragma mark - Collection management
 
-static CGFloat fCellSizeDefault = 0.65*0.85;
+static CGFloat fCellSizeDefault = 1*0.85; // 0.65 pour 3 lignes
 static CGFloat fCellSizeSearch = 1*0.85;
 static CGFloat fCellImageSize = 1;
 
@@ -271,6 +271,7 @@ static CGFloat fCellImageSize = 1;
         NSString* sCode = [self.smileyCache getSmileyCodeForIndex:(int)indexPath.row];
         [self didSelectSmile:sCode];
     }
+    [self.addMessageVC actionHideSmileys];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -453,54 +454,11 @@ static CGFloat fCellImageSize = 1;
     if (self.bModeFullScreen) {
         [self resizeViewWithKeyboard:notification];
     }
-    /*
-    if (bModeFullScreen) {
-        NSDictionary *userInfo = [notification userInfo];
-        NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-        CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-        CGRect convertedKeyboardRect = [self.view convertRect:keyboardRect fromView:self.view.window];
-
-        CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
-        CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
-        NSLog(@"SMILEYS (%@) :::: Keyboard rect %@", notification.name, NSStringFromCGRect(keyboardRect));
-        NSLog(@"SMILEYS (%@) :::: intersection rect %@", notification.name, NSStringFromCGRect(intersection));
-
-        NSTimeInterval animationDuration;
-        [animationDurationValue getValue:&animationDuration];
-
-        // Animate the resize of the text view's frame in sync with the keyboard's appearance.
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:animationDuration];
-        self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
-        [self.view layoutIfNeeded];
-        [UIView commitAnimations];
-    }*/
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
     NSLog(@"SMILEY :::: Hide");
     [self resizeViewWithKeyboard:notification];
-/*
-    //NSLog(@"keyboardWillHide ADD");
-    NSLog(@"SMILEYS :::: Keyboard will hide");
-    NSDictionary *userInfo = [notification userInfo];
-    NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect convertedKeyboardRect = [self.view convertRect:keyboardRect fromView:self.view.window];
-
-    CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
-    CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
-
-    NSTimeInterval animationDuration;
-    [animationDurationValue getValue:&animationDuration];
-
-    // Animate the resize of the text view's frame in sync with the keyboard's appearance.
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:animationDuration];
-    self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
-    [self.view layoutIfNeeded];
-    [UIView commitAnimations];
-*/
 }
 
 - (void)resizeViewWithKeyboard:(NSNotification *)notification {
@@ -528,21 +486,6 @@ static CGFloat fCellImageSize = 1;
 - (void)showTableViewInFullScreen
 {
     NSLog(@"showTableViewInFullScreen");
-
-    /*
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.2];
-    self.bActivateSmileySearchTable = NO;
-    NSLog(@"textFieldDidBeginEditing :::: 1");
-    if (!self.bModeFullScreen) {
-        self.bModeFullScreen = YES;
-        [self.addMessageVC updateExpandCompressSmiley];
-        [self updateExpandButton];
-    }
-    [self changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
-    NSLog(@"textFieldDidBeginEditing :::: 2");
-    [UIView commitAnimations];
-     */
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -562,11 +505,6 @@ static CGFloat fCellImageSize = 1;
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     NSLog(@"textFieldDidEndEditing");
-    /*// See if it was due to a return
-    if ( [[[notification userInfo] objectForKey:@"NSTextMovement"] intValue] == NSReturnTextMovement )
-    {
-        NSLog(@"Return was pressed!");
-    }*/
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -581,10 +519,7 @@ static CGFloat fCellImageSize = 1;
 - (BOOL)textFieldShouldClear:(UITextField *)textField
  {
     NSLog(@"textFieldShouldClear %@", textField.text);
- 
-    
-    return YES;
- 
+     return YES;
  }
 
 - (void)actionSearch:(id)sender
@@ -625,13 +560,6 @@ static CGFloat fCellImageSize = 1;
         }
         //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
-    /*
-    if (self.usedSearchSortedArray.count == 0) {
-        [self.tableViewSearch setHidden:YES];
-    }
-    else {
-        [self.tableViewSearch setHidden:NO];
-    }*/
 }
 
 #pragma mark - Data lifecycle
