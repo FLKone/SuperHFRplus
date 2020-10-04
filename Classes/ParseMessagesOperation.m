@@ -208,6 +208,8 @@
                         [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
                         [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
                         
+                        NSString *hrefNode = [quoteNode getAttributeNamed:@"href"];
+
                         HTMLNode *pNode = [quoteNode findChildTag:@"p"];
                         [pNode addAttributeNamed:@"class" withValue:@"pbl"];
                         [pNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];

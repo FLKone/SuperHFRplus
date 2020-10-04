@@ -115,16 +115,16 @@
                     <rect key="frame" x="0.0" y="629" width="375" height="38"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="udE-9S-m7E" userLabel="Bouton Image">
-                            <rect key="frame" x="337" y="0.0" width="38" height="38"/>
+                            <rect key="frame" x="327" y="0.0" width="48" height="38"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="38" id="8W0-6I-lkc"/>
+                                <constraint firstAttribute="width" constant="48" id="8W0-6I-lkc"/>
                                 <constraint firstAttribute="height" constant="38" id="t7y-wo-dB8"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                            <inset key="imageEdgeInsets" minX="10" minY="10" maxX="20" maxY="10"/>
                             <state key="normal" image="photogallery.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c6s-Pv-exP" userLabel="Button GIF">
-                            <rect key="frame" x="299" y="0.0" width="38" height="38"/>
+                            <rect key="frame" x="289" y="0.0" width="38" height="38"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="38" id="1ap-cm-iqv"/>
                                 <constraint firstAttribute="width" constant="38" id="8Q7-Is-FCu"/>
@@ -133,7 +133,7 @@
                             <state key="normal" image="gif.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6dI-f5-1x2" userLabel="Button Redo">
-                            <rect key="frame" x="80" y="0.0" width="38" height="38"/>
+                            <rect key="frame" x="90" y="0.0" width="38" height="38"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="38" id="DyA-pa-J7k"/>
                                 <constraint firstAttribute="width" constant="38" id="nkR-r8-WMG"/>
@@ -142,12 +142,12 @@
                             <state key="normal" image="undo.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g2R-uw-wg6" userLabel="Button Undo">
-                            <rect key="frame" x="42" y="0.0" width="38" height="38"/>
+                            <rect key="frame" x="42" y="0.0" width="48" height="38"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="38" id="VmI-hK-wgZ"/>
-                                <constraint firstAttribute="width" constant="38" id="yZf-eD-2BQ"/>
+                                <constraint firstAttribute="width" constant="48" id="yZf-eD-2BQ"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="9" minY="9" maxX="9" maxY="9"/>
+                            <inset key="imageEdgeInsets" minX="19" minY="9" maxX="9" maxY="9"/>
                             <state key="normal" image="undo-redo.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sR2-lo-g8U" userLabel="Button Avatar">
@@ -173,12 +173,12 @@
                             </constraints>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5xY-k7-iVI" userLabel="Button Smiley">
-                            <rect key="frame" x="261" y="0.0" width="38" height="38"/>
+                            <rect key="frame" x="241" y="0.0" width="48" height="38"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="38" id="EE9-Fq-JJ9"/>
-                                <constraint firstAttribute="width" constant="38" id="nhy-XD-u08"/>
+                                <constraint firstAttribute="width" constant="48" id="nhy-XD-u08"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                            <inset key="imageEdgeInsets" minX="20" minY="10" maxX="10" maxY="10"/>
                             <state key="normal" image="redface.png"/>
                         </button>
                     </subviews>

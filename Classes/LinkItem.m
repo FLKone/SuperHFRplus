@@ -129,6 +129,9 @@
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"hfr-rehost.net" withString:@"reho.st"]; // changement de domaine hfr-rehost
     NSString *landscape = [ThemeColors landscapePath:[[ThemeManager sharedManager] theme]];
     
+    //EZZZ
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"href=\"/forum2.php" withString:@"href=\"https://forum.hardware.fr/forum2.php"]; // changement de domaine hfr-rehost
+    
 	if ([display isEqualToString:@"no"]) {
         
 		//Replacing Links with IMG with custom IMG
