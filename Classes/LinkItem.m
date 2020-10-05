@@ -230,6 +230,9 @@
     // Improve color for keyword in cpp tag
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"<span style=\"color:blue\">" withString:@"<span style=\"color:var( --color-action)\">"];
 
+    // Correct security issue on href for quotations
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"href=\"/forum2.php?config=hfr.inc" withString:@"href=\"https://forum.hardware.fr/forum2.php?config=hfr.inc"];
+
     tempHTML = [tempHTML stringByReplacingOccurrencesOfString:@"%%MESSAGE_CONTENT%%" withString:myRawContent];
 
     //NSLog(@"%@", tempHTML);
