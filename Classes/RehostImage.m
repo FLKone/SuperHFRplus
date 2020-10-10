@@ -403,16 +403,16 @@
         case bbcodeImageNoLink:
             switch (imageSizeType) {
                 case bbcodeImageFull:
-                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.link_full];
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]\n", self.link_full];
                     break;
                 case bbcodeImageMedium:
-                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_medium];
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]\n", self.nolink_medium];
                     break;
                 case bbcodeImagePreview:
-                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_preview];
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]\n", self.nolink_preview];
                     break;
                 case bbcodeImageMini:
-                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", self.nolink_miniature];
+                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]\n", self.nolink_miniature];
                     break;
             }
             break;
@@ -420,16 +420,16 @@
         {
             switch (imageSizeType) {
                 case bbcodeImageFull:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_full];
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]\n", self.link_full, self.link_full];
                     break;
                 case bbcodeImageMedium:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_medium];
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]\n", self.link_full, self.link_medium];
                     break;
                 case bbcodeImagePreview:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_preview];
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]\n", self.link_full, self.link_preview];
                     break;
                 case bbcodeImageMini:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", self.link_full, self.link_miniature];
+                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]\n", self.link_full, self.link_miniature];
                     break;
             }
             break;

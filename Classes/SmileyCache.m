@@ -86,32 +86,23 @@ static SmileyCache *_shared = nil;    // static instance variable
         }
 
         // Says VC that cell can be reloaded
-        /*
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSArray* arrVisibleItems = cv.indexPathsForVisibleItems;
-            NSIndexPath* ip = [NSIndexPath indexPathWithIndex:i];
-            if ([arrVisibleItems containsObject:ip]) {
-                NSArray* ipa = [[NSArray alloc] init];
-                NSArray* ipa2 = [ipa arrayByAddingObject:ip];
-                [cv reloadItemsAtIndexPaths:ipa2];
-            }
-        });*/
-        
-        // TODO: add a way to stop loading. Like when closing the smiley panel.
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [cv reloadData];
+            //[cv reloadData];
+            NSIndexPath* ip = [NSIndexPath indexPathForRow:i inSection:0];
+            NSArray *myArray = [[NSArray alloc] initWithObjects:ip, nil];
+            [cv reloadItemsAtIndexPaths:myArray];
         });
-/*
-        if (!bHasbeenReloaded && i >= 25) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [cv reloadData];
-            });
-            bHasbeenReloaded = YES;
-        }*/
+
         if (self.bStopLoadingSmileysToCache) {
+            NSLog(@"#####################################################################################################################");
+            NSLog(@"#####################################################################################################################");
+            NSLog(@"############################################ STOPPED LOADING SMILEYS ################################################");
+            NSLog(@"#####################################################################################################################");
+            NSLog(@"#####################################################################################################################");
             break;
         }
      }
+    self.bStopLoadingSmileysToCache = YES;
     NSLog(@"Finished loading all smileys");
     if (!bHasbeenReloaded) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -121,14 +112,36 @@ static SmileyCache *_shared = nil;    // static instance variable
     }
 }
 
-- (UIImage*) getImageForIndex:(int)index
+- (UIImage*) getImageForIndex:(int)index forCollection:(UICollectionView*)cv
 {
     NSString *filename = [[[self.arrCurrentSmileyArray objectAtIndex:index] objectForKey:@"source"] stringByReplacingOccurrencesOfString:@"http://forum-images.hardware.fr/" withString:@""];
     filename = [filename stringByReplacingOccurrencesOfString:@"https://forum-images.hardware.fr/" withString:@""];
     
-    UIImage* img = [self.cacheSmileys objectForKey:filename];
-    //NSLog(@"getImageForIndex %d", index);
-    return img;
+    UIImage* image = [self.cacheSmileys objectForKey:filename];
+
+    if (image == nil && self.bStopLoadingSmileysToCache) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSLog(@"Reloading image at index (%d) : %@", index, filename);
+        NSData* imgData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", [[[self.arrCurrentSmileyArray objectAtIndex:index] objectForKey:@"source"] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]]]];
+        //UIImage *image = [UIImage imageWithData:imgData];sd_animatedGIFWithData
+        if (imgData) {
+            UIImage* image = [UIImage sd_animatedGIFWithData:imgData];
+            [self.cacheSmileys setObject:image forKey:filename];
+            NSLog(@"Image loaded in cache (%d) : %@", index, filename);
+        }
+
+            // Says VC that cell can be reloaded
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //[cv reloadData];
+                NSIndexPath* ip = [NSIndexPath indexPathForRow:index inSection:0];
+                NSArray *myArray = [[NSArray alloc] initWithObjects:ip, nil];
+                [cv reloadItemsAtIndexPaths:myArray];
+            });
+        });
+    }
+
+    return image;
 }
 
 - (UIImage*) getImageDefaultSmileyForIndex:(int)index

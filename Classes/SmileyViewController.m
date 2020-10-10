@@ -82,29 +82,13 @@
      if ([fileManager fileExistsAtPath:directory]) {
         self.arrSearch = [NSMutableArray arrayWithContentsOfFile:searchFile];
     }
-    /*
-    else {
-    SmileySearch* ss = [[SmileySearch alloc] init];
-    ss.nSearchNumber = [NSNumber numberWithInt:4];
-    ss.dLastSearch = [NSDate dateWithTimeIntervalSince1970:0];
-    ss.sSearchText = @"rien";
-    SmileySearch* ss1 = [[SmileySearch alloc] init];
-    ss1.nSearchNumber = [NSNumber numberWithInt:3];
-    ss1.dLastSearch = [NSDate dateWithTimeIntervalSince1970:10];
-    ss1.sSearchText = @"sadfrog";
-    SmileySearch* ss2 = [[SmileySearch alloc] init];
-    ss2.nSearchNumber = [NSNumber numberWithInt:2];
-    ss2.dLastSearch = [NSDate dateWithTimeIntervalSince1970:20];
-    ss2.sSearchText = @"love";
-    SmileySearch* ss3 = [[SmileySearch alloc] init];
-    ss3.nSearchNumber = [NSNumber numberWithInt:1];
-    ss3.dLastSearch = [NSDate dateWithTimeIntervalSince1970:30];
-    ss3.sSearchText = @"chance";
-    [self.arrSearch addObject:ss];
-    [self.arrSearch addObject:ss1];
-    [self.arrSearch addObject:ss2];
-    [self.arrSearch addObject:ss3];
-    */
+/*
+    NSString *fileSearchSmileys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
+    if ([fileManager fileExistsAtPath:fileSearchSmileys]) {
+        NSData *savedData = [NSData dataWithContentsOfFile:fileSearchSmileys];
+        self.arrSearch = [NSKeyedUnarchiver unarchiveObjectWithData:savedData];
+    }*/
+
     [self updateSearchArraySorted];
 
     // TableView
@@ -223,7 +207,7 @@ static CGFloat fCellImageSize = 1;
             image = [self.smileyCache getImageDefaultSmileyForIndex:(int)indexPath.row];
         }
         else {
-            image = [self.smileyCache getImageForIndex:(int)indexPath.row];
+            image = [self.smileyCache getImageForIndex:(int)indexPath.row forCollection:collectionView];
         }
 
         CGFloat ch = cell.bounds.size.height;
@@ -529,6 +513,8 @@ static CGFloat fCellImageSize = 1;
 
 -(IBAction)textFieldSmileChange:(id)sender
 {
+    [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
+
     if ([(UITextField *)sender text].length > 0) {
         NSString* sText = [(UITextField *)sender text];
         sText = [sText stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
@@ -566,6 +552,8 @@ static CGFloat fCellImageSize = 1;
 
 - (void)fetchSmileys
 {
+    NSLog(@"----------- STOP REQUIRED -----------");
+
     // Stop loading smileys of previous request
     [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
 
@@ -617,7 +605,16 @@ static CGFloat fCellImageSize = 1;
     }
 
     if (self.arrayTmpsmileySearch.count == 0) {
-        [HFRAlertView DisplayOKAlertViewWithTitle:nil andMessage:@"Aucun résultat !"];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+                                                                       message:@"Aucun résultat !"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {
+                                                              }];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         return;
     }
     
@@ -659,6 +656,9 @@ static CGFloat fCellImageSize = 1;
 
 - (void) didSelectSmile:(NSString *)smile
 {
+    [SmileyCache shared].bStopLoadingSmileysToCache = YES;
+    NSLog(@"----------- STOP REQUIRED -----------");
+
     // Save search when smiley is selected (this confirms the search is OK)
     if (self.textFieldSmileys.text.length >= 3) {
         NSArray *arrFound = [self.arrSearch filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SmileySearch* s, NSDictionary *bindings) {
@@ -674,6 +674,9 @@ static CGFloat fCellImageSize = 1;
             ss.nSearchNumber = [NSNumber numberWithInt:[ss.nSearchNumber intValue] + 1];
             ss.dLastSearch = [NSDate date];
             ss.sSearchText = self.textFieldSmileys.text;
+            if (self.arrSearch == nil) {
+                self.arrSearch = [[NSMutableArray alloc] init];
+            }
             [self.arrSearch addObject:ss];
         }
         
@@ -774,5 +777,17 @@ static CGFloat fCellImageSize = 1;
     }
 }
 
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
+{
+    // Stop loading smileys of previous request
+    [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
+    NSLog(@"----------- STOP REQUIRED -----------");
+}
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Stop loading smileys of previous request
+    [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
+    NSLog(@"----------- STOP REQUIRED -----------");
+}
 @end

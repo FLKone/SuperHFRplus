@@ -2182,49 +2182,5 @@
 	//NSLog(@"mem warning TTV");
 }
 
-
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-	NSLog(@"viewDidUnload");
-		
-	self.loadingView = nil;
-	self.topicsTableView = nil;
-	self.maintenanceView = nil;
-	self.swipeLeftRecognizer = nil;
-	self.swipeRightRecognizer = nil;
-	
-	[super viewDidUnload];
-}
-
-- (void)dealloc {
-	NSLog(@"dealloc Topics Table View");
-	
-	[self viewDidUnload];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SubCatSelected" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kStatusChangedNotification object:nil];
-
-	[request cancel];
-	[request setDelegate:nil];
-
-	//NSLog(@"dealloc Topics Table View 2");
-
-
-	
-	
-
-
-	//Gesture
-	
-	//Picker
-    
-    
-	
-
-}
-
-
 @end
 

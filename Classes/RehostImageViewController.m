@@ -95,12 +95,6 @@
         [[NSUserDefaults standardUserDefaults] setInteger:1200 forKey:@"rehost_resize_before_upload"];
     }
 
-    // Segmented control for BBCode url type
-    NSArray *itemArray = [NSArray arrayWithObjects: @"Image et lien", @"Image sans lien", @"Lien seul", nil];
-    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
-    //segmentedControl.frame = CGRectMake(headerWidth*1/4, 56, headerWidth*3/4-3, 30);
-    [segmentedControl addTarget:self action:@selector(segmentedControlValueDidChange:) forControlEvents:UIControlEventValueChanged];
-
     if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
         [self.btnBBCodeType setTitle:@"Image et lien" forState:UIControlStateNormal];
     } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) {
@@ -108,64 +102,17 @@
     } else {
         [self.btnBBCodeType setTitle:@"Lien seul" forState:UIControlStateNormal];
     }
+    [self.btnBBCodeType addTarget:self action:@selector(actionBBCodeType:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnBBCodeType setTintColor:[ThemeColors tintColor]];
 
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnReduce addTarget:self action:@selector(actionReduce:) forControlEvents:UIControlEventTouchUpInside];
-
-    // Segmented control for BBCode url type
-    /*
-    float largeurLabel = 150;
-    UILabel* lblMaxSize = [[UILabel alloc] initWithFrame:CGRectMake(5, 10 + 56 + 40, largeurLabel, 29)];
-    [lblMaxSize setText:@"Dimensions maximales :"];
-    [lblMaxSize setTextAlignment:NSTextAlignmentLeft];
-    [lblMaxSize setFont:[UIFont systemFontOfSize:14]];
-    [lblMaxSize setNumberOfLines:1];
-
-    [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
-    [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
-*/
     
-    NSArray *itemArraySize = [NSArray arrayWithObjects: @"1200", @"1000", @"800", @"600", nil];
     NSInteger iMaxSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"];
     [self.btnMaxSize setTitle:[NSString stringWithFormat:@"%d px", (int)iMaxSize] forState:UIControlStateNormal];
-    
-    // Label
-    /*
-    UIView* progressView = [[UIView alloc] initWithFrame:CGRectZero];
-    progressView.frame = CGRectMake(0, 0, headerWidth, 50.f);
-    
-    progressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-    progressView.backgroundColor = [UIColor whiteColor];
-    progressView.tag = 12345;
-    [progressView setHidden:YES];
-    UIView* subProgressView = [[UIView alloc] initWithFrame:CGRectZero];
-    subProgressView.frame = CGRectMake(0, 0, 50.f, 50.f);
-    
-    subProgressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin);
-    subProgressView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
-    subProgressView.tag = 54321;
-    
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    CGRect frame = spinner.frame;
-    
-    spinner.autoresizingMask =(UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin);
-    
-    frame.origin.x = (subProgressView.frame.size.width-frame.size.width)/2;
-    frame.origin.y = (subProgressView.frame.size.height-frame.size.height)/2;
-    spinner.frame = frame;
-    [spinner startAnimating];
-    [subProgressView addSubview:spinner];
-    [progressView addSubview:subProgressView];
-    [headerView addSubview:progressView];
-    
-    [self.rehostTableView setTableHeaderView:headerView];
-        
-    // Observe keyboard hide and show notifications to resize the text view appropriately.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];*/
+    [self.btnMaxSize addTarget:self action:@selector(actionImageUploadSize:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnMaxSize setTintColor:[ThemeColors tintColor]];
     
    // Setup Image collections
     [self.collectionImages setHidden:NO];
@@ -375,7 +322,7 @@
         self.rehostImagesSortedArray =  [NSMutableArray arrayWithArray:[[self.rehostImagesArray reverseObjectEnumerator] allObjects]];
         
         [self.tableViewImages deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-        
+        [self.collectionImages reloadData];
     }
 }
 
@@ -613,6 +560,79 @@
 }
 
 #pragma mark - Action events
+- (void)actionBBCodeType:(id)sender {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Type de bbcode" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction * action1 = [UIAlertAction actionWithTitle:@"Image et lien" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
+        [self.btnBBCodeType setTitle:@"Image et lien" forState:UIControlStateNormal];
+    }];
+    UIAlertAction * action2 = [UIAlertAction actionWithTitle:@"Image sans lien" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageNoLink forKey:@"rehost_use_link"];
+        [self.btnBBCodeType setTitle:@"Image sans lien" forState:UIControlStateNormal];
+    }];
+    UIAlertAction * action3 = [UIAlertAction actionWithTitle:@"Lien seul" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[NSUserDefaults standardUserDefaults] setInteger:bbcodeLinkOnly forKey:@"rehost_use_link"];
+        [self.btnBBCodeType setTitle:@"Lien seul" forState:UIControlStateNormal];
+    }];
+    [alert addAction:action1];
+    [alert addAction:action2];
+    [alert addAction:action3];
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
+        [action1 setValue:@true forKey:@"checked"];
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) {
+        [action2 setValue:@true forKey:@"checked"];
+    } else {
+        [action3 setValue:@true forKey:@"checked"];
+    }
+
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
+- (void)actionImageUploadSize:(id)sender {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Dimension maximale de l'image uploadée" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction * action1 = [UIAlertAction actionWithTitle:@"1200 px" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[NSUserDefaults standardUserDefaults] setInteger:1200 forKey:@"rehost_resize_before_upload"];
+        [self.btnMaxSize setTitle:[NSString stringWithFormat:@"%d px", (int)1200] forState:UIControlStateNormal];
+    }];
+    UIAlertAction * action2 = [UIAlertAction actionWithTitle:@"1000 px" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[NSUserDefaults standardUserDefaults] setInteger:1000 forKey:@"rehost_resize_before_upload"];
+        [self.btnMaxSize setTitle:[NSString stringWithFormat:@"%d px", (int)1000] forState:UIControlStateNormal];
+    }];
+    UIAlertAction * action3 = [UIAlertAction actionWithTitle:@"800 px" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[NSUserDefaults standardUserDefaults] setInteger:800 forKey:@"rehost_resize_before_upload"];
+        [self.btnMaxSize setTitle:[NSString stringWithFormat:@"%d px", (int)800] forState:UIControlStateNormal];
+    }];
+    UIAlertAction * action4 = [UIAlertAction actionWithTitle:@"600 px" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[NSUserDefaults standardUserDefaults] setInteger:600 forKey:@"rehost_resize_before_upload"];
+        [self.btnMaxSize setTitle:[NSString stringWithFormat:@"%d px", (int)600] forState:UIControlStateNormal];
+    }];
+    [alert addAction:action1];
+    [alert addAction:action2];
+    [alert addAction:action3];
+    [alert addAction:action4];
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 1200) {
+        [action1 setValue:@true forKey:@"checked"];
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 1000) {
+        [action2 setValue:@true forKey:@"checked"];
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 800) {
+        [action3 setValue:@true forKey:@"checked"];
+    } else {
+        [action4 setValue:@true forKey:@"checked"];
+    }
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+}
+
+
 
 - (void)actionReduce:(id)sender {
     [self.addMessageVC actionExpandCompressRehostImage];

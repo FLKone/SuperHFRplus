@@ -114,6 +114,7 @@
 
 @property (strong, nonatomic) IBOutlet UIView *viewRehostImage;
 @property  RehostImageViewController *viewControllerRehostImage;
+@property  GiphyViewController *giphyViewController;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *constraintRehostImageViewHeight;
 
 //delete @property (nonatomic, strong) IBOutlet UITableView *rehostTableView;

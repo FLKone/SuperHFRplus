@@ -35,7 +35,7 @@
 + (SmileyCache *) shared;
 - (void) handleSmileyArray:(NSMutableArray*)arrSmileys forCollection:(UICollectionView*)cv spinner:(UIActivityIndicatorView*)spinner;
 - (UIImage*) getImageDefaultSmileyForIndex:(int)index;
-- (UIImage*) getImageForIndex:(int)index;
+- (UIImage*) getImageForIndex:(int)index forCollection:(UICollectionView*)cv;
 - (NSMutableArray*) getSmileyListForText:(NSString*)sTextSmileys;
 - (NSString*) getSmileyCodeForIndex:(int)index;
 

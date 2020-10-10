@@ -26,6 +26,8 @@
 #import "SmileyCache.h"
 #import "api_keys.h"
 
+#define TOOLBAR_HEIGHT 44
+
 @import GiphyUISDK;
 @import GiphyCoreSDK;
 
@@ -77,15 +79,10 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
-// webViewDidFinishPreLoadDOM was empty method
-// was webViewDidFinishLoad
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSLog(@"didFinishNavigation");
 
     NSString *jsString = @"";
-    //jsString = [jsString stringByAppendingString:@"$('body').bind('touchmove', function(e){e.preventDefault()});"];
-    //jsString = [jsString stringByAppendingString:@"$('.button').addSwipeEvents().bind('tap', function(evt, touch) { $(this).addClass('selected'); window.location = 'oijlkajsdoihjlkjasdosmile://'+encodeURIComponent(this.title); });"];
-    //jsString = [jsString stringByAppendingString:@"$('#smileperso img.smile').addSwipeEvents().bind('tap', function(evt, touch) { $(this).addClass('selected'); window.location = 'oijlkajsdoihjlkjasdosmile://'+encodeURIComponent(this.alt); });"];
     
     jsString = [jsString stringByAppendingString:@"var hammertime = $('.button').hammer({ hold_timeout: 0.000001 }); \
                 hammertime.on('touchstart touchend', function(ev) {\
@@ -222,184 +219,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(smileyReceived:) name:@"smileyReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageReceived:) name:@"imageReceived" object:nil];
-        
-    float headerWidth = self.view.bounds.size.width;
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90+50)];
     
     Theme theme = [[ThemeManager sharedManager] theme];
-    /*
-    UIButton* newPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [newPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
-    [newPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [newPhotoBtn setTitle:@"  Caméra" forState:UIControlStateNormal];
-    newPhotoBtn.frame = CGRectMake(headerWidth*0/2+10, 5, headerWidth*1/2 - 20, 50);
-    [newPhotoBtn addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
-    newPhotoBtn.layer.cornerRadius = 15;
-    newPhotoBtn.layer.borderWidth = 1;
-    newPhotoBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
-    newPhotoBtn.clipsToBounds = YES;
-    
-    UIButton* oldPhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
-    [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
-    oldPhotoBtn.frame = CGRectMake(headerWidth*1/2 + 12, 5, headerWidth*1/2 - 20, 50);
-    [oldPhotoBtn addTarget:self action:@selector(uploadExistingPhoto:) forControlEvents:UIControlEventTouchUpInside];
-    oldPhotoBtn.layer.cornerRadius = 15;
-    oldPhotoBtn.layer.borderWidth = 1;
-    oldPhotoBtn.layer.borderColor = [ThemeColors tintColor].CGColor;
-    oldPhotoBtn.clipsToBounds = YES;
-
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"rehost_use_link"] == nil) {
-        [[NSUserDefaults standardUserDefaults] setInteger:bbcodeImageWithLink forKey:@"rehost_use_link"];
-    }
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"rehost_resize_before_upload"] == nil) {
-        [[NSUserDefaults standardUserDefaults] setInteger:1200 forKey:@"rehost_resize_before_upload"];
-    }
-
-    // Segmented control for BBCode url type
-    NSArray *itemArray = [NSArray arrayWithObjects: @"Image et lien", @"Image sans lien", @"Lien seul", nil];
-    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
-    //segmentedControl.frame = CGRectMake(headerWidth*1/4, 56, headerWidth*3/4-3, 30);
-    segmentedControl.frame = CGRectMake(3, 10 + 56, headerWidth-6, 29);
-    [segmentedControl addTarget:self action:@selector(segmentedControlValueDidChange:) forControlEvents:UIControlEventValueChanged];
-    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageWithLink) {
-        segmentedControl.selectedSegmentIndex = 0;
-    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"] == bbcodeImageNoLink) {
-        segmentedControl.selectedSegmentIndex = 1;
-    } else {
-        segmentedControl.selectedSegmentIndex = 2;
-    }
-    
-    if (@available(iOS 13.0, *)) {
-        [segmentedControl setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
-        [segmentedControl setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
-        [segmentedControl setSelectedSegmentTintColor:[ThemeColors tabBackgroundColor:[[ThemeManager sharedManager] theme]]];
-    }
-
-    // Segmented control for BBCode url type
-    float largeurLabel = 150;
-    UILabel* lblMaxSize = [[UILabel alloc] initWithFrame:CGRectMake(5, 10 + 56 + 40, largeurLabel, 29)];
-    [lblMaxSize setText:@"Dimensions maximales :"];
-    [lblMaxSize setTextAlignment:NSTextAlignmentLeft];
-    [lblMaxSize setFont:[UIFont systemFontOfSize:14]];
-    [lblMaxSize setNumberOfLines:1];
-
-    [oldPhotoBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 10)];
-    [oldPhotoBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-    [oldPhotoBtn setTitle:@"  Photos" forState:UIControlStateNormal];
-
-    NSArray *itemArraySize = [NSArray arrayWithObjects: @"1200", @"1000", @"800", @"600", nil];
-    UISegmentedControl *segmentedControlSize = [[UISegmentedControl alloc] initWithItems:itemArraySize];
-    //segmentedControl.frame = CGRectMake(headerWidth*1/4, 56, headerWidth*3/4-3, 30);
-    segmentedControlSize.frame = CGRectMake(largeurLabel, 10 + 56 + 40, headerWidth-6-largeurLabel, 29);
-    [segmentedControlSize addTarget:self action:@selector(segmentedControlResizeValueDidChange:) forControlEvents:UIControlEventValueChanged];
-    segmentedControlSize.selectedSegmentIndex = 0;
-    
-    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 1000) {
-        segmentedControlSize.selectedSegmentIndex = 1;
-    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 800) {
-        segmentedControlSize.selectedSegmentIndex = 2;
-    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"] == 600) {
-        segmentedControlSize.selectedSegmentIndex = 3;
-    } else {
-        segmentedControlSize.selectedSegmentIndex = 0;
-    }
-    
-    if (@available(iOS 13.0, *)) {
-        [segmentedControlSize setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors tintColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
-        [segmentedControlSize setTitleTextAttributes:@{NSForegroundColorAttributeName: [ThemeColors cellBorderColor:[[ThemeManager sharedManager] theme]], NSFontAttributeName: [UIFont systemFontOfSize:13]} forState:UIControlStateDisabled];
-        [segmentedControlSize setSelectedSegmentTintColor:[ThemeColors tabBackgroundColor:[[ThemeManager sharedManager] theme]]];
-    }
-
-    
-    // Label
-    UILabel *bbcodeLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 56, headerWidth*1/4, 30)];
-    bbcodeLabel.text = @"Copier le lien";
-    bbcodeLabel.font = [UIFont systemFontOfSize:14.0f];
-    bbcodeLabel.numberOfLines = 1;
-    bbcodeLabel.backgroundColor = [UIColor clearColor];
-    bbcodeLabel.textColor = [ThemeColors tintColor:theme];
-
-    
-    UIView *borderT = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 1.0f)];
-    UIView *borderM = [[UIView alloc] initWithFrame:CGRectMake(0, 10 + 50, headerWidth, 1.0f)];
-    UIView *borderB = [[UIView alloc] initWithFrame:CGRectMake(0, 10 + 90, headerWidth, 1.0f)];
-    UIView *borderB2 = [[UIView alloc] initWithFrame:CGRectMake(0, 10 + 90+40, headerWidth, 1.0f)];
-    UIView *border = [[UIView alloc] initWithFrame:CGRectMake(headerWidth*1/2, 0, 1, 60)];
-
-    [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
-    [oldPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
-
-    [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
-    [newPhotoBtn setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
-    
-    [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-    [newPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-    
-    [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateNormal];
-    [oldPhotoBtn setTitleColor:[ThemeColors tintColor:theme] forState:UIControlStateHighlighted];
-
-    newPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin);
-    oldPhotoBtn.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin);
-
-    border.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
-    borderB.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-    borderB2.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-    borderT.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-    borderM.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-    
-    [headerView addSubview:newPhotoBtn];
-    [headerView addSubview:oldPhotoBtn];
-    [headerView addSubview:segmentedControl];
-    [headerView addSubview:segmentedControlSize];
-    [headerView addSubview:lblMaxSize];
-
-    [border setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-    [borderB setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-    [borderB2 setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-    [borderT setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-    [borderM setBackgroundColor:[ThemeColors cellBorderColor:theme]];
-
-    [headerView addSubview:border];
-    [headerView addSubview:borderB];
-    [headerView addSubview:borderB2];
-    [headerView addSubview:borderT];
-    [headerView addSubview:borderM];
-    
-    UIView* progressView = [[UIView alloc] initWithFrame:CGRectZero];
-    progressView.frame = CGRectMake(0, 0, headerWidth, 50.f);
-    
-    progressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-    progressView.backgroundColor = [UIColor whiteColor];
-    progressView.tag = 12345;
-    [progressView setHidden:YES];
-    UIView* subProgressView = [[UIView alloc] initWithFrame:CGRectZero];
-    subProgressView.frame = CGRectMake(0, 0, 50.f, 50.f);
-    
-    subProgressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin);
-    subProgressView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
-    subProgressView.tag = 54321;
-    
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    CGRect frame = spinner.frame;
-    
-    spinner.autoresizingMask =(UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin);
-    
-    frame.origin.x = (subProgressView.frame.size.width-frame.size.width)/2;
-    frame.origin.y = (subProgressView.frame.size.height-frame.size.height)/2;
-    spinner.frame = frame;
-    [spinner startAnimating];
-    [subProgressView addSubview:spinner];
-    [progressView addSubview:subProgressView];
-    [headerView addSubview:progressView];
-    
-    [self.tableViewImages setTableHeaderView:headerView];
-        
-    
-    //[segmentControler setEnabled:YES forSegmentAtIndex:0];
-    //[segmentControler setEnabled:YES forSegmentAtIndex:1];
-    */
     
     // Observe keyboard hide and show notifications to resize the text view appropriately.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -551,7 +372,6 @@
     [self.btnToolbarRedo addTarget:self action:@selector(actionRedo:) forControlEvents:UIControlEventTouchUpInside];
     [self enableDisableUndoButton];
 
-    [self.view endEditing:YES];
     self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     self.textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     self.textFieldTo.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
@@ -618,75 +438,11 @@
 
 
 - (IBAction)cancel {
-    //NSLog(@"cancel %@", self.formSubmit);
-    /*
-    if (self.smileView.alpha != 0) {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.smileView setAlpha:0];
-        
-        //[self.segmentControler setAlpha:1];
-        [self.btnToolbarImage setHidden:NO];
-        [self.btnToolbarGIF setHidden:NO];
-        [self.btnToolbarSmiley setHidden:NO];
-        [self.btnToolbarUndo setHidden:NO];
-        [self.btnToolbarRedo setHidden:NO];
-        [self.segmentControlerPage setAlpha:0];
-        
-        [UIView commitAnimations];
-        
-        [self.textView becomeFirstResponder];
-        
-        [self segmentToBlue];
-        
-        //NSLog(@"====== 666666");
-    }
-    /*
-    else if (self.commonTableView.alpha != 0) {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.commonTableView setAlpha:0];
-        
-        //[self.segmentControler setAlpha:1];
-        [self.btnToolbarImage setHidden:NO];
-        [self.btnToolbarGIF setHidden:NO];
-        [self.btnToolbarSmiley setHidden:NO];
-        [self.btnToolbarUndo setHidden:NO];
-        [self.btnToolbarRedo setHidden:NO];
-        [self.segmentControlerPage setAlpha:0];
-        
-        [UIView commitAnimations];
-        
-        [self.textView becomeFirstResponder];
-        
-        [self segmentToBlue];
-        
-        //NSLog(@"====== 777777");
-    }*
-    else if (self.rehostTableView.alpha != 0) {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.rehostTableView setAlpha:0];
-        
-        //[self.segmentControler setAlpha:1];
-        [self.btnToolbarImage setHidden:NO];
-        [self.btnToolbarGIF setHidden:NO];
-        [self.btnToolbarSmiley setHidden:NO];
-        [self.btnToolbarUndo setHidden:NO];
-        [self.btnToolbarRedo setHidden:NO];
-
-        [self.segmentControlerPage setAlpha:0];
-        
-        [UIView commitAnimations];
-        
-        [self.textView becomeFirstResponder];
-        
-        [self segmentToBlue];
-        
-        //NSLog(@"====== 777777");
-    }
-    else {*/
-    if ([self.textView text].length > 0 && !self.isDeleteMode) {
+    if (!self.viewControllerRehostImage.bModeFullScreen && self.viewControllerRehostImage.tableViewImages.alpha == 1) {
+        [self actionHideRehostImage];
+    }  if (self.viewControllerSmileys.bModeFullScreen && (self.viewControllerSmileys.tableViewSearch.alpha == 1 || self.viewControllerSmileys.collectionViewSmileysSearch.alpha == 1 || self.viewControllerSmileys.collectionViewSmileysDefault.alpha == 1)) {
+        [self actionHideSmileys];
+    } else if ([self.textView text].length > 0 && !self.isDeleteMode) {
         NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
         NSString *messageBrouillon=nil;
         BOOL remplacerBrouillon = NO;
@@ -955,7 +711,7 @@
         [self.viewControllerRehostImage.tableViewImages setAlpha:0];
         [self.viewControllerRehostImage.collectionImages setAlpha:1];
         [viewToolbar setHidden:NO];
-        self.constraintToolbarHeight.constant = 38;
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
         [self.textView becomeFirstResponder];
     }
     [UIView commitAnimations];
@@ -968,13 +724,13 @@
     if (self.viewControllerRehostImage.bModeFullScreen) {
         CGRect rectS = self.viewRehostImage.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
-        self.constraintRehostImageViewHeight.constant = f + 38;
+        self.constraintRehostImageViewHeight.constant = f + TOOLBAR_HEIGHT;
         self.constraintToolbarHeight.constant = 0;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
         [viewToolbar setHidden:NO];
-        self.constraintToolbarHeight.constant = 38;
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
         self.constraintRehostImageViewHeight.constant = [self.viewControllerRehostImage getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     }
@@ -983,14 +739,20 @@
 
 - (void)actionGIF:(id)sender
 {
-    GiphyViewController *giphy = [[GiphyViewController alloc] init];
+    self.giphyViewController = [[GiphyViewController alloc] init];
     //giphy.layout = GPHGridLayoutWaterfall;
-    //giphy.theme = ThemeLight;
-    giphy.rating = GPHRatingTypeRatedR;
-    giphy.delegate = self;
-    giphy.showConfirmationScreen = false;
-    [giphy setMediaConfigWithTypes: [[NSMutableArray alloc] initWithObjects: @(GPHContentTypeGifs), @(GPHContentTypeRecents), nil]];
-    [self presentViewController:giphy animated:true completion:nil];
+    self.giphyViewController.theme = [[GPHTheme alloc] init];
+    if ([[ThemeManager sharedManager] theme] == ThemeLight) {
+        self.giphyViewController.theme.type = GPHThemeTypeLight;
+    }
+    else {
+        self.giphyViewController.theme.type = GPHThemeTypeDarkBlur;
+    }
+    self.giphyViewController.rating = GPHRatingTypeRatedR;
+    self.giphyViewController.delegate = self;
+    self.giphyViewController.showConfirmationScreen = true;
+    [self.giphyViewController setMediaConfigWithTypes: [[NSMutableArray alloc] initWithObjects: @(GPHContentTypeGifs), @(GPHContentTypeRecents), nil]];
+    [self presentViewController:self.giphyViewController animated:true completion:nil];
     if (self.viewSmileys.alpha == 1) {
         [self actionHideSmileys];
     }
@@ -1001,7 +763,7 @@
 
 - (void) didSelectMediaWithGiphyViewController:(GiphyViewController *)giphyViewController media:(GPHMedia *)media
 {
-    NSString* sTextToAdd = [NSString stringWithFormat:@"[img]%@[/img]", media.images.original.gifUrl];
+    NSString* sTextToAdd = [NSString stringWithFormat:@"[img]%@[/img]\n", media.images.original.gifUrl];
     NSRange range = [self lastSelectedRange];
     if ([self.textView isFirstResponder]) {
         range = self.textView.selectedRange;
@@ -1020,6 +782,7 @@
     self.textView.text = text;
     self.textView.selectedRange = range;
     [self textViewDidChange:self.textView];
+    [self dismissViewControllerAnimated:self.giphyViewController completion:nil];
 }
 
 - (void) didDismissWithController:(GiphyViewController *)controller {
@@ -1065,21 +828,19 @@
 - (void)actionExpandCompressSmiley
 {
     NSLog(@"actionExpandCompressSmiley");
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.2];
-    self.viewControllerSmileys.bModeFullScreen = !self.viewControllerSmileys.bModeFullScreen;
-    if (self.viewControllerSmileys.bModeFullScreen) {
-        [self.view endEditing:YES];
+    if (self.viewControllerSmileys.displayMode!= DisplayModeEnumTableSearch) {
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        self.viewControllerSmileys.bModeFullScreen = !self.viewControllerSmileys.bModeFullScreen;
+        if (self.viewControllerSmileys.bModeFullScreen) {
+            [self.view endEditing:YES];
+        }
+        [self updateExpandCompressSmiley];
+        [UIView commitAnimations];
+        if (!self.viewControllerSmileys.bModeFullScreen) {
+            [self.textView becomeFirstResponder];
+        }
     }
-    [self updateExpandCompressSmiley];
-    [UIView commitAnimations];
-    if (!self.viewControllerSmileys.bModeFullScreen) {
-        [self.textView becomeFirstResponder];
-    }
-    /* DIF
-    else if (self.viewControllerSmileys.displayMode == DisplayModeEnumSmileysDefault) {
-        [self.view endEditing:YES];
-    }*/
 }
 
 - (void)updateExpandCompressSmiley
@@ -1093,12 +854,14 @@
         self.constraintSmileyViewHeight.constant = f;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
+        [self.viewControllerSmileys.btnReduce setEnabled:NO];
     }
     else if (self.viewControllerSmileys.bModeFullScreen) {
+        [self.viewControllerSmileys.btnReduce setEnabled:YES];
+
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
-        //self.constraintToolbarHeight.constant = 38;
-        self.constraintSmileyViewHeight.constant = f + 38;
+        self.constraintSmileyViewHeight.constant = f + TOOLBAR_HEIGHT;
         [viewToolbar setHidden:YES];
         self.constraintToolbarHeight.constant = 0;
 
@@ -1106,9 +869,11 @@
         layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
+        [self.viewControllerSmileys.btnReduce setEnabled:YES];
+
         //self.constraintToolbarHeight.constant = 0;
         [viewToolbar setHidden:NO];
-        self.constraintToolbarHeight.constant = 38;
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
 
         self.constraintSmileyViewHeight.constant = [self.viewControllerSmileys getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -1181,6 +946,12 @@
 
 - (void) imageReceived: (NSNotification *) notification
 {
+    [self.undoManager registerUndoWithTarget:self
+                                    selector:@selector(undoTextFieldEdit:)
+                                      object:self.textView.text];
+    [self enableDisableUndoButton];
+
+
     NSMutableString *text = [textView.text mutableCopy];
     if (!lastSelectedRange.location) {
         lastSelectedRange = NSMakeRange(0, 0);
@@ -1199,36 +970,22 @@
     
     textView.text = text;
 
+    
     if (self.viewControllerRehostImage.bModeFullScreen) {
         [self actionHideRehostImage];
     }
     [self textViewDidChange:self.textView];
 }
 
-/*
-NSMutableString *text = [self.te.text mutableCopy];
-if (!self.lastSelectedRange.location) {
-    self.lastSelectedRange = NSMakeRange(0, 0);
+- (void)undoTextFieldEdit: (NSString*)string
+{
+    [self.undoManager registerUndoWithTarget:self
+                                    selector:@selector(undoTextFieldEdit:)
+                                      object:self.textView.text];
+    self.textView.text = string;
 }
 
-if (text.length < self.lastSelectedRange.location) {
-    self.lastSelectedRange.location = text.length;
-}
-    
-[text insertString:smile atIndex:self.lastSelectedRange.location];
-
-self.lastSelectedRange.location += [smile length];
-self.lastSelectedRange.length = 0;
-
-textView.text = text;
-
-
-self.loaded = YES;
-[self textViewDidChange:self.textView];
-*/
-
-#pragma mark -
-#pragma mark Text view delegate methods
+#pragma mark - Text view delegate methods
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)aTextView {
     //NSLog(@"textViewShouldBeginEditing");
@@ -1325,65 +1082,14 @@ self.loaded = YES;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    //NSLog(@"textFieldDidBeginEditing %@", textField);
-    
-    //NSLog(@"textFieldDidBeginEditing BEGIN %@", self.usedSearchDict);
-    
     if (textField != textFieldSmileys) {
-        //[segmentControler setEnabled:NO forSegmentAtIndex:0];
-        //[segmentControler setEnabled:NO forSegmentAtIndex:1];
         [self.btnToolbarImage setEnabled:NO];
         [self.btnToolbarGIF setEnabled:NO];
         [self.btnToolbarSmiley setEnabled:NO];
         [textFieldSmileys setEnabled:NO];
     }
-    else {
-        //self.textFieldSmileysWidth.constant = 140;
-        /*
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.2];
-        [self.smileView setAlpha:0];
-        [self.rehostTableView setAlpha:0];
-        
-        //[self.segmentControler setAlpha:1];
-        [self.btnToolbarImage setHidden:NO];
-        [self.btnToolbarGIF setHidden:NO];
-        [self.btnToolbarSmiley setHidden:NO];
-        //[self.btnToolbarUndo setHidden:NO];
-        //[self.btnToolbarRedo setHidden:NO];
-
-        [self.segmentControlerPage setAlpha:0];
-        
-        [UIView commitAnimations];
-        
-        if (self.usedSearchDict.count > 0) {
-            
-            
-            
-            [self textFieldSmileChange:self.textFieldSmileys]; //on affiche les recherches
-            
-            [self.commonTableView reloadData];
-            
-            [UIView beginAnimations:nil context:nil];
-            [UIView setAnimationDuration:0.2];
-            [self.commonTableView setAlpha:1];
-            [UIView commitAnimations];
-            
-            [self segmentToBlue];
-            
-            //NSLog(@"======= 5555");
-        }
-        
-        if (self.bSearchSmileysAvailable) {
-            self.bSearchSmileysActivated = YES;
-            [self.collectionSmileys reloadData];
-            [self.collectionSmileys setHidden:NO];
-            [btnCollectionSmileysEnlarge setHidden:NO];
-            [btnCollectionSmileysClose setHidden:NO];
-        }
-         */
-    }
 }
+
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     //NSLog(@"textFieldDidEndEditing %@", textField);
@@ -1411,54 +1117,12 @@ self.loaded = YES;
     return NO;
     
 }
-/*- (BOOL)textFieldShouldClear:(UITextField *)textField
- {
-	NSLog(@"textFieldShouldClear %@", textField.text);
- 
-	
-	return YES;
- 
- }*/
-
-
-#pragma mark -
-#pragma mark Data lifecycle
-
-/* TO DELETE *
--(void)showSmileResults:(NSString *)tmpHTML {
-    
-    //NSLog(@"showSmileResults");
-    
-    NSString *doubleSmileysCSS = @"";
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
-        doubleSmileysCSS = @"#container_ajax img.smile, #smileperso img.smile {max-height:60px;min-height: 30px;}.button {height:60px;min-width:45px;}.button img {max-height:60px;}";
-    }
-    
-    
-    [self.smileView evaluateJavaScript:[NSString stringWithFormat:@"\
-                                                            $('#container').hide();\
-                                                            $('#container_ajax').show();\
-                                                            $('#container_ajax').html('%@');\
-                                                            var hammertime2 = $('#container_ajax img').hammer({ hold_timeout: 0.000001 }); \
-                                                            hammertime2.on('touchstart touchend', function(ev) {\
-                                                            if(ev.type === 'touchstart'){\
-                                                            $(this).addClass('selected');\
-                                                            }\
-                                                            if(ev.type === 'touchend'){\
-                                                            $(this).removeClass('selected');\
-                                                            window.location = 'oijlkajsdoihjlkjasdosmile://internal?query='+encodeURIComponent(this.alt).replace(/\\(/g, '%%28').replace(/\\)/g, '%%29');\
-                                                            }\
-                                                            });\
-                                                            $('head link[rel=\"stylesheet\"]').last().after('<style>%@%@</style>');\
-                                                            ", tmpHTML, [ThemeColors smileysCss:[[ThemeManager sharedManager] theme]],doubleSmileysCSS] completionHandler:nil];
-}
-*/
 
 #pragma mark - Multis
 
 - (void)selectCompteFn:(id)sender {
     NSLog(@"SELECT");
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Choisir un compte" message:@"" preferredStyle:UIAlertControllerStyleAlert];
     NSArray *comptes = [[MultisManager sharedManager] getComtpes];
     for (int j =0 ; j<comptes.count; j++)
     {
