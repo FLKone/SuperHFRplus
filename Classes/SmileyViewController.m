@@ -78,9 +78,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    UIBarButtonItem *closeItem = [[UIBarButtonItem alloc] initWithTitle:@"Fermer" style:UIBarButtonItemStyleDone target:self action:@selector(closeView)];
-    [self.navigationItem setRightBarButtonItem:closeItem];
-    
       // Configure Collection Smileys defaults
      [self.collectionViewSmileysDefault setHidden:NO];
      self.collectionViewSmileysDefault.backgroundColor = [UIColor clearColor];
@@ -102,7 +99,7 @@
     NSString *searchFile = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
     if ([fileManager fileExistsAtPath:searchFile]) {
         NSData *data = [[NSData alloc] initWithContentsOfFile:searchFile];
-        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];// error:&error];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
         self.arrSearch = [unarchiver decodeObject];
         [unarchiver finishDecoding];
     }
@@ -112,7 +109,6 @@
 
     [self updateSearchArraySorted];
 
-    //[self.textFieldSmileys lsSetClearButtonWithColor:[UIColor redColor] mode:UITextFieldViewModeAlways];
     UIImage* img = [self imageWithImage:[UIImage imageNamed:@"clear"] scaledToSize:CGSizeMake(15, 15)];
     UIImage *clearBtnImage = [ThemeColors tintImage:img withColor:[[ThemeColors textColor] colorWithAlphaComponent:0.7]];
     [self modifyClearButtonWithImage:clearBtnImage];
@@ -145,7 +141,9 @@
 }
 
 -(IBAction)clear:(id)sender{
+    [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
     self.textFieldSmileys.text = @"";
+    [self updateTableViewSearchFilters:@""];
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -166,8 +164,8 @@
 
     self.view.backgroundColor = [UIColor clearColor];
 
-    [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
-    [self.btnSmileySearch setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
+    [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 17, 7, 17)];
+    [self.btnSmileySearch setImageEdgeInsets:UIEdgeInsetsMake(7, 17, 7, 17)];
 
     [self.btnSmileyDefault addTarget:self action:@selector(actionSmileysDefaults:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnSmileySearch addTarget:self action:@selector(actionSmileysSearch:) forControlEvents:UIControlEventTouchUpInside];
@@ -330,7 +328,6 @@ static CGFloat fCellImageSize = 1;
         return self.smileyCache.dicCommonSmileys.count;
     }
     else {
-        NSLog(@"smileyCache.arrCurrentSmileyArray %d", (long)self.smileyCache.arrCurrentSmileyArray.count);
         return self.smileyCache.arrCurrentSmileyArray.count;
     }
 }
@@ -422,15 +419,14 @@ static CGFloat fCellImageSize = 1;
             }
             else {
                 s = [self.arrTopSearchSortedFiltered objectAtIndex:indexPath.row];
+                cell.imageIcon.image = [UIImage imageNamed:@"06-magnify.png"];
             }
             
             int iResults = 0;
             //NSLog(@"reload: %@ / %@", s.sSearchText, self.textFieldSmileys.text);
             if (s) {
                 cell.labelText.text = s.sSearchText;
-                if (indexPath.section == 1) {//} && self.textFieldSmileys.text.length >= 1) {
-                    NSRange range = [s.sSearchText rangeOfString:self.textFieldSmileys.text];
-                    //NSLog(@"-> bold %@ of %@?: %@", self.textFieldSmileys.text, s.sSearchText, NSStringFromRange(range));
+                if (indexPath.section == 1) {
                     [cell.labelText boldSubstring: self.textFieldSmileys.text];
                 }
                 iResults = [s.nSearchNumber intValue];
@@ -446,7 +442,6 @@ static CGFloat fCellImageSize = 1;
                 cell.labelBadge.backgroundColor = [ThemeColors tintColorWithAlpha:0.1];
                 cell.labelBadge.textColor = [ThemeColors tintColorWithAlpha:0.5];// [UIColor whiteColor];
                 cell.labelBadge.clipsToBounds = YES;
-                //NSLog(@"Rect: %@", NSStringFromCGRect(cell.labelBadge.frame));
                 cell.labelBadge.layer.cornerRadius = cell.labelBadge.frame.size.height / 2;
             } else {
                 cell.labelBadge.backgroundColor = [UIColor clearColor];
@@ -454,8 +449,9 @@ static CGFloat fCellImageSize = 1;
                 cell.labelBadge.text = @"";
             }
         }
-        cell.backgroundColor = [UIColor systemPinkColor];
-        //[[ThemeManager sharedManager] applyThemeToCell:cell];
+        
+        [[ThemeManager sharedManager] applyThemeToCell:cell];
+        
         return cell;
     }
     
@@ -491,12 +487,12 @@ static CGFloat fCellImageSize = 1;
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
 }
-
+/*
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //TODO: implement search deletion
 }
-
+*/
 #pragma mark - Responding to keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
@@ -589,9 +585,13 @@ static CGFloat fCellImageSize = 1;
 -(IBAction)textFieldSmileChange:(id)sender
 {
     [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
+    [self updateTableViewSearchFilters:[(UITextField *)sender text]];
 
-    if ([(UITextField *)sender text].length > 0) {
-        NSString* sText = [(UITextField *)sender text];
+}
+
+- (void)updateTableViewSearchFilters:(NSString*)sText
+{
+    if (sText.length > 0) {
         sText = [sText stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
         sText = [sText stringByReplacingOccurrencesOfString:@"\\" withString:@""];
         @try {
@@ -606,10 +606,7 @@ static CGFloat fCellImageSize = 1;
         }
         @catch (NSException* exception) {
             NSLog(@"exception %@", exception);
-            [HFRAlertView DisplayOKAlertViewWithTitle:@"Erreur de saisie !" andMessage:[NSString stringWithFormat:@"%@", [exception reason]]];
-            [(UITextField *)sender setText:@""];
         }
-        //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
     else {
         self.arrTopSearchSortedFiltered = self.arrTopSearchSorted;
@@ -617,9 +614,7 @@ static CGFloat fCellImageSize = 1;
         [self.tableViewSearch reloadData];
         if (self.smileyCache.bSearchSmileysActivated && self.displayMode == DisplayModeEnumSmileysSearch && self.bActivateSmileySearchTable == NO) {
             [self changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
-            //self.bActivateSmileySearchTable = YES;
         }
-        //NSLog(@"usedSearchSortedArray %@", usedSearchSortedArray);
     }
 }
 

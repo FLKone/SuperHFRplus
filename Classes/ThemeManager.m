@@ -10,6 +10,7 @@
 #import "ThemeColors.h"
 #import "AvatarTableViewCell.h"
 #import "PlusCellView.h"
+#import "SimpleCellView.h"
 
 
 @implementation ThemeManager
@@ -136,6 +137,13 @@ int nightDelay;
         UIImage *img =[plusCellView.titleImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         plusCellView.titleImage.image = img;
         plusCellView.titleImage.tintColor = [ThemeColors cellIconColor:theme];
+    }
+    
+    if([cell isKindOfClass:[SimpleCellView class]]){
+        SimpleCellView* simpleCellView = (SimpleCellView*)cell;
+        UIImage *img = [simpleCellView.imageIcon.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        simpleCellView.imageIcon.image = img;
+        simpleCellView.imageIcon.tintColor = [ThemeColors cellIconColor:theme];
     }
     
     cell.selectionStyle = [ThemeColors cellSelectionStyle:theme];
