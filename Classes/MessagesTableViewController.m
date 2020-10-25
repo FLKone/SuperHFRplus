@@ -1913,7 +1913,8 @@
         
         NSURL* fileURL = [[OfflineStorage shared] createHtmlFileInCacheForTopic:nil withContent:HTMLString];
         NSURL* cacheURL = [[OfflineStorage shared] cacheURL];
-
+        NSLog(@"fileURL %@", fileURL);
+        NSLog(@"cacheURL %@", cacheURL);
         [self.messagesWebView loadFileURL:fileURL allowingReadAccessToURL:cacheURL];
         [self.messagesWebView setUserInteractionEnabled:YES];
     }
@@ -2001,6 +2002,8 @@
         
         self.lastStringFlagTopic = self.stringFlagTopic;
         self.stringFlagTopic = @"";
+        
+        self.loadingView.layer.cornerRadius = 10;
         
         [self.loadingView setHidden:YES];
         [self.messagesWebView setHidden:NO];

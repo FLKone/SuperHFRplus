@@ -23,12 +23,33 @@
 
 @implementation SmileySearch
 @synthesize sSearchText, nSearchNumber, nSmileysResultNumber, dLastSearch;
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:sSearchText forKey:@"sSearchText"];
+    [encoder encodeObject:nSearchNumber forKey:@"nSearchNumber"];
+    [encoder encodeObject:nSmileysResultNumber forKey:@"nSmileysResultNumber"];
+    [encoder encodeObject:dLastSearch forKey:@"dLastSearch"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    
+    self = [super init];
+    if (self) {
+        sSearchText = [decoder decodeObjectForKey:@"sSearchText"];
+        nSearchNumber = [decoder decodeObjectForKey:@"nSearchNumber"];
+        nSmileysResultNumber = [decoder decodeObjectForKey:@"nSmileysResultNumber"];
+        dLastSearch = [decoder decodeObjectForKey:@"dLastSearch"];
+    }
+    return self;
+}
+
+
 @end
 
 @implementation SmileyViewController
 
 @synthesize smileyCache, collectionViewSmileysDefault, collectionViewSmileysSearch, textFieldSmileys, btnSmileySearch, btnSmileyDefault, btnReduce, tableViewSearch;
-@synthesize arrayTmpsmileySearch, arrSearch, arrTopSearchSorted, arrLastSearchSorted, arrTopSearchSortedFiltered, arrLastSearchSortedFiltered, request, requestSmile, bModeFullScreen, bActivateSmileySearchTable;
+@synthesize arrayTmpsmileySearch, arrSearch, arrTopSearchSorted, arrLastSearchSorted, arrTopSearchSortedFiltered, arrLastSearchSortedFiltered, request, requestSmile, bModeFullScreen, bActivateSmileySearchTable, labelNoResult;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -79,18 +100,26 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *searchFile = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
-     if ([fileManager fileExistsAtPath:directory]) {
-        self.arrSearch = [NSMutableArray arrayWithContentsOfFile:searchFile];
+    if ([fileManager fileExistsAtPath:searchFile]) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:searchFile];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];// error:&error];
+        self.arrSearch = [unarchiver decodeObject];
+        [unarchiver finishDecoding];
     }
-/*
-    NSString *fileSearchSmileys = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
-    if ([fileManager fileExistsAtPath:fileSearchSmileys]) {
-        NSData *savedData = [NSData dataWithContentsOfFile:fileSearchSmileys];
-        self.arrSearch = [NSKeyedUnarchiver unarchiveObjectWithData:savedData];
-    }*/
+    else {
+        [self.arrSearch removeAllObjects];
+    }
 
     [self updateSearchArraySorted];
 
+    //[self.textFieldSmileys lsSetClearButtonWithColor:[UIColor redColor] mode:UITextFieldViewModeAlways];
+    UIImage* img = [self imageWithImage:[UIImage imageNamed:@"clear"] scaledToSize:CGSizeMake(15, 15)];
+    UIImage *clearBtnImage = [ThemeColors tintImage:img withColor:[[ThemeColors textColor] colorWithAlphaComponent:0.7]];
+    [self modifyClearButtonWithImage:clearBtnImage];
+    [self.textFieldSmileys setBackgroundColor:[ThemeColors textFieldBackgroundColor]];
+    labelNoResult.alpha = 0;
+    labelNoResult.backgroundColor = [ThemeColors textFieldBackgroundColor];
+    
     // TableView
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 40)];
     v.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
@@ -103,22 +132,42 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
+- (void)modifyClearButtonWithImage:(UIImage *)image {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setImage:image forState:UIControlStateNormal];
+    CGRect rect = [self.textFieldSmileys frame];
+    float btnSize = 20;
+    [button setFrame:CGRectMake(rect.size.width - btnSize - 5, 0, btnSize, btnSize)];
+
+    [button addTarget:self action:@selector(clear:) forControlEvents:UIControlEventTouchUpInside];
+    self.textFieldSmileys.rightView = button;
+    self.textFieldSmileys.rightViewMode = UITextFieldViewModeWhileEditing;
+}
+
+-(IBAction)clear:(id)sender{
+    self.textFieldSmileys.text = @"";
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 
     self.view.backgroundColor = [UIColor clearColor];
 
-    Theme theme = [[ThemeManager sharedManager] theme];
-    [self.btnSmileyDefault  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnSmileyDefault setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
-    [self.btnSmileySearch  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnSmileySearch setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnSmileySearch setImageEdgeInsets:UIEdgeInsetsMake(7, 12, 7, 12)];
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
-    //[self.btnReduce setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 5, 10)];
 
     [self.btnSmileyDefault addTarget:self action:@selector(actionSmileysDefaults:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnSmileySearch addTarget:self action:@selector(actionSmileysSearch:) forControlEvents:UIControlEventTouchUpInside];
@@ -127,23 +176,39 @@
     }
     [self.btnReduce addTarget:self action:@selector(actionReduce:) forControlEvents:UIControlEventTouchUpInside];
 
-    self.tableViewSearch.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     [self.tableViewSearch reloadData];
     [self.tableViewSearch setAlpha:0];
 
-    [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
-    self.textFieldSmileys.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     self.textFieldSmileys.returnKeyType = UIReturnKeySearch;
     [self.textFieldSmileys addTarget:self action:@selector(actionSearch:) forControlEvents:UIControlEventPrimaryActionTriggered];
-
+    
     [self.spinnerSmileySearch setHidesWhenStopped:YES];
 
     // Default view displayed at startup
     [self changeDisplayMode:DisplayModeEnumSmileysDefault animate:NO];
+    
+    [self updateTheme];
+}
+
+- (void)updateTheme
+{
+    Theme theme = [[ThemeManager sharedManager] theme];
+    [self.btnSmileyDefault  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnSmileyDefault setImage:[ThemeColors tintImage:[UIImage imageNamed:@"smiley"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnSmileySearch  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnSmileySearch setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
+    self.tableViewSearch.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
+    [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
+    self.textFieldSmileys.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    [self.textFieldSmileys setBackgroundColor:[ThemeColors navBackgroundColor]];
+    self.view.backgroundColor = [UIColor clearColor];
 }
 
 - (void) changeDisplayMode:(DisplayModeEnum)newMode animate:(BOOL)bAnimate
 {
+    NSLog(@"SMILEY changeDisplayMode");
     if (bAnimate) {
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
@@ -169,6 +234,7 @@
             [self.collectionViewSmileysSearch reloadData];
             break;
         case DisplayModeEnumTableSearch:
+            NSLog(@"SMILEY changeDisplayMode -> DisplayModeEnumTableSearch");
             [self.collectionViewSmileysDefault setAlpha:0];
             [self.collectionViewSmileysSearch setAlpha:0];
             [self.tableViewSearch reloadData];
@@ -223,7 +289,7 @@ static CGFloat fCellImageSize = 1;
             cell.smileyImage.frame = CGRectMake(cw/2-w/2, ch/2-h/2, w, h);
         }
 
-        NSLog(@"row %d - %@", (int)indexPath.row, NSStringFromCGRect(CGRectMake(cw/2-w/2, ch/2-h/2, w, h)));
+        //NSLog(@"row %d - %@", (int)indexPath.row, NSStringFromCGRect(CGRectMake(cw/2-w/2, ch/2-h/2, w, h)));
 
         [cell.smileyImage setImage:image];
 
@@ -434,28 +500,30 @@ static CGFloat fCellImageSize = 1;
 #pragma mark - Responding to keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    NSLog(@"SMILEY :::: Show ???");
+    NSLog(@"SMILEY keyboardWillShow");
     if (self.bModeFullScreen) {
         [self resizeViewWithKeyboard:notification];
     }
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    NSLog(@"SMILEY :::: Hide");
+    NSLog(@"SMILEY keyboardWillHide");
     [self resizeViewWithKeyboard:notification];
 }
 
 - (void)resizeViewWithKeyboard:(NSNotification *)notification {
+    NSLog(@"SMILEY resizeViewWithKeyboard");
+
     NSDictionary *userInfo = [notification userInfo];
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect convertedKeyboardRect = [self.view convertRect:keyboardRect fromView:self.view.window];
     CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
     CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
-
-    NSLog(@"SMILEY :::: Keyboard will show - intersection: %@", NSStringFromCGRect(intersection));
-    NSLog(@"### Keyboard  rect %@", NSStringFromCGRect(keyboardRect));
-    NSLog(@"### SafeFrame rect %@", NSStringFromCGRect(safeAreaFrame));
+    
+    //NSLog(@"### Keyboard  rect %@", NSStringFromCGRect(keyboardRect));
+    //NSLog(@"### SafeFrame rect %@", NSStringFromCGRect(safeAreaFrame));
+    NSLog(@"### SMILEY intersection rect %@", NSStringFromCGRect(intersection));
 
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];
@@ -469,26 +537,26 @@ static CGFloat fCellImageSize = 1;
 
 - (void)showTableViewInFullScreen
 {
-    NSLog(@"showTableViewInFullScreen");
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    NSLog(@"textFieldDidBeginEditing");
+    NSLog(@"SMILEY textFieldDidBeginEditing");
     self.bActivateSmileySearchTable = YES;
     [self changeDisplayMode:DisplayModeEnumTableSearch animate:YES];
+    [self.addMessageVC updateExpandCompressSmiley];
+    /*
     if (self.bModeFullScreen) {
+        NSLog(@"SMILEY bModeFullScreen -> NO");
         self.bModeFullScreen = NO;
-        [self.addMessageVC updateExpandCompressSmiley];
         [self updateExpandButton];
-    }
+    }*/
 }
 
 
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    NSLog(@"textFieldDidEndEditing");
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -605,7 +673,7 @@ static CGFloat fCellImageSize = 1;
     }
 
     if (self.arrayTmpsmileySearch.count == 0) {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+        /*UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
                                                                        message:@"Aucun résultat !"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
@@ -615,13 +683,36 @@ static CGFloat fCellImageSize = 1;
         [alert addAction:defaultAction];
         [self presentViewController:alert animated:YES completion:nil];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-        return;
+        self.bActivateSmileySearchTable = YES;*/
+        
+        labelNoResult.alpha = 0;
+        labelNoResult.backgroundColor = [ThemeColors textFieldBackgroundColor];
+        labelNoResult.textColor = [ThemeColors textColor];
+
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDuration:0.5];
+        labelNoResult.alpha = 1;
+        [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        [UIView commitAnimations];
+
     }
-    
-    [self performSelectorOnMainThread:@selector(displaySmileys) withObject:nil waitUntilDone:YES];
-    [self performSelectorInBackground:@selector(loadSmileys) withObject:nil];
+    else {
+        [self performSelectorOnMainThread:@selector(displaySmileys) withObject:nil waitUntilDone:YES];
+        [self performSelectorInBackground:@selector(loadSmileys) withObject:nil];
+    }
 }
 
+-(void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished  context:(void *)context
+{
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:1.1];
+    labelNoResult.alpha = 0;
+    [UIView commitAnimations];
+}
+    
+    
 - (void) displaySmileys {
     [self.btnSmileySearch setEnabled:YES];
     [self.collectionViewSmileysSearch reloadData];
@@ -684,7 +775,11 @@ static CGFloat fCellImageSize = 1;
         
         NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         NSString *file = [[NSString alloc] initWithString:[directory stringByAppendingPathComponent:SEARCH_SMILEYS_FILE]];
-        [self.arrSearch writeToFile:file atomically:YES];
+        NSMutableData *data = [[NSMutableData alloc] init];
+        NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];// error:&error];
+        [archiver encodeObject:self.arrSearch];
+        [archiver finishEncoding];
+        [data writeToFile:file atomically:YES];
     }
 
     
@@ -709,11 +804,7 @@ static CGFloat fCellImageSize = 1;
     [vcAddMessage setLastSelectedRange:range];
     vcAddMessage.textView.text = text;
     vcAddMessage.textView.selectedRange = range;
-    [vcAddMessage textViewDidChange:vcAddMessage.textView];
-    
-    if (self.bModeFullScreen) {
-        [self.addMessageVC actionHideSmileys];
-    }
+    [vcAddMessage textViewDidChange:vcAddMessage.textView];    
 }
 
 - (void)actionReduce:(id)sender {

@@ -113,11 +113,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"smileysviewExpanded"];
-/*
-    if(![[NSUserDefaults standardUserDefaults] objectForKey:@"smileysviewExpanded"]){
+    if(![[NSUserDefaults standardUserDefaults] objectForKey:@"smileysviewExpanded"]) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"smileysviewExpanded"];
-    }*/
+    }
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
@@ -140,7 +138,6 @@
 
     self.viewControllerSmileys = [[SmileyViewController alloc] initWithNibName:@"SmileyViewController" bundle:nil];
     self.viewControllerSmileys.addMessageVC = self;
-    [self addChildViewController:self.viewControllerSmileys];
     self.viewControllerSmileys.view.frame = self.viewSmileys.bounds;
     UICollectionViewFlowLayout *collectionViewFlowLayout1 = [[UICollectionViewFlowLayout alloc] init];
     UICollectionViewFlowLayout *collectionViewFlowLayout2 = [[UICollectionViewFlowLayout alloc] init];
@@ -150,20 +147,18 @@
     self.viewControllerSmileys.collectionViewSmileysSearch.collectionViewLayout = collectionViewFlowLayout2;
     [self.viewSmileys addSubview:self.viewControllerSmileys.view];
     [self.viewSmileys setAlpha:0];
+    [self addChildViewController:self.viewControllerSmileys];
 
     self.viewControllerRehostImage = [[RehostImageViewController alloc] initWithNibName:@"RehostImageViewController" bundle:nil];
     self.viewControllerRehostImage.addMessageVC = self;
-    [self addChildViewController:self.viewControllerRehostImage];
     self.viewControllerRehostImage.view.frame = self.viewRehostImage.bounds;
     UICollectionViewFlowLayout *collectionViewFlowLayout3 = [[UICollectionViewFlowLayout alloc] init];
     collectionViewFlowLayout3.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.viewControllerRehostImage.collectionImages.collectionViewLayout = collectionViewFlowLayout3;
     [self.viewRehostImage addSubview:self.viewControllerRehostImage.view];
     [self.viewRehostImage setAlpha:0];
-    [self.viewRehostImage addSubview:self.viewControllerRehostImage.view];
-    [self.viewRehostImage setAlpha:0];
+    [self addChildViewController:self.viewControllerRehostImage];
 
-    //TODO: clean
     [textFieldSmileys setHidden:YES];
     
     [Giphy configureWithApiKey:API_KEY_GIPHY verificationMode:false];
@@ -220,8 +215,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(smileyReceived:) name:@"smileyReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageReceived:) name:@"imageReceived" object:nil];
     
-    Theme theme = [[ThemeManager sharedManager] theme];
-    
     // Observe keyboard hide and show notifications to resize the text view appropriately.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
@@ -234,12 +227,96 @@
     selectCompte.layer.cornerRadius = selectCompte.frame.size.width / 2;
     selectCompte.clipsToBounds = YES;
     selectCompte.layer.borderWidth = 1.0f;
-    selectCompte.layer.borderColor = [ThemeColors tintColor:theme].CGColor;
     selectCompte.imageView.contentMode = UIViewContentModeScaleAspectFill;
     [selectCompte addTarget:self action:@selector(selectCompteFn:) forControlEvents:UIControlEventTouchUpInside];
     selectCompte.enabled = ![[arrayInputData objectForKey:@"cat"] isEqualToString:@"prive"]; // Disable account switching for MP
     selectCompte.hidden = [[[MultisManager sharedManager] getComtpes] count] < 2;
 }
+
+- (void)viewWillAppear:(BOOL)animated{
+    NSLog(@"viewWillAppear");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:@"SHOW"];
+    
+    [super viewWillAppear:animated];
+    
+    if(self.lastSelectedRange.location != NSNotFound)
+    {
+        self.textView.selectedRange = lastSelectedRange;
+    }
+    
+    self.view.backgroundColor = self.loadingView.backgroundColor = self.accessoryView.backgroundColor = self.textView.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
+    self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
+    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
+    self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
+    NSInteger iSizeTextReply = [[NSUserDefaults standardUserDefaults] integerForKey:@"size_text_reply"];
+    [self.textView setFont:[UIFont systemFontOfSize:iSizeTextReply]];
+
+    if (self.segmentControler.tintColor == [UIColor whiteColor]) {
+
+    } else {
+        [self segmentToBlue];
+    }
+    
+    Theme theme = [[ThemeManager sharedManager] theme];
+    [self.btnToolbarImage  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"photogallery2"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarImage setImage:[ThemeColors tintImage:[UIImage imageNamed:@"photogallery2"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnToolbarGIF  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"gif"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarGIF setImage:[ThemeColors tintImage:[UIImage imageNamed:@"gif"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnToolbarSmiley setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarSmiley setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnToolbarUndo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo-redo"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarUndo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo-redo"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateHighlighted];
+
+    [self.btnToolbarImage addTarget:self action:@selector(actionImage:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnToolbarGIF addTarget:self action:@selector(actionGIF:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnToolbarSmiley addTarget:self action:@selector(actionSmiley:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnToolbarUndo addTarget:self action:@selector(actionUndo:) forControlEvents:UIControlEventTouchUpInside];
+    [self.btnToolbarRedo addTarget:self action:@selector(actionRedo:) forControlEvents:UIControlEventTouchUpInside];
+    [self enableDisableUndoButton];
+
+    self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    self.textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    self.textFieldTo.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    self.textFieldCat.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    [self.navigationController.navigationBar setTranslucent:NO];
+
+    self.selectCompte.layer.borderColor = [ThemeColors tintColor:theme].CGColor;
+
+    [self.viewControllerSmileys updateTheme];
+    [self.viewControllerRehostImage updateTheme];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    self.sBrouillonUtilise = NO;
+    // Popup brouillon (partout sauf en mode edition)
+    if (self.sBrouillon && self.sBrouillon.length > 0) {
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Utiliser le brouillon ?" message:[self getBrouillonExtract]
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self.textView setText:self.sBrouillon];
+                                                              self.sBrouillonUtilise = YES;
+                                                              [self.navigationItem.rightBarButtonItem setEnabled:YES];
+                                                          }];
+        UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) { }];
+        UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleCancel
+                                                          handler:^(UIAlertAction * action) { [self modifyBrouillon:@""]; }];
+        
+        [alert addAction:actionYes];
+        [alert addAction:actionNo];
+        [alert addAction:actionDel];
+
+        [self presentViewController:alert animated:YES completion:nil];
+        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+    }
+}
+
 
 #pragma mark -
 #pragma mark ScrollView delegate methods
@@ -329,85 +406,6 @@
     [self enableDisableUndoButton];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-    NSLog(@"viewWillAppear");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:@"SHOW"];
-    
-    [super viewWillAppear:animated];
-    
-    if(self.lastSelectedRange.location != NSNotFound)
-    {
-        self.textView.selectedRange = lastSelectedRange;
-    }
-    
-    self.view.backgroundColor = self.loadingView.backgroundColor = self.accessoryView.backgroundColor = self.textView.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
-    self.loadingViewLabel.textColor = [ThemeColors cellTextColor:[[ThemeManager sharedManager] theme]];
-    self.loadingViewIndicator.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
-    self.textView.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-    NSInteger iSizeTextReply = [[NSUserDefaults standardUserDefaults] integerForKey:@"size_text_reply"];
-    [self.textView setFont:[UIFont systemFontOfSize:iSizeTextReply]];
-
-    if (self.segmentControler.tintColor == [UIColor whiteColor]) {
-
-    } else {
-        [self segmentToBlue];
-    }
-    
-    Theme theme = [[ThemeManager sharedManager] theme];
-    [self.btnToolbarImage  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"photogallery2"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnToolbarImage setImage:[ThemeColors tintImage:[UIImage imageNamed:@"photogallery2"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnToolbarGIF  setImage:[ThemeColors tintImage:[UIImage imageNamed:@"gif"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnToolbarGIF setImage:[ThemeColors tintImage:[UIImage imageNamed:@"gif"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnToolbarSmiley setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnToolbarSmiley setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnToolbarUndo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo-redo"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnToolbarUndo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo-redo"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateHighlighted];
-
-    [self.btnToolbarImage addTarget:self action:@selector(actionImage:) forControlEvents:UIControlEventTouchUpInside];
-    [self.btnToolbarGIF addTarget:self action:@selector(actionGIF:) forControlEvents:UIControlEventTouchUpInside];
-    [self.btnToolbarSmiley addTarget:self action:@selector(actionSmiley:) forControlEvents:UIControlEventTouchUpInside];
-    [self.btnToolbarUndo addTarget:self action:@selector(actionUndo:) forControlEvents:UIControlEventTouchUpInside];
-    [self.btnToolbarRedo addTarget:self action:@selector(actionRedo:) forControlEvents:UIControlEventTouchUpInside];
-    [self enableDisableUndoButton];
-
-    self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-    self.textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-    self.textFieldTo.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-    self.textFieldCat.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
-    [self.navigationController.navigationBar setTranslucent:NO];
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    
-    self.sBrouillonUtilise = NO;
-    // Popup brouillon (partout sauf en mode edition)
-    if (self.sBrouillon && self.sBrouillon.length > 0) {
-        
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Utiliser le brouillon ?" message:[self getBrouillonExtract]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* actionYes = [UIAlertAction actionWithTitle:@"Oui" style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {
-                                                              [self.textView setText:self.sBrouillon];
-                                                              self.sBrouillonUtilise = YES;
-                                                              [self.navigationItem.rightBarButtonItem setEnabled:YES];
-                                                          }];
-        UIAlertAction* actionNo = [UIAlertAction actionWithTitle:@"Non" style:UIAlertActionStyleDefault
-                                                         handler:^(UIAlertAction * action) { }];
-        UIAlertAction* actionDel = [UIAlertAction actionWithTitle:@"Supprimer" style:UIAlertActionStyleCancel
-                                                          handler:^(UIAlertAction * action) { [self modifyBrouillon:@""]; }];
-        
-        [alert addAction:actionYes];
-        [alert addAction:actionNo];
-        [alert addAction:actionDel];
-
-        [self presentViewController:alert animated:YES completion:nil];
-        [[ThemeManager sharedManager] applyThemeToAlertController:alert];
-    }
-}
-
 -(void)setupResponder {
     if (self.haveTo && ![[textFieldTo text] length]) {
         self.textFieldTo.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
@@ -431,16 +429,16 @@
 - (void)viewWillDisappear:(BOOL)animated{
     //NSLog(@"viewWillDisappear");
     [super viewWillDisappear:animated];
-    
     [self.view endEditing:YES];
-    
 }
 
 
 - (IBAction)cancel {
-    if (!self.viewControllerRehostImage.bModeFullScreen && self.viewControllerRehostImage.tableViewImages.alpha == 1) {
+    if (self.viewControllerRehostImage.bModeFullScreen && self.viewControllerRehostImage.tableViewImages.alpha == 1 && ![self.textView isFirstResponder]) {
         [self actionHideRehostImage];
-    }  if (self.viewControllerSmileys.bModeFullScreen && (self.viewControllerSmileys.tableViewSearch.alpha == 1 || self.viewControllerSmileys.collectionViewSmileysSearch.alpha == 1 || self.viewControllerSmileys.collectionViewSmileysDefault.alpha == 1)) {
+    } else if (self.viewControllerSmileys.tableViewSearch.alpha == 1 && ![self.textView isFirstResponder]) {
+        [self actionHideSmileys];
+    }  else if (![self.textView isFirstResponder] && self.viewControllerSmileys.bModeFullScreen && (self.viewControllerSmileys.collectionViewSmileysSearch.alpha == 1 || self.viewControllerSmileys.collectionViewSmileysDefault.alpha == 1)) {
         [self actionHideSmileys];
     } else if ([self.textView text].length > 0 && !self.isDeleteMode) {
         NSString *alertTitle = @"Enregistrer le texte comme brouillons ?";
@@ -798,13 +796,26 @@
         if (self.viewRehostImage.alpha == 1) {
             [self actionHideRehostImage];
         }
+        /*
         self.viewControllerSmileys.bModeFullScreen = [[NSUserDefaults standardUserDefaults] boolForKey:@"smileysviewExpanded"];
         if (self.viewControllerSmileys.bModeFullScreen) {
             [self.view endEditing:YES];
         }
         [self.viewSmileys setAlpha:1];
         [self updateExpandCompressSmiley];
+        [UIView commitAnimations];*/
+        
+        bool bExpanded = [[NSUserDefaults standardUserDefaults] boolForKey:@"smileysviewExpanded"];
+        if (self.viewControllerSmileys.bModeFullScreen != bExpanded) {
+            [self actionExpandCompressSmiley];
+        }
+        if (self.viewControllerSmileys.bModeFullScreen) {
+            [self.view endEditing:YES];
+        }
+        [self.viewSmileys setAlpha:1];
+        [self updateExpandCompressSmiley];
         [UIView commitAnimations];
+
     }
     else {
         [self actionHideSmileys];
@@ -813,8 +824,6 @@
 
 - (void)actionHideSmileys
 {
-    NSLog(@"actionHideSmileys");
-
     // Memorize last state
     [[NSUserDefaults standardUserDefaults] setBool:self.viewControllerSmileys.bModeFullScreen forKey:@"smileysviewExpanded"];
     // Minimize before hidden
@@ -827,7 +836,6 @@
 
 - (void)actionExpandCompressSmiley
 {
-    NSLog(@"actionExpandCompressSmiley");
     if (self.viewControllerSmileys.displayMode!= DisplayModeEnumTableSearch) {
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
@@ -852,6 +860,7 @@
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
         self.constraintSmileyViewHeight.constant = f;
+        NSLog(@"updateExpandCompressSmiley ----- constraintSmileyViewHeight = %f", f);
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
         [self.viewControllerSmileys.btnReduce setEnabled:NO];
@@ -881,10 +890,6 @@
     }
     [self.viewControllerSmileys updateExpandButton];
 }
-
-
-
-
 
 - (IBAction)actionUndo:(id)sender
 {
@@ -916,41 +921,37 @@
 #pragma mark - TextView Mod
 
 - (void) smileyReceived: (NSNotification *) notification {
-    //NSLog(@"%@", notification);
-    
-    // When the accessory view button is tapped, add a suitable string to the text view.
+    [self.textView.undoManager registerUndoWithTarget:self
+                                    selector:@selector(undoTextFieldEdit:)
+                                      object:self.textView.text];
+    [self enableDisableUndoButton];
+
     NSMutableString *text = [textView.text mutableCopy];
-    
-    //NSLog(@"%d - %d", text.length, lastSelectedRange.location);
     
     if (!lastSelectedRange.location) {
         lastSelectedRange = NSMakeRange(0, 0);
     }
     
     if (text.length < lastSelectedRange.location) {
-        NSLog(@"sdsdsd");
         lastSelectedRange.location = text.length;
     }
     
     [text insertString:[notification object] atIndex:lastSelectedRange.location];
     
     lastSelectedRange.location += [[notification object] length];
-    
     textView.text = text;
     
     self.loaded = YES;
     
     [self textViewDidChange:self.textView];
-    
 }
 
 - (void) imageReceived: (NSNotification *) notification
 {
-    [self.undoManager registerUndoWithTarget:self
+    [self.textView.undoManager registerUndoWithTarget:self
                                     selector:@selector(undoTextFieldEdit:)
                                       object:self.textView.text];
     [self enableDisableUndoButton];
-
 
     NSMutableString *text = [textView.text mutableCopy];
     if (!lastSelectedRange.location) {
@@ -960,7 +961,6 @@
     if (text.length < lastSelectedRange.location) {
         lastSelectedRange.location = text.length;
     }
-    
     
     [text insertString:[notification object] atIndex:lastSelectedRange.location];
     
@@ -979,7 +979,8 @@
 
 - (void)undoTextFieldEdit: (NSString*)string
 {
-    [self.undoManager registerUndoWithTarget:self
+    NSLog(@"Undoing with %@", string);
+    [self.textView.undoManager registerUndoWithTarget:self
                                     selector:@selector(undoTextFieldEdit:)
                                       object:self.textView.text];
     self.textView.text = string;
@@ -1036,18 +1037,15 @@
 #pragma mark - Responding to keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    NSLog(@"ADD :::: Show ???");
-    if (!self.viewControllerSmileys.bModeFullScreen) {
+    NSLog(@"keyboardWillShow");
+    if (!self.viewControllerSmileys.bModeFullScreen || self.viewControllerSmileys.bActivateSmileySearchTable) {
         [self resizeViewWithKeyboard:notification];
     }
     if (self.viewControllerSmileys.bActivateSmileySearchTable) {
-        NSLog(@"actionExpandCompressSmiley");
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
-        //self.viewControllerSmileys.bModeFullScreen = YES;
         [self.viewControllerSmileys changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
         [self updateExpandCompressSmiley];
-        //[self.viewControllerSmileys changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
         [UIView commitAnimations];
         self.viewControllerSmileys.bActivateSmileySearchTable = NO;
     }
@@ -1059,6 +1057,8 @@
 }
 
 - (void)resizeViewWithKeyboard:(NSNotification *)notification {
+    NSLog(@"resizeViewWithKeyboard");
+
     NSDictionary *userInfo = [notification userInfo];
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -1066,9 +1066,7 @@
     CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
     CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
 
-    NSLog(@"ADD :::: Keyboard will show - intersection: %@", NSStringFromCGRect(intersection));
-    //NSLog(@"### Keyboard  rect %@", NSStringFromCGRect(keyboardRect));
-    //NSLog(@"### SafeFrame rect %@", NSStringFromCGRect(safeAreaFrame));
+    NSLog(@"### intersection rect %@", NSStringFromCGRect(intersection));
 
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];

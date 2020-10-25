@@ -17,6 +17,7 @@
 		151B6CA1251D1D66007C28C3 /* PINOperation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 151B6C9F251D1D66007C28C3 /* PINOperation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		151DE8D523AAC73D003E6D1B /* OldFavoritesTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */; };
 		151DE8D723AAC74D003E6D1B /* OldFavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */; };
+		152BBB13253375CA00D21435 /* clear.png in Resources */ = {isa = PBXBuildFile; fileRef = 152BBB12253375CA00D21435 /* clear.png */; };
 		152D2D3B244C79EB00D9D644 /* BookmarksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */; };
 		152D2D3D244C7A0200D9D644 /* BookmarksTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 152D2D3C244C7A0200D9D644 /* BookmarksTableView.xib */; };
 		152D2D40244C7A2700D9D644 /* BookmarksCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D2D3F244C7A2700D9D644 /* BookmarksCellView.m */; };
@@ -864,6 +865,7 @@
 		151DE8D423AAC73D003E6D1B /* OldFavoritesTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OldFavoritesTableViewController.xib; sourceTree = "<group>"; };
 		151DE8D623AAC74D003E6D1B /* OldFavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldFavoritesTableViewController.m; sourceTree = "<group>"; };
 		151DE8D823AAC756003E6D1B /* OldFavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldFavoritesTableViewController.h; sourceTree = "<group>"; };
+		152BBB12253375CA00D21435 /* clear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clear.png; sourceTree = "<group>"; };
 		152D2D39244C79D700D9D644 /* BookmarksTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BookmarksTableViewController.h; sourceTree = "<group>"; };
 		152D2D3A244C79EB00D9D644 /* BookmarksTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BookmarksTableViewController.m; sourceTree = "<group>"; };
 		152D2D3C244C7A0200D9D644 /* BookmarksTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarksTableView.xib; sourceTree = "<group>"; };
@@ -2728,6 +2730,7 @@
 		CA00C5A217C30C370067B457 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				152BBB12253375CA00D21435 /* clear.png */,
 				154C0D01250FD66E00294ECC /* person.3.fill-2.png */,
 				154C0D02250FD66E00294ECC /* person.3.fill-2@2.png */,
 				1553568E24A8CCDA00917DE1 /* revert.png */,
@@ -3343,6 +3346,7 @@
 				15AEFFED222AB07C003A2E5F /* bgbigipad3.jpg in Resources */,
 				4C21E9681BA5C70400691D65 /* LinkFilled-20@2x.png in Resources */,
 				4CB132C41B9098820081B44D /* ContactCardFilled-20.png in Resources */,
+				152BBB13253375CA00D21435 /* clear.png in Resources */,
 				4CB132BE1B90984E0081B44D /* EditColumnFilled-20@2x.png in Resources */,
 				CA7C6FBA185EF50E00B348BA /* loadinfo@2x.gif in Resources */,
 				CA7C6FBB185EF50E00B348BA /* buttonpreviousoff.png in Resources */,

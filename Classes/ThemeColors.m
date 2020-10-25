@@ -172,6 +172,14 @@
     }
 }
 
++ (UIColor *)textFieldBackgroundColor {
+    switch ([ThemeManager currentTheme]) {
+        case ThemeLight: return [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:0.7];
+        case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:46.0/255.0 green:47.0/255.0 blue:51.0/255.0 alpha:0.7] withMin:20.0];
+        default:         return [UIColor whiteColor];
+    }
+}
+
 + (UIColor *)headerBLBackgroundColor {
     switch ([ThemeManager currentTheme]) {
         case ThemeLight: return [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1.0];

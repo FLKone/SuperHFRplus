@@ -16,7 +16,7 @@ typedef enum {
     DisplayModeEnumTableSearch              = 2,
 } DisplayModeEnum;
 
-@interface SmileySearch : NSObject
+@interface SmileySearch : NSObject<NSCoding>
 {
 }
 
@@ -40,6 +40,7 @@ typedef enum {
 @property (strong, nonatomic) IBOutlet UIButton *btnReduce;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinnerSmileySearch;
 @property (strong, nonatomic) IBOutlet UITableView *tableViewSearch;
+@property (strong, nonatomic) IBOutlet UILabel *labelNoResult;
 
 @property (strong, nonatomic) SmileyCache *smileyCache;
 @property (nonatomic, strong) NSMutableArray *arrSearch;
@@ -62,5 +63,6 @@ typedef enum {
 - (float)getDisplayHeight;
 - (void)actionReduce:(id)sender;
 - (void)fetchSmileys;
+- (void)updateTheme;
 
 @end

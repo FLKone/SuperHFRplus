@@ -45,6 +45,7 @@
 - (void)updateExpandButton;
 - (float)getDisplayHeight;
 - (void)actionReduce:(id)sender;
+- (void)updateTheme;
 
 @end
 

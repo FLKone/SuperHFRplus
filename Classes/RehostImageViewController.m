@@ -75,16 +75,6 @@
     v.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     [self.tableViewImages setTableFooterView:v];
     
-    float headerWidth = self.view.bounds.size.width;
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerWidth, 90+50)];
-    
-    Theme theme = [[ThemeManager sharedManager] theme];
-    [self.btnCamera setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnCamera setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3, 12, 3, 12)];
-    [self.btnPhoto setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnPhoto setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
-    [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4, 13, 4, 13)];
     [self.btnCamera addTarget:self action:@selector(uploadNewPhoto:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnPhoto addTarget:self action:@selector(uploadExistingPhoto:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -103,16 +93,12 @@
         [self.btnBBCodeType setTitle:@"Lien seul" forState:UIControlStateNormal];
     }
     [self.btnBBCodeType addTarget:self action:@selector(actionBBCodeType:) forControlEvents:UIControlEventTouchUpInside];
-    [self.btnBBCodeType setTintColor:[ThemeColors tintColor]];
 
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
-    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnReduce addTarget:self action:@selector(actionReduce:) forControlEvents:UIControlEventTouchUpInside];
     
     NSInteger iMaxSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_resize_before_upload"];
     [self.btnMaxSize setTitle:[NSString stringWithFormat:@"%d px", (int)iMaxSize] forState:UIControlStateNormal];
     [self.btnMaxSize addTarget:self action:@selector(actionImageUploadSize:) forControlEvents:UIControlEventTouchUpInside];
-    [self.btnMaxSize setTintColor:[ThemeColors tintColor]];
     
    // Setup Image collections
     [self.collectionImages setHidden:NO];
@@ -131,9 +117,32 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.view.backgroundColor = self.tableViewImages.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
-    //[self.tableViewImages reloadData];
+    
+    [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3, 12, 3, 12)];
+    [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4, 13, 4, 13)];
+
+
+    
+    [self updateTheme];
 }
+
+- (void)updateTheme
+{
+    Theme theme = [[ThemeManager sharedManager] theme];
+    [self.btnCamera setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnCamera setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Camera-32"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnPhoto setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnPhoto setImage:[ThemeColors tintImage:[UIImage imageNamed:@"Folder-32"] withTheme:theme] forState:UIControlStateHighlighted];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
+    [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
+    
+    self.tableViewImages.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
+    self.view.backgroundColor = [UIColor clearColor];
+    
+    [self.btnBBCodeType setTintColor:[ThemeColors tintColor]];
+    [self.btnMaxSize setTintColor:[ThemeColors tintColor]];
+}
+
 
 - (float) getDisplayHeight {
     return 80;
