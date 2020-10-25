@@ -501,7 +501,7 @@ static CGFloat fCellImageSize = 1;
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     NSLog(@"SMILEY keyboardWillShow");
-    if (self.bModeFullScreen) {
+    if (self.bModeFullScreen && self.displayMode != DisplayModeEnumTableSearch) {
         [self resizeViewWithKeyboard:notification];
     }
 }
@@ -541,10 +541,17 @@ static CGFloat fCellImageSize = 1;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    NSLog(@"SMILEY textFieldDidBeginEditing");
+    NSLog(@"SMILEY textFieldDidBeginEditing1");
     self.bActivateSmileySearchTable = YES;
-    [self changeDisplayMode:DisplayModeEnumTableSearch animate:YES];
+    NSLog(@"SMILEY textFieldDidBeginEditing2");
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.2];
+
+    [self changeDisplayMode:DisplayModeEnumTableSearch animate:NO];
+    NSLog(@"SMILEY textFieldDidBeginEditing3");
     [self.addMessageVC updateExpandCompressSmiley];
+    NSLog(@"SMILEY textFieldDidBeginEditing4");
+    [UIView commitAnimations];
     /*
     if (self.bModeFullScreen) {
         NSLog(@"SMILEY bModeFullScreen -> NO");
@@ -834,6 +841,7 @@ static CGFloat fCellImageSize = 1;
 - (void)actionSmileysDefaults:(id)sender {
     if (self.bModeFullScreen) {
         [self changeDisplayMode:DisplayModeEnumSmileysDefault animate:NO];
+        [self.addMessageVC updateExpandCompressSmiley];
         [self resignFirstResponder];
     }
     else {
@@ -853,6 +861,7 @@ static CGFloat fCellImageSize = 1;
 - (void)actionSmileysSearch:(id)sender {
     if (self.bModeFullScreen) {
         [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
+        [self.addMessageVC updateExpandCompressSmiley];
         [self resignFirstResponder];
     }
     else {

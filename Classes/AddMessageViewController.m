@@ -860,7 +860,9 @@
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
         self.constraintSmileyViewHeight.constant = f;
-        NSLog(@"updateExpandCompressSmiley ----- constraintSmileyViewHeight = %f", f);
+        [viewToolbar setHidden:NO];
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
+        NSLog(@"mode DisplayModeEnumTableSearch, constraintSmileyViewHeight.constant = %f", f);
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
         [self.viewControllerSmileys.btnReduce setEnabled:NO];
@@ -871,6 +873,7 @@
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
         self.constraintSmileyViewHeight.constant = f + TOOLBAR_HEIGHT;
+        NSLog(@"mode viewControllerSmileys.bModeFullScreen, constraintSmileyViewHeight.constant = %f", f);
         [viewToolbar setHidden:YES];
         self.constraintToolbarHeight.constant = 0;
 
