@@ -72,16 +72,16 @@
 		<key>editor</key>
 		<true/>
 	</dict>
-    <dict>
-        <key>code</key>
-        <string>:24:</string>
-        <key>src</key>
-        <string>https://forum-images.hardware.fr/icones/ohwell.gif</string>
-        <key>resource</key>
-        <string>ohwell.gif</string>
-        <key>editor</key>
-        <true/>
-    </dict>
+	<dict>
+		<key>code</key>
+		<string>:/</string>
+		<key>src</key>
+		<string>https://forum-images.hardware.fr/icones/ohwell.gif</string>
+		<key>resource</key>
+		<string>ohwell.gif</string>
+		<key>editor</key>
+		<true/>
+	</dict>
 	<dict>
 		<key>code</key>
 		<string>:??:</string>

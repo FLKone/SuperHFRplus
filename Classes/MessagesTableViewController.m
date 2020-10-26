@@ -1798,7 +1798,7 @@
         // Modified in theme Dark or OLED
         if (theme == ThemeDark) {
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+            sLoadInfoImageFile = @"url(loadinfo.net.gif)";
         }
         
         
@@ -3032,7 +3032,7 @@
     // Modified in theme Dark or OLED
     if (theme == ThemeDark) {
         sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-        sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+        sLoadInfoImageFile = @"url(loadinfo.net.gif)";
     }
     
     NSString *script = [NSString stringWithFormat:@"\

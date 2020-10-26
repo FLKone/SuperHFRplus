@@ -457,6 +457,9 @@ static OfflineStorage *_shared = nil;    // static instance variable
     [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"08-chat.png"];
     [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"photoDefaultClic.png"];
     [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"photoDefaultfailmini.png"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"loadinfo-white@2x.gif"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"loadinfo.gif"];
+    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"loadinfo.net.gif"];
 
     // Copy default smileys
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
