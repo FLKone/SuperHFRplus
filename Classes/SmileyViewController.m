@@ -80,7 +80,6 @@
 
       // Configure Collection Smileys defaults
      [self.collectionViewSmileysDefault setHidden:NO];
-     self.collectionViewSmileysDefault.backgroundColor = [UIColor clearColor];
      [self.collectionViewSmileysDefault registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
      [self.collectionViewSmileysDefault  setDataSource:self];
      [self.collectionViewSmileysDefault  setDelegate:self];
@@ -88,7 +87,6 @@
      // Configure Collection Smileys search
     [self.collectionViewSmileysSearch setHidden:NO];
     [self.collectionViewSmileysSearch setAlpha:0];
-    self.collectionViewSmileysSearch.backgroundColor = [UIColor clearColor];
     [self.collectionViewSmileysSearch registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
     [self.collectionViewSmileysSearch  setDataSource:self];
     [self.collectionViewSmileysSearch  setDelegate:self];
@@ -197,6 +195,8 @@
     [self.btnSmileySearch setImage:[ThemeColors tintImage:[UIImage imageNamed:@"redface"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
+    self.collectionViewSmileysSearch.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
+    self.collectionViewSmileysDefault.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     self.tableViewSearch.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
     self.textFieldSmileys.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
@@ -319,7 +319,7 @@ static CGFloat fCellImageSize = 1;
         NSString* sCode = [self.smileyCache getSmileyCodeForIndex:(int)indexPath.row];
         [self didSelectSmile:sCode];
     }
-    [self.addMessageVC actionHideSmileys];
+    //[self.addMessageVC actionHideSmileys];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -504,7 +504,7 @@ static CGFloat fCellImageSize = 1;
 
 - (void)keyboardWillHide:(NSNotification *)notification {
     NSLog(@"SMILEY keyboardWillHide");
-    [self resizeViewWithKeyboard:notification];
+    //[self resizeViewWithKeyboard:notification];
 }
 
 - (void)resizeViewWithKeyboard:(NSNotification *)notification {

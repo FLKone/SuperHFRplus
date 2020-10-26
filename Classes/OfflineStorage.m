@@ -475,20 +475,20 @@ static OfflineStorage *_shared = nil;    // static instance variable
     NSString* diskCachePath = [self diskCachePath];
     NSString* cssFilePathOri = [bundlePath stringByAppendingPathComponent:filename];
     NSString* cssFilePathDest = [diskCachePath stringByAppendingPathComponent:filename];
-    NSLog(@"CSS file path %@", cssFilePathOri);
+    //NSLog(@"CSS file path %@", cssFilePathOri);
     unsigned long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:cssFilePathOri error:nil] fileSize];
-    NSLog(@"Fichier CSS, taille : %ld", fileSize);
+    //NSLog(@"Fichier CSS, taille : %ld", fileSize);
 
     NSError* error;
     if ([fileManager fileExistsAtPath:cssFilePathDest]) {
         [fileManager removeItemAtPath:cssFilePathDest error:&error];
-        NSLog(@"Fichier CSS existing -> removed %@", cssFilePathDest);
+       // NSLog(@"Fichier CSS existing -> removed %@", cssFilePathDest);
     }
 
     [fileManager copyItemAtPath:cssFilePathOri toPath:cssFilePathDest error:&error];
     fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:cssFilePathDest error:nil] fileSize];
     if (fileSize > 0) {
-        NSLog(@"File %@ (%ld)copied fromv bundle to NSCachesDirectory", filename, fileSize);
+        //NSLog(@"File %@ (%ld)copied fromv bundle to NSCachesDirectory", filename, fileSize);
     }
 }
 

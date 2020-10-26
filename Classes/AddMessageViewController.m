@@ -827,8 +827,8 @@
     self.viewControllerSmileys.bModeFullScreen = NO;
     [self.viewSmileys setAlpha:0];
     [self updateExpandCompressSmiley];
-    [UIView commitAnimations];
     [self.textView becomeFirstResponder];
+    [UIView commitAnimations];
 }
 
 - (void)actionExpandCompressSmiley
@@ -945,6 +945,7 @@
     [self actionHideRehostImage];
 
     [self textViewDidChange:self.textView];
+    [self actionHideSmileys];
 }
 
 - (void) imageReceived: (NSNotification *) notification
@@ -1035,9 +1036,9 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     NSLog(@"keyboardWillShow");
-    if (!self.viewControllerSmileys.bModeFullScreen || self.viewControllerSmileys.bActivateSmileySearchTable) {
-        [self resizeViewWithKeyboard:notification];
-    }
+    //if (!self.viewControllerSmileys.bModeFullScreen || self.viewControllerSmileys.bActivateSmileySearchTable) {
+    [self resizeViewWithKeyboard:notification];
+    //}
     if (self.viewControllerSmileys.bActivateSmileySearchTable) {
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.2];
@@ -1069,9 +1070,10 @@
 
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];
-
+    
     // Animate the resize of the text view's frame in sync with the keyboard's appearance.
     [UIView beginAnimations:nil context:NULL];
+    NSLog(@"### additionalSafeAreaInsets %f", intersection.size.height);
     self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
     [self.view layoutIfNeeded];
     [UIView commitAnimations];
