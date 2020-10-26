@@ -497,9 +497,9 @@ static CGFloat fCellImageSize = 1;
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     NSLog(@"SMILEY keyboardWillShow");
-    if (self.bModeFullScreen && self.displayMode != DisplayModeEnumTableSearch) {
+    /*if (self.bModeFullScreen && self.displayMode != DisplayModeEnumTableSearch) {
         [self resizeViewWithKeyboard:notification];
-    }
+    }*/
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
@@ -788,7 +788,9 @@ static CGFloat fCellImageSize = 1;
     smile = [NSString stringWithFormat:@" %@ ", smile]; // ajout des espaces avant/aprés le smiley.
 
     // Update main textField
-    AddMessageViewController* vcAddMessage = (AddMessageViewController*)self.parentViewController;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"smileyReceived" object:smile];
+
+    /*AddMessageViewController* vcAddMessage = (AddMessageViewController*)self.parentViewController;
     NSRange range = [vcAddMessage lastSelectedRange];
     if ([vcAddMessage.textView isFirstResponder]) {
         range = vcAddMessage.textView.selectedRange;
@@ -806,7 +808,7 @@ static CGFloat fCellImageSize = 1;
     [vcAddMessage setLastSelectedRange:range];
     vcAddMessage.textView.text = text;
     vcAddMessage.textView.selectedRange = range;
-    [vcAddMessage textViewDidChange:vcAddMessage.textView];    
+    [vcAddMessage textViewDidChange:vcAddMessage.textView];  */
 }
 
 - (void)actionReduce:(id)sender {

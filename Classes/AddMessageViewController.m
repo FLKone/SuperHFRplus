@@ -318,8 +318,7 @@
 }
 
 
-#pragma mark -
-#pragma mark ScrollView delegate methods
+#pragma mark - ScrollView delegate methods
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
@@ -572,8 +571,6 @@
     }
     
     // Set selected compte cookies
-    MultisManager *manager = [MultisManager sharedManager];
-    
     [arequest setUseCookiePersistence:NO];
     [arequest setRequestCookies:[selectedCompte objectForKey:COOKIES_KEY]];
     [arequest startSynchronous];
@@ -863,8 +860,8 @@
         [viewToolbar setHidden:NO];
         self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
         NSLog(@"mode DisplayModeEnumTableSearch, constraintSmileyViewHeight.constant = %f", f);
-        layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
+        //layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        //layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
         [self.viewControllerSmileys.btnReduce setEnabled:NO];
     }
     else if (self.viewControllerSmileys.bModeFullScreen) {
@@ -945,7 +942,8 @@
     textView.text = text;
     
     self.loaded = YES;
-    
+    [self actionHideRehostImage];
+
     [self textViewDidChange:self.textView];
 }
 
@@ -973,10 +971,6 @@
     
     textView.text = text;
 
-    
-    if (self.viewControllerRehostImage.bModeFullScreen) {
-        [self actionHideRehostImage];
-    }
     [self textViewDidChange:self.textView];
 }
 
@@ -1069,6 +1063,8 @@
     CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
     CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
 
+    NSLog(@"### keyboardRect rect %@", NSStringFromCGRect(convertedKeyboardRect));
+    NSLog(@"### safeAreaFrame rect %@", NSStringFromCGRect(safeAreaFrame));
     NSLog(@"### intersection rect %@", NSStringFromCGRect(intersection));
 
     NSTimeInterval animationDuration;
