@@ -973,6 +973,7 @@
     textView.text = text;
 
     [self textViewDidChange:self.textView];
+    [self actionHideRehostImage];
 }
 
 - (void)undoTextFieldEdit: (NSString*)string
