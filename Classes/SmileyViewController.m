@@ -202,6 +202,8 @@
     self.textFieldSmileys.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
     [self.textFieldSmileys setBackgroundColor:[ThemeColors navBackgroundColor]];
     self.view.backgroundColor = [UIColor clearColor];
+    [self.collectionViewSmileysDefault reloadData];
+    [self.collectionViewSmileysSearch reloadData];
 }
 
 - (void) changeDisplayMode:(DisplayModeEnum)newMode animate:(BOOL)bAnimate
@@ -294,7 +296,7 @@ static CGFloat fCellImageSize = 1;
         cell.smileyImage.clipsToBounds = NO;
         cell.smileyImage.layer.masksToBounds = true;
         cell.layer.borderColor = [ThemeColors cellBorderColor].CGColor;
-        cell.layer.backgroundColor = [UIColor whiteColor].CGColor;
+        cell.layer.backgroundColor = [ThemeColors greyBackgroundColorLighter].CGColor;
         cell.layer.borderWidth = 1.0f;
         cell.layer.cornerRadius = 3;
         cell.layer.masksToBounds = true;

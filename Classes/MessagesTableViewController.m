@@ -870,6 +870,9 @@
     swipeLeftRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
     self.swipeLeftRecognizer = (UISwipeGestureRecognizer *)recognizer;
 	
+    self.messagesWebView.scrollView.alwaysBounceVertical = YES;
+    self.messagesWebView.scrollView.alwaysBounceHorizontal = NO;
+
     //Bouton Repondre message
     if (self.isSearchInstra) {
         UIBarButtonItem *optionsBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchTopic)];

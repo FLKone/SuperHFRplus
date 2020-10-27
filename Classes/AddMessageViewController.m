@@ -268,7 +268,13 @@
     [self.btnToolbarUndo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo-redo"] withTheme:theme] forState:UIControlStateHighlighted];
     [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateNormal];
     [self.btnToolbarRedo setImage:[ThemeColors tintImage:[UIImage imageNamed:@"undo"] withTheme:theme] forState:UIControlStateHighlighted];
-
+    
+    // Undo / redo button are already present on ipad -> hide them
+    if ([[UIDevice currentDevice] userInterfaceIdiom] != UIUserInterfaceIdiomPhone) {
+        [self.btnToolbarUndo setHidden:YES];
+        [self.btnToolbarRedo setHidden:YES];
+    }
+    
     [self.btnToolbarImage addTarget:self action:@selector(actionImage:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnToolbarGIF addTarget:self action:@selector(actionGIF:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnToolbarSmiley addTarget:self action:@selector(actionSmiley:) forControlEvents:UIControlEventTouchUpInside];

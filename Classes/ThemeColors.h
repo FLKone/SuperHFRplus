@@ -27,6 +27,7 @@
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
++ (UIColor *)greyBackgroundColorLighter;
 + (UIColor *)messageBackgroundColor:(Theme)theme;
 + (UIColor *)messageModoBackgroundColor:(Theme)theme;
 + (UIColor *)messageMeBackgroundColor:(Theme)theme;

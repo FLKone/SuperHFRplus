@@ -305,6 +305,14 @@
     }
 }
 
++ (UIColor *)greyBackgroundColorLighter {
+    switch ([ThemeManager currentTheme]) {
+        case ThemeLight: return [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0];
+        case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor:  [UIColor colorWithRed:50.0/255.0 green:52.0/255.0 blue:55.0/255.0 alpha:1.0]];
+        default:         return [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
+    }
+}
+
 
 + (UIColor *)messageBackgroundColor:(Theme)theme{
     switch (theme) {

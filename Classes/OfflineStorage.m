@@ -31,7 +31,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
         // your custom initialization
         self.dicOfflineTopics = [[NSMutableDictionary alloc] init];
         self.dicImageCacheList = [[NSMutableDictionary alloc] init];
-
+        
         // load local storage data
         [self load];
         [self loadImageCache];
@@ -439,34 +439,34 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
 - (void)copyAllRequiredResourcesFromBundleToCache
 {
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-liste.css"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-aide.css"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-liste-light.css"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"style-aide.css"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery-2.1.1.min.js"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery.base64.js"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery.doubletap.js"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"jquery.hammer.js"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowback.svg"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowbegin.svg"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowend.svg"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"arrowforward.svg"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"plus.svg"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"avatar_male_gray_on_light_48x48.png"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"avatar_male_gray_on_dark_48x48.png"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"08-chat.png"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"photoDefaultClic.png"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"photoDefaultfailmini.png"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"loadinfo-white@2x.gif"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"loadinfo.gif"];
-    [[OfflineStorage shared] copyFromBundleToCacheForFilename:@"loadinfo.net.gif"];
+    [self copyFromBundleToCacheForFilename:@"style-liste.css"];
+    [self copyFromBundleToCacheForFilename:@"style-aide.css"];
+    [self copyFromBundleToCacheForFilename:@"style-liste-light.css"];
+    [self copyFromBundleToCacheForFilename:@"style-aide.css"];
+    [self copyFromBundleToCacheForFilename:@"jquery-2.1.1.min.js"];
+    [self copyFromBundleToCacheForFilename:@"jquery.base64.js"];
+    [self copyFromBundleToCacheForFilename:@"jquery.doubletap.js"];
+    [self copyFromBundleToCacheForFilename:@"jquery.hammer.js"];
+    [self copyFromBundleToCacheForFilename:@"arrowback.svg"];
+    [self copyFromBundleToCacheForFilename:@"arrowbegin.svg"];
+    [self copyFromBundleToCacheForFilename:@"arrowend.svg"];
+    [self copyFromBundleToCacheForFilename:@"arrowforward.svg"];
+    [self copyFromBundleToCacheForFilename:@"plus.svg"];
+    [self copyFromBundleToCacheForFilename:@"avatar_male_gray_on_light_48x48.png"];
+    [self copyFromBundleToCacheForFilename:@"avatar_male_gray_on_dark_48x48.png"];
+    [self copyFromBundleToCacheForFilename:@"08-chat.png"];
+    [self copyFromBundleToCacheForFilename:@"photoDefaultClic.png"];
+    [self copyFromBundleToCacheForFilename:@"photoDefaultfailmini.png"];
+    [self copyFromBundleToCacheForFilename:@"loadinfo-white@2x.gif"];
+    [self copyFromBundleToCacheForFilename:@"loadinfo.gif"];
+    [self copyFromBundleToCacheForFilename:@"loadinfo.net.gif"];
 
     // Copy default smileys
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
     NSMutableArray* dicCommonSmileys = [NSMutableArray arrayWithContentsOfFile:plistPath];
     for (NSDictionary* smiley in dicCommonSmileys) {
         NSString* sFilename = smiley[@"resource"];
-        [[OfflineStorage shared] copyFromBundleToCacheForFilename:sFilename];
+        [self copyFromBundleToCacheForFilename:sFilename];
     }
 
 }
@@ -520,6 +520,13 @@ static OfflineStorage *_shared = nil;    // static instance variable
 {
     NSArray* cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString* diskCachePath = [[cachePaths objectAtIndex:0] stringByAppendingPathComponent:@"cache"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:diskCachePath]) {
+        if ([fileManager createDirectoryAtPath:diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL]) {
+            NSLog(@"Created cache directory %@", diskCachePath);
+        }
+    }
+
     return diskCachePath;
 }
 
