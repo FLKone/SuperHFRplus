@@ -71,6 +71,7 @@
 
 -(void)configureWithRehostImage:(RehostImage *)image;
 {
+    //NSLog(@"RehostCollectionCell configureWithRehostImage");
     self.previewImage = [[UIImageView alloc] initWithFrame:(CGRectInset(self.bounds, IMAGEVIEW_BORDER_LENGTH, IMAGEVIEW_BORDER_LENGTH))];
     [self addSubview:self.previewImage];
     self.rehostImage = image;

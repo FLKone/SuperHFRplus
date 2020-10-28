@@ -56,23 +56,23 @@
                     <rect key="frame" x="0.0" y="450" width="320" height="30"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IJL-Yk-jLq" userLabel="Photos">
-                            <rect key="frame" x="15" y="0.0" width="50" height="30"/>
+                            <rect key="frame" x="0.0" y="0.0" width="65" height="30"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="50" id="zQh-N9-s2h"/>
+                                <constraint firstAttribute="width" constant="65" id="zQh-N9-s2h"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="12" minY="3" maxX="12" maxY="3"/>
+                            <inset key="imageEdgeInsets" minX="27" minY="3" maxX="12" maxY="3"/>
                             <state key="normal" image="Camera-32.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PO2-Wp-62T" userLabel="Folder">
-                            <rect key="frame" x="65" y="0.0" width="50" height="30"/>
+                            <rect key="frame" x="65" y="0.0" width="60" height="30"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="50" id="Ivu-Ee-EnV"/>
+                                <constraint firstAttribute="width" constant="60" id="Ivu-Ee-EnV"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="13" minY="4" maxX="13" maxY="5"/>
+                            <inset key="imageEdgeInsets" minX="18" minY="4" maxX="18" maxY="5"/>
                             <state key="normal" image="Folder-32.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RAF-mH-arS">
-                            <rect key="frame" x="80" y="0.0" width="95" height="30"/>
+                            <rect key="frame" x="125" y="0.0" width="95" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="95" id="Uvx-sy-xJp"/>
                             </constraints>
@@ -80,9 +80,9 @@
                             <state key="normal" title="Image et lien"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IdY-G9-kVr">
-                            <rect key="frame" x="175" y="0.0" width="105" height="30"/>
+                            <rect key="frame" x="220" y="0.0" width="60" height="30"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="105" id="elK-qL-8VL"/>
+                                <constraint firstAttribute="width" constant="60" id="elK-qL-8VL"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
                             <state key="normal" title="1200px"/>
@@ -108,7 +108,7 @@
                         <constraint firstItem="IdY-G9-kVr" firstAttribute="leading" secondItem="RAF-mH-arS" secondAttribute="trailing" id="N4L-UL-wqd"/>
                         <constraint firstAttribute="height" constant="30" id="SOH-m6-g4B"/>
                         <constraint firstAttribute="trailing" secondItem="OCR-1A-G9k" secondAttribute="trailing" id="YuL-cK-eFv"/>
-                        <constraint firstItem="IJL-Yk-jLq" firstAttribute="leading" secondItem="L5W-CK-Lec" secondAttribute="leading" constant="15" id="dzn-J3-JsB"/>
+                        <constraint firstItem="IJL-Yk-jLq" firstAttribute="leading" secondItem="L5W-CK-Lec" secondAttribute="leading" id="dzn-J3-JsB"/>
                         <constraint firstItem="IJL-Yk-jLq" firstAttribute="top" secondItem="L5W-CK-Lec" secondAttribute="top" id="gFl-rs-ioZ"/>
                         <constraint firstAttribute="bottom" secondItem="RAF-mH-arS" secondAttribute="bottom" id="hWG-6a-85q"/>
                         <constraint firstItem="PO2-Wp-62T" firstAttribute="leading" secondItem="IJL-Yk-jLq" secondAttribute="trailing" id="hbC-3x-pfN"/>

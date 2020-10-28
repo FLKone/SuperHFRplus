@@ -118,8 +118,8 @@
 {
     [super viewWillAppear:animated];
     
-    [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3, 12, 3, 12)];
-    [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4, 13, 4, 13)];
+    [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3, 27, 3, 12)];
+    [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4, 18, 4, 18)];
 
 
     
@@ -384,6 +384,7 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"CellForRowAtIndexPath %ld", (long)indexPath.row);
     static NSString* CellRehostIdentifier = @"RehostCell";
     RehostCell *cell = (RehostCell *)[tableView dequeueReusableCellWithIdentifier:CellRehostIdentifier];
     if (cell == nil)

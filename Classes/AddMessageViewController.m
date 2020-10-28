@@ -728,12 +728,14 @@
         self.constraintRehostImageViewHeight.constant = f + TOOLBAR_HEIGHT;
         self.constraintToolbarHeight.constant = 0;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        [self.viewControllerRehostImage.tableViewImages reloadData];
     }
     else {
         [viewToolbar setHidden:NO];
         self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
         self.constraintRehostImageViewHeight.constant = [self.viewControllerRehostImage getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [self.viewControllerRehostImage.collectionImages reloadData];
     }
     [self.viewControllerRehostImage updateExpandButton];
 }
@@ -993,9 +995,8 @@
 
 #pragma mark - Text view delegate methods
 
-- (BOOL)textViewShouldBeginEditing:(UITextView *)aTextView {
-    //NSLog(@"textViewShouldBeginEditing");
-    
+- (BOOL)textViewShouldBeginEditing:(UITextView *)aTextView
+{
     if(lastSelectedRange.location != NSNotFound)
     {
         textView.selectedRange = lastSelectedRange;
@@ -1003,27 +1004,11 @@
     
     
     return YES;
-    
-    /*
-     You can create the accessory view programmatically (in code), in the same nib file as the view controller's main view, or from a separate nib file. This example illustrates the latter; it means the accessory view is loaded lazily -- only if it is required.
-     */
-    
-    if (textView.inputAccessoryView == nil) {
-        [[NSBundle mainBundle] loadNibNamed:@"AccessoryView" owner:self options:nil];
-        // Loading the AccessoryView nib file sets the accessoryView outlet.
-        textView.inputAccessoryView = accessoryView;
-        
-        // After setting the accessory view for the text view, we no longer need a reference to the accessory view.
-        self.accessoryView = nil;
-    }
-    
-    return YES;
 }
 
 
-- (BOOL)textViewShouldEndEditing:(UITextView *)aTextView {
-    //NSLog(@"textViewShouldEndEditing");
-    
+- (BOOL)textViewShouldEndEditing:(UITextView *)aTextView
+{
     if(self.loaded)
     {
         //NSLog(@"textViewShouldEndEditing NO");
@@ -1057,12 +1042,11 @@
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    NSLog(@"ADD :::: Hide");
     [self resizeViewWithKeyboard:notification];
 }
 
 - (void)resizeViewWithKeyboard:(NSNotification *)notification {
-    NSLog(@"resizeViewWithKeyboard");
+    //NSLog(@"resizeViewWithKeyboard");
 
     NSDictionary *userInfo = [notification userInfo];
     NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
@@ -1071,16 +1055,12 @@
     CGRect safeAreaFrame = CGRectInset(self.view.safeAreaLayoutGuide.layoutFrame, 0, -self.additionalSafeAreaInsets.bottom);
     CGRect intersection = CGRectIntersection(safeAreaFrame, convertedKeyboardRect);
 
-    NSLog(@"### keyboardRect rect %@", NSStringFromCGRect(convertedKeyboardRect));
-    NSLog(@"### safeAreaFrame rect %@", NSStringFromCGRect(safeAreaFrame));
-    NSLog(@"### intersection rect %@", NSStringFromCGRect(intersection));
-
     NSTimeInterval animationDuration;
     [animationDurationValue getValue:&animationDuration];
     
     // Animate the resize of the text view's frame in sync with the keyboard's appearance.
     [UIView beginAnimations:nil context:NULL];
-    NSLog(@"### additionalSafeAreaInsets %f", intersection.size.height);
+    NSLog(@"resizeViewWithKeyboard / additionalSafeAreaInsets %f", intersection.size.height);
     self.additionalSafeAreaInsets = UIEdgeInsetsMake(0, 0, intersection.size.height, 0);
     [self.view layoutIfNeeded];
     [UIView commitAnimations];
@@ -1100,8 +1080,6 @@
 {
     //NSLog(@"textFieldDidEndEditing %@", textField);
     
-    //[segmentControler setEnabled:YES forSegmentAtIndex:0];
-    //[segmentControler setEnabled:YES forSegmentAtIndex:1];
     [self.btnToolbarImage setEnabled:YES];
     [self.btnToolbarGIF setEnabled:YES];
     [self.btnToolbarSmiley setEnabled:YES];
@@ -1110,8 +1088,7 @@
 }
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     //NSLog(@"textFieldShouldReturn");
-    
-    //[textField resignFirstResponder];
+
     if (textField == self.textFieldTo) {
         [self.textFieldTitle becomeFirstResponder];
     }
@@ -1119,7 +1096,7 @@
     {
         [self.textView becomeFirstResponder];
     }
-    //
+
     return NO;
     
 }
