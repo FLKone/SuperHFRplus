@@ -291,11 +291,8 @@
 	NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
 	
 	if (temporaryMPArray.count == 3) {
-		
 		NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";			
-		NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP
-																										  withString:@"$1"];
-		
+		NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
 		[[HFRplusAppDelegate sharedAppDelegate] updateMPBadgeWithString:myMPNumber];
 	}
 	else {

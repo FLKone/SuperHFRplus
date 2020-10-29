@@ -24,10 +24,12 @@
 #import "MultisManager.h"
 #import "MPStorage.h"
 #import "BlackList.h"
-// TODO: UNCOMMENT #import "WEBPURLProtocol.h"
-// TODO: UNCOMMENT #import "WEBPDemoDecoder.h"
 
 #import <SafariServices/SafariServices.h>
+#import <BackgroundTasks/BackgroundTasks.h>
+#import <UserNotifications/UserNotifications.h>
+
+#define NOTIFICATION_BACKGROUND_REFRESH NO
 
 @implementation HFRplusAppDelegate
 
@@ -158,17 +160,124 @@
     [self setTheme:[[ThemeManager sharedManager] theme]];
     [[ThemeManager sharedManager] refreshTheme];
 
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"old_favorites"] == NO) {
-        NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:rootController.viewControllers];
-        if (viewControllers.count == 5) {
-            [viewControllers removeObjectAtIndex:2];
-            [rootController setViewControllers:viewControllers animated:YES];
-        }
-    }
-
     
+    // Register background fetch
+#ifdef NOTIFICATION_BACKGROUND_REFRESH
+    [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.hfrplus.test.refresh" usingQueue:nil
+                                     launchHandler:^(__kindof BGTask * _Nonnull task) {
+        NSLog(@"didFinishLaunchingWithOptions / registerForTaskWithIdentifier");
+        [task setTaskCompletedWithSuccess:YES];
+        [self performFetch:(BGAppRefreshTask *)task];
+    }];
+    [application setMinimumBackgroundFetchInterval:10];
+
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
+       completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
+    }];
+
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"nb_new_mp"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_new_mp"];
+    }
+#endif
+
     return YES;
 }
+
+#ifdef NOTIFICATION_BACKGROUND_REFRESH
+
+-(void)performFetch:(BGAppRefreshTask *)task {
+    [self scheduleAppRefresh];
+    
+    NSLog(@"Background fetch started...");
+    NSString *task_desc = task.description;
+    [task setExpirationHandler:^{
+        NSLog(@"\n\nExpired task: %@", task_desc);
+    }];
+    NSURL *url = [NSURL URLWithString:@"https://forum.hardware.fr/forum1f.php?config=hfr.inc&owntopic=1&new=0&nojs=0"];
+    NSLog(@"Background fetch 01");
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    NSLog(@"Background fetch 02");
+    request.timeOutSeconds = 2;
+    ;
+    NSLog(@"Background fetch 03");
+    [request startSynchronous];
+    NSLog(@"Background fetch 04, %d"); //, UIApplication.sharedApplication.backgroundTimeRemaining);
+    if (![request error]) {
+        NSLog(@"Background fetch 05");
+        @try {
+            NSLog(@"Background fetch 06:\n%@", [request responseString]);
+            NSString* sResponseString  = [request responseString];
+            NSString* sNewNbMps = [sResponseString stringByReplacingOccurrencesOfRegex:@"class=\"red\">Vous avez ([0-9]+) nouveau"
+                                                                  withString:@"$1"];
+            NSLog(@"Background fetch 07 - sNbNewMp %@", sNewNbMps);
+
+            NSInteger iNewNbMps = [sNewNbMps intValue];
+            NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_new_mp"];
+            NSLog(@"Nb Mps, old=%ld, new=%ld", (long)iOldNbMps, (long)iNewNbMps);
+
+            if (iNewNbMps > iOldNbMps) {
+                NSLog(@"NOTIFYING FOR %ld new MPs", (iNewNbMps - iOldNbMps));
+                [self scheduleNotification:[NSString stringWithFormat: @"%ld", (long)(iNewNbMps - iOldNbMps)]];
+                [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_new_mp"];
+            }
+            //[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
+
+            /*
+            HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
+            HTMLNode *bodyNode = [myParser body]; //Find the body tag
+            HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
+            NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
+            NSLog(@"Background fetch 07 : %ld", temporaryMPArray.count);
+            if (temporaryMPArray.count == 3) {
+                NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";
+                NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
+                NSLog(@"Background check successful. %@ unread MPs", myMPNumber);
+                
+                NSInteger iNewNbMps = [myMPNumber intValue];
+                NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_new_mp"];
+                NSLog(@"Nb Mps, old=%ld, new=%ld", (long)iOldNbMps, (long)iNewNbMps);
+
+                if (iNewNbMps > iOldNbMps) {
+                    NSLog(@"NOTIFYING FOR %ld new MPs", (iNewNbMps - iOldNbMps));
+                    [self scheduleNotification:[NSString stringWithFormat: @"%ld", (long)(iNewNbMps - iOldNbMps)]];
+                    [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_new_mp"];
+                }
+                [UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
+                
+            }*/
+        }
+        @catch (NSException * e) {
+            NSLog(@"Error in parsing the result of the background fetch: %@", e);
+        }
+    }
+    [task setTaskCompletedWithSuccess:TRUE];
+    NSLog(@"Background fetch completed with task: %@", task.description);
+}
+
+- (void)scheduleNotification:(NSString*)sNbNewMPs {
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+    //content.title = @"HFR+ is watching you";
+    if ([sNbNewMPs isEqualToString:@"1"]) {
+        content.body = @"Vous avez un nouveau message privé";
+    } else {
+        content.body = [NSString stringWithFormat:@"Vous avez %@ nouveaux messages privés", sNbNewMPs];
+    }
+    //content.threadIdentifier = @"thread1";
+    
+    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:3.0 repeats:NO];
+    
+    NSString* requestId = [NSUUID UUID].UUIDString;
+    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:requestId content:content trigger:trigger];
+    
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center addNotificationRequest:request withCompletionHandler:^(NSError *error) {
+        NSLog(@"Notification request error: %@", error);
+    }];
+}
+
+#endif // NOTIF
 
 -(void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
     NSLog(@"shortcutItem %@", shortcutItem);
@@ -311,10 +420,34 @@
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
     NSLog(@"applicationDidEnterBackground");
+    [self scheduleAppRefresh];
+
     [periodicMaintenanceTimer invalidate];
     periodicMaintenanceTimer = nil;
 }
 
+- (void) scheduleAppRefresh {
+    NSLog(@"Scheduling the app background refresh");
+    
+    BGAppRefreshTaskRequest *request = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:@"com.hfrplus.test.refresh"];
+    [request setEarliestBeginDate:[[NSDate date] dateByAddingTimeInterval:30]];
+    //request.requiresNetworkConnectivity = YES;
+    
+    __autoreleasing NSError *error;
+    @try {
+        //NSLog(@"\n\nSubmitting task request: %@", request.description);
+        [[BGTaskScheduler sharedScheduler] submitTaskRequest:request error:&error];
+    } @catch (NSException *exception) {
+        NSLog(@"\n\nCannot submit task request: %@", exception.description);
+    } @finally {
+        if (error)
+        {
+            NSLog(@"\n\nFailed to submit task request:\n%@ (%ld)", request.description, error.code);
+        } else {
+            NSLog(@"Submitted task request %@", request.description);
+        }
+    }
+}
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     /*
@@ -810,8 +943,6 @@
     [searchNavController popToRootViewControllerAnimated:NO];
     
     
-    //[[[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] viewControllers] objectAtIndex:1] popToRootViewControllerAnimated:NO];
-    
     UIViewController * uivc = [[UIViewController alloc] init];
     uivc.title = @"HFR+";
     
@@ -819,15 +950,13 @@
 
 }
 
-#pragma mark -
-#pragma mark login management
+#pragma mark - login management
 
 - (void)checkLogin {
     //NSLog(@"checkLogin");
 }
 
-#pragma mark -
-#pragma mark Memory management
+#pragma mark - Memory management
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     /*

@@ -168,13 +168,13 @@
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    NSLog(@"=============== HFRNavigation traitCollectionDidChange 1 ===============");
+    //NSLog(@"=============== HFRNavigation traitCollectionDidChange 1 ===============");
     [super traitCollectionDidChange:previousTraitCollection];
     if (@available(iOS 13.0, *)) {
         if ([previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.traitCollection] == false) {
             return;
         }
-        NSLog(@"=============== HFRNavigation traitCollectionDidChange 2 ===============");
+        //NSLog(@"=============== HFRNavigation traitCollectionDidChange 2 ===============");
         [[ThemeManager sharedManager] checkTheme];
     }
 }
