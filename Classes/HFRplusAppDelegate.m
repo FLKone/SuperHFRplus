@@ -68,8 +68,6 @@
 
     NSLog(@"didFinishLaunchingWithOptions");
     
-// TODO: UNCOMMENT     [WEBPURLProtocol registerWebP:[WEBPDemoDecoder new]];
-
     //self.hash_check = [[NSString alloc] init];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:YES];
@@ -167,22 +165,24 @@
     
     // Register background fetch
 #ifdef NOTIFICATION_BACKGROUND_REFRESH
-    [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.hfrplus.test.refresh" usingQueue:nil
-                                     launchHandler:^(__kindof BGTask * _Nonnull task) {
-        NSLog(@"didFinishLaunchingWithOptions / registerForTaskWithIdentifier");
-        [task setTaskCompletedWithSuccess:YES];
-        [self checkForNewMP:(BGAppRefreshTask *)task];
-    }];
-    [application setMinimumBackgroundFetchInterval:60];
+    if (@available(iOS 13, *))
+    {
+        [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.hfrplus.refresh_mp" usingQueue:nil
+                                         launchHandler:^(__kindof BGTask * _Nonnull task) {
+            [task setTaskCompletedWithSuccess:YES];
+            [self checkForNewMP:(BGAppRefreshTask *)task];
+        }];
+        [application setMinimumBackgroundFetchInterval:60];
 
-    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-    [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
-       completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
-    }];
+        UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+        [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
+           completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
+        }];
 
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"nb_mp"] == nil) {
-        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"nb_mp"] == nil) {
+            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
+        }
     }
 #endif
 
@@ -226,8 +226,8 @@
                 [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
             }
 
+            [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_mp"];
             if (iNewNbMps > iOldNbMps) {
-                [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_mp"];
                 NSString* sNotif = @"";
                 if ((iNewNbMps - iOldNbMps) == 1) {
                     sNotif = @"Vous avez un nouveau message privé";
@@ -238,8 +238,6 @@
                 [self scheduleNotification:sNotif];
                 // Marche pas  ?[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
             }
-            
-
         }
         @catch (NSException * e) {
             NSLog(@"Error in parsing the result of the background fetch: %@", e);
@@ -422,24 +420,27 @@
 }
 
 - (void) scheduleAppRefresh {
-    NSLog(@"Scheduling the app background refresh");
-    
-    BGAppRefreshTaskRequest *request = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:@"com.hfrplus.test.refresh"];
-    [request setEarliestBeginDate:[[NSDate date] dateByAddingTimeInterval:60]];
-    //request.requiresNetworkConnectivity = YES;
-    
-    __autoreleasing NSError *error;
-    @try {
-        //NSLog(@"\n\nSubmitting task request: %@", request.description);
-        [[BGTaskScheduler sharedScheduler] submitTaskRequest:request error:&error];
-    } @catch (NSException *exception) {
-        NSLog(@"\n\nCannot submit task request: %@", exception.description);
-    } @finally {
-        if (error)
-        {
-            NSLog(@"\n\nFailed to submit task request:\n%@ (%ld)", request.description, error.code);
-        } else {
-            NSLog(@"Submitted task request %@", request.description);
+    if (@available(iOS 13, *))
+    {
+        NSLog(@"Scheduling the app background refresh");
+        
+        BGAppRefreshTaskRequest *request = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:@"com.hfrplus.refresh_mp"];
+        [request setEarliestBeginDate:[[NSDate date] dateByAddingTimeInterval:60]];
+        //request.requiresNetworkConnectivity = YES;
+        
+        __autoreleasing NSError *error;
+        @try {
+            //NSLog(@"\n\nSubmitting task request: %@", request.description);
+            [[BGTaskScheduler sharedScheduler] submitTaskRequest:request error:&error];
+        } @catch (NSException *exception) {
+            NSLog(@"\n\nCannot submit task request: %@", exception.description);
+        } @finally {
+            if (error)
+            {
+                NSLog(@"\n\nFailed to submit task request:\n%@ (%ld)", request.description, error.code);
+            } else {
+                NSLog(@"Submitted task request %@", request.description);
+            }
         }
     }
 }

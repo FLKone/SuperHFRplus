@@ -4,7 +4,7 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.hfrplus.test.refresh</string>
+		<string>com.hfrplus.refresh_mp</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>fr_FR</string>
