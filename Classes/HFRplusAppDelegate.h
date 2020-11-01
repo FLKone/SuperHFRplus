@@ -10,6 +10,7 @@
 #import "TabBarController.h"
 #import "SplitViewController.h"
 #import "DetailNavigationViewController.h"
+#import <BackgroundTasks/BackgroundTasks.h>
 
 @import InAppSettingsKit;
 
@@ -71,7 +72,7 @@
 - (void)logout;
 
 - (void)resetApp;
-
+- (void)checkForNewMP:(BGAppRefreshTask *)task;
 - (void)registerDefaultsFromSettingsBundle;
 @end
 

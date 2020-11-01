@@ -28,8 +28,10 @@
 #import <SafariServices/SafariServices.h>
 #import <BackgroundTasks/BackgroundTasks.h>
 #import <UserNotifications/UserNotifications.h>
+#import "HTMLParser.h"
 
-#define NOTIFICATION_BACKGROUND_REFRESH NO
+#define NOTIFICATION_BACKGROUND_REFRESH YES
+#define BACKGROUND_MAINTENANCE          YES
 
 @implementation HFRplusAppDelegate
 
@@ -137,12 +139,14 @@
         
     [window makeKeyAndVisible];
 
-    periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
-                                                                target:self
-                                                              selector:@selector(periodicMaintenance)
-                                                              userInfo:nil
-                                                               repeats:YES];
-
+    if (BACKGROUND_MAINTENANCE) {
+        periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
+                                                                    target:self
+                                                                  selector:@selector(periodicMaintenance)
+                                                                  userInfo:nil
+                                                                   repeats:YES];
+    }
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(setThemeFromNotification:) //note the ":" - should take an NSNotification as parameter
@@ -167,9 +171,9 @@
                                      launchHandler:^(__kindof BGTask * _Nonnull task) {
         NSLog(@"didFinishLaunchingWithOptions / registerForTaskWithIdentifier");
         [task setTaskCompletedWithSuccess:YES];
-        [self performFetch:(BGAppRefreshTask *)task];
+        [self checkForNewMP:(BGAppRefreshTask *)task];
     }];
-    [application setMinimumBackgroundFetchInterval:10];
+    [application setMinimumBackgroundFetchInterval:60];
 
     UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
     [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
@@ -177,8 +181,8 @@
         NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
     }];
 
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"nb_new_mp"] == nil) {
-        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_new_mp"];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"nb_mp"] == nil) {
+        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
     }
 #endif
 
@@ -187,83 +191,71 @@
 
 #ifdef NOTIFICATION_BACKGROUND_REFRESH
 
--(void)performFetch:(BGAppRefreshTask *)task {
-    [self scheduleAppRefresh];
-    
+- (void)checkForNewMP:(BGAppRefreshTask *)task
+{
     NSLog(@"Background fetch started...");
+    [self scheduleAppRefresh];
+
     NSString *task_desc = task.description;
     [task setExpirationHandler:^{
         NSLog(@"\n\nExpired task: %@", task_desc);
     }];
-    NSURL *url = [NSURL URLWithString:@"https://forum.hardware.fr/forum1f.php?config=hfr.inc&owntopic=1&new=0&nojs=0"];
-    NSLog(@"Background fetch 01");
+    
+    NSURL *url = [NSURL URLWithString:@"https://forum.hardware.fr"];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    NSLog(@"Background fetch 02");
-    request.timeOutSeconds = 2;
-    ;
-    NSLog(@"Background fetch 03");
+    request.timeOutSeconds = 5;
     [request startSynchronous];
-    NSLog(@"Background fetch 04, %d"); //, UIApplication.sharedApplication.backgroundTimeRemaining);
-    if (![request error]) {
-        NSLog(@"Background fetch 05");
-        @try {
-            NSLog(@"Background fetch 06:\n%@", [request responseString]);
-            NSString* sResponseString  = [request responseString];
-            NSString* sNewNbMps = [sResponseString stringByReplacingOccurrencesOfRegex:@"class=\"red\">Vous avez ([0-9]+) nouveau"
-                                                                  withString:@"$1"];
-            NSLog(@"Background fetch 07 - sNbNewMp %@", sNewNbMps);
 
-            NSInteger iNewNbMps = [sNewNbMps intValue];
-            NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_new_mp"];
-            NSLog(@"Nb Mps, old=%ld, new=%ld", (long)iOldNbMps, (long)iNewNbMps);
+    if (![request error]) {
+        @try {
+            NSString* sResponseString  = [request responseString];
+            NSError* error;
+            HTMLParser *myParser = [[HTMLParser alloc] initWithString:sResponseString error:&error];
+            HTMLNode *bodyNode = [myParser body]; //Find the body tag
+            HTMLNode *MPNode = [bodyNode findChildOfClass:@"cCatTopic red"];
+            NSString* sMPText = rawContentsOfNode([[MPNode firstChild] _node], [myParser _doc]);
+            
+            NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";
+            NSString *myMPNumber = [sMPText stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
+            
+            NSInteger iNewNbMps = [myMPNumber intValue];
+
+            NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_mp"];
+            if (iOldNbMps > 1000 || iOldNbMps < 0) {
+                iOldNbMps = 0;
+                [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
+            }
 
             if (iNewNbMps > iOldNbMps) {
-                NSLog(@"NOTIFYING FOR %ld new MPs", (iNewNbMps - iOldNbMps));
-                [self scheduleNotification:[NSString stringWithFormat: @"%ld", (long)(iNewNbMps - iOldNbMps)]];
-                [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_new_mp"];
-            }
-            //[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
-
-            /*
-            HTMLParser *myParser = [[HTMLParser alloc] initWithData:[request responseData] error:&error];
-            HTMLNode *bodyNode = [myParser body]; //Find the body tag
-            HTMLNode *MPNode = [bodyNode findChildOfClass:@"messagetable"]; // Get links for cat
-            NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
-            NSLog(@"Background fetch 07 : %ld", temporaryMPArray.count);
-            if (temporaryMPArray.count == 3) {
-                NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";
-                NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
-                NSLog(@"Background check successful. %@ unread MPs", myMPNumber);
-                
-                NSInteger iNewNbMps = [myMPNumber intValue];
-                NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_new_mp"];
-                NSLog(@"Nb Mps, old=%ld, new=%ld", (long)iOldNbMps, (long)iNewNbMps);
-
-                if (iNewNbMps > iOldNbMps) {
-                    NSLog(@"NOTIFYING FOR %ld new MPs", (iNewNbMps - iOldNbMps));
-                    [self scheduleNotification:[NSString stringWithFormat: @"%ld", (long)(iNewNbMps - iOldNbMps)]];
-                    [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_new_mp"];
+                [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_mp"];
+                NSString* sNotif = @"";
+                if ((iNewNbMps - iOldNbMps) == 1) {
+                    sNotif = @"Vous avez un nouveau message privé";
                 }
-                [UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
-                
-            }*/
+                else {
+                    sNotif = [NSString stringWithFormat:@"Vous avez %ld nouveaux messages privés", (long)(iNewNbMps - iOldNbMps)];
+                }
+                [self scheduleNotification:sNotif];
+                // Marche pas  ?[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
+            }
+            
+
         }
         @catch (NSException * e) {
             NSLog(@"Error in parsing the result of the background fetch: %@", e);
         }
     }
-    [task setTaskCompletedWithSuccess:TRUE];
+    
     NSLog(@"Background fetch completed with task: %@", task.description);
+    [task setTaskCompletedWithSuccess:TRUE];
 }
 
-- (void)scheduleNotification:(NSString*)sNbNewMPs {
+- (void)scheduleNotification:(NSString*)sTextNotif
+{
+    
     UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
     //content.title = @"HFR+ is watching you";
-    if ([sNbNewMPs isEqualToString:@"1"]) {
-        content.body = @"Vous avez un nouveau message privé";
-    } else {
-        content.body = [NSString stringWithFormat:@"Vous avez %@ nouveaux messages privés", sNbNewMPs];
-    }
+    content.body = sTextNotif;
     //content.threadIdentifier = @"thread1";
     
     UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:3.0 repeats:NO];
@@ -421,8 +413,11 @@
      */
     NSLog(@"applicationDidEnterBackground");
     [self scheduleAppRefresh];
-
-    [periodicMaintenanceTimer invalidate];
+    
+    if (BACKGROUND_MAINTENANCE) {
+        [periodicMaintenanceTimer invalidate];
+    }
+    
     periodicMaintenanceTimer = nil;
 }
 
@@ -430,7 +425,7 @@
     NSLog(@"Scheduling the app background refresh");
     
     BGAppRefreshTaskRequest *request = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:@"com.hfrplus.test.refresh"];
-    [request setEarliestBeginDate:[[NSDate date] dateByAddingTimeInterval:30]];
+    [request setEarliestBeginDate:[[NSDate date] dateByAddingTimeInterval:60]];
     //request.requiresNetworkConnectivity = YES;
     
     __autoreleasing NSError *error;
@@ -455,121 +450,125 @@
      */
     NSLog(@"applicationWillEnterForeground");
     
-    periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
-                                                                target:self
-                                                              selector:@selector(periodicMaintenance)
-                                                              userInfo:nil
-                                                               repeats:YES];
-    
+    if (BACKGROUND_MAINTENANCE) {
+        periodicMaintenanceTimer = [NSTimer scheduledTimerWithTimeInterval:60*10
+                                                                    target:self
+                                                                  selector:@selector(periodicMaintenance)
+                                                                  userInfo:nil
+                                                                   repeats:YES];
+    }
     // MPStorage : Update Blacklist from MPStorage
     [[MPStorage shared] initOrResetMP:[[MultisManager sharedManager] getCurrentPseudo]];
 }
 
 - (void)periodicMaintenance
 {
-    [self performSelectorInBackground:@selector(periodicMaintenanceBack) withObject:nil];
+    if (BACKGROUND_MAINTENANCE) {
+        [self performSelectorInBackground:@selector(periodicMaintenanceBack) withObject:nil];
+    }
 }
 
 - (void)periodicMaintenanceBack
 {
-    @autoreleasepool {
-    
-    //NSLog(@"periodicMaintenanceBack");
-
-    // If another same maintenance operation is already sceduled, cancel it so this new operation will be executed after other
-    // operations of the queue, so we can group more work together
-    //[periodicMaintenanceOperation cancel];
-    //self.periodicMaintenanceOperation = nil;
-
-        /*NSError *error = nil;
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSArray *URLResources = [NSArray arrayWithObject:@"NSURLCreationDateKey"];
+    if (BACKGROUND_MAINTENANCE) {
+        @autoreleasepool {
         
-        
-        
-        //NSArray *crashReportFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[[[NSFileManager defaultManager] userLibraryURL] URLByAppendingPathComponent:@"ImageCache"] includingPropertiesForKeys:URLResources options:(NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants | NSDirectoryEnumerationSkipsSubdirectoryDescendants) error:&error];
+        //NSLog(@"periodicMaintenanceBack");
 
-        
-        */
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-        NSString *diskCachePath = [[[paths objectAtIndex:0] stringByAppendingPathComponent:@"cache"] stringByAppendingPathComponent:@"avatars"];
+        // If another same maintenance operation is already sceduled, cancel it so this new operation will be executed after other
+        // operations of the queue, so we can group more work together
+        //[periodicMaintenanceOperation cancel];
+        //self.periodicMaintenanceOperation = nil;
 
-        if (![fileManager fileExistsAtPath:diskCachePath])
-        {
-            //NSLog(@"createDirectoryAtPath");
-            [fileManager createDirectoryAtPath:diskCachePath
-                                      withIntermediateDirectories:YES
-                                                       attributes:nil
-                                                            error:NULL];
-        }
-        else {
-            //NSLog(@"pas createDirectoryAtPath");
+            /*NSError *error = nil;
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSArray *URLResources = [NSArray arrayWithObject:@"NSURLCreationDateKey"];
             
             
-            NSString *directoryPath = diskCachePath;
-            NSDirectoryEnumerator *directoryEnumerator = [fileManager enumeratorAtPath:directoryPath];
             
-            NSDate *yesterday = [NSDate dateWithTimeIntervalSinceNow:(-60*60*24*25)];
-            //NSLog(@"yesterday %@", yesterday);
+            //NSArray *crashReportFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[[[NSFileManager defaultManager] userLibraryURL] URLByAppendingPathComponent:@"ImageCache"] includingPropertiesForKeys:URLResources options:(NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants | NSDirectoryEnumerationSkipsSubdirectoryDescendants) error:&error];
+
             
-            for (NSString *path in directoryEnumerator) {
+            */
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+            NSString *diskCachePath = [[[paths objectAtIndex:0] stringByAppendingPathComponent:@"cache"] stringByAppendingPathComponent:@"avatars"];
 
-                if ([[path pathExtension] isEqualToString:@"rtfd"]) {
-                    // Don't enumerate this directory.
-                    [directoryEnumerator skipDescendents];
-                }
-                else {
-                    
-                    NSDictionary *attributes = [directoryEnumerator fileAttributes];
-                    NSDate *CreatedDate = [attributes objectForKey:NSFileCreationDate];
+            if (![fileManager fileExistsAtPath:diskCachePath])
+            {
+                //NSLog(@"createDirectoryAtPath");
+                [fileManager createDirectoryAtPath:diskCachePath
+                                          withIntermediateDirectories:YES
+                                                           attributes:nil
+                                                                error:NULL];
+            }
+            else {
+                //NSLog(@"pas createDirectoryAtPath");
+                
+                
+                NSString *directoryPath = diskCachePath;
+                NSDirectoryEnumerator *directoryEnumerator = [fileManager enumeratorAtPath:directoryPath];
+                
+                NSDate *yesterday = [NSDate dateWithTimeIntervalSinceNow:(-60*60*24*25)];
+                //NSLog(@"yesterday %@", yesterday);
+                
+                for (NSString *path in directoryEnumerator) {
 
-                    if ([yesterday earlierDate:CreatedDate] == CreatedDate) {
-                        //NSLog(@"%@ was created %@", path, CreatedDate);
-                        
-                        NSError *error = nil;
-                        if (![fileManager removeItemAtURL:[NSURL fileURLWithPath:[diskCachePath stringByAppendingPathComponent:path]] error:&error]) {
-                            // Handle the error.
-                            //NSLog(@"error %@ %@", path, error);
-                        }
-                        
+                    if ([[path pathExtension] isEqualToString:@"rtfd"]) {
+                        // Don't enumerate this directory.
+                        [directoryEnumerator skipDescendents];
                     }
                     else {
-                        //NSLog(@"%@ was created == %@", path, CreatedDate);
+                        
+                        NSDictionary *attributes = [directoryEnumerator fileAttributes];
+                        NSDate *CreatedDate = [attributes objectForKey:NSFileCreationDate];
 
+                        if ([yesterday earlierDate:CreatedDate] == CreatedDate) {
+                            //NSLog(@"%@ was created %@", path, CreatedDate);
+                            
+                            NSError *error = nil;
+                            if (![fileManager removeItemAtURL:[NSURL fileURLWithPath:[diskCachePath stringByAppendingPathComponent:path]] error:&error]) {
+                                // Handle the error.
+                                //NSLog(@"error %@ %@", path, error);
+                            }
+                            
+                        }
+                        else {
+                            //NSLog(@"%@ was created == %@", path, CreatedDate);
+
+                        }
                     }
+                    
                 }
                 
+                /*
+                NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager]
+                                                     enumeratorAtURL:directoryURL
+                                                     includingPropertiesForKeys:keys
+                                                     options:(NSDirectoryEnumerationSkipsPackageDescendants |
+                                                              NSDirectoryEnumerationSkipsHiddenFiles)
+                                                     errorHandler:^(NSURL *url, NSError *error) {
+                                                         // Handle the error.
+                                                         // Return YES if the enumeration should continue after the error.
+                                                         return YES;
+                                                     }];
+                
+                for (NSURL *url in enumerator) {
+                }
+                 */
             }
             
-            /*
-            NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager]
-                                                 enumeratorAtURL:directoryURL
-                                                 includingPropertiesForKeys:keys
-                                                 options:(NSDirectoryEnumerationSkipsPackageDescendants |
-                                                          NSDirectoryEnumerationSkipsHiddenFiles)
-                                                 errorHandler:^(NSURL *url, NSError *error) {
-                                                     // Handle the error.
-                                                     // Return YES if the enumeration should continue after the error.
-                                                     return YES;
-                                                 }];
+
             
-            for (NSURL *url in enumerator) {
-            }
-             */
+        // If disk usage outrich capacity, run the cache eviction operation and if cacheInfo dictionnary is dirty, save it in an operation
+            /* if (diskCacheUsage > self.diskCapacity)
+        {
+            self.periodicMaintenanceOperation = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(balanceDiskUsage) object:nil] autorelease];
+            [ioQueue addOperation:periodicMaintenanceOperation];
+        }*/
+            //NSLog(@"end");
         }
-        
-
-        
-    // If disk usage outrich capacity, run the cache eviction operation and if cacheInfo dictionnary is dirty, save it in an operation
-        /* if (diskCacheUsage > self.diskCapacity)
-    {
-        self.periodicMaintenanceOperation = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(balanceDiskUsage) object:nil] autorelease];
-        [ioQueue addOperation:periodicMaintenanceOperation];
-    }*/
-        //NSLog(@"end");
     }
-
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -657,19 +656,22 @@
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
 {
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
+    
+    [[NSUserDefaults standardUserDefaults] setInteger:[badgeValue intValue] forKey:@"nb_mp"];
+
     dispatch_async(dispatch_get_main_queue(),
                    ^{
         int shift = 0;
         if ([[[[self rootController] tabBar] items] count] == 5) {
             shift = 1;
         }
-                       if ([badgeValue intValue] > 0) {
+        if ([badgeValue intValue] > 0) {
            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:badgeValue];
-                       }
-                       else {
+       }
+       else {
            [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
-                       }
-                   });
+       }
+   });
 }
 
 - (void)updatePlusBadgeWithString:(NSString *)badgeValue;
@@ -966,7 +968,9 @@
 }
 
 - (void)dealloc {
-    [periodicMaintenanceTimer invalidate];
+    if (BACKGROUND_MAINTENANCE) {
+        [periodicMaintenanceTimer invalidate];
+    }
     periodicMaintenanceTimer = nil;
 }
 

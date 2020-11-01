@@ -933,26 +933,8 @@
                                     selector:@selector(undoTextFieldEdit:)
                                       object:self.textView.text];
     [self enableDisableUndoButton];
-
-    NSMutableString *text = [textView.text mutableCopy];
-    
-    if (!lastSelectedRange.location) {
-        lastSelectedRange = NSMakeRange(0, 0);
-    }
-    
-    if (text.length < lastSelectedRange.location) {
-        lastSelectedRange.location = text.length;
-    }
-    
-    [text insertString:[notification object] atIndex:lastSelectedRange.location];
-    
-    lastSelectedRange.location += [[notification object] length];
-    textView.text = text;
-    
     self.loaded = YES;
-    [self actionHideRehostImage];
-
-    [self textViewDidChange:self.textView];
+    [self insertTextToTextView:[notification object]];
     [self actionHideSmileys];
 }
 
@@ -962,26 +944,24 @@
                                     selector:@selector(undoTextFieldEdit:)
                                       object:self.textView.text];
     [self enableDisableUndoButton];
+    [self insertTextToTextView:[notification object]];
+    [self actionHideRehostImage];
+}
 
-    NSMutableString *text = [textView.text mutableCopy];
-    if (!lastSelectedRange.location) {
-        lastSelectedRange = NSMakeRange(0, 0);
-    }
+- (void)insertTextToTextView: (NSString*)textToInsert
+{
+    NSMutableString *text = [self.textView.text mutableCopy];
     
-    if (text.length < lastSelectedRange.location) {
-        lastSelectedRange.location = text.length;
-    }
-    
-    [text insertString:[notification object] atIndex:lastSelectedRange.location];
-    
-    lastSelectedRange.location += [[notification object] length];
-    lastSelectedRange.location += [text length];
-    lastSelectedRange.length = 0;
-    
+    NSRange selRange = self.textView.selectedRange;
+
+    [text insertString:textToInsert atIndex:selRange.location];
+    selRange.location += textToInsert.length;
+    selRange.length = 0;
+
     textView.text = text;
+    textView.selectedRange = selRange;
 
     [self textViewDidChange:self.textView];
-    [self actionHideRehostImage];
 }
 
 - (void)undoTextFieldEdit: (NSString*)string
