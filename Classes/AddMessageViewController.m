@@ -878,7 +878,7 @@
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
         self.constraintSmileyViewHeight.constant = f + TOOLBAR_HEIGHT;
-        NSLog(@"mode viewControllerSmileys.bModeFullScreen, constraintSmileyViewHeight.constant = %f", f);
+        NSLog(@"mode viewControllerSmileys.bModeFullScreen, constraintSmileyViewHeight.constant = %f from rect %@", f, [NSStringFromCGRect(rectS)]);
         [viewToolbar setHidden:YES];
         self.constraintToolbarHeight.constant = 0;
 
