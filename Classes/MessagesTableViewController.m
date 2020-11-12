@@ -1231,6 +1231,9 @@
     self.searchLabel.textColor = [ThemeColors textColor:theme];
     
     self.messagesWebView.allowsLinkPreview = YES;
+    self.messagesWebView.scrollView.alwaysBounceVertical = YES;
+    self.messagesWebView.scrollView.alwaysBounceHorizontal = NO;
+    //self.messagesWebView.scrollView.delegate = self;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -1978,6 +1981,11 @@
     [self finishWebViewLoading];
 }
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView.contentOffset.x > 0  ||  scrollView.contentOffset.x < 0 )
+        scrollView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
+}
 - (void)finishWebViewLoading {
     if (!self.filterPostsQuotes && !self.pageNumber) {
         NSLog(@"Error: pageNumber not set");

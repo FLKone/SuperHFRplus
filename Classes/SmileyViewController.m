@@ -498,15 +498,9 @@ static CGFloat fCellImageSize = 1;
 #pragma mark - Responding to keyboard events
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    NSLog(@"SMILEY keyboardWillShow");
-    /*if (self.bModeFullScreen && self.displayMode != DisplayModeEnumTableSearch) {
-        [self resizeViewWithKeyboard:notification];
-    }*/
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    NSLog(@"SMILEY keyboardWillHide");
-    //[self resizeViewWithKeyboard:notification];
 }
 
 - (void)resizeViewWithKeyboard:(NSNotification *)notification {
@@ -624,8 +618,6 @@ static CGFloat fCellImageSize = 1;
 
 - (void)fetchSmileys
 {
-    NSLog(@"----------- STOP REQUIRED -----------");
-
     // Stop loading smileys of previous request
     [[SmileyCache shared] setBStopLoadingSmileysToCache:YES];
 
@@ -751,8 +743,8 @@ static CGFloat fCellImageSize = 1;
 
 - (void) didSelectSmile:(NSString *)smile
 {
+    NSLog(@"didSelectSmile");
     [SmileyCache shared].bStopLoadingSmileysToCache = YES;
-    NSLog(@"----------- STOP REQUIRED -----------");
 
     // Save search when smiley is selected (this confirms the search is OK)
     if (self.textFieldSmileys.text.length >= 3) {
@@ -791,26 +783,6 @@ static CGFloat fCellImageSize = 1;
 
     // Update main textField
     [[NSNotificationCenter defaultCenter] postNotificationName:@"smileyReceived" object:smile];
-
-    /*AddMessageViewController* vcAddMessage = (AddMessageViewController*)self.parentViewController;
-    NSRange range = [vcAddMessage lastSelectedRange];
-    if ([vcAddMessage.textView isFirstResponder]) {
-        range = vcAddMessage.textView.selectedRange;
-    }
-    if (!range.location) {
-        range = NSMakeRange(0, 0);
-    }
-    NSMutableString *text = [vcAddMessage.textView.text mutableCopy];
-    if (text.length < range.location) {
-        range.location = text.length;
-    }
-    [text insertString:smile atIndex:range.location];
-    range.location += [smile length];
-    range.length = 0;
-    [vcAddMessage setLastSelectedRange:range];
-    vcAddMessage.textView.text = text;
-    vcAddMessage.textView.selectedRange = range;
-    [vcAddMessage textViewDidChange:vcAddMessage.textView];  */
 }
 
 - (void)actionReduce:(id)sender {

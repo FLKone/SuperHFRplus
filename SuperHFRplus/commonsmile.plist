@@ -460,7 +460,7 @@
 		<key>resource</key>
 		<string>fou.gif</string>
 		<key>editor</key>
-		<true/>
+		<false/>
 	</dict>
 	<dict>
 		<key>code</key>
@@ -490,7 +490,7 @@
 		<key>resource</key>
 		<string>eek.gif</string>
 		<key>editor</key>
-		<true/>
+		<false/>
 	</dict>
 	<dict>
 		<key>code</key>

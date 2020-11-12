@@ -878,7 +878,7 @@
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
         self.constraintSmileyViewHeight.constant = f + TOOLBAR_HEIGHT;
-        NSLog(@"mode viewControllerSmileys.bModeFullScreen, constraintSmileyViewHeight.constant = %f from rect %@", f, [NSStringFromCGRect(rectS)]);
+        NSLog(@"mode viewControllerSmileys.bModeFullScreen, constraintSmileyViewHeight.constant = %f from rect %@", f, NSStringFromCGRect(rectS));
         [viewToolbar setHidden:YES];
         self.constraintToolbarHeight.constant = 0;
 
@@ -886,6 +886,7 @@
         layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
     }
     else {
+        NSLog(@"mode viewControllerSmiley NOT bModeFullScreen");
         [self.viewControllerSmileys.btnReduce setEnabled:YES];
 
         //self.constraintToolbarHeight.constant = 0;
@@ -933,7 +934,6 @@
                                     selector:@selector(undoTextFieldEdit:)
                                       object:self.textView.text];
     [self enableDisableUndoButton];
-    self.loaded = YES;
     [self insertTextToTextView:[notification object]];
     [self actionHideSmileys];
 }
@@ -971,37 +971,6 @@
                                     selector:@selector(undoTextFieldEdit:)
                                       object:self.textView.text];
     self.textView.text = string;
-}
-
-#pragma mark - Text view delegate methods
-
-- (BOOL)textViewShouldBeginEditing:(UITextView *)aTextView
-{
-    if(lastSelectedRange.location != NSNotFound)
-    {
-        textView.selectedRange = lastSelectedRange;
-    }
-    
-    
-    return YES;
-}
-
-
-- (BOOL)textViewShouldEndEditing:(UITextView *)aTextView
-{
-    if(self.loaded)
-    {
-        //NSLog(@"textViewShouldEndEditing NO");
-        self.loaded = NO;
-        return NO;
-    }
-    
-    self.lastSelectedRange = textView.selectedRange;
-    
-    [textView resignFirstResponder];
-    //NSLog(@"textViewShouldEndEditing YES");
-    
-    return YES;
 }
 
 #pragma mark - Responding to keyboard events
