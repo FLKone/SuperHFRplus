@@ -4258,9 +4258,9 @@
 					"-licucore",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.test;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.test2;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "Hfrplus for ezzz";
+				PROVISIONING_PROFILE_SPECIFIER = "Hfrplus for ezzz v2";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -4309,9 +4309,9 @@
 					"-licucore",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.test;
+				PRODUCT_BUNDLE_IDENTIFIER = hfrplus.test2;
 				PRODUCT_NAME = SuperHFRplusSwift;
-				PROVISIONING_PROFILE_SPECIFIER = "Hfrplus for ezzz";
+				PROVISIONING_PROFILE_SPECIFIER = "Hfrplus for ezzz v2";
 				SWIFT_OBJC_BRIDGING_HEADER = "SuperHFRplus/SuperHFRplus-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -175,7 +175,7 @@
         [application setMinimumBackgroundFetchInterval:60];
 
         UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-        [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
+        [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge)
            completionHandler:^(BOOL granted, NSError * _Nullable error) {
             NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
         }];
@@ -219,6 +219,7 @@
             NSString *myMPNumber = [sMPText stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
             
             NSInteger iNewNbMps = [myMPNumber intValue];
+            NSLog(@"New MPs found ? %ld", (long)iNewNbMps);
 
             NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_mp"];
             if (iOldNbMps > 1000 || iOldNbMps < 0) {
@@ -236,8 +237,18 @@
                     sNotif = [NSString stringWithFormat:@"Vous avez %ld nouveaux messages privés", (long)(iNewNbMps - iOldNbMps)];
                 }
                 [self scheduleNotification:sNotif];
-                // Marche pas  ?[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
+                
+                dispatch_async(dispatch_get_main_queue(),
+                ^{
+                    //[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
+                });
             }
+            /* Activae this for debug
+            else {
+                [self scheduleNotification:@"rein du tout"];
+                // Not working :(
+                // [UIApplication sharedApplication].applicationIconBadgeNumber = 15;
+            }*/
         }
         @catch (NSException * e) {
             NSLog(@"Error in parsing the result of the background fetch: %@", e);
@@ -250,11 +261,10 @@
 
 - (void)scheduleNotification:(NSString*)sTextNotif
 {
-    
+    NSLog(@"Scheduling notification with text : %@", sTextNotif);
     UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-    //content.title = @"HFR+ is watching you";
     content.body = sTextNotif;
-    //content.threadIdentifier = @"thread1";
+    content.sound = [UNNotificationSound defaultSound];
     
     UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:3.0 repeats:NO];
     
@@ -410,8 +420,14 @@
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
     NSLog(@"applicationDidEnterBackground");
-    [self scheduleAppRefresh];
-    
+    if (@available(iOS 13, *))
+    {
+        [self scheduleAppRefresh];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForegroundFromNotification:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    }
     if (BACKGROUND_MAINTENANCE) {
         [periodicMaintenanceTimer invalidate];
     }
@@ -440,8 +456,22 @@
                 NSLog(@"\n\nFailed to submit task request:\n%@ (%ld)", request.description, error.code);
             } else {
                 NSLog(@"Submitted task request %@", request.description);
+                // 1) Pause here
+                // 2) In output, type: To debug : e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.hfrplus.refresh_mp"]
+                // 3) Unpause
             }
         }
+    }
+}
+- (void)applicationWillEnterForegroundFromNotification:(NSNotification *) note
+{
+    // Display MP and refesh MP list
+    NSLog(@"applicationWillEnterForegroundFromNotification");
+    [self.rootController setSelectedIndex:2];
+    HFRNavigationController *nv = self.rootController.selectedViewController;
+    [nv popToRootViewControllerAnimated:NO];
+    if ([nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
+        [(HFRMPViewController *)nv.topViewController fetchContent];
     }
 }
 
@@ -584,8 +614,8 @@
     [formatterLocal setDateFormat:@"dd MM yyyy - HH:mm"];
     [formatterLocal setTimeZone:[NSTimeZone localTimeZone]];
     
-    NSDate* startNoelDate = [formatterLocal dateFromString:@"24 12 2019 - 00:00"];
-    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2020 - 00:00"];
+    NSDate* startNoelDate = [formatterLocal dateFromString:@"01 12 2020 - 00:00"];
+    NSDate*   endNoelDate = [formatterLocal dateFromString:@"02 01 2021 - 00:00"];
     
     
     NSComparisonResult result1 = [now compare:startNoelDate];
@@ -657,11 +687,12 @@
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
 {
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
-    
+
     [[NSUserDefaults standardUserDefaults] setInteger:[badgeValue intValue] forKey:@"nb_mp"];
 
     dispatch_async(dispatch_get_main_queue(),
                    ^{
+        //[UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue intValue];
         int shift = 0;
         if ([[[[self rootController] tabBar] items] count] == 5) {
             shift = 1;
@@ -679,6 +710,7 @@
 {
     dispatch_async(dispatch_get_main_queue(),
     ^{
+        //[UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue intValue];
         int shift = 0;
         if ([[[[self rootController] tabBar] items] count] == 5) {
             shift = 1;
@@ -708,6 +740,8 @@
                 shift = 1;
     }
             [[[[[self rootController] tabBar] items] objectAtIndex:2 + shift] setBadgeValue:nil];
+            //[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+
         }
     });
 }
