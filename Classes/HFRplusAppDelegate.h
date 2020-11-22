@@ -15,8 +15,9 @@
 @import InAppSettingsKit;
 
 #import "Reachability.h"
+#import <UserNotifications/UserNotifications.h>
 
-@interface HFRplusAppDelegate : NSObject {
+@interface HFRplusAppDelegate : NSObject<UNUserNotificationCenterDelegate> {
     UIWindow *window;
     TabBarController *rootController;    
     SplitViewController *splitViewController;

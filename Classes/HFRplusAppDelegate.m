@@ -67,7 +67,7 @@
 - (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 
     NSLog(@"didFinishLaunchingWithOptions");
-    
+
     //self.hash_check = [[NSString alloc] init];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:YES];
@@ -167,6 +167,9 @@
 #ifdef NOTIFICATION_BACKGROUND_REFRESH
     if (@available(iOS 13, *))
     {
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        center.delegate = self;
+        
         [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.hfrplus.refresh_mp" usingQueue:nil
                                          launchHandler:^(__kindof BGTask * _Nonnull task) {
             [task setTaskCompletedWithSuccess:YES];
@@ -174,7 +177,6 @@
         }];
         [application setMinimumBackgroundFetchInterval:60];
 
-        UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
         [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge)
            completionHandler:^(BOOL granted, NSError * _Nullable error) {
             NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
@@ -190,6 +192,22 @@
 }
 
 #ifdef NOTIFICATION_BACKGROUND_REFRESH
+
+// Called when tap on notification
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler{
+
+    NSLog(@"Notifcation tapped");
+    
+    // Display MP and refesh MP list
+    [self.rootController setSelectedIndex:2];
+    HFRNavigationController *nv = self.rootController.selectedViewController;
+    [nv popToRootViewControllerAnimated:NO];
+    if ([nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
+        [(HFRMPViewController *)nv.topViewController fetchContent];
+    }
+}
+
+
 
 - (void)checkForNewMP:(BGAppRefreshTask *)task
 {
@@ -243,7 +261,7 @@
                     //[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
                 });
             }
-            /* Activae this for debug
+            /* Activate this for debug
             else {
                 [self scheduleNotification:@"rein du tout"];
                 // Not working :(
@@ -423,10 +441,6 @@
     if (@available(iOS 13, *))
     {
         [self scheduleAppRefresh];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationWillEnterForegroundFromNotification:)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:nil];
     }
     if (BACKGROUND_MAINTENANCE) {
         [periodicMaintenanceTimer invalidate];
@@ -461,17 +475,6 @@
                 // 3) Unpause
             }
         }
-    }
-}
-- (void)applicationWillEnterForegroundFromNotification:(NSNotification *) note
-{
-    // Display MP and refesh MP list
-    NSLog(@"applicationWillEnterForegroundFromNotification");
-    [self.rootController setSelectedIndex:2];
-    HFRNavigationController *nv = self.rootController.selectedViewController;
-    [nv popToRootViewControllerAnimated:NO];
-    if ([nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
-        [(HFRMPViewController *)nv.topViewController fetchContent];
     }
 }
 
