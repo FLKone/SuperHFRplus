@@ -172,12 +172,11 @@
         
         [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.hfrplus.refresh_mp" usingQueue:nil
                                          launchHandler:^(__kindof BGTask * _Nonnull task) {
-            [task setTaskCompletedWithSuccess:YES];
+            //[task setTaskCompletedWithSuccess:YES];
             [self checkForNewMP:(BGAppRefreshTask *)task];
         }];
         [application setMinimumBackgroundFetchInterval:60];
-
-        [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge)
+        [center requestAuthorizationWithOptions: (UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
            completionHandler:^(BOOL granted, NSError * _Nullable error) {
             NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
         }];
@@ -211,7 +210,7 @@
 
 - (void)checkForNewMP:(BGAppRefreshTask *)task
 {
-    NSLog(@"Background fetch started...");
+    NSLog(@"Background fetch started");
     [self scheduleAppRefresh];
 
     NSString *task_desc = task.description;
@@ -222,9 +221,11 @@
     NSURL *url = [NSURL URLWithString:@"https://forum.hardware.fr"];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     request.timeOutSeconds = 5;
+    NSLog(@"Start request");
     [request startSynchronous];
-
+    NSLog(@"Request done");
     if (![request error]) {
+        NSLog(@"Request done with no error");
         @try {
             NSString* sResponseString  = [request responseString];
             NSError* error;
@@ -237,9 +238,10 @@
             NSString *myMPNumber = [sMPText stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
             
             NSInteger iNewNbMps = [myMPNumber intValue];
-            NSLog(@"New MPs found ? %ld", (long)iNewNbMps);
+            NSLog(@"Unread MPs : %ld", (long)iNewNbMps);
 
             NSInteger iOldNbMps = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_mp"];
+            NSLog(@"nb_mp : %ld", (long)iOldNbMps);
             if (iOldNbMps > 1000 || iOldNbMps < 0) {
                 iOldNbMps = 0;
                 [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
