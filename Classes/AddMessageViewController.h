@@ -140,6 +140,7 @@
 // Brouillon
 @property (nonatomic, strong) NSString *sBrouillon;
 @property (nonatomic) BOOL sBrouillonUtilise;
+@property (nonatomic) BOOL bFirstTimeDisplay;
 
 -(IBAction)cancel;
 -(IBAction)done;

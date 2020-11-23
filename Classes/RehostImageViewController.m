@@ -102,7 +102,6 @@
     
    // Setup Image collections
     [self.collectionImages setHidden:NO];
-    self.collectionImages.backgroundColor = UIColor.clearColor;
 
     [self.collectionImages registerClass:[SmileyCollectionCell class] forCellWithReuseIdentifier:@"SmileyCollectionCellId"];
     [self.collectionImages registerClass:[RehostCollectionCell class] forCellWithReuseIdentifier:@"RehostCollectionCellId"];
@@ -121,8 +120,6 @@
     [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3, 27, 3, 12)];
     [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4, 18, 4, 18)];
 
-
-    
     [self updateTheme];
 }
 
@@ -137,7 +134,8 @@
     [self.btnReduce setImage:[ThemeColors tintImage:[UIImage imageNamed:@"rectangle.expand"] withTheme:theme] forState:UIControlStateHighlighted];
     
     self.tableViewImages.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
-    self.view.backgroundColor = [UIColor clearColor];
+    self.collectionImages.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
+    self.view.backgroundColor = [ThemeColors addMessageBackgroundColor:[[ThemeManager sharedManager] theme]];
     
     [self.btnBBCodeType setTintColor:[ThemeColors tintColor]];
     [self.btnMaxSize setTintColor:[ThemeColors tintColor]];

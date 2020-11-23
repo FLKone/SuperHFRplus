@@ -1420,7 +1420,7 @@
 -(void)searchNewMessages:(int)from {
     
 	if (![self.messagesWebView isLoading]) {
-        NSLog(@"SVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggeredSVPullToRefreshStateTriggered");
+        NSLog(@"SVPullToRefreshStateTriggered");
         UIImpactFeedbackGenerator *myGen = [[UIImpactFeedbackGenerator alloc] initWithStyle:(UIImpactFeedbackStyleLight)];
         [myGen impactOccurredWithDefaults];
         myGen = NULL;

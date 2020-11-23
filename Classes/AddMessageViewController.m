@@ -40,7 +40,7 @@
 @synthesize btnToolbarImage, btnToolbarGIF, btnToolbarSmiley, btnToolbarUndo, btnToolbarRedo;
 @synthesize haveTitle, textFieldTitle, haveTo, textFieldTo, haveCategory, textFieldCat;
 @synthesize offsetY, selectCompte, selectedCompte;
-@synthesize refreshAnchor, statusMessage;
+@synthesize refreshAnchor, statusMessage, bFirstTimeDisplay;
 
 #pragma mark - View lifecycle
 
@@ -68,6 +68,7 @@
         self.sBrouillon = [[NSUserDefaults standardUserDefaults] stringForKey:@"brouillon"];
         if (self.sBrouillon == nil) self.sBrouillon = [[NSString alloc] init];
         self.sBrouillonUtilise = NO;
+        self.bFirstTimeDisplay = YES;
         self.title = @"Nouv. message";
     }
     return self;
@@ -299,7 +300,7 @@
     
     self.sBrouillonUtilise = NO;
     // Popup brouillon (partout sauf en mode edition)
-    if (self.sBrouillon && self.sBrouillon.length > 0) {
+    if (self.bFirstTimeDisplay && self.sBrouillon && self.sBrouillon.length > 0) {
         
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Utiliser le brouillon ?" message:[self getBrouillonExtract]
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -320,6 +321,7 @@
 
         [self presentViewController:alert animated:YES completion:nil];
         [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+        self.bFirstTimeDisplay = NO;
     }
 }
 

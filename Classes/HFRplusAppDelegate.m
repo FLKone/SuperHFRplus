@@ -180,10 +180,6 @@
            completionHandler:^(BOOL granted, NSError * _Nullable error) {
             NSLog(@"UNUserNotificationCenter authorization granted=%@, error=%@", @(granted), error);
         }];
-
-        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"nb_mp"] == nil) {
-            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
-        }
     }
 #endif
 
@@ -212,6 +208,8 @@
 {
     NSLog(@"Background fetch started");
     [self scheduleAppRefresh];
+    NSInteger iOlfNbFailures = [[NSUserDefaults standardUserDefaults] integerForKey:@"nb_mp_failure"];
+    [[NSUserDefaults standardUserDefaults] setInteger:(iOlfNbFailures+1) forKey:@"nb_mp_failure"];
 
     NSString *task_desc = task.description;
     [task setExpirationHandler:^{
@@ -247,21 +245,25 @@
                 [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp"];
             }
 
+            [[NSUserDefaults standardUserDefaults] setInteger:iOlfNbFailures forKey:@"nb_mp_failure"];
             [[NSUserDefaults standardUserDefaults] setInteger:iNewNbMps forKey:@"nb_mp"];
             if (iNewNbMps > iOldNbMps) {
                 NSString* sNotif = @"";
-                if ((iNewNbMps - iOldNbMps) == 1) {
+                /*if ((iNewNbMps - iOldNbMps) == 1) {
                     sNotif = @"Vous avez un nouveau message privé";
                 }
                 else {
                     sNotif = [NSString stringWithFormat:@"Vous avez %ld nouveaux messages privés", (long)(iNewNbMps - iOldNbMps)];
+                }*/
+                if ([[[[MultisManager sharedManager] getMainCompte] objectForKey:PSEUDO_DISPLAY_KEY] isEqualToString:@"ezzz"])
+                {
+                    sNotif = [NSString stringWithFormat:@"Vous avez un nouveau message privé [%ld][%ld->%ld]", (long)(iOlfNbFailures), (long)iOldNbMps, (long)iNewNbMps];
+                }
+                else
+                {
+                    sNotif = @"Vous avez un nouveau message privé";
                 }
                 [self scheduleNotification:sNotif];
-                
-                dispatch_async(dispatch_get_main_queue(),
-                ^{
-                    //[UIApplication sharedApplication].applicationIconBadgeNumber = iNewNbMps;
-                });
             }
             /* Activate this for debug
             else {
@@ -471,6 +473,7 @@
             {
                 NSLog(@"\n\nFailed to submit task request:\n%@ (%ld)", request.description, error.code);
             } else {
+                [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"nb_mp_failure"];
                 NSLog(@"Submitted task request %@", request.description);
                 // 1) Pause here
                 // 2) In output, type: To debug : e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.hfrplus.refresh_mp"]
@@ -692,7 +695,6 @@
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
 {
     //NSLog(@"%@ - %d", badgeValue, [badgeValue intValue]);
-
     [[NSUserDefaults standardUserDefaults] setInteger:[badgeValue intValue] forKey:@"nb_mp"];
 
     dispatch_async(dispatch_get_main_queue(),
