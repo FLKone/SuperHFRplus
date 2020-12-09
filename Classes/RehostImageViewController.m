@@ -117,8 +117,8 @@
 {
     [super viewWillAppear:animated];
     
-    [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3, 27, 3, 12)];
-    [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4, 18, 4, 18)];
+    [self.btnCamera setImageEdgeInsets:UIEdgeInsetsMake(3+4, 27-1, 3+4, 12-1)];
+    [self.btnPhoto setImageEdgeInsets:UIEdgeInsetsMake(4+4, 18-1, 4+4, 18-1)];
 
     [self updateTheme];
 }

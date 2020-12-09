@@ -162,8 +162,8 @@
 
     self.view.backgroundColor = [UIColor clearColor];
 
-    [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(7, 17, 7, 17)];
-    [self.btnSmileySearch setImageEdgeInsets:UIEdgeInsetsMake(7, 17, 7, 17)];
+    [self.btnSmileyDefault setImageEdgeInsets:UIEdgeInsetsMake(11, 16, 11, 16)];
+    [self.btnSmileySearch setImageEdgeInsets:UIEdgeInsetsMake(11, 16, 11, 16)];
 
     [self.btnSmileyDefault addTarget:self action:@selector(actionSmileysDefaults:) forControlEvents:UIControlEventTouchUpInside];
     [self.btnSmileySearch addTarget:self action:@selector(actionSmileysSearch:) forControlEvents:UIControlEventTouchUpInside];
@@ -259,7 +259,7 @@ static CGFloat fCellImageSize = 1;
 
 - (float) getDisplayHeight {
     //return 150 * 0.85;
-    return fCellSizeSearch * 2 * 50 + 34;
+    return fCellSizeSearch * 2 * 50 + 44;
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath

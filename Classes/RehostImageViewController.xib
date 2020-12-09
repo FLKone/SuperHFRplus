@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina3_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -28,7 +28,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="C0E-gw-duw">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="449"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="439"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="t8p-OZ-T3G"/>
@@ -36,7 +36,7 @@
                     </connections>
                 </tableView>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="bi6-CX-Y7V">
-                    <rect key="frame" x="0.0" y="369" width="320" height="80"/>
+                    <rect key="frame" x="0.0" y="359" width="320" height="80"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="80" id="TyT-Ga-EFP"/>
@@ -53,26 +53,26 @@
                     </connections>
                 </collectionView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L5W-CK-Lec">
-                    <rect key="frame" x="0.0" y="450" width="320" height="30"/>
+                    <rect key="frame" x="0.0" y="440" width="320" height="40"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IJL-Yk-jLq" userLabel="Photos">
-                            <rect key="frame" x="0.0" y="0.0" width="65" height="30"/>
+                            <rect key="frame" x="0.0" y="0.0" width="65" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="65" id="zQh-N9-s2h"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="27" minY="3" maxX="12" maxY="3"/>
+                            <inset key="imageEdgeInsets" minX="27" minY="8" maxX="12" maxY="8"/>
                             <state key="normal" image="Camera-32.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PO2-Wp-62T" userLabel="Folder">
-                            <rect key="frame" x="65" y="0.0" width="60" height="30"/>
+                            <rect key="frame" x="65" y="0.0" width="60" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="Ivu-Ee-EnV"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="18" minY="4" maxX="18" maxY="5"/>
+                            <inset key="imageEdgeInsets" minX="18" minY="9" maxX="18" maxY="10"/>
                             <state key="normal" image="Folder-32.png"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RAF-mH-arS">
-                            <rect key="frame" x="125" y="0.0" width="95" height="30"/>
+                            <rect key="frame" x="125" y="0.0" width="95" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="95" id="Uvx-sy-xJp"/>
                             </constraints>
@@ -80,7 +80,7 @@
                             <state key="normal" title="Image et lien"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IdY-G9-kVr">
-                            <rect key="frame" x="220" y="0.0" width="60" height="30"/>
+                            <rect key="frame" x="220" y="0.0" width="60" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="elK-qL-8VL"/>
                             </constraints>
@@ -88,11 +88,11 @@
                             <state key="normal" title="1200px"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OCR-1A-G9k" userLabel="RecduceExpand">
-                            <rect key="frame" x="280" y="0.0" width="40" height="30"/>
+                            <rect key="frame" x="280" y="0.0" width="40" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="40" id="UrN-hI-oaS"/>
                             </constraints>
-                            <inset key="imageEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
+                            <inset key="imageEdgeInsets" minX="8" minY="11" maxX="11" maxY="10"/>
                             <state key="normal" image="rectangle.expand.png"/>
                         </button>
                     </subviews>
@@ -106,7 +106,7 @@
                         <constraint firstAttribute="bottom" secondItem="IJL-Yk-jLq" secondAttribute="bottom" id="HNz-tH-WKG"/>
                         <constraint firstItem="IdY-G9-kVr" firstAttribute="top" secondItem="L5W-CK-Lec" secondAttribute="top" id="KAf-9O-z5A"/>
                         <constraint firstItem="IdY-G9-kVr" firstAttribute="leading" secondItem="RAF-mH-arS" secondAttribute="trailing" id="N4L-UL-wqd"/>
-                        <constraint firstAttribute="height" constant="30" id="SOH-m6-g4B"/>
+                        <constraint firstAttribute="height" constant="40" id="SOH-m6-g4B"/>
                         <constraint firstAttribute="trailing" secondItem="OCR-1A-G9k" secondAttribute="trailing" id="YuL-cK-eFv"/>
                         <constraint firstItem="IJL-Yk-jLq" firstAttribute="leading" secondItem="L5W-CK-Lec" secondAttribute="leading" id="dzn-J3-JsB"/>
                         <constraint firstItem="IJL-Yk-jLq" firstAttribute="top" secondItem="L5W-CK-Lec" secondAttribute="top" id="gFl-rs-ioZ"/>
@@ -118,13 +118,13 @@
                     </constraints>
                 </view>
                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="v7k-J4-aUg">
-                    <rect key="frame" x="0.0" y="447" width="320" height="2"/>
+                    <rect key="frame" x="0.0" y="437" width="320" height="2"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="2" id="4Lh-bo-UmN"/>
                     </constraints>
                 </progressView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUb-Tv-bef" userLabel="Separator">
-                    <rect key="frame" x="0.0" y="449" width="320" height="1"/>
+                    <rect key="frame" x="0.0" y="439" width="320" height="1"/>
                     <color key="backgroundColor" systemColor="systemGray4Color"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="Xw4-RY-90l"/>

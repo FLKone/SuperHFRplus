@@ -821,6 +821,10 @@
         }
         [self.viewSmileys setAlpha:1];
         [self updateExpandCompressSmiley];
+        
+        if (self.viewControllerSmileys.displayMode == DisplayModeEnumTableSearch) {
+            [self.viewControllerSmileys.textFieldSmileys becomeFirstResponder];
+        }
         [UIView commitAnimations];
 
     }
