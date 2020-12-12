@@ -217,6 +217,7 @@
     if (newMode == self.displayMode) {
         return;
     }
+    DisplayModeEnum oldMode = self.displayMode;
     
     switch (newMode) {
         case DisplayModeEnumSmileysDefault:
@@ -249,6 +250,9 @@
         [UIView commitAnimations];
     }
     self.displayMode = newMode;
+    if (oldMode == DisplayModeEnumTableSearch && (newMode == DisplayModeEnumSmileysSearch || newMode == DisplayModeEnumSmileysDefault)) {
+        [self.addMessageVC updateExpandCompressSmiley];
+    }
 }
 
 #pragma mark - Collection management
@@ -810,9 +814,13 @@ static CGFloat fCellImageSize = 1;
 }
 
 - (void)actionSmileysDefaults:(id)sender {
+    if (self.displayMode == DisplayModeEnumSmileysDefault) {
+        return;
+    }
+    
     if (self.bModeFullScreen) {
         [self changeDisplayMode:DisplayModeEnumSmileysDefault animate:NO];
-        [self.addMessageVC updateExpandCompressSmiley];
+        //[self.addMessageVC updateExpandCompressSmiley];
         [self resignFirstResponder];
     }
     else {
@@ -830,9 +838,13 @@ static CGFloat fCellImageSize = 1;
 
 
 - (void)actionSmileysSearch:(id)sender {
+    if (self.displayMode == DisplayModeEnumSmileysSearch) {
+        return;
+    }
+    
     if (self.bModeFullScreen) {
         [self changeDisplayMode:DisplayModeEnumSmileysSearch animate:NO];
-        [self.addMessageVC updateExpandCompressSmiley];
+        //[self.addMessageVC updateExpandCompressSmiley];
         [self resignFirstResponder];
     }
     else {

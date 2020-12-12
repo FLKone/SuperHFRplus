@@ -26,7 +26,8 @@
 #import "SmileyCache.h"
 #import "api_keys.h"
 
-#define TOOLBAR_HEIGHT 44
+#define TOOLBAR_HEIGHT_SMILEY 44
+#define TOOLBAR_HEIGHT_IMAGES 50
 
 @import GiphyUISDK;
 @import GiphyCoreSDK;
@@ -714,7 +715,7 @@
         [self.viewControllerRehostImage.tableViewImages setAlpha:0];
         [self.viewControllerRehostImage.collectionImages setAlpha:1];
         [viewToolbar setHidden:NO];
-        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT_IMAGES;
         [self.textView becomeFirstResponder];
     }
     [UIView commitAnimations];
@@ -727,14 +728,14 @@
     if (self.viewControllerRehostImage.bModeFullScreen) {
         CGRect rectS = self.viewRehostImage.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
-        self.constraintRehostImageViewHeight.constant = f + TOOLBAR_HEIGHT;
+        self.constraintRehostImageViewHeight.constant = f + TOOLBAR_HEIGHT_IMAGES;
         self.constraintToolbarHeight.constant = 0;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         [self.viewControllerRehostImage.tableViewImages reloadData];
     }
     else {
         [viewToolbar setHidden:NO];
-        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT_IMAGES;
         self.constraintRehostImageViewHeight.constant = [self.viewControllerRehostImage getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         [self.viewControllerRehostImage.collectionImages reloadData];
@@ -872,7 +873,7 @@
         CGFloat f = rectS.size.height + rectS.origin.y;
         self.constraintSmileyViewHeight.constant = f;
         [viewToolbar setHidden:NO];
-        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT_SMILEY;
         NSLog(@"mode DisplayModeEnumTableSearch, constraintSmileyViewHeight.constant = %f", f);
         //layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         //layout2.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -883,7 +884,7 @@
 
         CGRect rectS = self.viewSmileys.frame;
         CGFloat f = rectS.size.height + rectS.origin.y;
-        self.constraintSmileyViewHeight.constant = f + TOOLBAR_HEIGHT;
+        self.constraintSmileyViewHeight.constant = f + TOOLBAR_HEIGHT_SMILEY;
         NSLog(@"mode viewControllerSmileys.bModeFullScreen, constraintSmileyViewHeight.constant = %f from rect %@", f, NSStringFromCGRect(rectS));
         [viewToolbar setHidden:YES];
         self.constraintToolbarHeight.constant = 0;
@@ -897,7 +898,7 @@
 
         //self.constraintToolbarHeight.constant = 0;
         [viewToolbar setHidden:NO];
-        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT;
+        self.constraintToolbarHeight.constant = TOOLBAR_HEIGHT_SMILEY;
 
         self.constraintSmileyViewHeight.constant = [self.viewControllerSmileys getDisplayHeight];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;

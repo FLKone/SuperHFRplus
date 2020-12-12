@@ -143,7 +143,7 @@
 
 
 - (float) getDisplayHeight {
-    return 80;
+    return 120;
 }
 
 
@@ -405,13 +405,15 @@
 {
     RehostCollectionCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RehostCollectionCellId" forIndexPath:indexPath];
     [cell configureWithRehostImage:[rehostImagesSortedArray objectAtIndex:indexPath.row]];
-    cell.layer.cornerRadius = 5;
+    cell.layer.cornerRadius = 10;
     cell.layer.masksToBounds = true;
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"Didselect %ld", indexPath.row);
+
     [self.addMessageVC actionHideRehostImage];
     RehostImage* rehostImage = [self.rehostImagesSortedArray objectAtIndex:indexPath.row];
     [rehostImage copyToPasteBoard:bbcodeImageFull];
@@ -429,17 +431,17 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(60, 60);
+    return CGSizeMake(78, 78);
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(0, 2, 0, 0);
+    return UIEdgeInsetsMake(0, 2, 2, 0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 1.0;
+    return 0.0;
 }
 
 
