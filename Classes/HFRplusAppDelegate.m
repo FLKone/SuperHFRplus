@@ -255,14 +255,14 @@
                 else {
                     sNotif = [NSString stringWithFormat:@"Vous avez %ld nouveaux messages privés", (long)(iNewNbMps - iOldNbMps)];
                 }*/
-                if ([[[[MultisManager sharedManager] getMainCompte] objectForKey:PSEUDO_DISPLAY_KEY] isEqualToString:@"ezzz"])
+                /*if ([[[[MultisManager sharedManager] getMainCompte] objectForKey:PSEUDO_DISPLAY_KEY] isEqualToString:@"ezzz"])
                 {
                     sNotif = [NSString stringWithFormat:@"Vous avez un nouveau message privé [%ld][%ld->%ld]", (long)(iOlfNbFailures), (long)iOldNbMps, (long)iNewNbMps];
                 }
                 else
-                {
-                    sNotif = @"Vous avez un nouveau message privé";
-                }
+                {*/
+                sNotif = @"Vous avez un nouveau message privé";
+                //}
                 [self scheduleNotification:sNotif];
             }
             /* Activate this for debug
