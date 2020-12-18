@@ -4253,7 +4253,7 @@
 					"$(SRCROOT)/**",
 					"$(PROJECT_DIR)/**",
 				);
-				MARKETING_VERSION = 2.1.12;
+				MARKETING_VERSION = 2.1.14;
 				OTHER_LDFLAGS = (
 					"-licucore",
 					"-ObjC",
@@ -4280,7 +4280,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 87;
 				DEVELOPMENT_TEAM = NCJNK4ZZ54;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -4304,7 +4304,7 @@
 					"$(SRCROOT)/**",
 					"$(PROJECT_DIR)/**",
 				);
-				MARKETING_VERSION = 2.1.12;
+				MARKETING_VERSION = 2.1.14;
 				OTHER_LDFLAGS = (
 					"-licucore",
 					"-ObjC",

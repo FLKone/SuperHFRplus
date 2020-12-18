@@ -122,12 +122,4 @@
     }
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    
-    NSString *cssString = [ThemeColors creditsCss:[[ThemeManager sharedManager] theme]];
-    NSString *javascriptString = @"var style = document.createElement('style'); style.innerHTML = '%@'; document.head.appendChild(style)"; // 2
-    NSString *javascriptWithCSSString = [NSString stringWithFormat:javascriptString, cssString]; // 3
-    [webView stringByEvaluatingJavaScriptFromString:javascriptWithCSSString]; // 4
-}
-
 @end
