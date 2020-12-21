@@ -10,12 +10,14 @@
 #import "TabBarController.h"
 #import "SplitViewController.h"
 #import "DetailNavigationViewController.h"
+#import <BackgroundTasks/BackgroundTasks.h>
 
 @import InAppSettingsKit;
 
 #import "Reachability.h"
+#import <UserNotifications/UserNotifications.h>
 
-@interface HFRplusAppDelegate : NSObject {
+@interface HFRplusAppDelegate : NSObject<UNUserNotificationCenterDelegate> {
     UIWindow *window;
     TabBarController *rootController;    
     SplitViewController *splitViewController;
@@ -71,7 +73,7 @@
 - (void)logout;
 
 - (void)resetApp;
-
+- (void)checkForNewMP:(BGAppRefreshTask *)task;
 - (void)registerDefaultsFromSettingsBundle;
 @end
 

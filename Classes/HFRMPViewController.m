@@ -123,9 +123,9 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	UITableViewCell *cell;
+	TopicCellView *cell;
 	
-    if ((cell = [super tableView:tableView cellForRowAtIndexPath:indexPath])) {
+    if ((cell = (TopicCellView*)[super tableView:tableView cellForRowAtIndexPath:indexPath])) {
 		
 		if ([[(TopicCellView *)cell titleLabel] numberOfLines] > 0) {
 			[[(TopicCellView *)cell titleLabel] setNumberOfLines:0];
@@ -144,17 +144,19 @@
 		}
 		
 		//[[(TopicCellView *)cell titleLabel] ];
-		
-		[[(TopicCellView *)cell msgLabel] setText:[NSString stringWithFormat:@"@%@", [(Topic *)[arrayData objectAtIndex:indexPath.row] aAuthorOrInter]]];
-
-		//[(UILabel *)[cell.contentView viewWithTag:999] setFrame:CGRectMake(10, 5, 280, 22)];
-		//[(UILabel *)[cell.contentView viewWithTag:997] setFrame:CGRectMake(130, 27, 150, 22)];
-		
-//		[(UILabel *)[cell.contentView viewWithTag:999] setBackgroundColor:[UIColor blueColor]];
-		
+        NSString* sIcon = @"";
+        if ([[(Topic *)[arrayData objectAtIndex:indexPath.row] aAuthorOrInter] containsString:@"multiples"]) {
+            [cell.msgLabel setText:@""];
+            [cell.msgLabel setFont:[UIFont systemFontOfSize:11.0]];
+            [cell.imgGroup setHidden:NO];
+        }
+        else {
+            [cell.msgLabel setText:[NSString stringWithFormat:@"@%@", [(Topic *)[arrayData objectAtIndex:indexPath.row] aAuthorOrInter]]];
+            [cell.imgGroup setHidden:YES];
+        }
     }
+             
     return cell;
-
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

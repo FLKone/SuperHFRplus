@@ -32,4 +32,8 @@
 - (BOOL)checkTopicOffline:(Topic*)topic;
 - (NSData*)getDataFromTopicOffline:(Topic*)topic page:(int)iPage;
 
+- (void)copyAllRequiredResourcesFromBundleToCache;
+- (NSURL*)createHtmlFileInCacheForTopic:(Topic*)topic withContent:(NSString*)sHtml;
+- (NSURL*)cacheURL;
+
 @end

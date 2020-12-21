@@ -7,7 +7,6 @@
 
 #import "CreditsViewController.h"
 #import "HFRplusAppDelegate.h"
-#import "UIWebView+Tools.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
 
@@ -41,14 +40,8 @@
     self.title = [self.filename isEqualToString:@"credits"] ? @"Crédits" : @"Charte du forum";
 
     [super viewDidLoad];
-    
-	[self.myWebView hideGradientBackground];
-    
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        [self.myWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
-    }
-    
-    
+    [self.myWebView setBackgroundColor:[UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f]];
+    self.myWebView.navigationDelegate = self;
 }
 
 -(void)viewWillAppear:(BOOL)animated   {
@@ -61,18 +54,6 @@
     [self.view setBackgroundColor:[ThemeColors greyBackgroundColor:theme]];
     [self.myWebView setBackgroundColor:[ThemeColors greyBackgroundColor:theme]];
     [self.myWebView setOpaque:NO];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-	
-	[super viewDidAppear:animated];
-
-    //v1
-	//[myWebView loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"credits" ofType:@"html"] isDirectory:NO]]];
-    
-
-	
 }
 
 -(void)loadPage {
@@ -90,8 +71,10 @@
     NSString *cssString = [ThemeColors creditsCss:[[ThemeManager sharedManager] theme]];
     //NSString *javascriptString = @"var style = document.createElement('style'); style.innerHTML = '%@'; document.head.appendChild(style)"; // 2
     // NSString *javascriptWithCSSString = [NSString stringWithFormat:javascriptString, cssString]; // 3
+    NSString *headerString = @"<header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header>";
+    //[self.webView loadHTMLString:[headerString stringByAppendingString:yourHTMLString] baseURL:nil];
     htmlString =[htmlString stringByReplacingOccurrencesOfString:@"</head>" withString:[NSString stringWithFormat:@"<style>%@</style></head>", cssString]];
-    [myWebView loadHTMLString:htmlString baseURL:baseURL];
+    [myWebView loadHTMLString:[headerString stringByAppendingString:htmlString] baseURL:baseURL];
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -108,46 +91,35 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-	
-	[self.myWebView stopLoading];
-
-	self.myWebView.delegate = nil;
-	self.myWebView = nil;
-
-}
-
-
-- (void)dealloc {
-	//NSLog(@"dealloc CVC");
-	
-	[self viewDidUnload];
-
-}
-
 #pragma mark -
 #pragma mark WebView delegate
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-	//NSLog(@"expected:%d, got:%d", UIWebViewNavigationTypeLinkClicked, navigationType);
-	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-		NSURL *url = request.URL;
+// was webViewDidFinishLoadDOM
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"didFinishNavigation");
+
+    NSString *cssString = [ThemeColors creditsCss:[[ThemeManager sharedManager] theme]];
+    NSString *javascriptString = @"var style = document.createElement('style'); style.innerHTML = '%@'; document.head.appendChild(style)";
+    NSString *javascriptWithCSSString = [NSString stringWithFormat:javascriptString, cssString];
+    [webView evaluateJavaScript:javascriptWithCSSString completionHandler:nil];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+// was shouldStartLoadWithRequest
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+		NSURL *url = navigationAction.request.URL;
 		NSString *urlString = url.absoluteString;
         [[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
-		return NO;
-	}
-	
-	return YES;
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    
-    NSString *cssString = [ThemeColors creditsCss:[[ThemeManager sharedManager] theme]];
-    NSString *javascriptString = @"var style = document.createElement('style'); style.innerHTML = '%@'; document.head.appendChild(style)"; // 2
-    NSString *javascriptWithCSSString = [NSString stringWithFormat:javascriptString, cssString]; // 3
-    [webView stringByEvaluatingJavaScriptFromString:javascriptWithCSSString]; // 4
-}
 @end

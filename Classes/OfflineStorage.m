@@ -31,7 +31,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
         // your custom initialization
         self.dicOfflineTopics = [[NSMutableDictionary alloc] init];
         self.dicImageCacheList = [[NSMutableDictionary alloc] init];
-
+        
         // load local storage data
         [self load];
         [self loadImageCache];
@@ -239,7 +239,7 @@ static OfflineStorage *_shared = nil;    // static instance variable
                                 NSString* sFilename = [self loadImageWithName:[imgNode getAttributeNamed:@"src"]];
                                 if (sFilename) {
                                     //NSLog(@"Before : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
-                                    NSString* sImgAttr = [NSString stringWithFormat:@"file://%@", sFilename];
+                                    NSString* sImgAttr = [NSString stringWithFormat:@"%@", sFilename];
                                     [imgNode setAttributeNamed:@"src" withValue:sImgAttr];
                                     //NSLog(@"After : %@", rawContentsOfNode([imgNode _node], [myParser _doc]));
                                 }
@@ -253,10 +253,9 @@ static OfflineStorage *_shared = nil;    // static instance variable
                     output = [output stringByReplacingOccurrencesOfString:@"\r" withString:@""];
                     output = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head>%@</html>", output];
                     /*
-                     NSLog(@"------------------------------------------------------");
+                    NSLog(@"------------------------------------------------------");
                     NSLog(@"Output %@", output);
                     NSLog(@"------------------------------------------------------");
-
                     NSLog(@"Writing file  %@", filename);
                      */
                     NSData* data = [output dataUsingEncoding:NSUTF8StringEncoding];
@@ -315,14 +314,14 @@ static OfflineStorage *_shared = nil;    // static instance variable
             [request startSynchronous];
             NSData* dResponseData = [request responseData];
             if (dResponseData) {
-                NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-                directory = [directory stringByAppendingPathComponent:@"cache"];
-                directory = [directory stringByAppendingPathComponent:IMAGE_CACHE_DIRECTORY];
-                NSString* sFilenameNewImage = [directory stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
-                [dResponseData writeToFile:sFilenameNewImage atomically:YES];
-                [self.dicImageCacheList setObject:sFilenameNewImage forKey:sURL];
-                NSLog(@"### IMAGE CACHE ### File saved into cache (u:%@,f:%@)", sURL, sFilenameNewImage);
-                return sFilenameNewImage;
+                NSString *directory = [self diskCachePath];
+                //directory = [directory stringByAppendingPathComponent:IMAGE_CACHE_DIRECTORY];
+                NSString* sFilenameNewUUID = [[NSUUID UUID] UUIDString];
+                NSString* sFilenameNewImageFullpath = [directory stringByAppendingPathComponent:sFilenameNewUUID];
+                [dResponseData writeToFile:sFilenameNewImageFullpath atomically:YES];
+                [self.dicImageCacheList setObject:sFilenameNewUUID forKey:sURL];
+                NSLog(@"### IMAGE CACHE ### File saved into cache (u:%@,f:%@)", sURL, sFilenameNewImageFullpath);
+                return [NSString stringWithFormat:@"%@", sFilenameNewUUID];
             }
         }
     }
@@ -337,8 +336,9 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
 - (void)eraseAllTopicsInCache {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    directory = [directory stringByAppendingPathComponent:@"cache"];
+    /* OLDNSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    directory = [directory stringByAppendingPathComponent:@"cache"];*/
+    NSString *directory = [self diskCacheOfflineTopicsPath];
     NSError* error = nil;
     [fileManager removeItemAtPath:directory error:&error];
     if (error) {
@@ -354,8 +354,10 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
 - (void)eraseAllTopics {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    directory = [directory stringByAppendingPathComponent:@"cache"];
+    /*NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    directory = [directory stringByAppendingPathComponent:@"cache"];*/
+    NSString* directory = [self diskCacheOfflineTopicsPath];
+
     NSError* error = nil;
     [fileManager removeItemAtPath:directory error:&error];
     if (error) {
@@ -373,8 +375,9 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
 - (void)verifyCacheIntegrity {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    directory = [directory stringByAppendingPathComponent:@"cache"];
+    /*OLD NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    directory = [directory stringByAppendingPathComponent:@"cache"];*/
+    NSString* directory = [self diskCacheOfflineTopicsPath];
 
     for (NSNumber* keyTopidID in [dicOfflineTopics allKeys])
     {
@@ -405,8 +408,10 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
 - (BOOL)checkTopicOffline:(Topic*)topic {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    directory = [directory stringByAppendingPathComponent:@"cache"];
+    /*OLD NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    directory = [directory stringByAppendingPathComponent:@"cache"];*/
+    
+    NSString* directory = [self diskCacheOfflineTopicsPath];
     directory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", topic.postID]];
 
     int iPageToCheck = topic.curTopicPage;
@@ -425,12 +430,111 @@ static OfflineStorage *_shared = nil;    // static instance variable
 
 - (NSData*)getDataFromTopicOffline:(Topic*)topic page:(int)iPage {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *directory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    directory = [directory stringByAppendingPathComponent:@"cache"];
+    NSString* directory = [self diskCachePath];
     directory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", topic.postID]];
     NSString* topicDirectory = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d-%d", topic.postID, iPage]];
     NSString* filename = [topicDirectory stringByAppendingPathComponent:@"index.html"];
     return  [fileManager contentsAtPath:filename];
+}
+
+- (void)copyAllRequiredResourcesFromBundleToCache
+{
+    [self copyFromBundleToCacheForFilename:@"style-liste.css"];
+    [self copyFromBundleToCacheForFilename:@"style-aide.css"];
+    [self copyFromBundleToCacheForFilename:@"style-liste-light.css"];
+    [self copyFromBundleToCacheForFilename:@"style-aide.css"];
+    [self copyFromBundleToCacheForFilename:@"jquery-2.1.1.min.js"];
+    [self copyFromBundleToCacheForFilename:@"jquery.base64.js"];
+    [self copyFromBundleToCacheForFilename:@"jquery.doubletap.js"];
+    [self copyFromBundleToCacheForFilename:@"jquery.hammer.js"];
+    [self copyFromBundleToCacheForFilename:@"arrowback.svg"];
+    [self copyFromBundleToCacheForFilename:@"arrowbegin.svg"];
+    [self copyFromBundleToCacheForFilename:@"arrowend.svg"];
+    [self copyFromBundleToCacheForFilename:@"arrowforward.svg"];
+    [self copyFromBundleToCacheForFilename:@"plus.svg"];
+    [self copyFromBundleToCacheForFilename:@"avatar_male_gray_on_light_48x48.png"];
+    [self copyFromBundleToCacheForFilename:@"avatar_male_gray_on_dark_48x48.png"];
+    [self copyFromBundleToCacheForFilename:@"08-chat.png"];
+    [self copyFromBundleToCacheForFilename:@"photoDefaultClic.png"];
+    [self copyFromBundleToCacheForFilename:@"photoDefaultfailmini.png"];
+    [self copyFromBundleToCacheForFilename:@"loadinfo-white@2x.gif"];
+    [self copyFromBundleToCacheForFilename:@"loadinfo.gif"];
+    [self copyFromBundleToCacheForFilename:@"loadinfo.net.gif"];
+    [self copyFromBundleToCacheForFilename:@"giphy.png"];
+
+    // Copy default smileys
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"commonsmile" ofType:@"plist"];
+    NSMutableArray* dicCommonSmileys = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    for (NSDictionary* smiley in dicCommonSmileys) {
+        NSString* sFilename = smiley[@"resource"];
+        [self copyFromBundleToCacheForFilename:sFilename];
+    }
+
+}
+
+- (void)copyFromBundleToCacheForFilename:(NSString*)filename
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString* diskCachePath = [self diskCachePath];
+    NSString* cssFilePathOri = [bundlePath stringByAppendingPathComponent:filename];
+    NSString* cssFilePathDest = [diskCachePath stringByAppendingPathComponent:filename];
+    //NSLog(@"CSS file path %@", cssFilePathOri);
+    unsigned long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:cssFilePathOri error:nil] fileSize];
+    //NSLog(@"Fichier CSS, taille : %ld", fileSize);
+
+    NSError* error;
+    if ([fileManager fileExistsAtPath:cssFilePathDest]) {
+        [fileManager removeItemAtPath:cssFilePathDest error:&error];
+       // NSLog(@"Fichier CSS existing -> removed %@", cssFilePathDest);
+    }
+
+    [fileManager copyItemAtPath:cssFilePathOri toPath:cssFilePathDest error:&error];
+    fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:cssFilePathDest error:nil] fileSize];
+    if (fileSize > 0) {
+        //NSLog(@"File %@ (%ld)copied fromv bundle to NSCachesDirectory", filename, fileSize);
+    }
+}
+
+- (NSURL*)createHtmlFileInCacheForTopic:(Topic*)topic withContent:(NSString*)sHtml
+{
+    NSString* diskCachePath = [self diskCachePath];
+    NSString* filenameHTMLshort = [NSString stringWithFormat:@"topic-%ld.htm", (long)topic.curTopicPage];
+    NSString* filenameHTML = [[NSString alloc] initWithString:[diskCachePath stringByAppendingPathComponent:filenameHTMLshort]];
+
+    NSError* error;
+    [sHtml writeToFile:filenameHTML atomically:NO encoding:NSUTF8StringEncoding error:&error];
+    if (error) {
+        NSLog(@"Error saving file %@ into cache: %@ ", filenameHTML, [error userInfo]);
+    }
+    
+    return [NSURL fileURLWithPath:filenameHTML];
+}
+
+- (NSURL*)cacheURL
+{
+    NSString* diskCachePath = [self diskCachePath];
+    return [NSURL fileURLWithPath:diskCachePath];
+}
+
+- (NSString*)diskCachePath
+{
+    NSArray* cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString* diskCachePath = [[cachePaths objectAtIndex:0] stringByAppendingPathComponent:@"cache"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:diskCachePath]) {
+        if ([fileManager createDirectoryAtPath:diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL]) {
+            NSLog(@"Created cache directory %@", diskCachePath);
+        }
+    }
+
+    return diskCachePath;
+}
+
+- (NSString*)diskCacheOfflineTopicsPath
+{
+    NSString* diskCachePath = [self diskCachePath];
+    return [diskCachePath stringByAppendingPathComponent:@"offline"];
 }
 
 

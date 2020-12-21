@@ -50,7 +50,7 @@
     self.fullBtn.layer.cornerRadius = 5; // this value vary as per your desire
     self.fullBtn.layer.borderWidth = 1; // this value vary as per your desire
     self.fullBtn.clipsToBounds = YES;
-        
+    
     [self applyTheme];
 }
 
@@ -74,6 +74,8 @@
 }
 -(void)configureWithRehostImage:(RehostImage *)image;
 {
+    NSLog(@"RehostCell configureWithRehostImage");
+
     self.rehostImage = image;
     
     [self.miniBtn setHidden:YES];
@@ -105,14 +107,33 @@
         if (image) {
             [self_.previewImage setImage:image];
             [self_.previewImage setHidden:NO];
-            
+            [self.previewBtn setHidden:YES];
+
             if (self.rehostImage.link_full) {
                 [self_.fullBtn setHidden:NO];
+                self_.fullBtn.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                self_.fullBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                
+                if (self_.rehostImage.full_width && [self_.rehostImage.full_width intValue] > 0 && self_.rehostImage.full_height && [self_.rehostImage.full_height intValue] > 0) {
+                    // Only display maximum dimension
+                    if ([self_.rehostImage.full_width intValue] > [self_.rehostImage.full_height intValue]) {
+                        [self_.fullBtn setTitle:[NSString stringWithFormat:@"Maxi\n%@ px", self_.rehostImage.full_width] forState: UIControlStateNormal];
+                    }
+                    else {
+                        [self_.fullBtn setTitle:[NSString stringWithFormat:@"Maxi\n%@ px", self_.rehostImage.full_height] forState: UIControlStateNormal];
+                    }
+                }
+                else {
+                    [self_.fullBtn setTitle:[NSString stringWithFormat:@"Maxi"] forState: UIControlStateNormal];
+                }
             } else {
                 [self_.fullBtn setHidden:YES];
             }
             if (self.rehostImage.link_medium) {
                 [self_.mediumBtn setHidden:NO];
+                self_.mediumBtn.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                self_.mediumBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                [self_.mediumBtn setTitle:@"Medium\n800 px" forState: UIControlStateNormal];
             } else {
                 [self_.mediumBtn setHidden:YES];
             }
@@ -123,95 +144,54 @@
             }
             if (self.rehostImage.link_miniature) {
                 [self_.miniBtn setHidden:NO];
+                self_.miniBtn.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+                self_.miniBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                [self_.miniBtn setTitle:@"Mini\n120 px" forState: UIControlStateNormal];
             } else {
                 [self_.miniBtn setHidden:YES];
             }
         }
         
+        float height = self.bounds.size.height;
+        float width = self.bounds.size.width;
+        float b = 20; // Border size of every button
+        float s = 50; // Shift to center a little more when there are only 2 buttons
+        //NSLog(@"Calculating button position -------- w/h: %f, %f", width, height);
+        if ([self.mediumBtn isHidden]) {
+            self.fullBtn.frame = CGRectMake(b + s, b, width/3 - 2*b, height - 2*b);
+            self.miniBtn.frame = CGRectMake(width*2/3 + b - s, b, width/3 - 2*b, height - 2*b);
+            //NSLog(@"fullBtn %@", NSStringFromCGRect(self.fullBtn.frame));
+            //NSLog(@"mediumBtn isHidden");
+            //NSLog(@"miniBtn %@", NSStringFromCGRect(self.miniBtn.frame));
+        }
+        else {
+            self.fullBtn.frame = CGRectMake(b, b, width/3 - 2*b, height - 2*b);
+            self.mediumBtn.frame = CGRectMake(width/3 + b, b, width/3 - 2*b, height - 2*b);
+            self.miniBtn.frame = CGRectMake(width*2/3 + b, b, width/3 - 2*b, height - 2*b);
+            //NSLog(@"fullBtn %@", NSStringFromCGRect(self.fullBtn.frame));
+            //NSLog(@"mediumBtn %@", NSStringFromCGRect(self.mediumBtn.frame));
+            //NSLog(@"miniBtn %@", NSStringFromCGRect(self.miniBtn.frame));
+
+        }
         [self_.spinner stopAnimating];
     }];
     
 }
 
 -(IBAction)copyFull {
-    [self copyToPasteBoard:bbcodeImageFull];
+    [self.rehostImage copyToPasteBoard:bbcodeImageFull];
 }
 
 - (IBAction)copyMedium {
-    [self copyToPasteBoard:bbcodeImageMedium];
+    [self.rehostImage copyToPasteBoard:bbcodeImageMedium];
 }
 
 -(IBAction)copyPreview {
-    [self copyToPasteBoard:bbcodeImagePreview];
+    [self.rehostImage copyToPasteBoard:bbcodeImagePreview];
 }
 
 -(IBAction)copyMini {
-    [self copyToPasteBoard:bbcodeImageMini];
+    [self.rehostImage copyToPasteBoard:bbcodeImageMini];
 }
 
-- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType
-{
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = @"";
-    
-    switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"rehost_use_link"]) {
-        case bbcodeLinkOnly:
-		{
-			switch (imageSizeType) {
-				case bbcodeImageFull:
-					pasteboard.string = rehostImage.link_full;
-					break;
-                case bbcodeImageMedium:
-                    pasteboard.string = rehostImage.link_medium;
-                    break;
-                case bbcodeImagePreview:
-                    pasteboard.string = rehostImage.link_preview;
-                    break;
-				case bbcodeImageMini:
-					pasteboard.string = rehostImage.link_miniature;
-					break;
-			}
-			break;
-		}
-		case bbcodeImageNoLink:
-			switch (imageSizeType) {
-				case bbcodeImageFull:
-                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.link_full];
-					break;
-                case bbcodeImageMedium:
-                    pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.nolink_medium];
-                    break;
-				case bbcodeImagePreview:
-					pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.nolink_preview];
-					break;
-				case bbcodeImageMini:
-					pasteboard.string = [NSString stringWithFormat:@"[img]%@[/img]", rehostImage.nolink_miniature];
-					break;
-			}
-			break;
-        case bbcodeImageWithLink:
-        {
-            switch (imageSizeType) {
-                case bbcodeImageFull:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_full];
-                    break;
-                case bbcodeImageMedium:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_medium];
-                    break;
-                case bbcodeImagePreview:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_preview];
-                    break;
-                case bbcodeImageMini:
-                    pasteboard.string = [NSString stringWithFormat:@"[url=%@][img]%@[/img][/url]", rehostImage.link_full, rehostImage.link_miniature];
-                    break;
-            }
-			break;
-        }
-	}
-
-    //NSLog(@"%@", pasteboard.string);
-    if (pasteboard.string.length) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"imageReceived" object:pasteboard.string];
-    }
-}
 @end

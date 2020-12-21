@@ -479,6 +479,7 @@
             <array>
                 <string>Lien</string>
                 <string>Intégré</string>
+                <string>Intégré et lien</string>
             </array>
             <key>Type</key>
             <string>PSMultiValueSpecifier</string>
@@ -486,6 +487,7 @@
             <array>
                 <string>no</string>
                 <string>yes</string>
+                <string>both</string>
             </array>
         </dict>
 		<dict>
@@ -586,7 +588,7 @@
         </dict>
         <dict>
             <key>DefaultValue</key>
-            <integer>20</integer>
+            <integer>21</integer>
             <key>Key</key>
             <string>offline_max_pages</string>
             <key>Title</key>

@@ -10,9 +10,12 @@
 #import "ThemeColors.h"
 #import "AvatarTableViewCell.h"
 #import "PlusCellView.h"
+#import "SimpleCellView.h"
 
 
 @implementation ThemeManager
+
+@synthesize theme;
 
 int dayDelayMin = 40;
 int nightDelayMin = 10;
@@ -21,7 +24,7 @@ int nightDelay;
 
 #pragma mark Singleton Methods
 
-+ (id)sharedManager {
++ (ThemeManager*)sharedManager {
     static ThemeManager *sharedThemeManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -56,9 +59,9 @@ int nightDelay;
 
 
 
-- (void)setTheme:(Theme)newTheme {
-    theme = newTheme;
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:theme] forKey:@"theme"];
+- (void)changeTheme:(Theme)newTheme {
+    self.theme = newTheme;
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:self.theme] forKey:@"theme"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     NSNotification *myNotification = [NSNotification notificationWithName:kThemeChangedNotification
                                                                    object:self  //object is usually the object posting the notification
@@ -90,10 +93,11 @@ int nightDelay;
     [self applyAppearance];
 }
 
+/*
 - (Theme)theme{
     //NSLog(@"%lu",(unsigned long)theme);
     return theme;
-}
+}*/
 
 - (void)switchTheme {
     if (self.theme == ThemeLight) {
@@ -133,6 +137,13 @@ int nightDelay;
         UIImage *img =[plusCellView.titleImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         plusCellView.titleImage.image = img;
         plusCellView.titleImage.tintColor = [ThemeColors cellIconColor:theme];
+    }
+    
+    if([cell isKindOfClass:[SimpleCellView class]]){
+        SimpleCellView* simpleCellView = (SimpleCellView*)cell;
+        UIImage *img = [simpleCellView.imageIcon.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        simpleCellView.imageIcon.image = img;
+        simpleCellView.imageIcon.tintColor = [ThemeColors cellIconColor:theme];
     }
     
     cell.selectionStyle = [ThemeColors cellSelectionStyle:theme];
@@ -248,7 +259,7 @@ int nightDelay;
         }
     }
     
-    [self setTheme:newTheme];
+    [self changeTheme:newTheme];
 }
 
 - (void) checkTheme {
@@ -259,10 +270,8 @@ int nightDelay;
     } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_IOS) {
         if (@available(iOS 13.0, *)) {
             if (UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
-                NSLog(@"=============== UITraitCollection DARK =============== ");
                 [self setTheme:ThemeDark];
             } else {
-                NSLog(@"............... UITraitCollection light .............. ");
                 [self setTheme:ThemeLight];
             }
         }

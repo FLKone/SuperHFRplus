@@ -27,6 +27,7 @@
 + (UIColor *)navBackgroundColor:(Theme)theme;
 + (UIColor *)greyBackgroundColor;
 + (UIColor *)greyBackgroundColor:(Theme)theme;
++ (UIColor *)greyBackgroundColorLighter;
 + (UIColor *)messageBackgroundColor:(Theme)theme;
 + (UIColor *)messageModoBackgroundColor:(Theme)theme;
 + (UIColor *)messageMeBackgroundColor:(Theme)theme;
@@ -58,6 +59,7 @@
 + (UIColor *)titleTextAttributesColor;
 + (UIColor *)titleTextAttributesColor:(Theme)theme;
 + (UIColor *)textFieldBackgroundColor:(Theme)theme;
++ (UIColor *)textFieldBackgroundColor;
 + (UIColor *)headerBLBackgroundColor;
 + (UIColor *)lightTextColor:(Theme)theme;
 + (UIColor *)topicMsgTextColor:(Theme)theme;
@@ -65,6 +67,7 @@
 + (UIColor *)tintColor:(Theme)theme;
 + (UIColor *)defaultTintColor:(Theme)theme;
 + (UIColor *)tintColor;
++ (UIColor *)tintColorWithAlpha:(CGFloat)newAlpha;
 + (UIColor *)tintLightColor;
 + (UIColor *)tintWhiteColor:(Theme)theme;
 + (UIColor *)tintColorDisabled:(Theme)theme;

@@ -123,12 +123,14 @@
     switch (theme) {
         case ThemeLight:
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
-                return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+                return [UIColor whiteColor];
+                //return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
             } else {
                 return [UIColor whiteColor];
             }
         case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:23.0/255.0 green:24.0/255.0 blue:26.0/255.0 alpha:1.0]];
-        default:         return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
+        default:                         return [UIColor whiteColor];
+//return [UIColor colorWithRed:246.0/255.0 green:246.0/255.0 blue:246.0/255.0 alpha:1.0];
     }
 }
 
@@ -164,6 +166,14 @@
 
 + (UIColor *)textFieldBackgroundColor:(Theme)theme {
     switch (theme) {
+        case ThemeLight: return [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:0.7];
+        case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:46.0/255.0 green:47.0/255.0 blue:51.0/255.0 alpha:0.7] withMin:20.0];
+        default:         return [UIColor whiteColor];
+    }
+}
+
++ (UIColor *)textFieldBackgroundColor {
+    switch ([ThemeManager currentTheme]) {
         case ThemeLight: return [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:0.7];
         case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor: [UIColor colorWithRed:46.0/255.0 green:47.0/255.0 blue:51.0/255.0 alpha:0.7] withMin:20.0];
         default:         return [UIColor whiteColor];
@@ -291,6 +301,14 @@
     switch (theme) {
         case ThemeLight: return [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0];
         case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor:  [UIColor colorWithRed:30.0/255.0 green:31.0/255.0 blue:33.0/255.0 alpha:1.0]];
+        default:         return [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
+    }
+}
+
++ (UIColor *)greyBackgroundColorLighter {
+    switch ([ThemeManager currentTheme]) {
+        case ThemeLight: return [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0];
+        case ThemeDark:  return [ThemeColors adjustDarkThemeBrightnessOfColor:  [UIColor colorWithRed:50.0/255.0 green:52.0/255.0 blue:55.0/255.0 alpha:1.0]];
         default:         return [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
     }
 }
@@ -539,6 +557,13 @@
 
 + (UIColor *)tintColor {
     return [self tintColor:[ThemeManager currentTheme]];
+}
+
++ (UIColor *)tintColorWithAlpha:(CGFloat)newAlpha {
+    UIColor* c = [self tintColor:[ThemeManager currentTheme]];
+    CGFloat r, g, b, alpha;
+    [c getRed:&r green:&g blue:&b alpha:&alpha];
+    return [UIColor colorWithRed:r green:g blue:b alpha:newAlpha];
 }
 
 

@@ -5,13 +5,13 @@
 //  Created by FLK on 25/07/10.
 //
 
-#import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
-
-@interface CreditsViewController : UIViewController <UIWebViewDelegate> {
-	UIWebView* myWebView;
+@interface CreditsViewController : UIViewController <WKNavigationDelegate, WKUIDelegate> {
+	WKWebView* myWebView;
 }
-@property (nonatomic, strong) IBOutlet UIWebView* myWebView;
+
+@property (nonatomic, strong) IBOutlet WKWebView* myWebView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil filename:(NSString *)filename;
 
 @end

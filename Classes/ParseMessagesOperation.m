@@ -114,7 +114,7 @@
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	NSString *diskCachePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"ImageCache"];
+	NSString *diskCachePath = [[[paths objectAtIndex:0] stringByAppendingPathComponent:@"cache"] stringByAppendingPathComponent:@"avatars"];
 	
 	if (![fileManager fileExistsAtPath:diskCachePath])	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:diskCachePath
@@ -208,6 +208,8 @@
                         [quoteNode addAttributeNamed:@"auteur" withValue:sQuoteAuthor];
                         [quoteNode addAttributeNamed:@"style" withValue:@"display:none;"];
                         
+                        NSString *hrefNode = [quoteNode getAttributeNamed:@"href"];
+
                         HTMLNode *pNode = [quoteNode findChildTag:@"p"];
                         [pNode addAttributeNamed:@"class" withValue:@"pbl"];
                         [pNode addAttributeNamed:@"id" withValue:[NSString stringWithFormat: @"2%02d%@", quoteIndex, sPostId]];
@@ -226,8 +228,8 @@
                     linkItem.url = [linkItem.url stringByReplacingOccurrencesOfRegex:@"#t[0-9]+" withString:[NSString stringWithFormat:@"#%@", linkItem.postID]];
                 }
             }
-            
-            if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"embedded_videos"] isEqualToString:@"yes"]) {
+            NSString* sVideoEmbedded = [[NSUserDefaults standardUserDefaults] stringForKey:@"embedded_videos"];
+            if ([sVideoEmbedded isEqualToString:@"yes"] || [sVideoEmbedded isEqualToString:@"both"]) {
                 NSArray *arr = [NSArray arrayWithObjects: \
                 @"^http(?:s)?://(?:www.|m.|gaming.)?(youtu)be.com/.+v=([\\w-]+)/?",\
                 @"^http(?:s)?://(youtu).be/([\\w-]+)/?", \

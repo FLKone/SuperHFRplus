@@ -15,7 +15,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
+<<<<<<< HEAD
 	<string>0.11.1</string>
+=======
+	<string>0.9.0</string>
+>>>>>>> develop.ezzz.4
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>

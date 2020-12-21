@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-
+@class Bookmark;
 
 @interface MPStorage : NSObject
 {
@@ -22,10 +22,13 @@
 @property NSString* sNumRep;
 @property NSMutableArray*  listInternalBlacklistPseudo;
 @property NSMutableArray*  listMPBlacklistPseudo;
+@property NSMutableArray*  listBookmarks;
 @property NSDictionary*    dicMPBlacklistPseudoTimestamp;
 @property NSDictionary*    dicFlags;
 @property NSDictionary*    dicProcessedFlag;
 @property NSNumber*        nbTopicId;
+@property UIViewController*       targetViewController;
+@property SEL                     didFinishReloadSelector;
 
 + (MPStorage *)shared;
 
@@ -34,9 +37,17 @@
 - (void)loadBlackListAsynchronous;
 - (BOOL)addBlackListSynchronous:(NSString*)pseudo;
 - (BOOL)removeBlackListSynchronous:(NSString*)pseudo;
+- (BOOL)addBookmarkSynchronous:(Bookmark*)bookmark;
+- (BOOL)removeBookmarkSynchronous:(Bookmark*)bookmark;
+- (Bookmark*)getBookmarkForPost:(NSString*)sPost numreponse:(NSString*)sNumResponse;
 - (void)updateMPFlagAsynchronous:(NSDictionary*)newFlag;
 - (void)removeMPFlagAsynchronous:(int)topicID;
 - (NSString*)getUrlFlagForTopidId:(int)topicID;
 - (NSInteger)getPageFlagForTopidId:(int)topicID;
 - (void)reloadMPStorageAsynchronous;
+- (void)reloadMPStorageAsynchronousFromViewController:(UIViewController*)vc withSelector:(SEL)selector;
+- (int)getBookmarksNumber ;
+- (Bookmark*)getBookmarkAtIndex:(int)index;
+- (void)parseBookmarks;
+
 @end

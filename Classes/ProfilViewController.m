@@ -1289,16 +1289,16 @@
     return self;
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView {
-    //NSLog(@"webViewDidStartLoad");
-    
+// was webViewDidStartLoad
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    //NSLog(@"webViewDidFinishLoad");
 
+// was webViewDidFinishLoad
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"didFinishNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
 }
 
 - (void)viewDidLoad
@@ -1321,7 +1321,7 @@
     // Release any retained subviews of the main view.
 	[self.webView stopLoading];
     
-	self.webView.delegate = nil;
+	self.webView.navigationDelegate = nil;
 	self.webView = nil;
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }

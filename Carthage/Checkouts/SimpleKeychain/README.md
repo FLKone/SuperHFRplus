@@ -1,7 +1,11 @@
 # SimpleKeychain
 
+<<<<<<< HEAD
 [![CircleCI](https://img.shields.io/circleci/project/github/auth0/SimpleKeychain.svg?style=flat-square)](https://circleci.com/gh/auth0/SimpleKeychain/tree/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/auth0/SimpleKeychain/master.svg?style=flat-square)](https://codecov.io/github/auth0/SimpleKeychain)
+=======
+[![CircleCI](https://circleci.com/gh/auth0/SimpleKeychain.svg?style=shield)](https://circleci.com/gh/auth0/SimpleKeychain)
+>>>>>>> develop.ezzz.4
 [![Version](https://img.shields.io/cocoapods/v/SimpleKeychain.svg?style=flat-square)](https://cocoapods.org/pods/SimpleKeychain)
 [![License](https://img.shields.io/cocoapods/l/SimpleKeychain.svg?style=flat-square)](https://cocoapods.org/pods/SimpleKeychain)
 [![Platform](https://img.shields.io/cocoapods/p/SimpleKeychain.svg?style=flat-square)](https://cocoapods.org/pods/SimpleKeychain)
@@ -13,6 +17,7 @@ A wrapper to make it really easy to deal with iOS Keychain and store your user's
 
 - **Simple interface** to store user's credentials (e.g. JWT) in the Keychain.
 - Store credentials under an **Access Group to enable Keychain Sharing**.
+<<<<<<< HEAD
 - **TouchID/FaceID integration** with a reusable `LAContext` instance. 
 
 ## Table of Contents
@@ -26,6 +31,10 @@ A wrapper to make it really easy to deal with iOS Keychain and store your user's
 - [Issue Reporting](#issue-reporting)
 - [Author](#author)
 - [License](#license)
+=======
+- Support for **iOS 8 Access Control** for fine grained access control. 
+- **TouchID and Keychain integration** with iOS 8 new accessibility field `kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly`. 
+>>>>>>> develop.ezzz.4
 
 ## Requirements
 
@@ -37,16 +46,24 @@ A wrapper to make it really easy to deal with iOS Keychain and store your user's
 
 ### CocoaPods
 
+<<<<<<< HEAD
 If you are using [Cocoapods](https://cocoapods.org), add this line to your `Podfile`:
+=======
+SimpleKeychain is available through [CocoaPods](https://cocoapods.org). To install
+it, simply add the following line to your Podfile:
+>>>>>>> develop.ezzz.4
 
 ```ruby
 pod "SimpleKeychain"
 ```
 
+<<<<<<< HEAD
 Then, run `pod install`.
 
 > For more information on Cocoapods, check [their official documentation](https://guides.cocoapods.org/using/getting-started.html).
 
+=======
+>>>>>>> develop.ezzz.4
 ### Carthage
 
 If you are using [Carthage](https://github.com/Carthage/Carthage), add the following line to your `Cartfile`:
@@ -57,11 +74,16 @@ github "auth0/SimpleKeychain"
 
 Then, run `carthage bootstrap`.
 
+<<<<<<< HEAD
 > For more information about Carthage usage, check [their official documentation](https://github.com/Carthage/Carthage#if-youre-building-for-ios-tvos-or-watchos).
 
 #### SPM (Xcode 11.2+)
 
 If you are using the Swift Package Manager, open the following menu item in Xcode:
+=======
+### Swift
+Import Lock module in your swift file:
+>>>>>>> develop.ezzz.4
 
 **File > Swift Packages > Add Package Dependency...**
 
@@ -90,7 +112,11 @@ A0SimpleKeychain().setString(jwt, forKey: "auth0-user-jwt")
 let jwt = A0SimpleKeychain().string(forKey: "auth0-user-jwt")
 ```
 
+<<<<<<< HEAD
 ### Share a JWT Token with other apps using iOS Access Group
+=======
+### Share JWT Token with other apps using iOS Access Group
+>>>>>>> develop.ezzz.4
 
 ```swift
 let jwt = // user's JWT token obtained after login
@@ -113,7 +139,11 @@ keychain.setString(jwt, forKey: "auth0-user-jwt")
 
 > If there is an existent value under the key `auth0-user-jwt` saved with AccessControl and `A0SimpleKeychainItemAccessibleWhenPasscodeSetThisDeviceOnly`, iOS will prompt the user to enter their passcode or fingerprint before updating the value.
 
+<<<<<<< HEAD
 Then let's obtain the value:
+=======
+Then let's obtain the value
+>>>>>>> develop.ezzz.4
 
 ```swift
 let message = NSLocalizedString("Please enter your passcode/fingerprint to login with awesome App!.", comment: "Prompt TouchID message")
@@ -129,7 +159,11 @@ A0SimpleKeychain().deleteEntry(forKey: "auth0-user-jwt")
 
 ## Contributing
 
+<<<<<<< HEAD
 Just clone the repo, run `carthage bootstrap` and you're ready to contribute!
+=======
+Just clone the repo, and run `pod install` from the Example directory and you're ready to contribute!
+>>>>>>> develop.ezzz.4
 
 ## What is Auth0?
 
@@ -142,7 +176,11 @@ Auth0 helps you to:
 * Analytics of how, when, and where users are logging in.
 * Pull data from other sources and add it to the user profile through [JavaScript rules](https://auth0.com/docs/rules).
 
+<<<<<<< HEAD
 ## Create a Free Auth0 Account
+=======
+SimpleKeychain is available under the MIT license. See the [LICENSE file](https://github.com/auth0/SimpleKeychain/blob/master/LICENSE) for more info.
+>>>>>>> develop.ezzz.4
 
 1. Go to [Auth0](https://auth0.com) and click **Sign Up**.
 2. Use Google, GitHub, or Microsoft Account to login.

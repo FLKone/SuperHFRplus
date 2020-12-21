@@ -598,7 +598,11 @@
 		5FEEB9931B7BD70A00501415 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+<<<<<<< HEAD
 				LastSwiftUpdateCheck = 1130;
+=======
+				LastSwiftUpdateCheck = 0830;
+>>>>>>> develop.ezzz.4
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Auth0;
 				TargetAttributes = {
@@ -892,7 +896,10 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+<<<<<<< HEAD
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tvOSTestHost.app/tvOSTestHost";
+=======
+>>>>>>> develop.ezzz.4
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
@@ -916,7 +923,10 @@
 				SDKROOT = appletvos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
+<<<<<<< HEAD
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tvOSTestHost.app/tvOSTestHost";
+=======
+>>>>>>> develop.ezzz.4
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
@@ -1029,6 +1039,7 @@
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
+<<<<<<< HEAD
 			};
 			name = Release;
 		};
@@ -1083,6 +1094,8 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 13.2;
+=======
+>>>>>>> develop.ezzz.4
 			};
 			name = Release;
 		};

@@ -291,11 +291,8 @@
 	NSArray *temporaryMPArray = [MPNode findChildTags:@"td"];
 	
 	if (temporaryMPArray.count == 3) {
-		
 		NSString *regExMP = @"[^.0-9]+([0-9]{1,})[^.0-9]+";			
-		NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP
-																										  withString:@"$1"];
-		
+		NSString *myMPNumber = [[[temporaryMPArray objectAtIndex:1] allContents] stringByReplacingOccurrencesOfRegex:regExMP withString:@"$1"];
 		[[HFRplusAppDelegate sharedAppDelegate] updateMPBadgeWithString:myMPNumber];
 	}
 	else {
@@ -794,11 +791,15 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-
 	[super viewDidDisappear:animated];
 	[self.view resignFirstResponder];
+    
+    if (!self.filterPostsQuotes) {
+        self.filterPostsQuotes = [[FilterPostsQuotes alloc] init];
+    }
+    [self.filterPostsQuotes checkPostsAndQuotesForAllTopics:self.arrayData andVC:self];
+    //Mode sans cat : [self.filterPostsQuotes checkPostsAndQuotesForTopics:self.arrayTopics andVC:self];
 }
-
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -844,7 +845,7 @@
     
     
     //NSLog(@"loadCatForType %d", [sender tag]);
-    int section = [sender tag];
+    int section = [(UIButton*)sender tag];
     
     [self loadCatForSection:section];
 
@@ -1207,6 +1208,27 @@
         return cell;
     }
 }
+
+- (void)checkPostsAndQuotesForAllTopics {
+    NSMutableArray *cells = [[NSMutableArray alloc] init];
+    for (NSInteger j = 0; j < [self.favoritesTableView numberOfSections]; ++j)
+    {
+        for (NSInteger i = 0; i < [self.favoritesTableView numberOfRowsInSection:j]; ++i)
+        {
+            // Check for posts for topic with callback in case cell needs to be updated
+            // Unable search in ViewWillDisapear
+            [cells addObject:[self.favoritesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:j]]];
+        }
+    }
+    
+    if (!self.filterPostsQuotes) {
+        self.filterPostsQuotes = [[FilterPostsQuotes alloc] init];
+    }
+    [self.filterPostsQuotes checkPostsAndQuotesForAllTopics:self.arrayData andVC:self];
+
+}
+
+
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
@@ -1599,7 +1621,6 @@
     }
 }
 
-
 -(void)setTopicSuperFavoriteWithIndex:(NSIndexPath *)indexPath {
     Topic *tmpTopic = [self getTopicAtIndexPath:indexPath];
     [self.favoritesTableView setEditing:NO animated:NO];
@@ -1825,8 +1846,7 @@
 	}
 }
 
-#pragma mark -
-#pragma mark Delete
+#pragma mark - Delete
 
 -(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
