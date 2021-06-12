@@ -10,11 +10,8 @@
 #import "MessageDetailViewController.h"
 #import "MessagesTableViewController.h"
 #import "RangeOfCharacters.h"
-//#import "UIImageView+WebCache.h"
 #import "ASIHTTPRequest.h"
 #import "RegexKitLite.h"
-
-#import "UIWebView+Tools.h"
 
 #import "LinkItem.h"
 #import "ThemeManager.h"
@@ -115,17 +112,9 @@
 		
 	}
     
-    if (SYSTEM_VERSION_LESS_THAN(@"11")) {
-        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.location.hash='%@';", [[arrayData objectAtIndex:curMsg] postID]]];
-
-    }
-    else {
-        [[self.parent messagesWebView] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.getElementById('%@').scrollIntoView(true);", [[arrayData objectAtIndex:curMsg] postID]]];
-
-    }
+    [[self.parent messagesWebView] evaluateJavaScript:[NSString stringWithFormat:@"window.scrollTo(0,document.getElementById('%@').offsetTop);", [(LinkItem*)[arrayData objectAtIndex:curMsg] postID]] completionHandler:nil];
 
     NSString *myRawContent = [[arrayData objectAtIndex:curMsg] dicoHTML];
-    
     if ([[arrayData objectAtIndex:curMsg] quotedNB]) {
         myRawContent = [myRawContent stringByAppendingString:[NSString stringWithFormat:@"<a class=\"quotedhfrlink\" href=\"%@\">%@</a>", [[arrayData objectAtIndex:curMsg] quotedLINK], [[arrayData objectAtIndex:curMsg] quotedNB]]];
     }
@@ -134,6 +123,12 @@
     }
     
     myRawContent = [myRawContent stringByReplacingOccurrencesOfString:@"---------------" withString:@""];
+    
+    // Add link to img
+    //External Images
+    NSString *regEx = @"<img src=\"([^\"]+)\" alt=\"[^\"]+\" title=\"[^\"]+\" onload=\"[^\"]+\" style=\"[^\"]+\">";
+    myRawContent = [myRawContent stringByReplacingOccurrencesOfRegex:regEx
+                                                          withString:@"<img onClick=\"window.location = 'oijlkajsdoihjlkjasdoimbrows://'+this.title+'/'+encodeURIComponent(this.alt); return false;\" class=\"hfrplusimg\" title=\"%%%%ID%%%%\" src=\"$1\" alt=\"$1\" longdesc=\"\">"];
     
     NSString *customFontSize = [self userTextSizeDidChange];
    
@@ -155,20 +150,25 @@
         case ThemeDark:
             sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
             sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
+            // For OLED only
+            // sBorderHeader = @"1px solid #505050";
             break;
-        case ThemeOLED:
-            sAvatarImageFile = @"url(avatar_male_gray_on_dark_48x48.png)";
-            sLoadInfoImageFile = @"url(loadinfo-white@2x.gif)";
-            sBorderHeader = @"1px solid #505050";
+        case ThemeLight:
             break;
     }
     
+    NSString* sCssStyle = @"style-liste.css";
+    /*
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"theme_style"] == 1) {
+        sCssStyle = @"style-liste-light.css";
+    }*/
+
 	NSString *HTMLString = [NSString stringWithFormat:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\
         <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">\
         <head>\
         <meta name='viewport' content='initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0' />\
         <script type='text/javascript' src='jquery-2.1.1.min.js'></script>\
-        <link type='text/css' rel='stylesheet' href='style-liste.css' id='light-styles'/>\
+        <link type='text/css' rel='stylesheet' href='%@' id='light-styles'/>\
         <style type='text/css'>\
         %@\
         </style>\
@@ -178,30 +178,65 @@
         </head><body class='iosversion'><div class='bunselected maxmessage' id='qsdoiqjsdkjhqkjhqsdqdilkjqsd2'><div class='message' id='1'><div class='content'><div class='right'>%@</div></div></div></div></body></html><script type='text/javascript'>\
         document.addEventListener('DOMContentLoaded', loadedML);\
         function loadedML() { document.location.href = 'oijlkajsdoihjlkjasdoloaded://loaded'; };\
-        function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}} $('img').error(function(){\
-        $(this).attr('src', 'photoDefaultfailmini.png');});\
-        document.documentElement.style.setProperty('--color-action', '%@');\
-        document.documentElement.style.setProperty('--color-action-disabled', '%@');\
-        document.documentElement.style.setProperty('--color-message-background', '%@');\
-        document.documentElement.style.setProperty('--color-text', '%@');\
-        document.documentElement.style.setProperty('--color-text2', '%@');\
-        document.documentElement.style.setProperty('--color-background-bars', '%@');\
-        document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
-        document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
-        document.documentElement.style.setProperty('--color-border-quotation', '%@');\
-        document.documentElement.style.setProperty('--color-border-avatar', '%@');\
-        document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
-                            document.documentElement.style.setProperty('--border-header', '%@');</script>", customFontSize, doubleSmileysCSS, myRawContent,  [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
-                            [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action
-                            [ThemeColors hexFromUIColor:[ThemeColors cellBackgroundColor:theme]], //--color-message-background
+        function HLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bselected'; } function UHLtxt() { var el = document.getElementById('qsdoiqjsdkjhqkjhqsdqdilkjqsd');el.className='bunselected'; } function swap_spoiler_states(obj){var div=obj.getElementsByTagName('div');if(div[0]){if(div[0].style.visibility==\"visible\"){div[0].style.visibility='hidden';}else if(div[0].style.visibility==\"hidden\"||!div[0].style.visibility){div[0].style.visibility='visible';}}};\
+                    $('img').error(function(){var failingSrc = $(this).attr('src');if(failingSrc.indexOf('https://reho.st')>-1){$(this).attr('src', 'photoDefaultClic.png')}else{$(this).attr('src', 'photoDefaultfailmini.png');}});\
+            document.documentElement.style.setProperty('--color-action', '%@');\
+            document.documentElement.style.setProperty('--color-action-disabled', '%@');\
+            document.documentElement.style.setProperty('--color-message-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-modo-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-header-me-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-mequoted-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-mequoted-borderleft', '%@');\
+            document.documentElement.style.setProperty('--color-message-mequoted-borderother', '%@');\
+            document.documentElement.style.setProperty('--color-message-header-love-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-love-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-love-borderleft', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-love-borderother', '%@');\
+            document.documentElement.style.setProperty('--color-message-quoted-bl-background', '%@');\
+            document.documentElement.style.setProperty('--color-message-header-bl-background', '%@');\
+            document.documentElement.style.setProperty('--color-separator-new-message', '%@');\
+            document.documentElement.style.setProperty('--color-text', '%@');\
+            document.documentElement.style.setProperty('--color-text2', '%@');\
+            document.documentElement.style.setProperty('--color-background-bars', '%@');\
+            document.documentElement.style.setProperty('--color-searchintra-nextresults', '%@');\
+            document.documentElement.style.setProperty('--imagefile-avatar', '%@');\
+            document.documentElement.style.setProperty('--imagefile-loadinfo', '%@');\
+            document.documentElement.style.setProperty('--color-border-quotation', '%@');\
+            document.documentElement.style.setProperty('--color-border-avatar', '%@');\
+            document.documentElement.style.setProperty('--color-text-pseudo', '%@');\
+            document.documentElement.style.setProperty('--color-text-pseudo-bl', '%@');\
+            document.documentElement.style.setProperty('--border-header', '%@');\
+            </script>",
+                            sCssStyle, customFontSize, doubleSmileysCSS, myRawContent,
+                            [ThemeColors hexFromUIColor:[ThemeColors tintColor:theme]], //--color-action
+                            [ThemeColors hexFromUIColor:[ThemeColors tintColorDisabled:theme]], //--color-action-disabled
+                            [ThemeColors hexFromUIColor:[ThemeColors messageBackgroundColor:theme]], //--color-message-background
+                            [ThemeColors hexFromUIColor:[ThemeColors messageModoBackgroundColor:theme]], //--color-message-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1], // -color-message-header-me-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.03], // color-message-mequoted-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:1],  //--color-message-mequoted-borderleft
+                            [ThemeColors rgbaFromUIColor:[ThemeColors tintColor:theme] withAlpha:0.1],  //--color-message-mequoted-borderother
+                            /*[ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.7], //--color-message-background
+                             [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.8], // --color-message-header-me-background
+                             [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:0.6],  //--color-message-mequoted-borderleft
+                             [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0],  //--color-message-mequoted-borderother*/
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.4], //--color-message-header-love-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.3], // --color-message-header-me-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:1.0 addSaturation:1 addBrightness:1],  //--color-message-mequoted-borderleft
+                            [ThemeColors rgbaFromUIColor:[ThemeColors loveColor] withAlpha:0.1 addSaturation:1], //--color-message-mequoted-borderother
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textColor:theme] withAlpha:0.05],  //--color-message-quoted-bl-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.7],  //--color-message-header-bl-background
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],  //--color-separator-new-message
                             [ThemeColors hexFromUIColor:[ThemeColors textColor:theme]], //--color-text
                             [ThemeColors hexFromUIColor:[ThemeColors textColor2:theme]], //--color-text2
                             [ThemeColors hexFromUIColor:[ThemeColors textFieldBackgroundColor:theme]], //--color-background-bars
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textFieldBackgroundColor:theme] withAlpha:0.9], //--color-searchintra-nextresults
                             sAvatarImageFile,
                             sLoadInfoImageFile,
                             [ThemeColors getColorBorderQuotation:theme],
                             [ThemeColors hexFromUIColor:[ThemeColors getColorBorderAvatar:theme]],
                             [ThemeColors hexFromUIColor:[ThemeColors textColorPseudo:theme]],
+                            [ThemeColors rgbaFromUIColor:[ThemeColors textColorPseudo:theme] withAlpha:0.5],
                             sBorderHeader];
 
 	HTMLString = [HTMLString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -354,27 +389,15 @@
          self.messageAvatar.frame = CGRectMake(self.messageAvatar.frame.origin.x, self.messageAvatar.frame.origin.y - 49, self.messageAvatar.frame.size.width, self.messageAvatar.frame.size.height);
     }
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [self.messageAuthor setFont:[UIFont boldSystemFontOfSize:17.0f]];
-        [self.messageDate setFont:[UIFont boldSystemFontOfSize:8.0f]];
-    }
+    [self.messageAuthor setFont:[UIFont boldSystemFontOfSize:17.0f]];
+    [self.messageDate setFont:[UIFont boldSystemFontOfSize:8.0f]];
     
     UISegmentedControl *segmentedControl;
-    
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        segmentedControl = [[UISegmentedControl alloc] initWithItems:
-                                                [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"upsmall7"],
-                                                 [UIImage imageNamed:@"downsmall7"],
-                                                 nil]];
-    }
-    else {
-        segmentedControl = [[UISegmentedControl alloc] initWithItems:
-                                                [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"upsmall"],
-                                                 [UIImage imageNamed:@"downsmall"],
-                                                 nil]];
-    }
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:
+                                            [NSArray arrayWithObjects:
+                                             [UIImage imageNamed:@"upsmall7"],
+                                             [UIImage imageNamed:@"downsmall7"],
+                                             nil]];
 
 	[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
     
@@ -386,14 +409,13 @@
             segmentedControl.frame = CGRectMake(0, 0, 90, 30);
         }
     }
-    else
+    else {
         segmentedControl.frame = CGRectMake(0, 0, 90, 30);
+    }
     
 	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
 	segmentedControl.momentary = YES;
 	segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-
-	//defaultTintColor = [segmentedControl.tintColor retain];	// keep track of this for later
 	
 	UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     
@@ -401,13 +423,10 @@
 	[(UISegmentedControl *)self.navigationItem.rightBarButtonItem.customView setEnabled:NO forSegmentAtIndex:0];
 	[(UISegmentedControl *)self.navigationItem.rightBarButtonItem.customView setEnabled:NO forSegmentAtIndex:1];
 	
-	
 	[messageTitle setText:self.messageTitleString];	
 
     [self.messageView setBackgroundColor:[UIColor whiteColor]];
-    [self.messageView hideGradientBackground];
-
-    //[self segmentAction:self.navigationItem.rightBarButtonItem];
+    self.messageView.navigationDelegate = self;
     
     [self setupData];
 }
@@ -424,7 +443,6 @@
 	} else {
 		return (interfaceOrientation == UIInterfaceOrientationPortrait);
 	}
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -434,151 +452,9 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload {
-	//NSLog(@"viewDidUnload MessageDetailView");
-	
-    messageAvatar = nil;
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-
-	[self.messageView stopLoading];
-	self.messageView.delegate = nil;
-	self.messageView = nil;
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;	
-
-	self.messageAuthor = nil;
-	self.messageDate = nil;
-	self.authorAvatar = nil;
-	
-	self.messageTitle = nil;
-	
-	self.toolbarBtn = nil;
-}
-
-- (void)dealloc {
-	//NSLog(@"dealloc MessageDetailView");
-
-	[self viewDidUnload];
-
-    if ([UIFontDescriptor respondsToSelector:@selector(preferredFontDescriptorWithTextStyle:)]) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIContentSizeCategoryDidChangeNotification object:nil];
-    }
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kThemeChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kSmileysSizeChangedNotification object:nil];
-
-	self.parent = nil;
-
-
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-	//NSLog(@"webViewDidStartLoad");
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-	//NSLog(@"webViewDidFinishLoad");
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
-
-}
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)aRequest navigationType:(UIWebViewNavigationType)navigationType {
-    //NSLog(@"expected:%d, got:%d | url:%@", UIWebViewNavigationTypeLinkClicked, navigationType, [aRequest.URL absoluteString]);
-
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        
-        if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
-            
-            if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
-                NSLog(@"pas la meme page / topic");
-                // Navigation logic may go here. Create and push another view controller.
-                
-                //NSLog(@"did Select row Topics table views: %d", indexPath.row);
-                
-                //if (self.messagesTableViewController == nil) {
-                MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
-                self.messagesTableViewController = aView;
-                //}
-                
-                self.navigationItem.backBarButtonItem =
-                [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                                 style: UIBarButtonItemStyleBordered
-                                                target:nil
-                                                action:nil];
-                
-                if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-                    self.navigationItem.backBarButtonItem.title = @" ";
-                }
-                
-                //setup the URL
-                self.messagesTableViewController.topicName = @"";	
-                self.messagesTableViewController.isViewed = YES;	
-                
-                //NSLog(@"push message liste");
-                [self.navigationController pushViewController:messagesTableViewController animated:YES];  
-            }
-            
-
-            return NO;
-        }
-		else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
-            
-            NSLog(@"%@", aRequest.URL);
-            
-            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
-            self.messagesTableViewController = aView;
-            
-            self.navigationItem.backBarButtonItem =
-            [[UIBarButtonItem alloc] initWithTitle:@"Retour"
-                                             style: UIBarButtonItemStyleBordered
-                                            target:nil
-                                            action:nil];
-            
-            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-                self.navigationItem.backBarButtonItem.title = @" ";
-            }
-            
-            //setup the URL
-            self.messagesTableViewController.topicName = @"";
-            self.messagesTableViewController.isViewed = YES;
-            
-            [self.navigationController pushViewController:messagesTableViewController animated:YES];
-            
-            return NO;
-        }
-        else {
-            NSURL *url = aRequest.URL;
-            NSString *urlString = url.absoluteString;
-            
-            [[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
-            return NO;
-        }
-        
-    }
-    else if (navigationType == UIWebViewNavigationTypeOther) {
-        if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
-            [self webViewDidFinishLoadDOM];
-            return NO;
-        }
-    }
-    
-    return YES;
-}
-
-- (void)webViewDidFinishLoadDOM {
-    [self userTextSizeDidChange];
-
-}
-
-- (IBAction)segmentAction:(id)sender
-{
+- (IBAction)segmentAction:(id)sender {
 	// The segmented control was clicked, handle it here 
 	UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
-	//NSLog(@"Segment clicked: %d", segmentedControl.selectedSegmentIndex);
 	
 	switch (segmentedControl.selectedSegmentIndex) {
 		case 0:
@@ -594,27 +470,19 @@
 			break;
 	}
 	
-	[(UILabel *)self.navigationItem.titleView setText:[NSString stringWithFormat:@"Page: %d — %d/%d", self.pageNumber, curMsg + 1, arrayData.count]];
-
-	//[parent.messagesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:curMsg] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-	
+    [(UILabel *)self.navigationItem.titleView setText:[NSString stringWithFormat:@"Page: %d — %d/%ld", self.pageNumber, curMsg + 1, (unsigned long)self.arrayData.count]];
 }
 
--(void)QuoteMessage
-{
+-(void)QuoteMessage {
 	[parent quoteMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlQuote] decodeSpanUrlFromString] ]];
 }
 
--(void)EditMessage
-{
-	[parent setEditFlagTopic:[[arrayData objectAtIndex:curMsg] postID]];
+-(void)EditMessage {
+	[parent setEditFlagTopic:[(LinkItem*)[arrayData objectAtIndex:curMsg] postID]];
 	[parent editMessage:[NSString stringWithFormat:@"%@%@", [k ForumURL], [[[arrayData objectAtIndex:curMsg] urlEdit] decodeSpanUrlFromString] ]];
-
 }
 
 -(void)ActionList:(id)sender {
-	//NSLog(@"ActionList %@", [NSDate date]);
-
 	//Btn Quote & Edit
 	[self.arrayAction removeAllObjects];
 
@@ -691,10 +559,6 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
 	if (buttonIndex < [self.arrayAction count]) {
-		//NSLog(@"clickedButtonAtIndex %d %@", buttonIndex, [NSNumber numberWithInt:curMsg]);
-
-
-        
         [self.parent performSelectorOnMainThread:NSSelectorFromString([[self.arrayAction objectAtIndex:buttonIndex] objectForKey:@"code"]) withObject:[NSNumber numberWithInt:curMsg] waitUntilDone:NO];
         
     }
@@ -713,7 +577,7 @@
             //        script = [script stringByAppendingString:[NSString stringWithFormat:@"$('.message .content .right p.editedhfrlink').css('cssText', 'font-size:%fpx !important');", floor(userFontSize*0.75)]];
             
             
-            [self.messageView stringByEvaluatingJavaScriptFromString:script];
+            [self.messageView evaluateJavaScript:script completionHandler:nil];
             
             return [NSString stringWithFormat:@".message .content .right { font-size:%fpx !important; }", userFontSize];
             
@@ -754,18 +618,14 @@
         document.getElementById('oled-styles').disabled = document.getElementById('oled-styles-retina').disabled = false;\
         document.getElementById('light-styles').disabled = document.getElementById('light-styles-retina').disabled = true;";
     }
-    [self.messageView stringByEvaluatingJavaScriptFromString:script];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        self.actionBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-        self.quoteBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-        self.editBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
-        
-        [(UILabel *)self.navigationItem.titleView setTextColor:[ThemeColors titleTextAttributesColor:[[ThemeManager sharedManager] theme]]];
+    [self.messageView evaluateJavaScript:script completionHandler:nil];
+    
+    self.actionBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+    self.quoteBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+    self.editBtn.tintColor = [ThemeColors tintColor:[[ThemeManager sharedManager] theme]];
+    [(UILabel *)self.navigationItem.titleView setTextColor:[ThemeColors titleTextAttributesColor:[[ThemeManager sharedManager] theme]]];
 
-    }
-
-    //[self.detailViewController.navigationItem setTitleView:label];
     return @"";
 }
 
@@ -774,7 +634,105 @@
     if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"size_smileys"] isEqualToString:@"double"]) {
         script = @"document.getElementById('smileys_double').disabled = false;";
     }
-    [self.messageView stringByEvaluatingJavaScriptFromString:script];
+    [self.messageView evaluateJavaScript:script completionHandler:nil];
+}
+#pragma mark -
+#pragma mark WKWebView Delegate
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"didFinishNavigation");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self userTextSizeDidChange];
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSLog(@"decidePolicyForNavigationAction = %@", navigationAction.request.URL);
+    BOOL bAllow = YES;
+    NSURLRequest *aRequest = navigationAction.request;
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        if ([[aRequest.URL scheme] isEqualToString:@"file"]) {
+            if ([[[aRequest.URL pathComponents] objectAtIndex:0] isEqualToString:@"/"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
+                NSLog(@"pas la meme page / topic");
+                // Navigation logic may go here. Create and push another view controller.
+                
+                //NSLog(@"did Select row Topics table views: %d", indexPath.row);
+                
+                //if (self.messagesTableViewController == nil) {
+                MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:@"file://" withString:@""]];
+                self.messagesTableViewController = aView;
+                //}
+                
+                self.navigationItem.backBarButtonItem =
+                [[UIBarButtonItem alloc] initWithTitle:@"Retour"
+                                                 style: UIBarButtonItemStyleBordered
+                                                target:nil
+                                                action:nil];
+                
+                if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
+                    self.navigationItem.backBarButtonItem.title = @" ";
+                }
+                
+                //setup the URL
+                self.messagesTableViewController.topicName = @"";
+                self.messagesTableViewController.isViewed = YES;
+                
+                //NSLog(@"push message liste");
+                [self.navigationController pushViewController:messagesTableViewController animated:YES];
+            }
+            
+            bAllow = NO;
+        }
+        else if ([[aRequest.URL host] isEqualToString:@"forum.hardware.fr"] && ([[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"forum2.php"] || [[[aRequest.URL pathComponents] objectAtIndex:1] isEqualToString:@"hfr"])) {
+            
+            NSLog(@"%@", aRequest.URL);
+            
+            MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[[aRequest.URL absoluteString] stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@", [k ForumURL]] withString:@""] stringByReplacingOccurrencesOfString:@"http://forum.hardware.fr" withString:@""]];
+            self.messagesTableViewController = aView;
+            
+            self.navigationItem.backBarButtonItem =
+            [[UIBarButtonItem alloc] initWithTitle:@"Retour"
+                                             style: UIBarButtonItemStyleBordered
+                                            target:nil
+                                            action:nil];
+            
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
+                self.navigationItem.backBarButtonItem.title = @" ";
+            }
+            
+            //setup the URL
+            self.messagesTableViewController.topicName = @"";
+            self.messagesTableViewController.isViewed = YES;
+            
+            [self.navigationController pushViewController:messagesTableViewController animated:YES];
+            
+            bAllow = NO;
+        }
+        else {
+            NSURL *url = aRequest.URL;
+            NSString *urlString = url.absoluteString;
+            
+            [[HFRplusAppDelegate sharedAppDelegate] openURL:urlString];
+            bAllow = NO;
+        }
+    }
+    else if (navigationAction.navigationType == WKNavigationTypeOther) {
+        if ([[aRequest.URL scheme] isEqualToString:@"oijlkajsdoihjlkjasdoloaded"]) {
+            [self userTextSizeDidChange];
+            bAllow = NO;
+        }
+    }
+    
+    if (bAllow) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
 }
 
 #pragma mark -

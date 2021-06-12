@@ -13,10 +13,15 @@
 #import "RangeOfCharacters.h"
 #import "ThemeManager.h"
 #import "ThemeColors.h"
+#import "HFRAlertView.h"
+#import "ASIHTTPRequest+Tools.h"
 
 @implementation AlerteModoViewController
 @synthesize textView, delegate, url;
 @synthesize request, loadingView, accessoryView, arrayInputData, formSubmit;
+
+NSString *const PLACEHOLDER = @"Attention : le message que vous écrivez ici sera envoyé directement chez les modérateurs via message privé ou e-mail.\n\nCe formulaire est destiné UNIQUEMENT à demander aux modérateurs de venir sur le sujet lorsqu'il y a un problème.\n\nIl ne sert pas à appeler à l'aide parce que personne ne répond à vos questions.\nIl ne sert pas non plus à ajouter un message sur le sujet, pour cela il y a le menu 'Répondre' (s'il est absent c'est que le sujet a été cloturé).";
+
 
 #pragma mark -
 #pragma mark Download
@@ -54,7 +59,7 @@
     
     [self.arrayInputData removeAllObjects];
     
-    [self loadDataInTableView:[request responseData]];
+    [self loadDataInTableView:[request safeResponseData]];
     
     [self.accessoryView setHidden:NO];
     [self.loadingView setHidden:YES];
@@ -68,10 +73,18 @@
 {
     [self.loadingView setHidden:YES];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-                                                   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-    [alert setTag:777];
-    [alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 
@@ -94,11 +107,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     
     //Bouton Annuler
     UIBarButtonItem *cancelBarItem = [[UIBarButtonItem alloc] initWithTitle:@"Annuler" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
@@ -113,11 +123,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
-    [self.textView setPlaceholder:@"Attention : le message que vous écrivez ici sera envoyé directement chez les modérateurs via message privé ou e-mail.\n\nCe formulaire est destiné UNIQUEMENT à demander aux modérateurs de venir sur le sujet lorsqu'il y a un problème.\n\nIl ne sert pas à appeler à l'aide parce que personne ne répond à vos questions.\nIl ne sert pas non plus à ajouter un message sur le sujet, pour cela il y a le menu 'Répondre' (s'il est absent c'est que le sujet a été cloturé)."];
-    self.textView.placeholderColor = [UIColor lightGrayColor]; // optional
-    [self.textView setText:@""];
+
+    self.textView.text = PLACEHOLDER;
+    self.textView.textColor = [UIColor lightGrayColor];
     
+    self.textView.backgroundColor = [ThemeColors greyBackgroundColor];
     self.textView.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    [self.navigationController.navigationBar setTranslucent:NO];
+
 
     
     [self fetchContent];
@@ -140,11 +153,11 @@
     HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
     
     if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
-        UIAlertView *alertKKO = [[UIAlertView alloc] initWithTitle:nil message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                          delegate:self cancelButtonTitle:@"Génial !" otherButtonTitles: nil];
-        
-        [alertKKO setTag:990];
-        [alertKKO show];
+        // Post déjà alerté
+        [HFRAlertView  DisplayOKAlertViewWithTitle:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] andMessage:nil handlerOK:^(UIAlertAction * action) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+            [self.delegate alertModoViewControllerDidFinish:self];
+        }];
     }
     else {
         HTMLNode * fastAnswerNode = [bodyNode findChildWithAttribute:@"action" matchingName:@"modo.php" allowPartial:YES];
@@ -167,11 +180,11 @@
 #pragma mark Action
 
 - (IBAction)cancel {
-    if ([self.textView text].length > 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention !" message:@"Vous allez perdre le contenu de votre alerte"
-                                                       delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Confirmer", nil];
-        [alert setTag:666];
-        [alert show];
+    if ([self.textView text].length > 0 && ![self.textView.text isEqualToString:PLACEHOLDER]) {
+        [HFRAlertView DisplayOKCancelAlertViewWithTitle:@"Attention !" andMessage:@"Vous allez perdre le contenu de votre alerte" handlerOK: ^(UIAlertAction * action ) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+            [self.delegate alertModoViewControllerDidFinish:self];
+        } handlerCancel:nil baseController:self];
     }
     else {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
@@ -196,50 +209,32 @@
     txtTW = [txtTW stringByReplacingOccurrencesOfString:@"\n" withString:@"\r\n"];
     
     [arequest setPostValue:txtTW forKey:@"raison"];
-
     [arequest startSynchronous];
     
     if (arequest) {
         if ([arequest error]) {
-            //NSLog(@"error: %@", [[arequest error] localizedDescription]);
-            
-            UIAlertView *alertKO = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[[arequest error] localizedDescription]
-                                                             delegate:self cancelButtonTitle:@"Retour" otherButtonTitles: nil];
-            [alertKO show];
+            // Popup erreur
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[[arequest error] localizedDescription]
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Retour" style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) { }];
+            [alert addAction:actionCancel];
+            [self presentViewController:alert animated:YES completion:nil];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
-        else if ([arequest responseString])
+        else if ([arequest safeResponseString])
         {
             NSError * error = nil;
-            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
-            
+            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest safeResponseString] error:&error];
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
-            
-            //NSLog(@"bodyRes %@", rawContentsOfNode([bodyNode _node], [myParser _doc]));
-
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
             
-            UIAlertView *alertOK = [[UIAlertView alloc] initWithTitle:@"Hooray !" message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                             delegate:self.delegate cancelButtonTitle:nil otherButtonTitles: nil];
-            [alertOK setTag:666];
-            [alertOK show];
-            
-            UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-            
-            // Adjust the indicator so it is up a few pixels from the bottom of the alert
-            indicator.center = CGPointMake(alertOK.bounds.size.width / 2, alertOK.bounds.size.height - 50);
-            [indicator startAnimating];
-            [alertOK addSubview:indicator];
-            
-            
-            
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-            [self.delegate alertModoViewControllerDidFinishOK:self];
-
-            
+            [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:(long)1 completion:^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
+                [self.delegate alertModoViewControllerDidFinishOK:self];
+            }];
         }
     }
-    
 }
 
 #pragma mark -
@@ -278,6 +273,26 @@
     }
     
 }
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:PLACEHOLDER]) {
+         textView.text = @"";
+         textView.textColor = [ThemeColors cellTextColor];
+    }
+    [textView becomeFirstResponder];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:@""]) {
+        textView.text = PLACEHOLDER;
+        textView.textColor = [UIColor lightGrayColor];
+    }
+    [textView resignFirstResponder];
+}
+
+
 #pragma mark -
 #pragma mark Responding to keyboard events
 

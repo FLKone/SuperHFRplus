@@ -10,12 +10,14 @@
 #import "MessagesTableViewController.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
+#import "OfflineStorage.h"
 
 @implementation PageViewController
 @synthesize previousPageUrl, nextPageUrl;
-@synthesize currentUrl, pageNumber;
+@synthesize currentUrl, originalUrl, currentOfflineTopic, pageNumber;
 @synthesize firstPageNumber, lastPageNumber;
 @synthesize firstPageUrl, lastPageUrl;
+@synthesize filterPostsQuotes;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -26,9 +28,19 @@
 		self.previousPageUrl = [[NSString alloc] init];
 		
 		self.firstPageUrl = [[NSString alloc] init];
-		self.lastPageUrl = [[NSString alloc] init];		
+		self.lastPageUrl = [[NSString alloc] init];
+        self.currentOfflineTopic = nil;
+        self.filterPostsQuotes = nil;
+        self.originalUrl = nil;
     }
     return self;
+}
+
+- (BOOL)isModeOffline {
+    if (self.currentOfflineTopic == nil) {
+        return NO;
+    }
+    return YES;
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -51,69 +63,49 @@
     }
 }
 
--(void)fetchContent{
-	
-}
-
 -(void)choosePage {
-	//NSLog(@"choosePage");
-	
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Aller à la page"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleAlert];
     
     
-    if ([UIAlertController class]) {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Aller à la page"
-                                                                       message:nil
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        
-        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = [NSString stringWithFormat:@"(numéro entre %d et %d)", [self firstPageNumber], [self lastPageNumber]];
-            textField.textAlignment = NSTextAlignmentCenter;
-            [textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-            textField.keyboardAppearance = UIKeyboardAppearanceDefault;
-            textField.keyboardType = UIKeyboardTypeNumberPad;
-            textField.delegate = self;
-        }];
-        
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
-                                                             handler:^(UIAlertAction * action) {
-                                                                 
-                                                             }];
-        
-        [alert addAction:cancelAction];
-        
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) {
-                                                                  [self gotoPageNumber:[[alert.textFields[0] text] intValue]];
-                                                              }];
-        
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:^{
-            
-        }];
-        
-        
-        
-    } else {
-    
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Aller à la page" message:nil
-                                                       delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"OK", nil];
-        
-        alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-        
-        UITextField *textField = [alert textFieldAtIndex:0];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = [NSString stringWithFormat:@"(numéro entre %d et %d)", [self firstPageNumber], [self lastPageNumber]];
         textField.textAlignment = NSTextAlignmentCenter;
-        textField.delegate = self;
         [textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
         textField.keyboardAppearance = UIKeyboardAppearanceDefault;
         textField.keyboardType = UIKeyboardTypeNumberPad;
+        textField.delegate = self;
+        [[ThemeManager sharedManager] applyThemeToTextField:textField];
+        textField.keyboardAppearance = [ThemeColors keyboardAppearance:[[ThemeManager sharedManager] theme]];
+    }];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {
+                                                             
+                                                         }];
+    
+    [alert addAction:cancelAction];
+    
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self gotoPageNumber:[[alert.textFields[0] text] intValue]];
+                                                          }];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    for (UIView* textfield in alert.textFields) {
+        UIView *container = textfield.superview;
+        UIView *effectView = container.superview.subviews[0];
         
-        [alert setTag:668];
-        [alert show];
-
+        if (effectView && [effectView class] == [UIVisualEffectView class]){
+            container.backgroundColor = [UIColor clearColor];
+            [effectView removeFromSuperview];
+        }
     }
+
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 
@@ -143,9 +135,10 @@
         if ([self respondsToSelector:@selector(searchSubmit:)]) {
             [self searchSubmit:nil];
         }
-
     }
-
+    else if ([pageType isEqualToString:@"filterPostsQuotesNext"]) {
+        [self filterPostsQuotesNext:nil];
+    }
 }
 
 -(void)gotoPageNumber:(int)number{
@@ -155,39 +148,44 @@
 		return;
 	}
 	
-	//NSLog(@"Current URL %@", self.currentUrl);
-	
-	
-	NSString *newUrl = [NSString stringWithString:self.currentUrl];
-	
-	
-	
-	//On remplace le numéro de page dans le titre
-	NSString *regexString  = @".*page=([^&]+).*";
-	NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
-	NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
-	NSError  *error2        = NULL;
-	//int numPage;
-	
-	matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
-	
-	if (matchedRange.location == NSNotFound) {
-		NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
-		//NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]]);
-		newUrl = [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]];
-		//self.pageNumber = [[self.forumUrl substringWithRange:rangeNumPage] intValue];
-	}
-	else {
-		//NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]]);
-		newUrl = [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]];
-		//self.pageNumber = [[self.forumUrl substringWithRange:matchedRange] intValue];
-		
-	}	
-	
-    newUrl = [newUrl stringByRemovingAnchor];
-    
-	self.currentUrl = newUrl;
-	[self fetchContent];
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage = number;
+        // Update offline flag
+        if (self.currentOfflineTopic.curTopicPageLoaded < self.currentOfflineTopic.curTopicPage) {
+            self.currentOfflineTopic.curTopicPageLoaded = self.currentOfflineTopic.curTopicPage;
+            [[OfflineStorage shared] updateOfflineTopic:self.currentOfflineTopic];
+        }
+        [self fetchContent];
+    } else {
+        NSString *newUrl = [NSString stringWithString:self.currentUrl];
+        
+        //On remplace le numéro de page dans le titre
+        NSString *regexString  = @".*page=([^&]+).*";
+        NSRange   matchedRange;// = NSMakeRange(NSNotFound, 0UL);
+        NSRange   searchRange = NSMakeRange(0, self.currentUrl.length);
+        NSError  *error2        = NULL;
+        //int numPage;
+        
+        matchedRange = [self.currentUrl rangeOfRegex:regexString options:RKLNoOptions inRange:searchRange capture:1L error:&error2];
+        
+        if (matchedRange.location == NSNotFound) {
+            NSRange rangeNumPage =  [[self currentUrl] rangeOfCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] options:NSBackwardsSearch];
+            //NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]]);
+            newUrl = [newUrl stringByReplacingCharactersInRange:rangeNumPage withString:[NSString stringWithFormat:@"%d", number]];
+            //self.pageNumber = [[self.forumUrl substringWithRange:rangeNumPage] intValue];
+        }
+        else {
+            //NSLog(@"New URL %@", [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]]);
+            newUrl = [newUrl stringByReplacingCharactersInRange:matchedRange withString:[NSString stringWithFormat:@"%d", number]];
+            //self.pageNumber = [[self.forumUrl substringWithRange:matchedRange] intValue];
+            
+        }
+        
+        newUrl = [newUrl stringByRemovingAnchor];
+        
+        self.currentUrl = newUrl;
+        [self fetchContent];
+    }
 }
 
 -(void)textFieldDidChange:(id)sender {
@@ -203,7 +201,7 @@
 				//NSLog(@"pas int");
 				[sender setText:[NSString stringWithFormat:@"%d", val]];
 			}
-			else if ([[(UITextField *)sender text] intValue] < [self firstPageNumber]) {
+			else if ([[(UITextField *)sender text] intValue] < 1) {
 				//NSLog(@"ERROR WAS %d", [[(UITextField *)sender text] intValue]);
 				[sender setText:[NSString stringWithFormat:@"%d", [self firstPageNumber]]];
 				//NSLog(@"ERROR NOW %d", [[(UITextField *)sender text] intValue]);
@@ -228,26 +226,44 @@
 }
 
 -(void)nextPage:(id)sender {
-	
-	self.currentUrl = self.nextPageUrl;
-	[self fetchContent];	
-}
--(void)previousPage:(id)sender {
-	
-	self.currentUrl = self.previousPageUrl;
-    
-    if ([[self class] isSubclassOfClass:[MessagesTableViewController class]]) {
-        [self fetchContent:kNewMessageFromNext];
-
-    }
-    else {
+    if ([self isModeOffline]) {
+        if (self.currentOfflineTopic.curTopicPage < self.currentOfflineTopic.maxTopicPageLoaded) {
+            self.currentOfflineTopic.curTopicPage++;
+            // Update offline flag
+            if (self.currentOfflineTopic.curTopicPageLoaded < self.currentOfflineTopic.curTopicPage) {
+                self.currentOfflineTopic.curTopicPageLoaded = self.currentOfflineTopic.curTopicPage;
+                [[OfflineStorage shared] updateOfflineTopic:self.currentOfflineTopic];
+            }
+            [self fetchContent];
+        }
+    } else {
+        self.currentUrl = self.nextPageUrl;
         [self fetchContent];
     }
-    
-    
+}
+-(void)previousPage:(id)sender {
+    if ([self isModeOffline]) {
+        if (self.currentOfflineTopic.curTopicPage > self.currentOfflineTopic.minTopicPageLoaded) {
+            self.currentOfflineTopic.curTopicPage--;
+            [self fetchContent];
+        }
+    } else {
+        self.currentUrl = self.previousPageUrl;
+        
+        if ([[self class] isSubclassOfClass:[MessagesTableViewController class]]) {
+            [self fetchContent:kNewMessageFromNext];
+
+        }
+        else {
+            [self fetchContent];
+        }
+    }
 }
 - (IBAction)searchSubmit:(UIBarButtonItem *)sender {
     
+}
+
+- (IBAction)filterPostsQuotesNext:(UIBarButtonItem *)sender {
 }
 
 - (void)fetchContent:(int)from {
@@ -261,17 +277,30 @@
     [self lastPage:nil];
 }
 -(void)firstPage:(id)sender {
-	
-	if(self.firstPageUrl.length > 0) self.currentUrl = self.firstPageUrl;
-	[self fetchContent];
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage = self.currentOfflineTopic.minTopicPageLoaded;
+        [self fetchContent];
+    } else {
+        if(self.firstPageUrl.length > 0) self.currentUrl = self.firstPageUrl;
+        [self fetchContent];
+    }
 }
 -(void)lastPage:(id)sender {
-	
-	if(self.lastPageUrl.length > 0) self.currentUrl = self.lastPageUrl;
-	[self fetchContent];	
+    if ([self isModeOffline]) {
+        self.currentOfflineTopic.curTopicPage = self.currentOfflineTopic.maxTopicPageLoaded;
+        // Update offline flag
+        if (self.currentOfflineTopic.curTopicPageLoaded < self.currentOfflineTopic.curTopicPage) {
+            self.currentOfflineTopic.curTopicPageLoaded = self.currentOfflineTopic.curTopicPage;
+            [[OfflineStorage shared] updateOfflineTopic:self.currentOfflineTopic];
+        }
+        [self fetchContent];
+    } else {
+        if(self.lastPageUrl.length > 0) self.currentUrl = self.lastPageUrl;
+        [self fetchContent];
+    }
 }
+
 -(void)lastAnswer {
-	
 	if(self.lastPageUrl.length > 0) self.currentUrl = [NSString stringWithFormat:@"%@#bas", self.lastPageUrl];
 	[self fetchContent];	
 }
@@ -289,6 +318,7 @@
 	else if (([alertView tag] == 668)) {
 		//NSLog(@"keud");
 	}
+    /* TO DELETE
     else if (([alertView tag] == 6666) || ([alertView tag] == kAlertBlackListOK)) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [alertView dismissWithClickedButtonIndex:0 animated:YES];
@@ -299,7 +329,7 @@
             [alertView dismissWithClickedButtonIndex:0 animated:YES];
         });
     }
-	
+	*/
 	
 }
 

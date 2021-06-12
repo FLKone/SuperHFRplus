@@ -78,7 +78,7 @@ table
 table p
 {
 	max-width:100% !important;
-	overflow-x:hidden;
+    /*    overflow-x:hidden;*/
 }
 
 table p img

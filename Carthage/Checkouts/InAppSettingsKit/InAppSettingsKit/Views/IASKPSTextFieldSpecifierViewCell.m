@@ -1,8 +1,7 @@
 //
 //  IASKPSTextFieldSpecifierViewCell.m
-//  http://www.inappsettingskit.com
 //
-//  Copyright (c) 2009-2010:
+//  Copyright (c) 2009-2020:
 //  Luc Vandal, Edovia Inc., http://www.edovia.com
 //  Ortwin Gentz, FutureTap GmbH, http://www.futuretap.com
 //  All rights reserved.
@@ -30,7 +29,6 @@
         _textField.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin;
         _textField.font = [UIFont systemFontOfSize:kIASKLabelFontSize];
         _textField.minimumFontSize = kIASKMinimumFontSize;
-        IASK_IF_PRE_IOS7(_textField.textColor = [UIColor colorWithRed:0.275f green:0.376f blue:0.522f alpha:1.000f];);
         [self.contentView addSubview:_textField];
         
         self.selectionStyle = UITableViewCellSelectionStyleNone; 

@@ -49,8 +49,7 @@ typedef enum {
 
 typedef enum Theme : int {
     ThemeLight = 0,
-    ThemeDark = 1,
-    ThemeOLED = 2
+    ThemeDark = 1
 } Theme;
 
 
@@ -84,8 +83,13 @@ typedef enum Theme : int {
 #define kAlertPasteBoardOK      1000003
 
 #define REHOST_IMAGE_FILE @"rehostImages.plist"
-#define USED_SMILEYS_FILE @"usedSmilieys.plist"
+#define SEARCH_SMILEYS_FILE @"smileysSearch.plist"
+#define LAST_SMILEYS_FILE @"lastSmileysSearch.plist"
 #define BLACKLIST_FILE @"blackList.plist"
+#define BLACKLISTDICO_FILE @"blackListDico.plist"
+#define WHITELIST_FILE @"whiteList.plist"
+#define OFFLINE_TOPICS_DICO_FILE @"offlineTopicsDico.plist"
+#define OFFLINE_IMAGECACHE_DICO_FILE @"offlineImageCacheDico.plist"
 #define FORUMSMETA_FILE @"forumsMeta.plist"
 #define FORUMS_CACHE_FILE @"forumsCache.plist"
 
@@ -110,6 +114,13 @@ typedef enum Theme : int {
 #define PSEUDO_KEY @"PSEUDO"
 #define COOKIES_KEY @"COOKIES"
 #define AVATAR_KEY @"AVATAR"
+#define PSEUDO_DISPLAY_KEY @"PSEUDO_DISPLAY"
 #define HASH_KEY @"HASH"
 #define MAIN_KEY @"MAIN"
 
+// Chevereto
+#define CHEVERETO_KEY @"% PUT CHEVERETO KEY HERE %"
+
+// Min & max
+#define MAXIMUM(a,b) ( ((a) > (b)) ? (a) : (b) )
+#define MINIMUM(a,b) ( ((a) < (b)) ? (a) : (b) )

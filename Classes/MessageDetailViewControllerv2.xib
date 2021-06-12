@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina5_5" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Helvetica.ttc">
-            <string>Helvetica-Bold</string>
-        </array>
-    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MessageDetailViewController">
             <connections>
@@ -22,7 +14,7 @@
                 <outlet property="messageAuthor" destination="7" id="15"/>
                 <outlet property="messageAvatar" destination="30" id="MeH-Qf-fU8"/>
                 <outlet property="messageDate" destination="8" id="16"/>
-                <outlet property="messageView" destination="3" id="17"/>
+                <outlet property="messageView" destination="Rpv-tl-dz0" id="i9h-36-vd6"/>
                 <outlet property="toolbarBtn" destination="23" id="40"/>
                 <outlet property="view" destination="1" id="19"/>
             </connections>
@@ -32,14 +24,16 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3">
-                    <rect key="frame" x="0.0" y="20" width="414" height="716"/>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <dataDetectorType key="dataDetectorTypes"/>
-                    <connections>
-                        <outlet property="delegate" destination="-1" id="20"/>
-                    </connections>
-                </webView>
+                <wkWebView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rpv-tl-dz0">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <wkWebViewConfiguration key="configuration">
+                        <dataDetectorTypes key="dataDetectorTypes"/>
+                        <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                        <wkPreferences key="preferences"/>
+                    </wkWebViewConfiguration>
+                </wkWebView>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackTranslucent" translatesAutoresizingMaskIntoConstraints="NO" id="23">
                     <rect key="frame" x="0.0" y="692" width="414" height="44"/>
                     <items/>
@@ -91,14 +85,10 @@
                 <constraint firstItem="dZp-TY-ke2" firstAttribute="trailing" secondItem="23" secondAttribute="trailing" id="9kv-xc-gvY"/>
                 <constraint firstItem="7" firstAttribute="leading" secondItem="30" secondAttribute="trailing" constant="5" id="AhH-5H-GDi"/>
                 <constraint firstItem="23" firstAttribute="leading" secondItem="dZp-TY-ke2" secondAttribute="leading" id="Aip-H3-u8Z"/>
-                <constraint firstItem="dZp-TY-ke2" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" id="Bdr-hf-zAh"/>
-                <constraint firstItem="dZp-TY-ke2" firstAttribute="top" secondItem="3" secondAttribute="top" id="IVk-lF-X5K"/>
                 <constraint firstItem="30" firstAttribute="leading" secondItem="23" secondAttribute="leading" constant="5" id="OWb-Hu-kO5"/>
                 <constraint firstItem="31" firstAttribute="centerY" secondItem="30" secondAttribute="centerY" id="RM6-Sr-cJD"/>
-                <constraint firstItem="dZp-TY-ke2" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" id="STa-rj-hpy"/>
                 <constraint firstItem="7" firstAttribute="height" secondItem="30" secondAttribute="height" multiplier="2:3" id="TjQ-aZ-sMc"/>
                 <constraint firstItem="30" firstAttribute="centerY" secondItem="23" secondAttribute="centerY" id="UW9-IZ-0zL"/>
-                <constraint firstItem="3" firstAttribute="leading" secondItem="dZp-TY-ke2" secondAttribute="leading" id="V4A-Hf-oBR"/>
                 <constraint firstItem="23" firstAttribute="centerX" secondItem="dZp-TY-ke2" secondAttribute="centerX" id="bPT-pV-DBy"/>
                 <constraint firstItem="8" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="d8Y-q5-TBq"/>
                 <constraint firstItem="30" firstAttribute="height" secondItem="23" secondAttribute="height" constant="-10" id="dbf-sC-bnR"/>
@@ -107,7 +97,7 @@
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <viewLayoutGuide key="safeArea" id="dZp-TY-ke2"/>
-            <point key="canvasLocation" x="-289" y="-100"/>
+            <point key="canvasLocation" x="-418.84057971014494" y="-67.663043478260875"/>
         </view>
     </objects>
 </document>

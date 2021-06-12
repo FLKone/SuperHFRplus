@@ -46,7 +46,7 @@
         tapRecon.numberOfTapsRequired = 1;
         tapRecon.numberOfTouchesRequired = 2;
         [self.navigationBar addGestureRecognizer:tapRecon];
-
+        self.navigationBar.barStyle = [ThemeColors barStyle:[[ThemeManager sharedManager] theme]];
     }
 
 
@@ -79,7 +79,17 @@
     Theme theme = [[ThemeManager sharedManager] theme];
 
     
-    [self.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[ThemeColors navBackgroundColor:theme]] forBarMetrics:UIBarMetricsDefault];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        [self.navigationBar setBackgroundImage:[ThemeColors imageFromColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
+    }else{
+        UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        
+        [self.navigationBar setBackgroundImage:navBG forBarMetrics:UIBarMetricsDefault];
+    }
+    
+    
+    [self.navigationBar setBarTintColor:[ThemeColors navBackgroundColor:theme]];
     
     if ([self.navigationBar respondsToSelector:@selector(setTintColor:)]) {
         [self.navigationBar setTintColor:[ThemeColors tintColor:theme]];
@@ -155,6 +165,18 @@
    // NSLog(@"shouldAutorotate %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"landscape_mode"]);
 
     return YES;
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    //NSLog(@"=============== HFRNavigation traitCollectionDidChange 1 ===============");
+    [super traitCollectionDidChange:previousTraitCollection];
+    if (@available(iOS 13.0, *)) {
+        if ([previousTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:self.traitCollection] == false) {
+            return;
+        }
+        //NSLog(@"=============== HFRNavigation traitCollectionDidChange 2 ===============");
+        [[ThemeManager sharedManager] checkTheme];
+    }
 }
 
 

@@ -16,7 +16,7 @@
 
 #import "Forum.h"
 
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 
 
 #import "UIScrollView+SVPullToRefresh.h"
@@ -134,7 +134,7 @@
     //[self.loadingView setHidden:YES];
     //[self.maintenanceView setHidden:YES];
 	
-    [self loadDataInTableView:[theRequest responseData]];
+    [self loadDataInTableView:[theRequest safeResponseData]];
     
     [self.arrayData removeAllObjects];
     
@@ -177,20 +177,28 @@
     
     [self.forumsTableView.pullToRefreshView stopAnimating];
     
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) { [self.forumsTableView triggerPullToRefresh]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-    [self cancelFetchContent];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
+/* TODO : delete
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 	if (buttonIndex == 1) {
 		[self.forumsTableView triggerPullToRefresh];
 	}
 }
-
+*/
 #pragma mark -
 #pragma mark View lifecycle
 
@@ -744,13 +752,13 @@
         //NSLog(@"COMPLETE %d", self.childViewControllers.count);
         
     }
-    else
-    {
-        PullToRefreshErrorViewController *ErrorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
-        [self addChildViewController:ErrorVC];
+    else {
+        self.errorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
+        [self addChildViewController:self.errorVC];
         
-        self.forumsTableView.tableHeaderView = ErrorVC.view;
-        [ErrorVC sizeToFit];
+        self.forumsTableView.tableHeaderView = self.errorVC.view;
+        [self.errorVC sizeToFit];
+        [self.errorVC applyTheme];
     }
     
 }
@@ -949,7 +957,10 @@
     self.forumsTableView.separatorColor = [ThemeColors cellBorderColor:theme];
     self.forumsTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.forumsTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
-    self.forumsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
+    self.forumsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
+    if (self.errorVC) {
+        [self.errorVC applyTheme];
+    }
 
     [self.forumsTableView reloadData];
 }
@@ -1161,7 +1172,7 @@
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
             [forumActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
                 [self dismissViewControllerAnimated:YES completion:nil];
             }]];

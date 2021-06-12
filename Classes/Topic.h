@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Topic : NSObject {
+@interface Topic : NSObject <NSCoding>  {
 	//NSString *_aTitle;
 	NSString *aURL;
 
@@ -24,7 +24,8 @@
 	NSString *aURLOfLastPost;
 	NSString *aURLOfLastPage;
 	
-	NSString *aDateOfLastPost;
+    NSString *aDateOfLastPost;
+    NSDate   *dDateOfLastPost;
 	NSString *aAuthorOfLastPost;
 
 	NSString *aAuthorOrInter;
@@ -32,15 +33,19 @@
     int maxTopicPage;
     int curTopicPage;
     
+    int minTopicPageLoaded;
+    int maxTopicPageLoaded;
+
 	int postID;
 	int catID;
     
+    bool isPoll;
     bool isSticky;
     bool isClosed;
+    bool isSuperFavorite;
 }
 
 @property (nonatomic, strong) NSString *_aTitle;
-- (void)setATitle:(NSString *)n;
 @property (nonatomic, strong) NSString *aURL;
 
 @property int aRepCount;
@@ -54,6 +59,7 @@
 @property (nonatomic, strong) NSString *aURLOfLastPost;
 @property (nonatomic, strong) NSString *aURLOfLastPage;
 @property (nonatomic, strong) NSString *aDateOfLastPost;
+@property (nonatomic, strong) NSDate   *dDateOfLastPost;
 @property (nonatomic, strong) NSString *aAuthorOfLastPost;
 
 @property (nonatomic, strong) NSString *aAuthorOrInter;
@@ -61,12 +67,20 @@
 @property int maxTopicPage;
 @property int curTopicPage;
 
+@property BOOL isTopicLoadedInCache;
+@property int maxTopicPageLoaded;
+@property int curTopicPageLoaded;
+@property int minTopicPageLoaded;
+
 @property int postID;
 @property int catID;
 
+@property bool isPoll;
 @property bool isSticky;
+@property bool isSuperFavorite;
 @property bool isClosed;
 
 - (NSString*) aTitle;
-
+- (void)setATitle:(NSString *)n;
+- (NSString*) getURLforPage:(int)iPage;
 @end

@@ -15,6 +15,6 @@
 - (UIImage *)imageByScalingToSize:(CGSize)targetSize;
 - (UIImage *)imageRotatedByRadians:(CGFloat)radians;
 - (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
-- (UIImage *)scaleAndRotateImage:(UIImage *)image;
+- (UIImage *)scaleAndRotateImage:(UIImage *)image withMaxResolution:(int)kMaxResolution;
 + (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)size;
 @end

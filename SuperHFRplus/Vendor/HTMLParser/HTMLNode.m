@@ -35,9 +35,28 @@ void setAttributeNamed(xmlNode * node, const char * nameStr, const char * value)
 			break;
 		}
 	}
-	
-	
 }
+
+-(void)setAttributeNamed:(NSString*)name withValue:(NSString*)value
+{
+    const char * nameStr = [name UTF8String];
+    const char * valueStr = [value UTF8String];
+
+    return setAttributeNamed(_node, nameStr, valueStr);
+}
+
+void addAttributeNamed(xmlNode * node, const char * nameStr, const char * value) {
+    xmlNewProp(node, (xmlChar*)nameStr,(xmlChar*)value);
+}
+
+-(void)addAttributeNamed:(NSString*)name withValue:(NSString*)value
+{
+    const char * nameStr = [name UTF8String];
+    const char * valueStr = [value UTF8String];
+    
+    return addAttributeNamed(_node, nameStr, valueStr);
+}
+
 
 NSString * getAttributeNamed(xmlNode * node, const char * nameStr)
 {

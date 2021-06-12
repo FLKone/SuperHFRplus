@@ -7,18 +7,18 @@
 //
 
 #import "HFRplusAppDelegate.h"
-
 #import "PollTableViewController.h"
 #import "HTMLNode.h"
 #import "HTMLParser.h"
 #import "RegexKitLite.h"
 #import "RangeOfCharacters.h"
 #import "ASIFormDataRequest.h"
-
 #import "PollResultTableViewCell.h"
-
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "MessagesTableViewController.h"
+#import "ThemeManager.h"
+#import "ThemeColors.h"
+#import "HFRAlertView.h"
 
 @interface PollTableViewController ()
 
@@ -226,7 +226,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // do work here
         if (self.arrayOptions.count) {
-            self.tableViewPoll.separatorColor = [UIColor lightGrayColor];
+            self.tableViewPoll.separatorColor = [ThemeColors cellBorderColor];
         }
         else {
             self.tableViewPoll.separatorColor = [UIColor clearColor];
@@ -280,7 +280,7 @@
 	//NSLog(@"fetchContentComplete");
 
     
-    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[request responseString] error:NULL];
+    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[theRequest safeResponseString] error:NULL];
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
     NSLog(@"setupPoll");
 	HTMLNode * tmpPollNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"sondage" allowPartial:NO];
@@ -293,11 +293,8 @@
         [self.delegate setPollParser:myParser];
     }
     
-	//[self.arrayData removeAllObjects];
 	[self.tableViewPoll reloadData];
 	
-	//[self loadDataInTableView:[request responseData]];
-    
 	[self.loadingView setHidden:YES];
     
 	switch (self.status) {
@@ -334,10 +331,18 @@
 	
 	[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:YES];
 	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:667];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 
@@ -352,7 +357,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // do work here
         if (self.arrayOptions.count) {
-            self.tableViewPoll.separatorColor = [UIColor lightGrayColor];
+            self.tableViewPoll.separatorColor = [ThemeColors cellBorderColor];
         }
         else {
              self.tableViewPoll.separatorColor = [UIColor clearColor];
@@ -375,11 +380,13 @@
     [self.navigationItem.rightBarButtonItem setEnabled:NO];
     
     [self setupHeaders];
-    
-    //NSLog(@"viewDidLoad");
-    
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 
+    self.view.backgroundColor = self.tableViewPoll.backgroundColor = [ThemeColors greyBackgroundColor];
+    self.tableViewPoll.separatorColor = [ThemeColors cellBorderColor];
 }
 
 -(void)setupHeaders {
@@ -397,14 +404,14 @@
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, height)];
     v.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     v.backgroundColor = [UIColor clearColor];
-    
+
     UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, height)];
     [titleLabel setText:text];
+    [titleLabel setTextColor:[ThemeColors titleTextAttributesColor]];
     [titleLabel setNumberOfLines:0];
     [titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-
     [v addSubview:titleLabel];
     
     [self.tableViewPoll setTableFooterView:v];
@@ -419,17 +426,14 @@
     CGSize size2 = [text2 sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:constraint2 lineBreakMode:NSLineBreakByWordWrapping];
     // Get the height of our measurement, with a minimum of 44 (standard cell size)
     CGFloat height2 = MAX(size2.height, 25.0f) + 10;
-    // return the height, with a bit of extra padding in
-    //NSLog(@"height %f - %@", height, NSStringFromCGSize(constraint));
     
     UIView *v2 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, height2)];
-    v2.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:0.7];
-    
+    v2.backgroundColor = [ThemeColors headSectionBackgroundColor];
     v2.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    //    v2.backgroundColor = [UIColor clearColor];
-    
+
     UILabel* titleLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, height2)];
     [titleLabel2 setText:text2];
+    [titleLabel2 setTextColor:[ThemeColors titleTextAttributesColor]];
     [titleLabel2 setNumberOfLines:0];
     [titleLabel2 setFont:[UIFont boldSystemFontOfSize:13]];
     [titleLabel2 setBackgroundColor:[UIColor clearColor]];
@@ -438,9 +442,6 @@
     [v2 addSubview:titleLabel2];
     
     [self.tableViewPoll setTableHeaderView:v2];
-    //[self.tableView setTableHeaderView:v];
-    
-
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -483,61 +484,30 @@
 
     if (arequest) {
         if ([arequest error]) {
-            //NSLog(@"error: %@", [[arequest error] localizedDescription]);
-            
-            UIAlertView *alertKO = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[[arequest error] localizedDescription]
-                                                             delegate:nil cancelButtonTitle:@"Retour" otherButtonTitles: nil];
-            [alertKO show];
+            // Popup erreur
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[[arequest error] localizedDescription]
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Retour" style:UIAlertActionStyleCancel
+                                                                 handler:^(UIAlertAction * action) { }];
+            [alert addAction:actionCancel];
+            [self presentViewController:alert animated:YES completion:nil];
+            [[ThemeManager sharedManager] applyThemeToAlertController:alert];
         }
-        else if ([arequest responseString])
+        else if ([arequest safeResponseString])
         {
-            //NSLog(@"resp %@", [arequest responseString]);
-            
             NSError * error = nil;
-            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest responseString] error:&error];
-            
+            HTMLParser *myParser = [[HTMLParser alloc] initWithString:[arequest safeResponseString] error:&error];
             HTMLNode * bodyNode = [myParser body]; //Find the body tag
-            
             HTMLNode * messagesNode = [bodyNode findChildWithAttribute:@"class" matchingName:@"hop" allowPartial:NO]; //Get all the <img alt="" />
             
-            
             if ([messagesNode findChildTag:@"a"] || [messagesNode findChildTag:@"input"]) {
-                UIAlertView *alertKKO = [[UIAlertView alloc] initWithTitle:nil message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [alertKKO show];
+                [HFRAlertView DisplayAlertViewWithTitle:@"Oups !" andMessage:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:(long)1];
             }
             else {
-                UIAlertView *alertOK = [[UIAlertView alloc] initWithTitle:@"Hooray !" message:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                                                 delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-                [alertOK setTag:kAlertSondageOK];
-                [alertOK show];
+                [HFRAlertView DisplayAlertViewWithTitle:@"Hooray !" andMessage:[[messagesNode contents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forDuration:(long)1];
 
-                
-                
-                //NSLog(@"responseString %@", [arequest responseString]);
-                
-                // On regarde si on doit pas positionner le scroll sur un topic
-                NSArray * urlArray = [[arequest responseString] arrayOfCaptureComponentsMatchedByRegex:@"<meta http-equiv=\"Refresh\" content=\"[^#]+([^\"]*)\" />"];
-                
-                
-                //NSLog(@"%d", urlArray.count);
-                if (urlArray.count > 0) {
-                    NSLog(@"%@", [[urlArray objectAtIndex:0] objectAtIndex:0]);
-                    
-                    if ([[[urlArray objectAtIndex:0] objectAtIndex:1] length] > 0) {
-                        //NSLog(@"On doit refresh sur #");
-                        //[self setRefreshAnchor:[[urlArray objectAtIndex:0] objectAtIndex:1]];
-                        //NSLog(@"refreshAnchor %@", self.refreshAnchor);
-                    }
-                    
-                }
-                
-                //[[NSNotificationCenter defaultCenter] postNotificationName:@"VisibilityChanged" object:nil];
-                //[self.delegate addMessageViewControllerDidFinishOK:self];
                 [self fetchContent];
             }
-            
-            
         }
     }
 }
@@ -563,6 +533,7 @@
     
 }
 
+/* TODO: to remove: normaly should be no more used
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSLog(@"clickedButtonAtIndex PT %@ index : %ld", alertView, (long)buttonIndex);
@@ -570,7 +541,7 @@
     if (buttonIndex == 1 && alertView.tag == 667) {
         [self fetchContent];
     }
-}
+}*/
 
 #pragma mark - Table view data source
 
@@ -646,7 +617,6 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-            [cell.textLabel setBackgroundColor:[UIColor redColor]];
             cell.textLabel.numberOfLines = 0;
         }
         
@@ -675,7 +645,6 @@
         
         // Configure the cell...
         [cell.labelLabel setText:[[arrayResults objectAtIndex:indexPath.row] valueForKey:@"labelVote"]];
-
         
         [cell.pcLabel setText:[NSString stringWithFormat:@"%@%%", [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"pcVote"]]];
         if ([[[arrayResults objectAtIndex:indexPath.row] valueForKey:@"nbVote"] intValue] > 1) {
@@ -684,13 +653,8 @@
         else
             [cell.nbLabel setText:[NSString stringWithFormat:@"%@ vote", [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"nbVote"]]];
         
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            cell.pcLabelView.backgroundColor = [UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0];
-        }
-        else {
-            [cell.pcLabelView setBackgroundColor:[UIColor colorWithRed:42/255.f green:116/255.f blue:217/255.f alpha:1.00]];
-            
-        }
+        cell.pcLabelView.backgroundColor = [ThemeColors tintColor];
+        cell.pcLabelBgView.backgroundColor = [ThemeColors tintLightColor];
         
         // Get the text so we can measure it
         NSString *text = [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"labelVote"];
@@ -721,9 +685,11 @@
 
         cell.nbLabel.frame = CGRectMake(cell.nbLabel.frame.origin.x, cell.nbLabel.frame.origin.y + heightDiff,
                                         cell.nbLabel.frame.size.width, cell.nbLabel.frame.size.height);
-        
-//        [cell.textLabel setText:[[arrayResults objectAtIndex:indexPath.row] valueForKey:@"labelVote"]];
-  //      [cell.detailTextLabel setText:[NSString stringWithFormat:@"%@ vote(s) - %@%%", [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"nbVote"], [[arrayResults objectAtIndex:indexPath.row] valueForKey:@"pcVote"]]];
+
+        [cell.labelLabel setTextColor:[ThemeColors textColor]];
+        [cell.pcLabel setTextColor:[ThemeColors textColor]];
+        [cell.nbLabel setTextColor:[ThemeColors topicMsgTextColor]];
+
         return cell;
     }
 
@@ -740,6 +706,7 @@
 
     
     }
+    [[ThemeManager sharedManager] applyThemeToCell:cell];
 }
 
 #pragma mark - Table view delegate
@@ -810,6 +777,5 @@
     //NSLog(@"arraySelectedRows %@", self.arraySelectedRows);
 
 }
-
 
 @end

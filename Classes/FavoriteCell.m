@@ -27,9 +27,6 @@
 		[self.labelTitle setLineBreakMode:NSLineBreakByTruncatingTail];
 		//[labelTitle setBackgroundColor:[UIColor blueColor]];
 		[self.labelTitle setTextAlignment:NSTextAlignmentLeft];
-        if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            [self.labelTitle setHighlightedTextColor:[UIColor whiteColor]];
-        }
 		[self.labelTitle setTag:999];
 		[self.labelTitle setTextColor:[UIColor blackColor]];
 		[self.labelTitle setNumberOfLines:0];
@@ -55,22 +52,21 @@
 		
 		[self.contentView insertSubview:self.labelMsg atIndex:2];
 		
-		self.labelDate = [[UILabel alloc] initWithFrame:CGRectMake(140, 27, 170, 18)];
+		self.labelDate = [[UILabel alloc] initWithFrame:CGRectMake(120, 27, 190, 18)];
 		self.labelDate.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		
 		[self.labelDate setFont:[UIFont systemFontOfSize:11.0]];
 		[self.labelDate setAdjustsFontSizeToFitWidth:NO];
 		[self.labelDate setLineBreakMode:NSLineBreakByTruncatingTail];
-		//[labelDate setBackgroundColor:[UIColor redColor]];
 		[self.labelDate setTextAlignment:NSTextAlignmentRight];
-        if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            [self.labelDate setHighlightedTextColor:[UIColor whiteColor]];
-        }
+        [self.labelDate setHighlightedTextColor:[UIColor whiteColor]];
 		[self.labelDate setTag:997];
 		[self.labelDate setTextColor:[UIColor colorWithRed:42/255.f green:116/255.f blue:217/255.f alpha:1.00]];
 		[self.labelDate setNumberOfLines:0];
 		//[label setOpaque:YES];
 		
+        //[self.isSuperFavorite setTag:996];
+        
 		[self.contentView insertSubview:self.labelDate atIndex:3];
 				
     }
@@ -84,8 +80,16 @@
 
 -(void)applyTheme {
     Theme theme = [[ThemeManager sharedManager] theme];
-    self.backgroundColor = [ThemeColors cellBackgroundColor:theme];
-    self.contentView.superview.backgroundColor =[ThemeColors cellBackgroundColor:theme];
+    
+    // Background color of topic cells in favorite list
+    if (self.isSuperFavorite)
+    {
+        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColorSuperFavorite];
+    }
+    else
+    {
+        self.contentView.superview.backgroundColor = [ThemeColors cellBackgroundColor:theme];
+    }
     [self.labelTitle setTextColor:[ThemeColors textColor:theme]];
     [self.labelMsg setTextColor:[ThemeColors topicMsgTextColor:theme]];
     [self.labelDate setTextColor:[ThemeColors cellTintColor:theme]];

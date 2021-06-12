@@ -24,7 +24,7 @@
 	BOOL viewed;
 	BOOL isDel;
     
-	BOOL isBL;
+	//BOOL isBL;
     
 	int rep;
 
@@ -90,7 +90,8 @@
 @property BOOL viewed;
 @property BOOL isDel;
 @property BOOL isBL;
+@property int iPage;
 
--(NSString *)toHTML:(int)index;
+-(NSString *)toHTML:(int)index isMP:(BOOL)bIsMP;
 
 @end

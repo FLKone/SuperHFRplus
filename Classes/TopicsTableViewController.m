@@ -7,7 +7,7 @@
 
 #import "HFRplusAppDelegate.h"
 
-#import "ASIHTTPRequest.h"
+#import "ASIHTTPRequest+Tools.h"
 #import "Constants.h"
 #import "HTMLParser.h"
 
@@ -32,7 +32,7 @@
 
 @implementation TopicsTableViewController
 @synthesize forumNewTopicUrl, forumName, loadingView, topicsTableView, arrayData, arrayNewData;
-@synthesize messagesTableViewController;
+@synthesize messagesTableViewController, errorVC;
 
 @synthesize swipeLeftRecognizer, swipeRightRecognizer;
 
@@ -70,8 +70,12 @@
 
 - (void)fetchContentTrigger
 {
-
-	//NSLog(@"fetchContent %@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
+    if(![self currentUrl]){
+        [self cancelFetchContent];
+         [self.topicsTableView.pullToRefreshView stopAnimating];
+        return;
+    }
+	NSLog(@"fetchContent %@", [NSString stringWithFormat:@"%@%@", [k ForumURL], [self currentUrl]]);
 	self.status = kIdle;
 	[ASIHTTPRequest setDefaultTimeOutSeconds:kTimeoutMini];
 
@@ -115,34 +119,6 @@
     [self.topicsTableView.pullToRefreshView stopAnimating];
     [self.topicsTableView.pullToRefreshView setLastUpdatedDate:[NSDate date]];
     
-    /*
-	[self.arrayData removeAllObjects];
-	[self.topicsTableView reloadData];
-	
-	[self loadDataInTableView:[request responseData]];
-
-	[self.loadingView setHidden:YES];
-
-	switch (self.status) {
-		case kMaintenance:
-		case kNoResults:
-		case kNoAuth:            
-			[self.maintenanceView setText:self.statusMessage];
-            
-            [self.loadingView setHidden:YES];
-			[self.maintenanceView setHidden:NO];
-			[self.topicsTableView setHidden:YES];
-			break;
-		default:
-			[self.topicsTableView reloadData];
-            
-            [self.loadingView setHidden:YES];
-            [self.maintenanceView setHidden:YES];
-			[self.topicsTableView setHidden:NO];
-			break;
-	}
-    */
-	
 	[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:YES];
     [self cancelFetchContent];
 }
@@ -160,12 +136,17 @@
     
 	[(UISegmentedControl *)[self.navigationItem.titleView.subviews objectAtIndex:0] setUserInteractionEnabled:YES];
 	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:667];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]  preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-    [self cancelFetchContent];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 
@@ -589,8 +570,8 @@
 			//Title & URL
 			HTMLNode * topicTitleNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase3" allowPartial:NO];
 
-        NSString *aTopicAffix = [NSString string];
-        NSString *aTopicSuffix = [NSString string];
+            NSString *aTopicAffix = [NSString string];
+            NSString *aTopicSuffix = [NSString string];
 
 			
 			if ([[topicNode className] rangeOfString:@"ligne_sticky"].location != NSNotFound) {
@@ -606,10 +587,8 @@
 				aTopicAffix = [aTopicAffix stringByAppendingString:@" "];
 			}
 
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             aTopicAffix = @"";
-        }
-        
+
 			NSString *aTopicTitle = [[NSString alloc] initWithFormat:@"%@%@%@", aTopicAffix, [[topicTitleNode allContents] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]], aTopicSuffix];
 			[aTopic setATitle:aTopicTitle];
 
@@ -620,6 +599,10 @@
 			HTMLNode * numRepNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase7" allowPartial:NO];
 			[aTopic setARepCount:[[numRepNode contents] intValue]];
 
+            HTMLNode * pollImage = [topicNode findChildWithAttribute:@"src" matchingName:@"https://forum-images.hardware.fr/themes_static/images/defaut/sondage.gif" allowPartial:NO];
+            if (pollImage != nil) {
+                aTopic.isPoll = YES;
+            }
 
 			//Setup of Flag		
 			HTMLNode * topicFlagNode = [topicNode findChildWithAttribute:@"class" matchingName:@"sujetCase5" allowPartial:NO];
@@ -697,10 +680,31 @@
 			
 
 			NSString *maDate = [linkLastRepNode contents];
-			if ([theDate isEqual:[maDate substringToIndex:10]]) {
-				[aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
-			}
-			else {
+            NSDateFormatter * df = [[NSDateFormatter alloc] init];
+            [df setTimeZone:[NSTimeZone timeZoneWithName:@"Europe/Paris"]];
+            [df setDateFormat:@"dd-MM-yyyy à HH:mm"];
+            aTopic.dDateOfLastPost = [df dateFromString:maDate];
+                NSTimeInterval secondsBetween = [nowTopic timeIntervalSinceDate:aTopic.dDateOfLastPost];
+                int numberMinutes = secondsBetween / 60;
+                int numberHours = secondsBetween / 3600;
+                if (secondsBetween < 0)
+                {
+                    [aTopic setADateOfLastPost:[maDate substringFromIndex:13]];
+                }
+                else if (numberMinutes == 0)
+                {
+                    [aTopic setADateOfLastPost:@"il y a 1 min"];
+                }
+                else if (numberMinutes >= 1 && numberMinutes < 60)
+                {
+                    [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d min",numberMinutes]];
+                }
+                else if (secondsBetween >= 3600 && secondsBetween < 24*3600)
+                {
+                    [aTopic setADateOfLastPost:[NSString stringWithFormat:@"il y a %d h",numberHours]];
+                }
+                else
+                {
 				[aTopic setADateOfLastPost:[NSString stringWithFormat:@"%@/%@/%@", [maDate substringWithRange:NSMakeRange(0, 2)]
 									  , [maDate substringWithRange:NSMakeRange(3, 2)]
 									  , [maDate substringWithRange:NSMakeRange(8, 2)]]];
@@ -777,7 +781,7 @@
 	HFRNavigationController *navigationController = [[HFRNavigationController alloc]
 													initWithRootViewController:editMessageViewController];
 
-    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
 	[self presentModalViewController:navigationController animated:YES];
 	
 	// The navigation controller is now owned by the current view controller
@@ -857,15 +861,14 @@
         //NSLog(@"COMPLETE %d", self.childViewControllers.count);
         
     }
-    else
-    {
-        PullToRefreshErrorViewController *ErrorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
-        [self addChildViewController:ErrorVC];
+    else {
+        self.errorVC = [[PullToRefreshErrorViewController alloc] initWithNibName:nil bundle:nil andDico:notif];
+        [self addChildViewController:self.errorVC];
         
-        self.topicsTableView.tableHeaderView = ErrorVC.view;
-        [ErrorVC sizeToFit];
+        self.topicsTableView.tableHeaderView = self.errorVC.view;
+        [self.errorVC sizeToFit];
+        [self.errorVC applyTheme];
     }
-    
 }
 
 - (void)viewDidLoad {
@@ -1221,8 +1224,11 @@
     self.topicsTableView.separatorColor = [ThemeColors cellBorderColor:theme];
     self.topicsTableView.pullToRefreshView.arrowColor = [ThemeColors cellTextColor:theme];
     self.topicsTableView.pullToRefreshView.textColor = [ThemeColors cellTextColor:theme];
-    self.topicsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle:theme];
-    
+    self.topicsTableView.pullToRefreshView.activityIndicatorViewStyle = [ThemeColors activityIndicatorViewStyle];
+    if (self.errorVC) {
+        [self.errorVC applyTheme];
+    }
+
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loadSubCat) name:@"SubCatSelected" object:nil];
@@ -1318,8 +1324,7 @@
     
     //UIView globale
 	UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-    Theme theme = [[ThemeManager sharedManager] theme];
-    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:theme];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
     customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
 	//UIImageView de fond
@@ -1352,27 +1357,15 @@
 
     NSString *title = [self tableView:tableView titleForHeaderInSection:section];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button.titleLabel setMinimumFontSize:10];
-        button.titleLabel.adjustsFontSizeToFitWidth = YES;
-        [button.titleLabel setNumberOfLines:1];
+    [button setTitleColor:[ThemeColors headSectionTextColor] forState:UIControlStateNormal];
+    [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [button.titleLabel setMinimumFontSize:10];
+    button.titleLabel.adjustsFontSizeToFitWidth = YES;
+    [button.titleLabel setNumberOfLines:1];
 
 
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 10, 0, 10)];
-    }
-    else
-    {
-        [button setTitleColor:[ThemeColors headSectionTextColor:theme] forState:UIControlStateNormal];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [button setTitle:title forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-    }
-
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(2, 10, 0, 0)];
 
     button.translatesAutoresizingMaskIntoConstraints = NO;
     UILayoutGuide *guide = customView.safeAreaLayoutGuide;
@@ -1612,12 +1605,17 @@
             [[cell titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
         }
     }
-	 
+    
+    NSString* sPoll = @"";
+    if (aTopic.isPoll) {
+        sPoll = @" \U00002263";
+    }
+    
 	if (aTopic.aRepCount == 0) {
-	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺ %d", (aTopic.aRepCount + 1)]];
+	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺%@ %d", sPoll, (aTopic.aRepCount + 1)]];
 	}
 	else {
-	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺ %d", (aTopic.aRepCount + 1)]];
+	 [cell.msgLabel setText:[NSString stringWithFormat:@"↺%@ %d", sPoll, (aTopic.aRepCount + 1)]];
 	}
 	
 	[cell.timeLabel setText:[NSString stringWithFormat:@"%@ - %@", [aTopic aAuthorOfLastPost], [aTopic aDateOfLastPost]]];
@@ -1689,7 +1687,7 @@
 	//NSLog(@"url %@", [[arrayData objectAtIndex:self.pressedIndexPath.row] aURLOfFlag]);
 
 	//if (self.messagesTableViewController == nil) {
-	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row] aURLOfFlag]];
+	MessagesTableViewController *aView = [[MessagesTableViewController alloc] initWithNibName:@"MessagesTableViewController" bundle:nil andUrl:[[arrayData objectAtIndex:indexPath.row]  aURLOfFlag] displaySeparator:YES];
 	self.messagesTableViewController = aView;
 	//}
 	
@@ -1739,10 +1737,10 @@
         CGPoint longPressLocation2 = [longPressRecognizer locationInView:[[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view]];
         CGRect origFrame = CGRectMake( longPressLocation2.x, longPressLocation2.y, 1, 1);
 
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
             // Can't use UIAlertActionStyleCancel in dark theme : https://stackoverflow.com/a/44606994/1853603
-            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
+            UIAlertActionStyle cancelButtonStyle = [[ThemeManager sharedManager] theme] == ThemeDark ? UIAlertActionStyleDefault : UIAlertActionStyleCancel;
             [topicActionAlert addAction:[UIAlertAction actionWithTitle:@"Annuler" style:cancelButtonStyle handler:^(UIAlertAction *action) {
                 [self dismissViewControllerAnimated:YES completion:nil];
             }]];
@@ -1750,8 +1748,8 @@
         else   {
             // Required for UIUserInterfaceIdiomPad
             topicActionAlert.popoverPresentationController.sourceView = [[[HFRplusAppDelegate sharedAppDelegate] splitViewController] view];
-        topicActionAlert.popoverPresentationController.sourceRect = origFrame;
-        topicActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
+            topicActionAlert.popoverPresentationController.sourceRect = origFrame;
+            topicActionAlert.popoverPresentationController.backgroundColor = [ThemeColors alertBackgroundColor:[[ThemeManager sharedManager] theme]];
         }
         [self presentViewController:topicActionAlert animated:YES completion:nil];
         [[ThemeManager sharedManager] applyThemeToAlertController:topicActionAlert];
@@ -1839,6 +1837,8 @@
     
     [self setTopicViewed];
     
+    // Close left panel on ipad in portrait mode
+    [[HFRplusAppDelegate sharedAppDelegate] hidePrimaryPanelOnIpad];
 }
 
 -(void)setTopicViewed {
@@ -1895,7 +1895,7 @@
     
     [[ThemeManager sharedManager] applyThemeToAlertController:alertController];
     [self presentViewController:alertController animated:YES completion:^{
-        if([[ThemeManager sharedManager] theme] == ThemeDark || [[ThemeManager sharedManager] theme] == ThemeOLED){
+        if([[ThemeManager sharedManager] theme] == ThemeDark){
             for (UIView* textfield in alertController.textFields) {
                 UIView *container = textfield.superview;
                 UIView *effectView = container.superview.subviews[0];
@@ -2181,50 +2181,6 @@
     // Relinquish ownership any cached data, images, etc that aren't in use.
 	//NSLog(@"mem warning TTV");
 }
-
-
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-	NSLog(@"viewDidUnload");
-		
-	self.loadingView = nil;
-	self.topicsTableView = nil;
-	self.maintenanceView = nil;
-	self.swipeLeftRecognizer = nil;
-	self.swipeRightRecognizer = nil;
-	
-	[super viewDidUnload];
-}
-
-- (void)dealloc {
-	NSLog(@"dealloc Topics Table View");
-	
-	[self viewDidUnload];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SubCatSelected" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kStatusChangedNotification object:nil];
-
-	[request cancel];
-	[request setDelegate:nil];
-
-	//NSLog(@"dealloc Topics Table View 2");
-
-
-	
-	
-
-
-	//Gesture
-	
-	//Picker
-    
-    
-	
-
-}
-
 
 @end
 

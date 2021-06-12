@@ -1,8 +1,7 @@
 //
 //  IASKTextViewCell.m
-//  http://www.inappsettingskit.com
 //
-//  Copyright (c) 2009-2015:
+//  Copyright (c) 2009-2020:
 //  Luc Vandal, Edovia Inc., http://www.edovia.com
 //  Ortwin Gentz, FutureTap GmbH, http://www.futuretap.com
 //  All rights reserved.
@@ -29,7 +28,7 @@
 		textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		textView.scrollEnabled = NO;
 		textView.font = [UIFont systemFontOfSize:17.0];
-		textView.backgroundColor = [UIColor whiteColor];
+		textView.backgroundColor = [UIColor clearColor];
 		[self.contentView addSubview:textView];
 
 		self.textView = textView;

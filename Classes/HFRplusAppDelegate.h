@@ -10,30 +10,32 @@
 #import "TabBarController.h"
 #import "SplitViewController.h"
 #import "DetailNavigationViewController.h"
+#import <BackgroundTasks/BackgroundTasks.h>
 
 @import InAppSettingsKit;
 
 #import "Reachability.h"
+#import <UserNotifications/UserNotifications.h>
 
-@interface HFRplusAppDelegate : NSObject {
+@interface HFRplusAppDelegate : NSObject<UNUserNotificationCenterDelegate> {
     UIWindow *window;
-	TabBarController *rootController;	
-	SplitViewController *splitViewController;
-	DetailNavigationViewController *detailNavigationController;
+    TabBarController *rootController;    
+    SplitViewController *splitViewController;
+    DetailNavigationViewController *detailNavigationController;
 
-	UINavigationController *forumsNavController;
-	UINavigationController *favoritesNavController;
-	UINavigationController *messagesNavController;
+    UINavigationController *forumsNavController;
+    UINavigationController *favoritesNavController;
+    UINavigationController *messagesNavController;
     UINavigationController *searchNavController;
     
-	BOOL isLoggedIn;
-	BOOL statusChanged;	
-	
+    BOOL isLoggedIn;
+    BOOL statusChanged;    
+    
    // NSOperationQueue *ioQueue;
     NSTimer *periodicMaintenanceTimer;
-    //NSOperation *periodicMaintenanceOperation;	
-	
-	NSString *hash_check;
+    //NSOperation *periodicMaintenanceOperation;
+    
+    NSString *hash_check;
     
     Reachability* internetReach;
 
@@ -60,8 +62,9 @@
 
 + (HFRplusAppDelegate *)sharedAppDelegate;
 - (BOOL)legacy_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
-
+- (void)hidePrimaryPanelOnIpad;
 - (void)updateMPBadgeWithString:(NSString *)badgeValue;
+- (void)updatePlusBadgeWithString:(NSString *)badgeValue;
 - (void)readMPBadge;
 - (void)openURL:(NSString *)stringUrl;
 
@@ -70,7 +73,7 @@
 - (void)logout;
 
 - (void)resetApp;
-
+- (void)checkForNewMP:(BGAppRefreshTask *)task;
 - (void)registerDefaultsFromSettingsBundle;
 @end
 

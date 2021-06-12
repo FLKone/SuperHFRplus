@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSDictionary *dico;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andDico:(NSDictionary*) dic;
--(void)sizeToFit;
+- (void)sizeToFit;
+- (void)applyTheme;
 
 @end

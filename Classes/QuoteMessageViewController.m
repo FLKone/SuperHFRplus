@@ -14,7 +14,7 @@
 #import "RegexKitLite.h"
 #import "ThemeColors.h"
 #import "ThemeManager.h"
-
+#import "ASIHTTPRequest+Tools.h"
 
 @implementation QuoteMessageViewController
 @synthesize urlQuote;
@@ -53,7 +53,7 @@
 	
 	[self.arrayInputData removeAllObjects];
 	
-	[self loadDataInTableView:[request responseData]];
+	[self loadDataInTableView:[request safeResponseData]];
 
 	[self.accessoryView setHidden:NO];
 	[self.loadingView setHidden:YES];
@@ -66,31 +66,20 @@
 - (void)fetchContentFailed:(ASIHTTPRequest *)theRequest
 {
 	[self.loadingView setHidden:YES];
-	
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:777];
-	[alert show];
+
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { [self cancelFetchContent]; }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-    [self cancelFetchContent];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	if (alertView.tag == 777) {
-		if (buttonIndex == 1) {
-			[self fetchContent];
-		}
-		else {
-			[self cancel];
-		}
-
-	}
-	else {
-		[super alertView:alertView clickedButtonAtIndex:buttonIndex];
-	}
-}
-
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {    
@@ -116,11 +105,6 @@
                                              selector:@selector(loadSubCat) name:@"CatSelected" object:nil];
     
 	[self fetchContent];
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [[ThemeManager sharedManager] applyThemeToTextField:self.textFieldSmileys];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -181,7 +165,7 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
 
     //Traitement des smileys (to Array)
-    [self.smileyArray removeAllObjects]; //RaZ
+    //[self.smileyArray removeAllObjects]; //RaZ
     
     for (HTMLNode * imgNode in tmpImageArray) { //Loop through all the tags
         
@@ -349,7 +333,8 @@
 		titleLabel.font = [UIFont systemFontOfSize:15];
 		titleLabel.userInteractionEnabled = NO;
 		titleLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		
+        titleLabel.autocorrectionType = UITextAutocorrectionTypeNo;
+
 		textFieldTo = [[UITextField alloc] initWithFrame:CGRectMake(38, originY, frameWidth - 55, 43)];
         textFieldTo.tag = 1;
 		textFieldTo.backgroundColor = [UIColor clearColor];
@@ -361,8 +346,8 @@
 		textFieldTo.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         textFieldTo.keyboardType = UIKeyboardTypeASCIICapable;
         textFieldTo.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-        
-        
+        textFieldTo.autocorrectionType = UITextAutocorrectionTypeNo;
+
 		originY += textFieldTo.frame.size.height;
 		
 		UIView* separator = [[UIView alloc] initWithFrame:CGRectMake(0, originY, frameWidth, 1)];
@@ -387,7 +372,8 @@
 		titleLabel.font = [UIFont systemFontOfSize:15];
 		titleLabel.userInteractionEnabled = NO;
 		titleLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		
+		titleLabel.autocorrectionType = UITextAutocorrectionTypeNo;
+        
 		textFieldTitle = [[UITextField alloc] initWithFrame:CGRectMake(58, originY, frameWidth - 75, 43)];
         textFieldTitle.tag = 2;
 		textFieldTitle.backgroundColor = [UIColor clearColor];
@@ -399,8 +385,8 @@
 		textFieldTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         textFieldTitle.keyboardType = UIKeyboardTypeASCIICapable;
         textFieldTitle.textColor = [ThemeColors textColor:[[ThemeManager sharedManager] theme]];
-
-		//[textFieldTitle setText:[[fastAnswerNode findChildWithAttribute:@"name" matchingName:@"sujet" allowPartial:NO] getAttributeNamed:@"value"]];
+        textFieldTitle.keyboardAppearance = [ThemeColors keyboardAppearance];
+        textFieldTitle.autocorrectionType = UITextAutocorrectionTypeNo;
 
 		originY += textFieldTitle.frame.size.height;
 		
@@ -414,11 +400,7 @@
 		[headerView addSubview:textFieldTitle];
 		[headerView addSubview:separator];
 		
-
 		headerView.frame = CGRectMake(headerView.frame.origin.x, headerView.frame.origin.x, headerView.frame.size.width, originY);
-		
-		//[titleLabel release];
-		//[separator release];
 	}
 	
 	if (self.haveCategory) {
@@ -484,11 +466,6 @@
 
 		headerView.frame = CGRectMake(headerView.frame.origin.x, headerView.frame.origin.x, headerView.frame.size.width, originY);
 
-		//[titleLabel release];
-		//[catButton release];
-		//[separator release];
-		
-		//-- PICKER
 		actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		[actionSheet setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
 		
@@ -505,7 +482,6 @@
 		UISegmentedControl *closeButton = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:@"Retour"]];
 		closeButton.momentary = YES; 
 		closeButton.frame = CGRectMake(10, 7.0f, 55.0f, 30.0f);
-		closeButton.segmentedControlStyle = UISegmentedControlStyleBar;
 		closeButton.tintColor = [UIColor blackColor];
 		[closeButton addTarget:self action:@selector(dismissActionSheet) forControlEvents:UIControlEventValueChanged];
 		[actionSheet addSubview:closeButton];
@@ -514,16 +490,12 @@
 		confirmButton.momentary = YES; 
 		confirmButton.tag = 546; 
 		confirmButton.frame = CGRectMake(255, 7.0f, 55.0f, 30.0f);
-		confirmButton.segmentedControlStyle = UISegmentedControlStyleBar;
 		confirmButton.tintColor = [UIColor colorWithRed:60/255.f green:136/255.f blue:230/255.f alpha:1.00];
 		[confirmButton addTarget:self action:@selector(loadSubCat) forControlEvents:UIControlEventValueChanged];
 		[actionSheet addSubview:confirmButton];
 		//-- PICKER
 		
 	}
-
-    //self.textView.keyboardType = UIKeyboardTypeASCIICapable;
-    self.textFieldSmileys.keyboardType = UIKeyboardTypeASCIICapable;
 
 	headerView.frame = CGRectMake(headerView.frame.origin.x, originY * -1.0f, headerView.frame.size.width, originY);
 	[self.textView addSubview:headerView];
@@ -629,44 +601,20 @@
 	//NSLog(@"self.formSubmit %@", self.formSubmit);
 
 	NSString *newSubmitForm = [[NSString alloc] initWithFormat:@"%@%@", [k ForumURL], [fastAnswerNode getAttributeNamed:@"action"]];
-	[self setFormSubmit:newSubmitForm];
-	
-    if(!isLogged) {
-        [self.textFieldSmileys setHidden:TRUE];
-    }
-    
-    if([username caseInsensitiveCompare:@"applereview"] == NSOrderedSame) {
-        [self.textFieldSmileys setHidden:TRUE];
-    }
-    
-	//self.formSubmit = [NSString stringWithFormat:@"http://forum.hardware.fr/%@", [fastAnswerNode getAttributeNamed:@"action"]];
-	//NSLog(@"self.formSubmit2 %@", self.formSubmit);
-	
-
-	//NSDate *nowT = [NSDate date]; // Create a current date
-	
-	//NSLog(@"TOPICS Time elapsed then0		: %f", [then0 timeIntervalSinceDate:thenT]);
-	//NSLog(@"TOPICS Time elapsed nowT		: %f", [nowT timeIntervalSinceDate:then0]);
-	//NSLog(@"TOPICS Time elapsed Total		: %f", [nowT timeIntervalSinceDate:thenT]);
+	[self setFormSubmit:newSubmitForm];	
 }
 
 
 
-#pragma mark -
-#pragma mark UIPickerViewDelegate
+#pragma mark - UIPickerViewDelegate
 
 -(void)loadSubCat
 {
-    [_popover dismissPopoverAnimated:YES];
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
 	[catButton setTitle:[[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle] forState:UIControlStateNormal];
 	[textFieldCat setText:[[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aID]];
 	
 	[self dismissActionSheet];
-	
 }
 
 
@@ -707,19 +655,7 @@
 	
 	return returnStr;
 }
-/*
- - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
- {
- CGFloat componentWidth = 0.0;
- 
- if (component == 0)
- componentWidth = 240.0;	// first column size is wider to hold names
- else
- componentWidth = 40.0;	// second column is narrower to show numbers
- 
- return componentWidth;
- }
- */
+
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
 {
 	return 40.0;
@@ -766,87 +702,26 @@
 
 -(void)showPicker:(id)sender{
 	
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-        
-        [textFieldTitle resignFirstResponder];
-        [textView resignFirstResponder];
-        [textFieldSmileys resignFirstResponder];
-        
-        //NSLog(@"TT %@", [[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle]);
-        
-        SubCatTableViewController *subCatTableViewController = [[SubCatTableViewController alloc] initWithStyle:UITableViewStylePlain];
-        subCatTableViewController.suPicker = myPickerView;
-        subCatTableViewController.arrayData = pickerViewArray;
-        subCatTableViewController.notification = @"CatSelected";
-        
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-            subCatTableViewController.modalPresentationStyle = UIModalPresentationPopover;
-            UIPopoverPresentationController *pc = [subCatTableViewController popoverPresentationController];
-            //pc.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
-            pc.permittedArrowDirections = UIPopoverArrowDirectionUp;
-            pc.delegate = self;
-            pc.sourceView = (UIButton *)sender;
-            pc.sourceRect = CGRectMake(0, 0, ((UIButton *)sender).frame.size.width, 35);
-            
-            [self presentViewController:subCatTableViewController animated:YES completion:nil];
-        }
-        else {
-            self.popover = nil;
-            self.popover = [[UIPopoverController alloc] initWithContentViewController:subCatTableViewController];
-            //[(UIPopoverController *)self.popover setBackgroundColor:[ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]]];
-            [_popover presentPopoverFromRect:[(UIButton *)sender frame] inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
-
-        }
-
+    [textFieldTitle resignFirstResponder];
+    [textView resignFirstResponder];
+    [textFieldSmileys resignFirstResponder];
     
-        
-        
-    } else {
-        CGSize pickerSize = [myPickerView sizeThatFits:CGSizeZero];
-        myPickerView.frame = [self pickerFrameWithSize:pickerSize];
-        
-        
-        [actionSheet showInView:self.view];
-        
-        CGRect curFrame = [[actionSheet viewWithTag:546] frame];
-        curFrame.origin.x =  self.view.frame.size.width - curFrame.size.width - 10;
-        [[actionSheet viewWithTag:546] setFrame:curFrame];
-        
-        [UIView beginAnimations:nil context:nil];
-        [actionSheet setFrame:CGRectMake(0, self.view.frame.size.height - myPickerView.frame.size.height - 44,
-                                         self.view.frame.size.width, myPickerView.frame.size.height + 44)];
-        
-        [actionSheet setBounds:CGRectMake(0, 0,
-                                          self.view.frame.size.width, myPickerView.frame.size.height + 44)];
-        
-        [UIView commitAnimations]; 
-    }
-
-}
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
+    //NSLog(@"TT %@", [[pickerViewArray objectAtIndex:[myPickerView selectedRowInComponent:0]] aTitle]);
     
-    // Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-
-- (void)dealloc {
-    NSLog(@"dealloc Quote");
-	//Picker
-	
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CatSelected" object:nil];
+    SubCatTableViewController *subCatTableViewController = [[SubCatTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    subCatTableViewController.suPicker = myPickerView;
+    subCatTableViewController.arrayData = pickerViewArray;
+    subCatTableViewController.notification = @"CatSelected";
     
+    subCatTableViewController.modalPresentationStyle = UIModalPresentationPopover;
+    UIPopoverPresentationController *pc = [subCatTableViewController popoverPresentationController];
+    //pc.backgroundColor = [ThemeColors greyBackgroundColor:[[ThemeManager sharedManager] theme]];
+    pc.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    pc.delegate = self;
+    pc.sourceView = (UIButton *)sender;
+    pc.sourceRect = CGRectMake(0, 0, ((UIButton *)sender).frame.size.width, 35);
+    
+    [self presentViewController:subCatTableViewController animated:YES completion:nil];
 }
 
 @end

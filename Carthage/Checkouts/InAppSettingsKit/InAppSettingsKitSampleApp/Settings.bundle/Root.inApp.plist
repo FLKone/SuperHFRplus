@@ -132,6 +132,14 @@
 		</dict>
 		<dict>
 			<key>File</key>
+			<string>Listgroup</string>
+			<key>Title</key>
+			<string>List groups</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
 			<string>Advanced</string>
 			<key>Title</key>
 			<string>ADVANCED_TITLE</string>
@@ -146,9 +154,9 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>inappsettingskit.com</string>
+			<string>https://github.com/futuretap/InAppSettingsKit</string>
 			<key>File</key>
-			<string>http://www.inappsettingskit.com/</string>
+			<string>https://github.com/futuretap/InAppSettingsKit</string>
 			<key>Title</key>
 			<string>Open URL</string>
 			<key>Type</key>
@@ -156,9 +164,9 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>inappsettingskit.com</string>
+			<string>https://github.com/futuretap/InAppSettingsKit</string>
 			<key>File</key>
-			<string>http://www.inappsettingskit.com/</string>
+			<string>https://github.com/futuretap/InAppSettingsKit/</string>
 			<key>Title</key>
 			<string>Open URL (centered)</string>
 			<key>Type</key>
@@ -168,9 +176,9 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>inappsettingskit.com</string>
+			<string>https://github.com/futuretap/InAppSettingsKit</string>
 			<key>File</key>
-			<string>http://www.inappsettingskit.com/</string>
+			<string>https://github.com/futuretap/InAppSettingsKit</string>
 			<key>Title</key>
 			<string>Open URL (right)</string>
 			<key>Type</key>
@@ -192,7 +200,7 @@
 			<key>IASKMailComposeBccRecipents</key>
 			<array/>
 			<key>IASKMailComposeBody</key>
-			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at http://www.inappsettingskit.com/ today.</string>
+			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at https://github.com/futuretap/InAppSettingsKit/ today.</string>
 			<key>IASKMailComposeBodyIsHTML</key>
 			<string>NO</string>
 			<key>IASKMailComposeCcRecipents</key>
@@ -212,7 +220,7 @@
 			<key>IASKMailComposeBccRecipents</key>
 			<array/>
 			<key>IASKMailComposeBody</key>
-			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at http://www.inappsettingskit.com/ today.</string>
+			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at https://github.com/futuretap/InAppSettingsKit/ today.</string>
 			<key>IASKMailComposeBodyIsHTML</key>
 			<string>NO</string>
 			<key>IASKMailComposeCcRecipents</key>
@@ -232,7 +240,7 @@
 			<key>IASKMailComposeBccRecipents</key>
 			<array/>
 			<key>IASKMailComposeBody</key>
-			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at http://www.inappsettingskit.com/ today.</string>
+			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at https://github.com/futuretap/InAppSettingsKit/ today.</string>
 			<key>IASKMailComposeBodyIsHTML</key>
 			<string>NO</string>
 			<key>IASKMailComposeCcRecipents</key>
@@ -252,7 +260,7 @@
 			<key>IASKMailComposeBccRecipents</key>
 			<array/>
 			<key>IASKMailComposeBody</key>
-			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at http://www.inappsettingskit.com/ today.</string>
+			<string>InAppSettingsKit is a great way to get custom settings into your iOS app. Check it out at https://github.com/futuretap/InAppSettingsKit/ today.</string>
 			<key>IASKMailComposeBodyIsHTML</key>
 			<string>NO</string>
 			<key>IASKMailComposeCcRecipents</key>
@@ -299,6 +307,36 @@
 			<string>PSChildPaneSpecifier</string>
 			<key>IASKChildTitle</key>
 			<string></string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>TextField</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>Key</key>
+			<string>RegexValidation</string>
+			<key>Title</key>
+			<string>Regex validation</string>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>DefaultValue</key>
+			<string>test@example.com</string>
+			<key>IASKTextAlignment</key>
+			<string>IASKUITextAlignmentRight</string>
+		</dict>
+		<dict>
+			<key>Key</key>
+			<string>RegexValidation2</string>
+			<key>Title</key>
+			<string>Regex validation 2</string>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>DefaultValue</key>
+			<string>test@example.com</string>
+			<key>IASKTextAlignment</key>
+			<string>IASKUITextAlignmentRight</string>
 		</dict>
 		<dict>
 			<key>FooterText</key>
@@ -473,6 +511,24 @@ with dynamically resizing cell</string>
 			<string>TEXT_FIELD_PWD</string>
 			<key>Key</key>
 			<string>AutoConnectPassword</string>
+		</dict>
+		<dict>
+			<key>Key</key>
+			<string>CUSTOM_HEADER_FOOTER</string>
+			<key>Title</key>
+			<string></string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>Key</key>
+			<string>ButtonDemoAction4</string>
+			<key>Title</key>
+			<string>Button</string>
+			<key>Type</key>
+			<string>IASKButtonSpecifier</string>
+			<key>IASKTextAlignment</key>
+			<string>IASKUITextAlignmentLeft</string>
 		</dict>
 		<dict>
 			<key>Title</key>

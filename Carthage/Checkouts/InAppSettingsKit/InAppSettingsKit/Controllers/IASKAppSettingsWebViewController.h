@@ -1,8 +1,8 @@
 //
 //  IASKAppSettingsWebViewController.h
-//  http://www.inappsettingskit.com
+//  InAppSettingsKit
 //
-//  Copyright (c) 2009:
+//  Copyright (c) 2009-2020:
 //  Luc Vandal, Edovia Inc., http://www.edovia.com
 //  Ortwin Gentz, FutureTap GmbH, http://www.futuretap.com
 //  All rights reserved.
@@ -16,14 +16,19 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
-#import "IASKSpecifier.h"
+#import <WebKit/WebKit.h>
+@class IASKSpecifier;
 
-@interface IASKAppSettingsWebViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate>
+NS_ASSUME_NONNULL_BEGIN
 
-- (id)initWithFile:(NSString*)htmlFileName specifier:(IASKSpecifier*)specifier;
+@interface IASKAppSettingsWebViewController : UIViewController <WKNavigationDelegate, MFMailComposeViewControllerDelegate>
 
-@property (nonatomic, strong) UIWebView *webView;
-@property (nonatomic, strong) NSURL *url;
-@property (nonatomic, strong) NSString *customTitle;
+- (nullable id)initWithFile:(NSString*)htmlFileName specifier:(IASKSpecifier*)specifier;
+
+@property (nullable, nonatomic, strong, readonly) WKWebView *webView;
+@property (nonatomic, strong, readonly) NSURL *url;
+@property (nullable, nonatomic, strong) NSString *customTitle;
 
 @end
+
+NS_ASSUME_NONNULL_END

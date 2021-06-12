@@ -7,30 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-@class RehostImage;
+#import "RehostImage.h"
 
-typedef NS_ENUM(NSInteger, bbcodeImageSizeType) {
-    bbcodeImageFull,
-    bbcodeImagePreview,
-    bbcodeImageMini
-};
-
-typedef NS_ENUM(NSInteger, bbcodeLinkType) {
-    bbcodeImageWithLink,
-    bbcodeImageNoLink,
-    bbcodeLinkOnly
-};
-
-
-
-@interface RehostCell : UITableViewCell <UIAlertViewDelegate> {
-    UIImageView *previewImage;
-    UIButton *miniBtn;
-    UIButton *previewBtn;
-    UIButton *fullBtn;
-    UIActivityIndicatorView *spinner;
-    RehostImage *rehostImage;
-}
+@interface RehostCell : UITableViewCell <UIAlertViewDelegate> {}
 
 @property (nonatomic, strong) IBOutlet UIImageView *previewImage;
 @property (nonatomic, strong) IBOutlet UIButton *miniBtn;
@@ -38,12 +17,14 @@ typedef NS_ENUM(NSInteger, bbcodeLinkType) {
 @property (nonatomic, strong) IBOutlet UIButton *fullBtn;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) RehostImage *rehostImage;
+@property (strong, nonatomic) IBOutlet UIButton *mediumBtn;
 
--(IBAction)copyFull;
--(IBAction)copyPreview;
--(IBAction)copyMini;
 -(void)configureWithRehostImage:(RehostImage *)image;
 
-- (void)copyToPasteBoard:(bbcodeImageSizeType)imageSizeType withLink:(bbcodeLinkType)linkType;
+-(IBAction)copyFull;
+-(IBAction)copyMedium;
+-(IBAction)copyPreview;
+-(IBAction)copyMini;
+
 
 @end

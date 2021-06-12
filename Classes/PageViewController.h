@@ -10,6 +10,9 @@
 #import "RangeOfCharacters.h"
 #import "RegexKitLite.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Topic.h"
+
+@class FilterPostsQuotes;
 
 @interface PageViewController : UIViewController <UITextFieldDelegate, UIAlertViewDelegate> {
 	NSString *currentUrl;	
@@ -27,7 +30,10 @@
 }
 
 @property (nonatomic, strong) NSString *currentUrl;
+@property (nonatomic, strong) NSString *originalUrl;
+@property (nonatomic, strong) Topic *currentOfflineTopic;
 @property int pageNumber;
+@property int pageNumberFilterStart, pageNumberFilterEnd;
 
 @property int firstPageNumber;
 @property int lastPageNumber;
@@ -36,13 +42,15 @@
 
 @property (nonatomic, strong) NSString *nextPageUrl;
 @property (nonatomic, strong) NSString *previousPageUrl;
+@property FilterPostsQuotes* filterPostsQuotes;
 
-
+-(BOOL)isModeOffline;
 -(void)choosePage;
 -(void)goToPage:(NSString *)pageType;
 -(void)gotoPageNumber:(int)number;
 -(void)fetchContent;
 -(IBAction)searchSubmit:(UIBarButtonItem *)sender;
+-(IBAction)filterPostsQuotesNext:(UIBarButtonItem *)sender;
 -(void)fetchContent:(int)from;
 
 -(void)nextPage:(id)sender;

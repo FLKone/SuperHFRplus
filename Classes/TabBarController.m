@@ -8,6 +8,7 @@
 #import "TabBarController.h"
 #import "HFRplusAppDelegate.h"
 #import "FavoritesTableViewController.h"
+#import "OldFavoritesTableViewController.h"
 #import "HFRMPViewController.h"
 #import "ForumsTableViewController.h"
 #import "HFRTabBar.h"
@@ -24,47 +25,24 @@
 	//NSLog(@"TBC viewDidLoad %@", self.tabBar);
     self.title = @"Menu";
 
-    
-    UITabBarItem *tabBarItem1 = [self.tabBar.items objectAtIndex:0];
-    UITabBarItem *tabBarItem2 = [self.tabBar.items objectAtIndex:1];
-    UITabBarItem *tabBarItem3 = [self.tabBar.items objectAtIndex:2];
-    UITabBarItem *tabBarItem4 = [self.tabBar.items objectAtIndex:3];
-    
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        [tabBarItem1 setImage:[UIImage imageNamed:@"44-shoebox"]];
-        [tabBarItem2 setImage:[UIImage imageNamed:@"28-star"]];
-        [tabBarItem3 setImage:[UIImage imageNamed:@"18-envelope.png"]];
-        [tabBarItem4 setImage:[UIImage imageNamed:@"19-gear.png"]];
-        
-    } else {
-        //NSLog(@"////// %@", self.tabBar.items);
-        tabBarItem1.selectedImage = [[UIImage imageNamed:@"categories_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem1.image = [[UIImage imageNamed:@"categories"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem1.title = @"Catégories";
-        //tabBarItem1.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem1.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        tabBarItem2.selectedImage = [[UIImage imageNamed:@"favorites_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem2.image = [[UIImage imageNamed:@"favorites"]imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem2.title = @"Favoris";
-        //tabBarItem2.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem2.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        tabBarItem3.selectedImage = [[UIImage imageNamed:@"mp_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem3.image = [[UIImage imageNamed:@"mp"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem3.title = @"Messages";
-        //tabBarItem3.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem3.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        tabBarItem4.selectedImage = [[UIImage imageNamed:@"dots_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem4.image = [[UIImage imageNamed:@"dots"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        tabBarItem4.title = @"Réglages";
-        //tabBarItem4.titlePositionAdjustment = UIOffsetMake(0.f, 50.f);
-        //tabBarItem4.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0);
-        
-        //tabBarItem4.selectedImage = [[UIImage imageNamed:@"search_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        //tabBarItem4.image = [[UIImage imageNamed:@"search"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate ];
-        
+    //NSLog(@"viewDidLoad> self.tabBar.items.count - %lu", self.tabBar.items.count);
+    for (int i=0; i<self.tabBar.items.count; i++) {
+        UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
+        int iShift = 0;
+        if (self.tabBar.items.count == 5 && i >= 2) {
+            iShift = 1;
+        }
+        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i+iShift]]
+                                    imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
+        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i+iShift]]
+                            imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
+        switch (i+iShift) {
+            case 0: tabBarItem.title = @"Catégories"; break;
+            case 1: tabBarItem.title = @"Favoris"; break;
+            case 2: tabBarItem.title = @"Old Fav"; break;
+            case 3: tabBarItem.title = @"Messages"; break;
+            case 4: tabBarItem.title = @"Plus"; break;
+        }
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -74,6 +52,12 @@
         [self setSelectedIndex:[tab intValue]];
     }
     
+    self.tabBar.unselectedItemTintColor = [UIColor colorWithRed:143.0/255.0 green:143.0/255.0 blue:143.0/255.0 alpha:1.0];
+    
+    
+    if([((HFRNavigationController *)self.viewControllers[0]).topViewController isKindOfClass:[ForumsTableViewController class]]){
+        ((ForumsTableViewController *)((HFRNavigationController *)self.viewControllers[0]).topViewController).reloadOnAppear = YES;
+    }
 }
 
 -(UITraitCollection *)traitCollection
@@ -99,14 +83,52 @@
     //if ([[UITabBar appearance] respondsToSelector:@selector(setTranslucent:)]) {
       //  [[UITabBar appearance] setTranslucent:NO];
     //}
+    //UIImage *tab_snow = [UIImage imageNamed:@"fond-degrade-bleu-fonce_1258-1348.jpg"];
 
     if(!self.bgView){
-        self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor redColor]]];
-        self.bgView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
-        [self.bgView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+        self.bgView = [[UIImageView alloc] initWithImage:[ThemeColors imageFromColor:[UIColor clearColor]]];
         [self.tabBar addSubview:self.bgView];
         [self.tabBar sendSubviewToBack:self.bgView];
 
+    }
+    
+    if(!self.bgOverlayView){
+        self.bgOverlayView = [[UIImageView alloc] init];
+        [self.tabBar addSubview:self.bgOverlayView];
+        [self.tabBar sendSubviewToBack:self.bgOverlayView];
+        [self.tabBar sendSubviewToBack:self.bgView];
+    }
+    
+    if(!self.bgOverlayViewBis){
+        self.bgOverlayViewBis = [[UIImageView alloc] init];
+        [self.tabBar addSubview:self.bgOverlayViewBis];
+        [self.tabBar sendSubviewToBack:self.bgOverlayView];
+        [self.tabBar sendSubviewToBack:self.bgOverlayViewBis];
+        [self.tabBar sendSubviewToBack:self.bgView];
+    }
+    
+    self.bgView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
+    [self.bgView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+    
+    self.bgOverlayView.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
+    [self.bgOverlayView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+    
+    self.bgOverlayViewBis.frame = CGRectMake(0, self.tabBar.frame.size.height - 3.f, self.tabBar.frame.size.width, 3.f);
+    [self.bgOverlayViewBis setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+
+    
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_noel_disabled"]) {
+        self.bgOverlayViewBis.image =  [ThemeColors imageFromColor:[UIColor clearColor]];
+        self.bgOverlayView.image =  [ThemeColors imageFromColor:[UIColor clearColor]];
+    }else{
+        UIImage *navBG =[[UIImage animatedImageNamed:@"snow" duration:1.f]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        
+        UIImage *tab_snow = [UIImage imageNamed:@"tab_snow"];
+        UIImage *tiledImage = [tab_snow resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeTile];
+        self.bgOverlayViewBis.image = tiledImage;
+        self.bgOverlayView.image = navBG;
     }
     
     self.bgView.image =[ThemeColors imageFromColor:[ThemeColors tabBackgroundColor:theme]];
@@ -118,7 +140,25 @@
             nvc.navigationBar.barStyle = [ThemeColors barStyle:theme];
         }
     }
-    
+
+    for (int i=0; i<self.tabBar.items.count; i++) {
+        UITabBarItem *tabBarItem = [self.tabBar.items objectAtIndex:i];
+        int iShift = 0;
+        if (self.tabBar.items.count == 4 && i >= 2) {
+            iShift = 1;
+        }
+        tabBarItem.selectedImage = [[UIImage imageNamed:[ThemeColors tabBarItemSelectedImageAtIndex:i+iShift]]
+                                    imageWithRenderingMode:[ThemeColors tabBarItemSelectedImageRendering] ];
+        tabBarItem.image = [[UIImage imageNamed:[ThemeColors tabBarItemUnselectedImageAtIndex:i+iShift]]
+                            imageWithRenderingMode:[ThemeColors tabBarItemUnselectedImageRendering]];
+        switch (i+iShift) {
+            case 0: tabBarItem.title = @"Catégories"; break;
+            case 1: tabBarItem.title = @"Favoris"; break;
+            case 2: tabBarItem.title = @"Old Fav"; break;
+            case 3: tabBarItem.title = @"Messages"; break;
+            case 4: tabBarItem.title = @"Plus"; break;
+        }
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -128,27 +168,32 @@
                                              selector:@selector(setThemeFromNotification:)
                                             name:kThemeChangedNotification
                                                object:nil];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
     [self setTheme:[[ThemeManager sharedManager] theme]];
-    ((ForumsTableViewController*)((HFRNavigationController *)self.viewControllers[0]).topViewController).reloadOnAppear = YES;
 }
 
 - (BOOL)tabBarController:(UITabBarController * _Nonnull)tabBarController shouldSelectViewController:(UIViewController * _Nonnull)viewController {
 
     if ([viewController isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nv = (UINavigationController *)viewController;
-//      NSLog(@"curtab %lu", (unsigned long)tabBarController.selectedIndex);
-//      NSLog("class top : %@ !!!", [nv.topViewController class]);
         
         //actualisation si tap sur l'onglet
-        if (tabBarController.selectedIndex == 0 && [nv.topViewController isKindOfClass:[ForumsTableViewController class]]) {
+        if ([nv.topViewController isKindOfClass:[ForumsTableViewController class]]) {
             [(ForumsTableViewController *)nv.topViewController reload];
         }
         
-        if (tabBarController.selectedIndex == 1 && [nv.topViewController isKindOfClass:[FavoritesTableViewController class]]) {
+        if ([nv.topViewController isKindOfClass:[FavoritesTableViewController class]]) {
             [(FavoritesTableViewController *)nv.topViewController reload];
         }
         
-        if (tabBarController.selectedIndex == 2 && [nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
+        if ([nv.topViewController isKindOfClass:[OldFavoritesTableViewController class]]) {
+            [(OldFavoritesTableViewController *)nv.topViewController reload];
+        }
+        
+        if ([nv.topViewController isKindOfClass:[HFRMPViewController class]]) {
             [(HFRMPViewController *)nv.topViewController fetchContent];
         }
 
@@ -231,13 +276,5 @@
         }
     }
 }
-
-/*
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-	NSLog(@"new orientation: %d", [[UIDevice currentDevice] orientation]);
-}
-*/
-
 
 @end

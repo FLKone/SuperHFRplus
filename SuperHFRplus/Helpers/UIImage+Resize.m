@@ -236,10 +236,8 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     
 }
 
-- (UIImage *)scaleAndRotateImage:(UIImage *)image
+- (UIImage *)scaleAndRotateImage:(UIImage *)image withMaxResolution:(int)kMaxResolution
 {
-    int kMaxResolution = 1200; // Or whatever
-    
     CGImageRef imgRef = image.CGImage;
     
     CGFloat width = CGImageGetWidth(imgRef);

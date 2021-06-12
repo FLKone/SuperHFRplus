@@ -8,9 +8,7 @@
 
 #import "HFRplusAppDelegate.h"
 #import "ProfilViewController.h"
-
-#import "ASIHTTPRequest.h"
-
+#import "ASIHTTPRequest+Tools.h"
 #import "HTMLParser.h"
 #import "RegexKitLite.h"
 #import "RangeOfCharacters.h"
@@ -84,7 +82,7 @@
     [self.loadingView setHidden:YES];
     [self.maintenanceView setHidden:YES];
     
-    [self loadDataInTableView:[theRequest responseData]];
+    [self loadDataInTableView:[theRequest safeResponseData]];
     
 	[self.profilTableView reloadData];
     [self.profilTableView setHidden:NO];
@@ -105,18 +103,30 @@
     [self.loadingView setHidden:YES];
     [self.maintenanceView setHidden:NO];
     [self.profilTableView setHidden:YES];
+
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
     
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert show];
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
+
 }
 
+/* To delete
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 	if (buttonIndex == 1) {
 		[self fetchContent];
 	}
 }
+*/
 
 #pragma mark -
 #pragma mark Parsing
@@ -340,6 +350,7 @@
     self.loadingLabel.textColor = self.maintenanceView.textColor = [ThemeColors cellTextColor:theme];
     self.loadingLabel.shadowColor = self.maintenanceView.shadowColor = [UIColor clearColor];
     [self.loadingIndicator setColor:[ThemeColors cellTextColor:theme]];
+    [self.navigationController.navigationBar setTranslucent:NO];
 }
 
 
@@ -392,57 +403,30 @@
     
     //UIView globale
 	UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION)];
-    customView.backgroundColor = [ThemeColors headSectionBackgroundColor:[[ThemeManager sharedManager] theme]];
+    customView.backgroundColor = [ThemeColors headSectionBackgroundColor];
 	customView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
-	//UIImageView de fond
-    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        UIImage *myImage = [UIImage imageNamed:@"bar2.png"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:myImage];
-        imageView.alpha = 0.9;
-        imageView.frame = CGRectMake(0,0,curWidth,HEIGHT_FOR_HEADER_IN_SECTION);
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
-        [customView addSubview:imageView];
-    }
-    else {
-        //bordures/iOS7
-        UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView];
-        
-        UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
-        borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
-        
-        //[customView addSubview:borderView2];
-        
-    }
+    //bordures/iOS7
+    UIView* borderView = [[UIView alloc] initWithFrame:CGRectMake(0,0,curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
     
+    //[customView addSubview:borderView];
+    
+    UIView* borderView2 = [[UIView alloc] initWithFrame:CGRectMake(0,HEIGHT_FOR_HEADER_IN_SECTION-1/[[UIScreen mainScreen] scale],curWidth,1/[[UIScreen mainScreen] scale])];
+    borderView2.backgroundColor = [UIColor colorWithRed:158/255.0f green:158/255.0f blue:114/162.0f alpha:0.7];
+
     //UIButton clickable pour accéder à la catégorie
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, curWidth, HEIGHT_FOR_HEADER_IN_SECTION)];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        [button setTitleColor:[ThemeColors headSectionTextColor:[[ThemeManager sharedManager] theme]] forState:UIControlStateNormal];
-        [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 16, 0, 0)];
-    }
-    else
-    {
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 8, 0, 0)];
-        [button setTitle:title forState:UIControlStateNormal];
-        [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [button.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [button.titleLabel setShadowOffset:CGSizeMake(0.0, 1.0)];
-    }
+    [button setTitleColor:[ThemeColors headSectionTextColor] forState:UIControlStateNormal];
+    [button setTitle:[title uppercaseString] forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [button setTitleEdgeInsets:UIEdgeInsetsMake(10, 16, 0, 0)];
     
     [customView addSubview:button];
 
-	
 	return customView;
-	
 }
 
 
@@ -775,7 +759,7 @@
 	[self.arrayData removeAllObjects];
 	[self.feedTableView reloadData];
 	
-	[self loadDataInTableView:[request responseData]];
+	[self loadDataInTableView:[request safeResponseData]];
     
 	[self.loadingView setHidden:YES];
     
@@ -831,10 +815,18 @@
     [self.maintenanceView setHidden:NO];
     [self.feedTableView setHidden:YES];
     
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:667];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 -(void)loadDataInTableView:(NSData *)contentData
@@ -1297,16 +1289,16 @@
     return self;
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView {
-    //NSLog(@"webViewDidStartLoad");
-    
+// was webViewDidStartLoad
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    //NSLog(@"webViewDidFinishLoad");
 
+// was webViewDidFinishLoad
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"didFinishNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
 }
 
 - (void)viewDidLoad
@@ -1329,7 +1321,7 @@
     // Release any retained subviews of the main view.
 	[self.webView stopLoading];
     
-	self.webView.delegate = nil;
+	self.webView.navigationDelegate = nil;
 	self.webView = nil;
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
@@ -1384,7 +1376,7 @@
 	NSLog(@"fetchContentComplete");
     
     
-    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[request responseString] error:NULL];
+    HTMLParser * myParser = [[HTMLParser alloc] initWithString:[request safeResponseString] error:NULL];
 	HTMLNode * bodyNode = [myParser body]; //Find the body tag
 
     //PARSING
@@ -1435,10 +1427,18 @@
     [self.maintenanceView setHidden:NO];
     [self.textView setHidden:YES];
 		
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops !" message:[theRequest.error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Annuler" otherButtonTitles:@"Réessayer", nil];
-	[alert setTag:667];
-	[alert show];
+    // Popup retry
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Ooops !"  message:[theRequest.error localizedDescription]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* actionCancel = [UIAlertAction actionWithTitle:@"Annuler" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) { }];
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:@"Réessayer" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) { [self fetchContent]; }];
+    [alert addAction:actionCancel];
+    [alert addAction:actionRetry];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    [[ThemeManager sharedManager] applyThemeToAlertController:alert];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theURL

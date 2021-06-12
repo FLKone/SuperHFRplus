@@ -9,6 +9,7 @@
 #import "PageViewController.h"
 
 @class MessagesTableViewController;
+@class PullToRefreshErrorViewController;
 @class ASIHTTPRequest;
 @class ShakeView;
 @class TopicCellView;
@@ -34,7 +35,8 @@
 
 
 	MessagesTableViewController *messagesTableViewController;
-
+    PullToRefreshErrorViewController *errorVC;
+    
 	//Gesture
 	UISwipeGestureRecognizer *swipeLeftRecognizer;
 	UISwipeGestureRecognizer *swipeRightRecognizer;
@@ -92,6 +94,7 @@
 @property (nonatomic, strong) NSMutableArray *arrayData;
 @property (nonatomic, strong) NSMutableArray *arrayNewData;
 @property (nonatomic, strong) MessagesTableViewController *messagesTableViewController;
+@property (nonatomic, strong) PullToRefreshErrorViewController *errorVC;
 
 @property (nonatomic, strong) NSIndexPath *pressedIndexPath;
 

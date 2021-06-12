@@ -13,9 +13,7 @@
 #import "HFRplusAppDelegate.h"
 #import <SimpleKeychain/SimpleKeychain.h>
 #import "ASIFormDataRequest.h"
-
-
-
+#include "MPStorage.h"
 
 @implementation MultisManager
 
@@ -51,7 +49,14 @@
     NSData *comptesData = [[A0SimpleKeychain keychain] dataForKey:HFR_COMPTES_KEY];
     NSMutableArray *comptesArray = comptesData ? [(NSArray*) [NSKeyedUnarchiver unarchiveObjectWithData:comptesData] mutableCopy] : [NSMutableArray array];
     NSMutableDictionary *newCompte = [NSMutableDictionary dictionary];
-    [newCompte setValue:pseudo forKey:PSEUDO_KEY];
+    NSString *cookiesPseudo = @"";
+    for (NSHTTPCookie *aCookie in cookies) {
+        if([aCookie.name isEqualToString:@"md_user"] && ![aCookie.value isEqualToString:@"deleted"]){
+            [newCompte setValue:aCookie.value forKey:PSEUDO_KEY];
+            cookiesPseudo = aCookie.value;
+        }
+    }
+    [newCompte setValue:pseudo forKey:PSEUDO_DISPLAY_KEY];
     [newCompte setValue:cookies forKey:COOKIES_KEY];
     if(hash){
         [newCompte setValue:hash forKey:HASH_KEY];
@@ -60,20 +65,23 @@
         [newCompte setValue:avatar forKey:AVATAR_KEY];
     }
     
-    // TODO : check if compte already exist
+    BOOL exist = NO;
     if([comptesArray count] == 0){
          [newCompte setObject:[NSNumber numberWithBool:YES] forKey:MAIN_KEY];
     }else{
         for (NSMutableDictionary* compte in comptesArray) {
-            if([pseudo isEqualToString:[compte objectForKey:PSEUDO_KEY]]){
-                return;
+            if([cookiesPseudo isEqualToString:[compte objectForKey:PSEUDO_KEY]]){
+                exist = YES;
             }
         }
     }
-    [comptesArray addObject:newCompte];
-    [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
+    if(!exist){
+        [comptesArray addObject:newCompte];
+        [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
+    }
     [self setCookiesForMain];
-
+    
+    [[MPStorage shared] initOrResetMP:pseudo];
 }
 
 - (void)setPseudoAsMain:(NSString *)pseudo{
@@ -91,6 +99,8 @@
         [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];
         [self setCookiesForMain];
     }
+    
+    [[MPStorage shared] initOrResetMP:pseudo];
 }
 
 - (void)setCookiesForMain {
@@ -146,6 +156,17 @@
     return main;
 }
 
+-(NSString *)getCurrentPseudo {
+    NSArray *comptesArray = [self getComtpes];
+    NSDictionary *main;
+    for (NSMutableDictionary* compte in comptesArray) {
+        if([[compte objectForKey:MAIN_KEY] boolValue]){
+            main = compte;
+        }
+    }
+    return [main objectForKey:PSEUDO_DISPLAY_KEY];
+}
+
 -(UIImage *)getAvatarForCompte:(NSDictionary *)compte{
     NSData* avatar = [compte objectForKey:AVATAR_KEY];
     if(!avatar ){
@@ -184,7 +205,7 @@
     for (NSHTTPCookie *aCookie in cookies) {
         if([aCookie.name isEqualToString:@"md_user"] && ![aCookie.value isEqualToString:@"deleted"] ){
             for (NSMutableDictionary* compte in comptesArray) {
-                if([[compte objectForKey:PSEUDO_KEY] isEqualToString:aCookie.value] ||  [[self sanitizePseudo:[compte objectForKey:PSEUDO_KEY]] isEqualToString:aCookie.value]){
+                if([[compte objectForKey:PSEUDO_KEY] isEqualToString:aCookie.value]){
                     [compte setValue:cookies forKey:COOKIES_KEY];
                 }
             }
@@ -205,7 +226,32 @@
             }
         }
         return;
+    }else{
+        // Migrate bis (pseudo key must be equal to md_user cookie), delete double
+        BOOL save = NO;
+        NSMutableArray *okPs = [NSMutableArray array];
+        NSMutableArray *okAcc = [NSMutableArray array];
+        for (NSMutableDictionary* compte in comptesArray) {
+            for (NSHTTPCookie *aCookie in [compte objectForKey:COOKIES_KEY]) {
+                if([aCookie.name isEqualToString:@"md_user"] && ![aCookie.value isEqualToString:@"deleted"] && ![okPs containsObject:aCookie.value]){
+                    if(![compte objectForKey:PSEUDO_DISPLAY_KEY]){
+                        [compte setObject:[compte objectForKey:PSEUDO_KEY] forKey:PSEUDO_DISPLAY_KEY];
+                        save = YES;
+                    }
+                    if(![aCookie.value isEqualToString:[compte objectForKey:PSEUDO_KEY]]){
+                        [compte setObject:aCookie.value forKey:PSEUDO_KEY];
+                        save = YES;
+                    }
+                    [okPs addObject:[compte objectForKey:PSEUDO_KEY]];
+                    [okAcc addObject:compte];
+                }
+            }
+        }
+        if(save){     [[A0SimpleKeychain keychain] setData:[NSKeyedArchiver archivedDataWithRootObject:comptesArray] forKey:HFR_COMPTES_KEY];}
+    
     }
+    
+    
     for (NSMutableDictionary* compte in comptesArray) {
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/user/editprofil.php?config=hfr.inc&page=1", [k ForumURL]]];
         ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
@@ -224,11 +270,5 @@
 -(void)createAccountFromCachedCookies:(NSArray *)cookies andPseudo:(NSString *)pseudo {
     [self addCompteWithPseudo:pseudo andCookies:cookies andAvatar:nil andHash:nil];
 }
-
--(NSString *)sanitizePseudo:(NSString *)pseudo  {
-    NSCharacterSet *allowedCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"!*'();:@&=+$,/?%#[] "] invertedSet];
-    return [pseudo stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacterSet];
-}
-
 
 @end

@@ -9,8 +9,13 @@
 #import "ThemeManager.h"
 #import "ThemeColors.h"
 #import "AvatarTableViewCell.h"
+#import "PlusCellView.h"
+#import "SimpleCellView.h"
+
 
 @implementation ThemeManager
+
+@synthesize theme;
 
 int dayDelayMin = 40;
 int nightDelayMin = 10;
@@ -19,7 +24,7 @@ int nightDelay;
 
 #pragma mark Singleton Methods
 
-+ (id)sharedManager {
++ (ThemeManager*)sharedManager {
     static ThemeManager *sharedThemeManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -28,32 +33,35 @@ int nightDelay;
     return sharedThemeManager;
 }
 
++ (Theme) currentTheme {
+    return [[ThemeManager sharedManager] theme];
+}
+
 - (id)init {
     if (self = [super init]) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        theme = [defaults integerForKey:@"theme"];
-        if(!theme){
+        NSInteger iSettingsTheme = [defaults integerForKey:@"theme"];
+        if (iSettingsTheme == 2) {
+            theme = ThemeDark;
+            [ThemeColors updateUserBrightness:@"theme_night_brightness" withBrightness:0.0];
+        }
+        else if (iSettingsTheme == 0 || iSettingsTheme == 1) {
+            theme = (Theme)iSettingsTheme;
+        }
+        else {
             theme = ThemeLight;
         }
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"theme_dark_adjust"])
-        {
-            //  Apply customisation
-            NSInteger value1 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color1"];
-            NSInteger value2 = [[NSUserDefaults standardUserDefaults] integerForKey:@"theme_dark_color2"];
-            [ThemeColors setDarkColor1:value1];
-            [ThemeColors setDarkColor2:value2];
-        }
-        
         [self applyAppearance];
-        [self changeAutoTheme:[defaults boolForKey:@"auto_theme"]];
+        [self changeAutoTheme:([defaults integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_CAMERA)];
     }
     return self;
 }
 
-- (void)setTheme:(Theme)newTheme {
-    theme = newTheme;
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:theme] forKey:@"theme"];
+
+
+- (void)changeTheme:(Theme)newTheme {
+    self.theme = newTheme;
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:self.theme] forKey:@"theme"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     NSNotification *myNotification = [NSNotification notificationWithName:kThemeChangedNotification
                                                                    object:self  //object is usually the object posting the notification
@@ -85,20 +93,17 @@ int nightDelay;
     [self applyAppearance];
 }
 
+/*
 - (Theme)theme{
     //NSLog(@"%lu",(unsigned long)theme);
     return theme;
-}
+}*/
 
 - (void)switchTheme {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    Theme day = [defaults integerForKey:@"auto_theme_day"];
-    Theme night = [defaults integerForKey:@"auto_theme_night"];
-
-    if (self.theme == day) {
-        [self setTheme:night];
+    if (self.theme == ThemeLight) {
+        [self setThemeManually:ThemeDark];
     } else {
-        [self setTheme:day];
+        [self setThemeManually:ThemeLight];
     }
 }
 
@@ -126,6 +131,21 @@ int nightDelay;
             cell.imageView.tintColor = [ThemeColors cellIconColor:theme];
         }
     }
+    
+    if([cell isKindOfClass:[PlusCellView class]]){
+        PlusCellView* plusCellView = (PlusCellView*)cell;
+        UIImage *img =[plusCellView.titleImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        plusCellView.titleImage.image = img;
+        plusCellView.titleImage.tintColor = [ThemeColors cellIconColor:theme];
+    }
+    
+    if([cell isKindOfClass:[SimpleCellView class]]){
+        SimpleCellView* simpleCellView = (SimpleCellView*)cell;
+        UIImage *img = [simpleCellView.imageIcon.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        simpleCellView.imageIcon.image = img;
+        simpleCellView.imageIcon.tintColor = [ThemeColors cellIconColor:theme];
+    }
+    
     cell.selectionStyle = [ThemeColors cellSelectionStyle:theme];
 }
 
@@ -173,20 +193,20 @@ int nightDelay;
     }
     
     // If dark theme, hide white effect view
-    if(theme == ThemeDark || theme == ThemeOLED){
+    if(theme == ThemeDark){
          [alertContentView.subviews objectAtIndex:1].alpha = 0.0f;
     }
     
     // If present send title and text message color
     if (alert.title != nil)
     {
-        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:alert.title attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
-        [alert setValue:attributedString forKey:@"attributedMessage"];
+        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:alert.title attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme], NSFontAttributeName: [UIFont systemFontOfSize:17.f weight:UIFontWeightSemibold]}];
+        [alert setValue:attributedString forKey:@"attributedTitle"];
     }
     if (alert.message != nil)
     {
-        NSAttributedString* attributedString2 = [[NSAttributedString alloc] initWithString:alert.message attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme]}];
-        [alert setValue:attributedString2 forKey:@"attributedTitle"];
+        NSAttributedString* attributedString2 = [[NSAttributedString alloc] initWithString:alert.message attributes:@{NSForegroundColorAttributeName: [ThemeColors textColor:theme], NSFontAttributeName: [UIFont systemFontOfSize:13.f weight:UIFontWeightRegular]}];
+        [alert setValue:attributedString2 forKey:@"attributedMessage"];
     }
 }
 
@@ -202,32 +222,78 @@ int nightDelay;
     }
 }
     
--(void)didUpdateLuminosity:(float)luminosity {
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    Theme day = [defaults integerForKey:@"auto_theme_day"];
-    Theme night = [defaults integerForKey:@"auto_theme_night"];
-    
-    if(dayDelay == 0 || nightDelay == 0){
+- (void)didUpdateLuminosity:(float)luminosity {
+    if(dayDelay == 0 || nightDelay == 0) {
         dayDelay = dayDelayMin;
         nightDelay = nightDelayMin;
     }
     
-    if(luminosity < 0 && self.theme !=night){
+    if(luminosity < 0 && self.theme != ThemeDark) {
         nightDelay--;
-    }else if(luminosity >= 0 && self.theme !=day){
+    } else if(luminosity >= 0 && self.theme != ThemeLight) {
         dayDelay--;
     }
     
-    if(nightDelay == 0){
-       dispatch_async(dispatch_get_main_queue(), ^{ [self setTheme:night]; });
+    if(nightDelay == 0) {
+       dispatch_async(dispatch_get_main_queue(), ^{ [self setTheme:ThemeDark]; });
     }
     
-    if(dayDelay == 0){
-        dispatch_async(dispatch_get_main_queue(), ^{ [self setTheme:day]; });
+    if(dayDelay == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{ [self setTheme:ThemeLight]; });
     }
 
 }
 
+- (void)setThemeManually:(Theme)newTheme {
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_TIME) {
+        Theme calculatedTheme = (Theme)[self getThemeFromCurrentTime];
+        //NSLog(@"AUTO_THEME_AUTO_TIME > MANUAL current theme %d / calculated %d",self.theme, calculatedTheme);
+        if ([[NSUserDefaults standardUserDefaults]  objectForKey:@"force_manual_theme"] == nil) {
+            if (newTheme != calculatedTheme) {
+                //NSLog(@"AUTO_THEME_AUTO_TIME > manual force theme");
+                [[NSUserDefaults standardUserDefaults] setInteger:newTheme forKey:@"force_manual_theme"];
+            } else {
+                //NSLog(@"AUTO_THEME_AUTO_TIME > REMOVE manual force theme");
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"force_manual_theme"];
+            }
+        }
+    }
+    
+    [self changeTheme:newTheme];
+}
 
+- (void) checkTheme {
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_TIME) {
+        // Check if theme has been changed manually last time
+        Theme calculatedTheme = (Theme)[self getThemeFromCurrentTime];
+        [self setTheme:calculatedTheme];
+    } else if ([[NSUserDefaults standardUserDefaults] integerForKey:@"auto_theme"] == AUTO_THEME_AUTO_IOS) {
+        if (@available(iOS 13.0, *)) {
+            if (UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                [self setTheme:ThemeDark];
+            } else {
+                [self setTheme:ThemeLight];
+            }
+        }
+    }
+}
+
+- (Theme) getThemeFromCurrentTime {
+    NSDate *now = [NSDate date];
+    
+    NSDateFormatter * df = [[NSDateFormatter alloc] init];
+    NSDateFormatter * df2 = [[NSDateFormatter alloc] init];
+    NSString *sTimeDay = [[NSUserDefaults standardUserDefaults] stringForKey:@"auto_theme_day_time"];
+    NSString *sTimeNight = [[NSUserDefaults standardUserDefaults] stringForKey:@"auto_theme_night_time"];
+    [df setDateFormat:@"YY-MM-dd HH:mm"];
+    [df2 setDateFormat:@"YY-MM-dd"];
+    NSString *today = [df2 stringFromDate:now];
+    NSDate *dTimeDay = [df dateFromString:[NSString stringWithFormat:@"%@ %@", today,  sTimeDay]];
+    NSDate *dTimeNight = [df dateFromString:[NSString stringWithFormat:@"%@ %@", today,  sTimeNight]];
+    
+    if ([dTimeDay earlierDate:now] == now || [dTimeNight laterDate:now] == now) {
+        return ThemeDark;
+    }
+    return ThemeLight;
+}
 @end

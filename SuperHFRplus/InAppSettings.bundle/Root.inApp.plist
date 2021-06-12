@@ -5,26 +5,6 @@
 	<key>PreferenceSpecifiers</key>
 	<array>
 		<dict>
-			<key>IASKCellImage</key>
-			<string>CircledUserMaleFilled-25</string>
-			<key>IASKViewControllerClass</key>
-			<string>CompteViewController</string>
-			<key>Title</key>
-			<string>Compte(s)</string>
-			<key>Type</key>
-			<string>PSChildPaneSpecifier</string>
-		</dict>
-		<dict>
-			<key>IASKCellImage</key>
-			<string>AboutFilled-25</string>
-			<key>IASKViewControllerClass</key>
-			<string>CreditsViewController</string>
-			<key>Title</key>
-			<string>Crédits</string>
-			<key>Type</key>
-			<string>PSChildPaneSpecifier</string>
-		</dict>
-		<dict>
 			<key>FooterText</key>
 			<string>Compatible à partir de l&apos;iPhone 6S</string>
 			<key>Title</key>
@@ -102,6 +82,16 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>sujets_avec_cat</string>
+			<key>Title</key>
+			<string>Favoris triés par catégories</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
 			<string>super</string>
 			<key>Key</key>
 			<string>icon</string>
@@ -113,6 +103,8 @@
 				<string>Super</string>
 				<string>REDFACE</string>
 				<string>Beta</string>
+				<string>Blue</string>
+				<string>White</string>
 			</array>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
@@ -122,6 +114,8 @@
 				<string>super</string>
 				<string>redface</string>
 				<string>beta</string>
+				<string>blue</string>
+				<string>white</string>
 			</array>
 		</dict>
 		<dict>
@@ -150,67 +144,57 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
-        <dict>
-            <key>DefaultValue</key>
-            <false/>
-            <key>Key</key>
-            <string>auto_theme</string>
-            <key>Title</key>
-            <string>Thème auto (beta)</string>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-        </dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>3</integer>
+			<key>Key</key>
+			<string>auto_theme</string>
+			<key>Title</key>
+			<string>Changement de thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Apparence iOS</string>
+				<string>Manuel</string>
+				<string>Automatique</string>
+				<string>Heure fixe</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>3</integer>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Key</key>
+			<string>theme_style</string>
+			<key>Title</key>
+			<string>Style du thème</string>
+			<key>Titles</key>
+			<array>
+				<string>Classique</string>
+				<string>Moderne</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+			</array>
+		</dict>
 		<dict>
 			<key>DefaultValue</key>
 			<integer>0</integer>
 			<key>Key</key>
 			<string>theme</string>
 			<key>Title</key>
-			<string>Thème</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
-				<string>Sombre OLED</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<integer>0</integer>
-			<key>Key</key>
-			<string>auto_theme_day</string>
-			<key>Title</key>
-			<string>Thème Jour</string>
-			<key>Titles</key>
-			<array>
-				<string>Clair</string>
-				<string>Sombre</string>
-				<string>Sombre OLED</string>
-			</array>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-			</array>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<integer>1</integer>
-			<key>Key</key>
-			<string>auto_theme_night</string>
-			<key>Title</key>
-			<string>Thème Nuit</string>
+			<string>Luminosité du thème</string>
 			<key>Titles</key>
 			<array>
 				<string>Clair</string>
@@ -226,42 +210,102 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<false/>
+			<string>07:00</string>
 			<key>Key</key>
-			<string>theme_dark_adjust</string>
+			<string>auto_theme_day_time</string>
 			<key>Title</key>
-			<string>Ajustement thème sombre</string>
+			<string>Heure du thème jour</string>
+			<key>Titles</key>
+			<array>
+				<string>5h</string>
+				<string>5h30</string>
+				<string>6h</string>
+				<string>6h30</string>
+				<string>7h</string>
+				<string>7h30</string>
+				<string>8h</string>
+				<string>8h30</string>
+				<string>9h</string>
+				<string>9h30</string>
+				<string>10h</string>
+			</array>
 			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>05:00</string>
+				<string>05:30</string>
+				<string>06:00</string>
+				<string>06:30</string>
+				<string>07:00</string>
+				<string>07:30</string>
+				<string>08:00</string>
+				<string>08:30</string>
+				<string>09:00</string>
+				<string>09:30</string>
+				<string>10:00</string>
+			</array>
 		</dict>
 		<dict>
-			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-			<key>Key</key>
-			<string>theme_dark_color1</string>
 			<key>DefaultValue</key>
-			<integer>100</integer>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>MaximumValue</key>
-			<integer>130</integer>
-			<key>MinimumValueImage</key>
-			<string>Contrast</string>
+			<string>20:00</string>
+			<key>Key</key>
+			<string>auto_theme_night_time</string>
+			<key>Title</key>
+			<string>Heure du thème nuit</string>
+			<key>Titles</key>
+			<array>
+				<string>17h</string>
+				<string>17h30</string>
+				<string>18h</string>
+				<string>18h30</string>
+				<string>19h</string>
+				<string>19h30</string>
+				<string>20h</string>
+				<string>20h30</string>
+				<string>21h</string>
+				<string>21h30</string>
+				<string>22h</string>
+				<string>22h30</string>
+				<string>23h</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<string>17:00</string>
+				<string>17:30</string>
+				<string>18:00</string>
+				<string>18:30</string>
+				<string>19:00</string>
+				<string>19:30</string>
+				<string>20:00</string>
+				<string>20:30</string>
+				<string>21:00</string>
+				<string>21:30</string>
+				<string>22:00</string>
+				<string>22:30</string>
+				<string>23:00</string>
+			</array>
 		</dict>
 		<dict>
+			<key>Title</key>
+			<string>Ajustement de thème</string>
 			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-			<key>Key</key>
-			<string>theme_dark_color2</string>
-			<key>DefaultValue</key>
-			<integer>33</integer>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>MaximumValue</key>
-			<integer>360</integer>
-			<key>MinimumValueImage</key>
-			<string>ColorWheel</string>
+			<string>PSChildPaneSpecifier</string>
+			<key>IASKViewControllerClass</key>
+			<string>ThemeSettingsViewController</string>
 		</dict>
+		<dict>
+            <key>DefaultValue</key>
+            <false/>
+            <key>Key</key>
+            <string>theme_noel_disabled</string>
+            <key>Title</key>
+            <string>Arrêter la magie de noël</string>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Sujets</string>
@@ -278,6 +322,26 @@
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Masquer les pseudos</string>
+            <key>Key</key>
+            <string>blacklist_hide_pseudo</string>
+            <key>DefaultValue</key>
+            <false/>
+        </dict>
+		<dict>
+			<key>IASKCellImage</key>
+			<string>HeartBlack-20</string>
+			<key>IASKViewControllerClass</key>
+			<string>WhiteListTableViewController</string>
+			<key>Title</key>
+			<string>Love list</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
 		<dict>
 			<key>File</key>
 			<string>ActionsMessages</string>
@@ -286,6 +350,30 @@
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>wl_pseudo</string>
+            <key>Key</key>
+            <string>filter_posts_quotes</string>
+            <key>Title</key>
+            <string>Filtrer les posts</string>
+            <key>Titles</key>
+            <array>
+                <string>Love list et texte du pseudo</string>
+                <string>Love list uniquement</string>
+                <string>Texte du pseudo uniquement</string>
+                <string>Aucun</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <string>wl_pseudo</string>
+                <string>wl</string>
+                <string>pseudo</string>
+                <string>nothing</string>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>default</string>
@@ -310,6 +398,36 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
+			<integer>14</integer>
+			<key>Key</key>
+			<string>size_text_reply</string>
+			<key>Title</key>
+			<string>Taille du texte de réponse</string>
+			<key>Titles</key>
+			<array>
+				<string>12 pt</string>
+				<string>13 pt</string>
+				<string>14 pt</string>
+				<string>15 pt</string>
+				<string>16 pt</string>
+				<string>18 pt</string>
+				<string>20 pt</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Values</key>
+			<array>
+				<integer>12</integer>
+				<integer>13</integer>
+				<integer>14</integer>
+				<integer>15</integer>
+				<integer>16</integer>
+				<integer>18</integer>
+				<integer>20</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
 			<string>default</string>
 			<key>Key</key>
 			<string>size_smileys</string>
@@ -330,7 +448,7 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>no</string>
+			<string>yes</string>
 			<key>Key</key>
 			<string>display_images</string>
 			<key>Title</key>
@@ -350,6 +468,28 @@
 				<string>yes</string>
 			</array>
 		</dict>
+        <dict>
+            <key>DefaultValue</key>
+            <string>yes</string>
+            <key>Key</key>
+            <string>embedded_videos</string>
+            <key>Title</key>
+            <string>Afficher les vidéos</string>
+            <key>Titles</key>
+            <array>
+                <string>Lien</string>
+                <string>Intégré</string>
+                <string>Intégré et lien</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <string>no</string>
+                <string>yes</string>
+                <string>both</string>
+            </array>
+        </dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>no</string>
@@ -372,7 +512,7 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<string>http</string>
+			<string>internal</string>
 			<key>Key</key>
 			<string>default_web</string>
 			<key>Title</key>
@@ -392,6 +532,88 @@
 				<string>internal</string>
 			</array>
 		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<true/>
+			<key>Key</key>
+			<string>notify_poll_not_answered</string>
+			<key>Title</key>
+			<string>Notifier un sondage non répondu</string>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
+			<string>Permet de synchroniser certaines données (Drapeaux MP, Blacklist) avec le script équivalent GreaseMonkey.</string>
+			<key>Title</key>
+			<string>Stockage MP</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Activer le stockage MP</string>
+			<key>Key</key>
+			<string>mpstorage_active</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>-</string>
+			<key>Key</key>
+			<string>mpstorage_last_rw</string>
+			<key>Title</key>
+			<string>Dernier acces réussi</string>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>IASKButtonSpecifier</string>
+			<key>Title</key>
+			<string>Réinitialiser le MP de stockage</string>
+			<key>Key</key>
+			<string>mpstorage_reset</string>
+		</dict>
+        <dict>
+            <key>FooterText</key>
+            <string></string>
+            <key>Title</key>
+            <string>Mode Offline</string>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+        </dict>
+        <dict>
+            <key>DefaultValue</key>
+            <integer>21</integer>
+            <key>Key</key>
+            <string>offline_max_pages</string>
+            <key>Title</key>
+            <string>Limite de chargement</string>
+            <key>Titles</key>
+            <array>
+                <string>5 pages</string>
+                <string>10 pages</string>
+                <string>20 pages</string>
+                <string>30 pages</string>
+                <string>50 pages</string>
+                <string>100 pages</string>
+            </array>
+            <key>Type</key>
+            <string>PSMultiValueSpecifier</string>
+            <key>Values</key>
+            <array>
+                <integer>6</integer>
+                <integer>11</integer>
+                <integer>21</integer>
+                <integer>31</integer>
+                <integer>51</integer>
+                <integer>101</integer>
+            </array>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Maintenance</string>
@@ -416,6 +638,16 @@
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
+		<dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>Favoris ancienne version</string>
+            <key>Key</key>
+            <string>old_favorites</string>
+            <key>DefaultValue</key>
+            <false/>
+        </dict>
 		<dict>
 			<key>IASKCellImage</key>
 			<string>BugFilled-25</string>

@@ -24,14 +24,14 @@
 
 #import "MWPhotoBrowser.h"
 
-@class HTMLNode;
+@class HTMLNode, MessageDetailViewController, ASIHTTPRequest, FilterPostsQuotes;
 @class MessageDetailViewController;
 @class ASIHTTPRequest;
 
 
-@interface MessagesTableViewController : PageViewController <UIActionSheetDelegate, ParseMessagesOperationDelegate, AddMessageViewControllerDelegate, UIScrollViewDelegate, AlerteModoViewControllerDelegate> {
+@interface MessagesTableViewController : PageViewController <UIActionSheetDelegate, ParseMessagesOperationDelegate, AddMessageViewControllerDelegate, UIScrollViewDelegate, AlerteModoViewControllerDelegate, WKNavigationDelegate, WKUIDelegate> {
     
-	UIWebView *messagesWebView;
+	WKWebView *messagesWebView;
     UIView *loadingView;
     UILabel *loadingViewLabel;
     UIActivityIndicatorView *loadingViewIndicator;
@@ -87,6 +87,7 @@
     
     //Poll
     HTMLNode *pollNode;
+    BOOL isNewPoll;
     HTMLParser *pollParser;
     
     //Search
@@ -104,10 +105,15 @@
     UISwitch *searchFromFP;
     NSMutableDictionary *searchInputData;
     BOOL isSearchInstra;
+    
+    NSString* firstnumBackup;
+    
+    BOOL isSeparatorNewMessages;
 }
 
 
-@property (nonatomic, strong) IBOutlet UIWebView *messagesWebView;
+
+@property (nonatomic, strong) IBOutlet WKWebView *messagesWebView;
 @property (nonatomic, strong) IBOutlet UIView *loadingView;
 @property (nonatomic, strong) IBOutlet UILabel *loadingViewLabel;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *loadingViewIndicator;
@@ -157,7 +163,9 @@
 @property BOOL isAnimating;
 
 @property (nonatomic, strong) HTMLNode *pollNode;
+@property BOOL isNewPoll;
 @property (nonatomic, strong) HTMLParser *pollParser;
+@property (nonatomic, strong) NSString *firstnumBackup;
 
 @property (nonatomic, strong) IBOutlet UIView *searchBg;
 @property (nonatomic, strong) IBOutlet UIView *searchBox;
@@ -173,10 +181,22 @@
 @property (strong, nonatomic) IBOutlet UISwitch *searchFromFP;
 @property (nonatomic, strong) NSMutableDictionary *searchInputData;
 @property BOOL isSearchInstra;
+@property BOOL isSeparatorNewMessages;
+@property UIAlertAction* actionCreateAQ;
+@property UIAlertAction* actionCreateBookmark;
+@property BOOL canSaveDrapalInMPStorage;
 
 @property (strong, nonatomic) NSMutableArray *arrayActionsMessages;
+@property (nonatomic, strong) Topic *topic;
+//@property BOOL bFilterPostsQuotes;
+@property FilterPostsQuotes* filterPostsQuotes;
+@property NSMutableArray* arrFilteredPosts;
+@property (nonatomic, strong) UIAlertController *alertProgress;
+@property (nonatomic, strong) UIProgressView *progressView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUrl:(NSString *)theTopicUrl displaySeparator:(BOOL)isSeparatorNewMessages;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andOfflineTopic:(Topic *)thetopic;
 - (void)optionsTopic:(id)sender;
 - (void)answerTopic;
 - (void)quoteMessage:(NSString *)quoteUrl;
@@ -214,6 +234,7 @@
 - (IBAction)searchKeywordChanged:(UITextField *)sender;
 - (void)toggleSearch:(BOOL) active;
 - (IBAction)searchNext:(UITextField *)sender;
-
+- (void)manageLoadedItems:(NSArray *)loadedItems;
+- (void)setupScrollAndPage;
 
 @end

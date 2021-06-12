@@ -29,7 +29,6 @@
     [self.segmentControler     setEnabled:NO];
     [self.segmentControlerPage setEnabled:NO];
     [self.segmentControlerPage setEnabled:NO];
-    [self.textFieldSmileys setEnabled:NO];
     [self.textView setEditable:NO];
     [self.textView setAlpha:0.6];
     if ([self.textView respondsToSelector:@selector(setSelectable:)]) {

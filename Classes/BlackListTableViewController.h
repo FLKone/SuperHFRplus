@@ -7,11 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ListTableViewController.h"
 
-@interface BlackListTableViewController : UITableViewController <UIAlertViewDelegate> {
-    NSMutableArray *blackListDict;
+@interface BlackListTableViewController : ListTableViewController {
 }
-
-@property (nonatomic, strong) NSMutableArray *blackListDict;
 
 @end

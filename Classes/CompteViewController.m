@@ -47,6 +47,10 @@ NSArray* comptes;
     [super viewWillAppear:animated];
     Theme theme = [[ThemeManager sharedManager] theme];
     [self setThemeColors:theme];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
     [self refreshComptes];
     if([comptes count] < 1 && self.pop){
         self.pop = NO;
@@ -137,7 +141,7 @@ NSArray* comptes;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSDictionary *compte = [comptes objectAtIndex:indexPath.row];
-    NSString *pseudo = [compte objectForKey:PSEUDO_KEY];
+    NSString *pseudo = [compte objectForKey:PSEUDO_DISPLAY_KEY];
     [cell.pseudoLabel setText:pseudo];
     NSString *avatarURL = [compte objectForKey:AVATAR_KEY];
     [cell setAvatar:avatarURL];
